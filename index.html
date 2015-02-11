@@ -209,17 +209,19 @@ function updateCircle(player, play1, play2) {
             audio.play();
 
         }else{
-                player.x = canvas.width/2-rectw/2;
-                player.y = canvas.height/2-recth/2;
+            player.x = canvas.width/2-rectw/2;
+            player.y = canvas.height/2-recth/2;
             multiply = [-1, 1];
             var choice = multiply[Math.floor(Math.random() * multiply.length)];
             temp = getRandomInt(2, 5);
             choice = multiply[Math.floor(Math.random() * multiply.length)];
             temp2 = choice*Math.sqrt(2*Math.pow(cspeed, 2)-Math.pow(temp, 2));
             temp*=-1;
+	    setTimeout(function(){
             player.velY = temp;
             player.velX = temp2;
             score1++;
+	    }, 2000);
         }
     } else if (player.x <= 60) {
         if (play1.y <= player.y && player.y <= play1.y+recth){
@@ -240,9 +242,11 @@ function updateCircle(player, play1, play2) {
             choice = multiply[Math.floor(Math.random() * multiply.length)];
 	    temp2 = choice*Math.sqrt(2*Math.pow(cspeed, 2)-Math.pow(temp, 2));
             temp*=-1;
+	    setTimeout(function(){
             player.velY = temp;
             player.velX = temp2;
             score2++;
+	    }, 2000);
         }
     }
 
