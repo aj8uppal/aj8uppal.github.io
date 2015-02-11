@@ -28,12 +28,6 @@ canvas {
 var canvas = document.getElementById("canvas"),
     ctx = canvas.getContext("2d");
 
-var audio2 = new Audio("background.mp3");
-audio2.addEventListener('ended', function() {
-    this.currentTime = 0;
-    this.play();
-}, false);
-audio2.play();
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-50;
 
