@@ -327,9 +327,9 @@
                         if(plane.position.y - (cubes[28].position.y+width) <= 0 && plane.position.y - (cubes[28].position.y+width) >= -0.5){
                             if(plane.position.x <= cubes[29].position.x+0.5 && plane.position.x >= cubes[0].position.x-0.75 && total <= 0){
                                 if(plane.material.color.getHex() == 16738740){
-                                    total=1.75*jump;
+                                    total=1.75*getRandomArbitrary(0.22, 0.3);
                                 }else{
-                                    total = jump;
+                                    total = getRandomArbitrary(0.22, 0.3);
                                 }
                             }
                         }
