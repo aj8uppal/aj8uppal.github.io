@@ -27,7 +27,7 @@
             var keyboard = new THREEx.KeyboardState();
             var total = 0;
             var gravity = 0.0075;
-            var jump = 0.25;
+            var jump = 0.2912371236;
             var width = 0.25;
             var hatwidth = 0.125;
 			var scene = new THREE.Scene();
@@ -59,6 +59,23 @@
                 new THREE.MeshBasicMaterial( {color: '#787400'} ),
                 new THREE.MeshBasicMaterial( {color: '#544E00'} ),
                 new THREE.MeshBasicMaterial( {color: '#453A0D'} )];
+                function addText(x, y, message){
+                    var text2 = document.createElement('div');
+                    text2.style.position = 'absolute';
+                    //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+                    text2.style.width = 100;
+                    text2.style.height = 100;
+                    // text2.style.backgroundColor = "blue";
+                    
+                    text2.style.top = y + 'px';
+                    text2.style.left = x + 'px';
+                    text2.style.fontFamily = 'Optima, sans-serif';
+                    text2.style.fontSize = '200%';
+                    text2.style.color = 'whiteSmoke';
+                    document.body.appendChild(text2);
+                    text2.innerHTML = message;
+                    return(text2);
+                }
             function hat(x, y){
                 var hatcubes = []
                 for(var i = 0;i < 4;i++){
@@ -153,8 +170,8 @@
             for(var i = 0;i < 4;i++){
                 var plane = new THREE.Mesh( pgeometry, salmon );
                 plane.position.x = getRandomArbitrary(-5, 6);
-                scene.add(plane);
                 planes.push([plane, choose(["right", "left", "none"]), "none"]);
+                scene.add(plane);
                 
             }
             planes[0][0].position.y = 1;
@@ -267,8 +284,11 @@
 			camera.position.z = 5;
             camera.position.y-=2;
             total = 0;
+            var score = 0;
+            text2 = addText(10, 10, camera.position.y);
             // gravity = 0.01;
 			var render = function () {
+                text2.innerHTML = Number((score).toFixed(1))*10;
                 total-=gravity;
 				requestAnimationFrame( render );
                 // console.log(planes[0].position.y);
@@ -281,10 +301,10 @@
                         if(dir == "right"){
                             plane.position.x+=(camera.position.y+2)/1000;
                             if(myhat != "none"){
-                                for(var h = 0;h<myhat.hatcubes.length;h++){
-                                    thishat = myhat.hatcubes[h];
-                                    thishat.position.x+=(camera.position.y+2)/1000;
-                                }
+                                // for(var h = 0;h<myhat.hatcubes.length;h++){
+                                //     thishat = myhat.hatcubes[h];
+                                //     thishat.position.x+=(camera.position.y+2)/1000;
+                                // }
                             }
                             if(plane.position.x - camera.position.x >= 5){
                                 planes[i][1] = "left";
@@ -293,10 +313,10 @@
                             plane.position.x-=(camera.position.y+2)/1000;
                             if(myhat != "none"){
                                 
-                                for(var h = 0;h<myhat.hatcubes.length;h++){
-                                    thishat = myhat.hatcubes[h];
-                                    thishat.position.x-=(camera.position.y+2)/1000;
-                                }
+                                // for(var h = 0;h<myhat.hatcubes.length;h++){
+                                //     thishat = myhat.hatcubes[h];
+                                //     thishat.position.x-=(camera.position.y+2)/1000;
+                                // }
                             }
                             if(plane.position.x - camera.position.x <= -5){
                                 planes[i][1] = "right";
@@ -315,11 +335,17 @@
                         }
                         
                         if(camera.position.y - plane.position.y >= 4.75){
-                            
+                            // myhat = new hat(plane.position.x, plane.position.y+0.25);
+                            hatnum = getRandomInt(1, 100);
+                            if(hatnum == 1){
+                                myhat = new hat(plane.position.x, plane.position.y+9);
+                                planes.splice(i, 1);
+                                planes.push([plane, choose(["right", "left", "none"]), myhat]);
+                            }
                             randnum = getRandomInt(-50, 5)
                             if(randnum <= 4){
-                                randnum = getRandomInt(1, 10);
-                                if(randnum == 1){
+                                randnu = getRandomInt(1, 10);
+                                if(randnu == 1){
                                     plane.position.y+=9
                                     plane.position.x = getRandomArbitrary(camera.position.x-3, camera.position.x+4);
                                     plane.material = pink;
@@ -347,15 +373,15 @@
                 }
                 if(cubes[10].position.y - camera.position.y >= 1.5){
                     camera.position.y+=total;
-                    score = camera.position.y;
+                    score = camera.position.y+2;
                 }
                 if(cubes[10].position.y - camera.position.y <= -3.5){
                     camera.position.y+=total;
                 }
+                // camera.position.y+=total;
                 if( keyboard.pressed("space")){
                     location.reload();
                 }
-                // camera.position.y+=total;
                 if( keyboard.pressed("left") && camera.position.x <= 14){
                     for(var c = 0;c<cubes.length;c++){
                         cube = cubes[c];
