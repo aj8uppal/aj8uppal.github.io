@@ -352,6 +352,9 @@
                 if(cubes[10].position.y - camera.position.y <= -3.5){
                     camera.position.y+=total;
                 }
+                if( keyboard.pressed("space")){
+                    location.reload();
+                }
                 // camera.position.y+=total;
                 if( keyboard.pressed("left") && camera.position.x <= 14){
                     for(var c = 0;c<cubes.length;c++){
