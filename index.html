@@ -1,28 +1,3 @@
-Not shared
-General Info
-Type
-HTML
-Size
-25 KB (25,242 bytes)
-Location
-My Drive
-Owner
-me
-Modified
-11:30 am by me
-Opened
-11:30 am by me
-Created
-Mar 16
-Description
-Add a description
-Download permissions
-Prevent viewers from downloading
-3 GB used (0%)
-Buy more storage
-
-grinchjump.html
-Open with
 <html>
     <head>
     	<title>GrinchJump</title>
@@ -487,8 +462,9 @@ Open with
                     camera.position.y+=total;
                     score = camera.position.y+2;
                 }
-                if(cubes[10].position.y - camera.position.y <= -3.5){
+                if(cubes[10].position.y - camera.position.y <= -3){
                     camera.position.y+=total;
+                    window.close();
                 }
                 // camera.position.y+=total;
                 if( keyboard.pressed("space")){
@@ -541,6 +517,12 @@ Open with
 			};
 
 			render();
+			window.addEventListener("keydown", function(e) {
+			    // space and arrow keys
+			    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+			        e.preventDefault();
+			    }
+			}, false);
 		</script>
 	</body>
 </html>
