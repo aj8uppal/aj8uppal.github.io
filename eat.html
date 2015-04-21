@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <title>0: Eat or Be Eaten</title>
+
+        <style>
+
+            * {cursor: none;}
+
+            canvas, html, body, head {
+
+                background-color: #000000;
+
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <canvas id="mycanvas"></canvas>
+
+        <script>
+
+            var canvas = document.getElementById("mycanvas"),
+
+                ctx = canvas.getContext('2d'),
+
+                circles = [],
+
+                mouseX = 500,
+
+                mouseY = 500,
+
+                curDate = new Date() / 1000,
+
+		dead = false;
+
+            canvas.width = window.innerWidth-50;
+
+            canvas.height = window.innerHeight-50;
+
+            player1 = {x: mouseX, y: mouseY, color: '#FFFFFF', radius: 10};
+
+            function getRandomColor() {
+
+                return '#'+Math.floor(Math.random()*16777215).toString(16);
+
+            }
+
+            function getRandomInt(min, max) {
+
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+
+            }
+
+            function addCircle(){
+
+                circle = {x: getRandomInt(0, canvas.width - 100), y: getRandomInt(0, canvas.height - 100), color: getRandomColor(), radius: getRandomInt(player1.radius - 5, player1.radius + 10), velX: getRandomInt(-1000, 1000)/ 1000, velY: getRandomInt(-1000, 1000)/ 1000}
+
+                circles.push(circle);
+
+            }
+
+            function mouseMoved(event){
+
+                mouseX = event.clientX;
+
+                mouseY = event.clientY;
+
+            }
+
+            function update(){
+
+                nowTime = new Date() / 1000;
+
+                if(nowTime - curDate >= 0.1){
+
+                    curDate = nowTime;
+
+                    addCircle();
+
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                player1.x = mouseX;
+
+                player1.y = mouseY;
+
+		if(dead == false){
+	                for(var i = 0; i < circles.length; i++){
+	                    c = circles[i];
+			    if(c.x+c.radius < 0 || c.x-c.radius > canvas.width || c.y+c.radius < 0 || c.y-c.radius > canvas.height){
+				circles.splice(i, 1);
+				continue;
+			    }
+	
+	                    c.x+=c.velX;
+	
+	                    c.y+=c.velY;
+	
+	                    if(Math.sqrt(Math.pow(Math.abs((c.x)-(player1.x)), 2)+Math.pow(Math.abs((c.y)-(player1.y)), 2)) <= c.radius+player1.radius){
+	
+	                        if(c.radius >= player1.radius){
+	
+	                            player1.color = '#FF0000';
+				    dead = true;	
+	                        }else{
+	
+	                            circles.splice(i, 1);
+				    player1.radius+=1;
+				    document.title = (player1.radius-10)+": Eat or Be Eaten";
+	
+	                        }
+	
+	                    }	
+                    updateCircle(c);
+	
+                    }
+		}	
+                updateCircle(player1);
+                setTimeout(update, 10);
+	
+            }
+
+            function updateCircle(player){
+
+                ctx.fillStyle = player.color;
+
+                ctx.beginPath();
+
+                ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+
+                ctx.fill();
+
+            }
+
+            update();
+
+            canvas.addEventListener("mousemove", mouseMoved);
+
+        </script>
+
+    </body>
+
+</html>
+
+
