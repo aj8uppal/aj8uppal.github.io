@@ -69,6 +69,8 @@
 
             canvas.height = window.innerHeight-50;
 
+	    var paused = false;
+
             player1 = {x: mouseX, y: mouseY, color: '#FFFFFF', radius: 10};
 
             function getRandomColor() {
@@ -105,6 +107,15 @@
 		
 		moved = true;
 
+		if(dead == true){
+			location.reload();
+		}
+		if(paused == false){
+			paused = true;
+		}else{
+			paused = false;
+		}
+
 	    }
 
             function update(){
@@ -136,7 +147,7 @@
 				circles.splice(i, 1);
 				continue;
 			    }
-	
+			    if(dead == false && paused == false){
 	                    c.x+=c.velX;
 	
 	                    c.y+=c.velY;
@@ -157,6 +168,7 @@
 	                        }
 	
 	                    }	
+			    }
                     updateCircle(c);
 	
                     }
