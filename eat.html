@@ -33,13 +33,15 @@
 
                 circles = [],
 
-                mouseX = 500,
+                mouseX = (window.innerWidth-50)/2,
 
-                mouseY = 500,
+                mouseY = (window.innerHeight-50)/2,
 
                 curDate = new Date() / 1000,
 
-		dead = false;
+		dead = false,
+
+		moved = false;
 
             canvas.width = window.innerWidth-50;
 
@@ -73,13 +75,15 @@
 
                 mouseY = event.clientY;
 
+		moved = true;
+
             }
 
             function update(){
 
                 nowTime = new Date() / 1000;
 
-                if(nowTime - curDate >= 0.1){
+                if(nowTime - curDate >= 0.01){
 
                     curDate = nowTime;
 
@@ -93,7 +97,7 @@
 
                 player1.y = mouseY;
 
-		if(dead == false){
+		if(true){
 	                for(var i = 0; i < circles.length; i++){
 	                    c = circles[i];
 			    if(c.x+c.radius < 0 || c.x-c.radius > canvas.width || c.y+c.radius < 0 || c.y-c.radius > canvas.height){
@@ -140,8 +144,15 @@
                 ctx.fill();
 
             }
-
-            update();
+	    function start(){
+		updateCircle(player1);
+		if(moved == true){
+			update();
+			return
+		}
+		setTimeout(start, 10);
+	    }
+            start();
 
             canvas.addEventListener("mousemove", mouseMoved);
 
