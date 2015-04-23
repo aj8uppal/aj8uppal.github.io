@@ -27,6 +27,24 @@
 
         <script>
 
+		function addText(x, y, message){
+                    var text2 = document.createElement('div');
+                    text2.style.position = 'absolute';
+                    //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+                    text2.style.width = 100;
+                    text2.style.height = 100;
+                    // text2.style.backgroundColor = "blue";
+                    
+                    text2.style.top = y + 'px';
+                    text2.style.left = x + 'px';
+                    text2.style.fontFamily = 'Optima, sans-serif';
+                    text2.style.fontSize = '200%';
+                    text2.style.color = 'whiteSmoke';
+                    document.body.appendChild(text2);
+                    text2.innerHTML = message;
+                    return(text2);
+                }
+
             var canvas = document.getElementById("mycanvas"),
 
                 ctx = canvas.getContext('2d'),
@@ -42,6 +60,10 @@
 		dead = false,
 
 		moved = false;
+
+		score = 0,
+
+		scorelabel = addText((window.innerWidth-50)/2, (window.innerHeight-50)/2, score);
 
             canvas.width = window.innerWidth-50;
 
@@ -75,15 +97,30 @@
 
                 mouseY = event.clientY;
 
-		moved = true;
+//		moved = true;
 
             }
 
+	    function mouseClicked(event){
+		
+		moved = true;
+
+	    }
+
             function update(){
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                player1.x = mouseX;
+
+                player1.y = mouseY;
 
                 nowTime = new Date() / 1000;
 
-                if(nowTime - curDate >= 0.075){
+		if(moved == true){
+
+
+                if(nowTime - curDate >= 0.01){
 
                     curDate = nowTime;
 
@@ -91,11 +128,6 @@
 
                 }
 
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                player1.x = mouseX;
-
-                player1.y = mouseY;
 
 		if(true){
 	                for(var i = 0; i < circles.length; i++){
@@ -119,6 +151,7 @@
 	
 	                            circles.splice(i, 1);
 				    player1.radius+=1;
+				    scorelabel.innerHTML = player1.radius-10;
 				    document.title = (player1.radius-10)+": Eat or Be Eaten";
 	
 	                        }
@@ -128,6 +161,7 @@
 	
                     }
 		}	
+		}
                 updateCircle(player1);
                 setTimeout(update, 10);
 	
@@ -152,9 +186,10 @@
 		}
 		setTimeout(start, 10);
 	    }
-            start();
+            update();
 
-            canvas.addEventListener("mousemove", mouseMoved);
+            window.addEventListener("mousemove", mouseMoved);
+            window.addEventListener("mousedown", mouseClicked);
 
         </script>
 
