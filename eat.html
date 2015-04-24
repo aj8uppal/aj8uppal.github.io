@@ -26,7 +26,7 @@
         <canvas id="mycanvas"></canvas>
 
         <script>
-
+		var spawnrate = 0.075;
 		function addText(x, y, message){
                     var text2 = document.createElement('div');
                     text2.style.position = 'absolute';
@@ -74,8 +74,8 @@
             player1 = {x: mouseX, y: mouseY, color: '#FFFFFF', radius: 10};
 
             function getRandomColor() {
-
-                return '#'+Math.floor(Math.random()*16777215).toString(16);
+		return 'rgba('+getRandomInt(0, 255)+', '+getRandomInt(0, 255)+', '+getRandomInt(0, 255)+', '+1+')';
+                //return '#'+Math.floor(Math.random()*16777215).toString(16);
 
             }
 
@@ -87,7 +87,17 @@
 
             function addCircle(){
 
-                circle = {x: getRandomInt(0, canvas.width - 100), y: getRandomInt(0, canvas.height - 100), color: getRandomColor(), radius: getRandomInt(player1.radius - 5, player1.radius + 10), velX: getRandomInt(-1000, 1000)/ 1000, velY: getRandomInt(-1000, 1000)/ 1000}
+		randrad = getRandomInt(player1.radius - 5, player1.radius + 10);
+		randx = getRandomInt(0, canvas.width-randrad)
+		randy = getRandomInt(0, canvas.height-randrad)
+		while(Math.sqrt(Math.pow(Math.abs(randx - player1.x), 2)+Math.pow(Math.abs(randy - player1.y), 2)) <= 250){
+			randx = getRandomInt(0, canvas.width-randrad);
+			randy = getRandomInt(0, canvas.height-randrad);
+		}/*
+		while(Math.abs(randy - player1.y) <= 100){
+			randy = getRandomInt(0, canvas.height-randrad);
+		}*/
+                circle = {x: randx, y: randy, color: getRandomColor(), radius: randrad, velX: getRandomInt(-1000, 1000)/ 1000, velY: getRandomInt(-1000, 1000)/ 1000}
 
                 circles.push(circle);
 
@@ -131,7 +141,7 @@
 		if(moved == true){
 
 
-                if(nowTime - curDate >= 0.075){
+                if(nowTime - curDate >= spawnrate){
 
                     curDate = nowTime;
 
@@ -147,7 +157,7 @@
 				circles.splice(i, 1);
 				continue;
 			    }
-			    if(dead == false && paused == false){
+			    if(dead == false){
 	                    c.x+=c.velX;
 	
 	                    c.y+=c.velY;
@@ -168,6 +178,10 @@
 	                        }
 	
 	                    }	
+			    }
+			    else{
+				col = c.color;
+			//	c.color = 
 			    }
                     updateCircle(c);
 	
