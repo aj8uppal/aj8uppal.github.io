@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <title>Survival</title>
+
+        <style>
+
+            * {cursor: none;}
+
+            canvas, html, body, head {
+
+                background-color: #000000;
+
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <canvas id="mycanvas"></canvas>
+
+        <script>
+		var spawnrate = 0.0075;
+		function addText(x, y, message){
+                    var text2 = document.createElement('div');
+                    text2.style.position = 'absolute';
+                    //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+                    text2.style.width = 100;
+                    text2.style.height = 100;
+                    // text2.style.backgroundColor = "blue";
+                    
+                    text2.style.top = y + 'px';
+                    text2.style.left = x + 'px';
+                    text2.style.fontFamily = 'Optima, sans-serif';
+                    text2.style.fontSize = '200%';
+                    text2.style.color = 'whiteSmoke';
+                    document.body.appendChild(text2);
+                    text2.innerHTML = message;
+                    return(text2);
+                }
+
+            var canvas = document.getElementById("mycanvas"),
+
+                ctx = canvas.getContext('2d'),
+
+                circles = [],
+
+                mouseX = (window.innerWidth-25)/2,
+
+                mouseY = (window.innerHeight-25)/2,
+
+                curDate = new Date() / 1000,
+
+		scoreDate = 0,
+
+		dead = false,
+
+		moved = false;
+
+		score = 0,
+
+		scorelabel = addText((window.innerWidth-50)/2, (window.innerHeight-50)/2, score);
+
+            canvas.width = window.innerWidth-25;
+
+            canvas.height = window.innerHeight-25;
+
+	    var paused = false;
+
+
+	    function color(args){
+		if(args[0] == "random"){
+	    		this.r = getRandomInt(0, 255);
+	    		this.g = getRandomInt(0, 255);
+    			this.b = getRandomInt(0, 255);
+		}else{
+			this.r = args[0];
+			this.g = args[1];
+			this.b = args[2];
+		}
+    		this.a = 1;
+    		this.getColor = function (){
+		    return 'rgba('+this.r+', '+this.g+', '+this.b+', '+this.a+')';
+		}
+	    }
+
+            player1 = {x: mouseX, y: mouseY, color: new color([255, 255, 255]), radius: 10};
+
+            function getRandomColor() {
+		return 'rgba('+getRandomInt(0, 255)+', '+getRandomInt(0, 255)+', '+getRandomInt(0, 255)+', '+1+')';
+                //return '#'+Math.floor(Math.random()*16777215).toString(16);
+
+            }
+
+            function getRandomInt(min, max) {
+
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+
+            }
+
+            function addCircle(){
+
+		randrad = getRandomInt(player1.radius - 5, player1.radius + 10);
+		randx = getRandomInt(0, canvas.width-randrad)
+		randy = getRandomInt(0, canvas.height-randrad)
+		while(Math.sqrt(Math.pow(Math.abs(randx - player1.x), 2)+Math.pow(Math.abs(randy - player1.y), 2)) <= 250){
+			randx = getRandomInt(0, canvas.width-randrad);
+			randy = getRandomInt(0, canvas.height-randrad);
+		}/*
+		while(Math.abs(randy - player1.y) <= 100){
+			randy = getRandomInt(0, canvas.height-randrad);
+		}*/
+                circle = {x: randx, y: randy, radius: randrad, velX: getRandomInt(-1000, 1000)/ 1000, velY: getRandomInt(-1000, 1000)/ 1000}
+
+                circles.push([circle, new color(["random"])]);
+
+            }
+
+            function mouseMoved(event){
+
+                mouseX = event.clientX;
+
+                mouseY = event.clientY;
+
+//		moved = true;
+
+            }
+
+	    function mouseClicked(event){
+		
+		moved = true;
+
+		if(dead == true){
+			location.reload();
+		}
+		if(paused == false){
+			paused = true;
+		}else{
+			paused = false;
+		}
+
+	    }
+
+            function update(){
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                player1.x = mouseX;
+
+                player1.y = mouseY;
+
+                nowTime = new Date() / 1000;
+
+		if(moved == true){
+
+
+		if(scoreDate == 0){
+			scoreDate = new Date() / 1000;
+		}
+
+
+                if(nowTime - curDate >= spawnrate && dead == false){
+
+                    curDate = nowTime;
+
+                    addCircle();
+
+                }
+		if(dead == false){
+			scorelabel.innerHTML = Number(nowTime - scoreDate).toFixed(2);
+		}
+		if(true){
+	                for(var i = 0; i < circles.length; i++){
+	                    c = circles[i][0];
+			    if(c.x+c.radius < 0 || c.x-c.radius > canvas.width || c.y+c.radius < 0 || c.y-c.radius > canvas.height){
+				circles.splice(i, 1);
+				continue;
+			    }
+			    if(dead == false){
+		                    c.x+=c.velX;
+	
+		                    c.y+=c.velY;
+	
+		                    if(Math.sqrt(Math.pow(Math.abs((c.x)-(player1.x)), 2)+Math.pow(Math.abs((c.y)-(player1.y)), 2)) <= c.radius+player1.radius){
+					    dead = true;	
+/*		                            circles.splice(i, 1);
+					    player1.radius+=1;*/
+		
+		                    }	
+			    }else{
+				col = circles[i][1];
+				if(col.a > 0){
+					col.a-=0.005;
+				}
+				if(col.a < 0){
+					circles.splice(i, 1);
+				}
+			    }
+                    	    updateCircle(circles[i]);
+                    	}
+		}	
+		}
+		if(dead == true){
+			if(player1.color.a > 0){
+				player1.color.a -= 0.005;
+			}
+		}
+                updatePlayer(player1);
+                setTimeout(update, 10);
+	
+            }
+
+	    function updateCircle(circ){
+		if(!circ){
+			return;
+		}
+
+		player = circ[0];	
+		col = circ[1].getColor();
+
+		ctx.fillStyle = col;
+
+		ctx.beginPath();
+		
+		ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+
+                ctx.fill();
+		
+	    }
+            function updatePlayer(player){
+
+                ctx.fillStyle = player.color.getColor();
+
+                ctx.beginPath();
+
+                ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+
+                ctx.fill();
+
+            }
+	    function start(){
+		updateCircle(player1);
+		if(moved == true){
+			update();
+			return
+		}
+		setTimeout(start, 10);
+	    }
+            update();
+
+            window.addEventListener("mousemove", mouseMoved);
+            window.addEventListener("mousedown", mouseClicked);
+
+        </script>
+
+    </body>
+
+</html>
+
+
