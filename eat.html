@@ -51,9 +51,9 @@
 
                 circles = [],
 
-                mouseX = (window.innerWidth-50)/2,
+                mouseX = (window.innerWidth-25)/2,
 
-                mouseY = (window.innerHeight-50)/2,
+                mouseY = (window.innerHeight-25)/2,
 
                 curDate = new Date() / 1000,
 
@@ -65,13 +65,30 @@
 
 		scorelabel = addText((window.innerWidth-50)/2, (window.innerHeight-50)/2, score);
 
-            canvas.width = window.innerWidth-50;
+            canvas.width = window.innerWidth-25;
 
-            canvas.height = window.innerHeight-50;
+            canvas.height = window.innerHeight-25;
 
 	    var paused = false;
 
-            player1 = {x: mouseX, y: mouseY, color: '#FFFFFF', radius: 10};
+
+	    function color(args){
+		if(args[0] == "random"){
+	    		this.r = getRandomInt(0, 255);
+	    		this.g = getRandomInt(0, 255);
+    			this.b = getRandomInt(0, 255);
+		}else{
+			this.r = args[0];
+			this.g = args[1];
+			this.b = args[2];
+		}
+    		this.a = 1;
+    		this.getColor = function (){
+		    return 'rgba('+this.r+', '+this.g+', '+this.b+', '+this.a+')';
+		}
+	    }
+
+            player1 = {x: mouseX, y: mouseY, color: new color([255, 255, 255]), radius: 10};
 
             function getRandomColor() {
 		return 'rgba('+getRandomInt(0, 255)+', '+getRandomInt(0, 255)+', '+getRandomInt(0, 255)+', '+1+')';
@@ -97,9 +114,9 @@
 		while(Math.abs(randy - player1.y) <= 100){
 			randy = getRandomInt(0, canvas.height-randrad);
 		}*/
-                circle = {x: randx, y: randy, color: getRandomColor(), radius: randrad, velX: getRandomInt(-1000, 1000)/ 1000, velY: getRandomInt(-1000, 1000)/ 1000}
+                circle = {x: randx, y: randy, radius: randrad, velX: getRandomInt(-1000, 1000)/ 1000, velY: getRandomInt(-1000, 1000)/ 1000}
 
-                circles.push(circle);
+                circles.push([circle, new color(["random"])]);
 
             }
 
@@ -141,7 +158,7 @@
 		if(moved == true){
 
 
-                if(nowTime - curDate >= spawnrate){
+                if(nowTime - curDate >= spawnrate && dead == false){
 
                     curDate = nowTime;
 
@@ -152,50 +169,72 @@
 
 		if(true){
 	                for(var i = 0; i < circles.length; i++){
-	                    c = circles[i];
+	                    c = circles[i][0];
 			    if(c.x+c.radius < 0 || c.x-c.radius > canvas.width || c.y+c.radius < 0 || c.y-c.radius > canvas.height){
 				circles.splice(i, 1);
 				continue;
 			    }
 			    if(dead == false){
-	                    c.x+=c.velX;
+		                    c.x+=c.velX;
 	
-	                    c.y+=c.velY;
+		                    c.y+=c.velY;
 	
-	                    if(Math.sqrt(Math.pow(Math.abs((c.x)-(player1.x)), 2)+Math.pow(Math.abs((c.y)-(player1.y)), 2)) <= c.radius+player1.radius){
+		                    if(Math.sqrt(Math.pow(Math.abs((c.x)-(player1.x)), 2)+Math.pow(Math.abs((c.y)-(player1.y)), 2)) <= c.radius+player1.radius){
 	
-	                        if(c.radius >= player1.radius){
+		                        if(c.radius >= player1.radius){
 	
-	                            player1.color = '#FF0000';
-				    dead = true;	
-	                        }else{
+//		                            player;
+					    dead = true;	
+		                        }else{
 	
-	                            circles.splice(i, 1);
-				    player1.radius+=1;
-				    scorelabel.innerHTML = player1.radius-10;
-				    document.title = (player1.radius-10)+": Eat or Be Eaten";
-	
-	                        }
-	
-	                    }	
+		                            circles.splice(i, 1);
+					    player1.radius+=1;
+					    scorelabel.innerHTML = player1.radius-10;
+					    document.title = (player1.radius-10)+": Eat or Be Eaten";
+		
+		                        }
+		
+		                    }	
+			    }else{
+				col = circles[i][1];
+				if(col.a > 0){
+					col.a-=0.005;
+				}
+				if(col.a < 0){
+					circles.splice(i, 1);
+				}
 			    }
-			    else{
-				col = c.color;
-			//	c.color = 
-			    }
-                    updateCircle(c);
-	
-                    }
+                    	    updateCircle(circles[i]);
+                    	}
 		}	
 		}
-                updateCircle(player1);
+		if(dead == true){
+			if(player1.color.a > 0){
+				player1.color.a -= 0.005;
+			}
+		}
+                updatePlayer(player1);
                 setTimeout(update, 10);
 	
             }
 
-            function updateCircle(player){
+	    function updateCircle(circ){
+		player = circ[0];
 
-                ctx.fillStyle = player.color;
+		col = circ[1].getColor();
+
+		ctx.fillStyle = col;
+
+		ctx.beginPath();
+		
+		ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+
+                ctx.fill();
+		
+	    }
+            function updatePlayer(player){
+
+                ctx.fillStyle = player.color.getColor();
 
                 ctx.beginPath();
 
