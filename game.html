@@ -43,6 +43,8 @@
         <canvas id="mycanvas"></canvas>
 
         <script>
+		var cspeed = 0.001;
+		var rspeed = 0.005;
 		var range = 1;
 		var spawnrate = 0.0075;
 		var ratespawn = 0.0075;
@@ -172,7 +174,7 @@
 	//eat.html
 //	var startTime = new Date() / 1000;
 	function update2(){
-		range+=0.001
+		range+=1+(player1.radius)/250;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 player1.x = mouseX;
@@ -261,7 +263,8 @@
             }
 	    //survival.html
             function update(){
-		range+=0.001;
+//		cradius+=rspeed;
+		range=cspeed;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 player1.x = mouseX;
@@ -288,7 +291,7 @@
 
                 }
 		if(sizeTime - sizeDate >= ratespawn && dead == false){
-//		    cradius+=0.035;
+		    cradius+=0.035;
 		}
 		if(dead == false){
 			scorelabel.innerHTML = Number(nowTime - scoreDate).toFixed(2);
