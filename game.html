@@ -43,6 +43,7 @@
         <canvas id="mycanvas"></canvas>
 
         <script>
+		var range = 1;
 		var spawnrate = 0.0075;
 		var ratespawn = 0.0075;
 		var spawnrate2 = 0.075;
@@ -138,7 +139,7 @@
 		while(Math.abs(randy - player1.y) <= 100){
 			randy = getRandomInt(0, canvas.height-randrad);
 		}*/
-                circle = {x: randx, y: randy, radius: randrad, velX: getRandomInt(-1000, 1000)/ 1000, velY: getRandomInt(-1000, 1000)/ 1000}
+                circle = {x: randx, y: randy, radius: randrad, velX: getRandomInt(-1000*range, 1000*range)/ 1000, velY: getRandomInt(-1000*range, 1000*range)/ 1000}
 
                 circles.push([circle, new color(["random"])]);
 
@@ -168,9 +169,10 @@
 		}
 
 	    }
-
+	//eat.html
+//	var startTime = new Date() / 1000;
 	function update2(){
-
+		range+=0.001
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 player1.x = mouseX;
@@ -257,9 +259,9 @@
                 setTimeout(update2, 10);
 	
             }
-
+	    //survival.html
             function update(){
-
+		range+=0.001;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 player1.x = mouseX;
@@ -268,7 +270,7 @@
 
                 nowTime = new Date() / 1000;
                 sizeTime = new Date() / 1000;
-
+//		range = 2.5;
 		if(moved == true){
 
 
@@ -312,7 +314,7 @@
 			    }else{
 				col = circles[i][1];
 				if(col.a > 0){
-					col.a-=0.01;
+					col.a-=0.025;
 				}
 				if(col.a < 0){
 					circles.splice(i, 1);
