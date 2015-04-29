@@ -1,0 +1,520 @@
+
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <title>Circle</title>
+
+        <style>
+
+            * {cursor: none;}
+
+            canvas, html, body, head {
+
+                background-color: #000000;
+
+            }
+	.choice {
+	    font-family: "Helvetica";
+	    font-size: 25px;
+	    border-radius: 25px;
+	    border: 2px solid rgb(255, 255, 255);
+	    padding: 20px; 
+	    width: 200px;
+	    height: 150px;    
+	    text-align: center;
+	    position: absolute;
+	    display: flex;
+	    justify-content:center;
+	    align-content:center;
+	    flex-direction:column; /* column | row */
+	    vertical-align: middle;
+	    color: rgb(255, 255, 255);
+	}
+        </style>
+
+    </head>
+
+    <body>
+	<div class="choice" id="survival" onmouseover="ishovering('survival')" onmouseout="isnothovering('survival')">Survival</div>
+<div class="choice" id="normal" onmouseover="ishovering('normal')" onmouseout="isnothovering('normal')">Normal</div>
+        <canvas id="mycanvas"></canvas>
+
+        <script>
+		var spawnrate = 0.0075;
+		var ratespawn = 0.0075;
+		var spawnrate2 = 0.075;
+		var cradius = 10;
+		function addText(x, y, message){
+                    var text2 = document.createElement('div');
+                    text2.style.position = 'absolute';
+                    //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+                    text2.style.width = 100;
+                    text2.style.height = 100;
+                    // text2.style.backgroundColor = "blue";
+                    
+                    text2.style.top = y + 'px';
+                    text2.style.left = x + 'px';
+                    text2.style.fontFamily = 'Optima, sans-serif';
+                    text2.style.fontSize = '200%';
+                    text2.style.color = 'whiteSmoke';
+                    document.body.appendChild(text2);
+                    text2.innerHTML = message;
+                    return(text2);
+                }
+
+            var canvas = document.getElementById("mycanvas"),
+
+                ctx = canvas.getContext('2d'),
+
+                circles = [],
+
+                mouseX = (window.innerWidth-25)/2,
+
+                mouseY = (window.innerHeight-25)/2,
+
+                curDate = new Date() / 1000,
+
+                sizeDate = new Date() / 1000,
+
+		scoreDate = 0,
+
+		dead = false,
+
+		moved = false;
+
+		score = 0,
+
+		scorelabel = addText((window.innerWidth-50)/2, (window.innerHeight-50)/2, score);
+
+            canvas.width = window.innerWidth-25;
+
+            canvas.height = window.innerHeight-25;
+
+	    var paused = false;
+
+
+	    function color(args){
+		if(args[0] == "random"){
+	    		this.r = getRandomInt(0, 255);
+	    		this.g = getRandomInt(0, 255);
+    			this.b = getRandomInt(0, 255);
+		}else{
+			this.r = args[0];
+			this.g = args[1];
+			this.b = args[2];
+		}
+    		this.a = 1;
+    		this.getColor = function (){
+		    return 'rgba('+this.r+', '+this.g+', '+this.b+', '+this.a+')';
+		}
+	    }
+
+            player1 = {x: mouseX, y: mouseY, color: new color([255, 255, 255]), radius: 10};
+
+            function getRandomColor() {
+		return 'rgba('+getRandomInt(0, 255)+', '+getRandomInt(0, 255)+', '+getRandomInt(0, 255)+', '+1+')';
+                //return '#'+Math.floor(Math.random()*16777215).toString(16);
+
+            }
+
+            function getRandomInt(min, max) {
+
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+
+            }
+
+            function addCircle(){
+
+		randrad = getRandomInt(cradius - 5, cradius + 10);
+		randx = getRandomInt(0, canvas.width-randrad)
+		randy = getRandomInt(0, canvas.height-randrad)
+		while(Math.sqrt(Math.pow(Math.abs(randx - player1.x), 2)+Math.pow(Math.abs(randy - player1.y), 2)) <= 250){
+			randx = getRandomInt(0, canvas.width-randrad);
+			randy = getRandomInt(0, canvas.height-randrad);
+		}/*
+		while(Math.abs(randy - player1.y) <= 100){
+			randy = getRandomInt(0, canvas.height-randrad);
+		}*/
+                circle = {x: randx, y: randy, radius: randrad, velX: getRandomInt(-1000, 1000)/ 1000, velY: getRandomInt(-1000, 1000)/ 1000}
+
+                circles.push([circle, new color(["random"])]);
+
+            }
+
+            function mouseMoved(event){
+
+                mouseX = event.clientX;
+
+                mouseY = event.clientY;
+
+//		moved = true;
+
+            }
+
+	    function mouseClicked(event){
+		
+		moved = true;
+
+		if(dead == true){
+			location.reload();
+		}
+		if(paused == false){
+			paused = true;
+		}else{
+			paused = false;
+		}
+
+	    }
+
+	function update2(){
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                player1.x = mouseX;
+
+                player1.y = mouseY;
+
+                nowTime = new Date() / 1000;
+
+		if(moved == true){
+
+
+                if(nowTime - curDate >= spawnrate2 && dead == false){
+
+                    curDate = nowTime;
+
+                    addCircle();
+
+                }
+
+
+		if(true){
+	                for(var i = 0; i < circles.length; i++){
+	                    c = circles[i][0];
+			    if(c.x+c.radius < 0 || c.x-c.radius > canvas.width || c.y+c.radius < 0 || c.y-c.radius > canvas.height){
+				circles.splice(i, 1);
+				continue;
+			    }
+			    if(dead == false){
+		                    c.x+=c.velX;
+	
+		                    c.y+=c.velY;
+	
+		                    if(Math.sqrt(Math.pow(Math.abs((c.x)-(player1.x)), 2)+Math.pow(Math.abs((c.y)-(player1.y)), 2)) <= c.radius+player1.radius){
+	
+		                        if(c.radius >= player1.radius){
+	
+//		                            player;
+					    dead = true;
+					    document.title = "Circle";	
+					    moved = true;
+					    setTimeout(location.reload, 1500);
+		                        }else{
+	
+		                            circles.splice(i, 1);
+					    cradius+=1;
+					    player1.radius+=1;
+					    scorelabel.innerHTML = player1.radius-10;
+					    document.title = (player1.radius-10)+": Eat or Be Eaten";
+		
+		                        }
+		
+		                    }	
+			    }else{
+				col = circles[i][1];
+				if(col.a > 0){
+					col.a-=0.01;
+				}
+				if(col.a < 0){
+					circles.splice(i, 1);
+				}
+				if(circles.length == 0){
+					n.style.opacity = "1";
+					s.style.opacity = "1";
+					scorelabel.innerHTML = "0";
+					started = false;
+					player1.color.a = 1;
+					update1();
+				}
+			    }
+                    	    updateCircle(circles[i]);
+                    	}
+		}	
+		}
+		if(dead == true){
+			if(player1.color.a > 0){
+				player1.color.a -= 0.01;
+			}
+			else{
+//				dead = false;
+				location.reload();
+			}
+		}
+                updatePlayer(player1);
+                setTimeout(update2, 10);
+	
+            }
+
+            function update(){
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                player1.x = mouseX;
+
+                player1.y = mouseY;
+
+                nowTime = new Date() / 1000;
+                sizeTime = new Date() / 1000;
+
+		if(moved == true){
+
+
+		if(scoreDate == 0){
+			scoreDate = new Date() / 1000;
+		}
+
+
+                if(nowTime - curDate >= spawnrate && dead == false){
+
+                    curDate = nowTime;
+
+                    addCircle();
+                    addCircle();
+
+                }
+		if(sizeTime - sizeDate >= ratespawn && dead == false){
+//		    cradius+=0.035;
+		}
+		if(dead == false){
+			scorelabel.innerHTML = Number(nowTime - scoreDate).toFixed(2);
+		}
+		if(true){
+	                for(var i = 0; i < circles.length; i++){
+	                    c = circles[i][0];
+			    if(c.x+c.radius < 0 || c.x-c.radius > canvas.width || c.y+c.radius < 0 || c.y-c.radius > canvas.height){
+				circles.splice(i, 1);
+				continue;
+			    }
+			    if(dead == false){
+		                    c.x+=c.velX;
+	
+		                    c.y+=c.velY;
+	
+		                    if(Math.sqrt(Math.pow(Math.abs((c.x)-(player1.x)), 2)+Math.pow(Math.abs((c.y)-(player1.y)), 2)) <= c.radius+player1.radius){
+					    dead = true;	
+/*		                            circles.splice(i, 1);
+					    player1.radius+=1;*/
+		
+		                    }	
+			    }else{
+				col = circles[i][1];
+				if(col.a > 0){
+					col.a-=0.01;
+				}
+				if(col.a < 0){
+					circles.splice(i, 1);
+				}
+				if(circles.length == 0){
+					n.style.opacity = "1";
+					s.style.opacity = "1";
+					scorelabel.innerHTML = "0";
+					document.title = "Circle";	
+					moved = true;
+					setTimeout(location.reload, 1500);
+					started = false;
+					player1.color.a = 1;
+					update1();
+				}
+			    }
+                    	    updateCircle(circles[i]);
+                    	}
+		}	
+		}
+		if(dead == true){
+			if(player1.color.a > 0){
+				player1.color.a -= 0.01;
+			}else{
+//				dead = false;
+				location.reload();
+			}
+		}
+                updatePlayer(player1);
+                setTimeout(update, 10);
+	
+            }
+
+	    function updateCircle(circ){
+		if(!circ){
+			return;
+		}
+
+		player = circ[0];	
+		col = circ[1].getColor();
+
+		ctx.fillStyle = col;
+
+		ctx.beginPath();
+		
+		ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+
+                ctx.fill();
+		
+	    }
+            function updatePlayer(player){
+
+                ctx.fillStyle = player.color.getColor();
+
+                ctx.beginPath();
+
+                ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+
+                ctx.fill();
+
+            }
+	    function start(){
+		updateCircle(player1);
+		if(moved == true){
+			update();
+			return
+		}
+		setTimeout(start, 10);
+	    }
+	var shover = false,
+	    nhover = false,
+	    isclicked = false;
+	function ishovering(id){
+		if(id == "survival"){
+			shover = true;
+		}
+		else{
+			nhover = true;
+		}
+	}
+	function isnothovering(id){
+		if(id == "survival"){
+			shover = false;
+		}
+		else{
+			nhover = false;
+		}
+	}
+	var svar;
+	function disappear(){
+		s = document.getElementById("survival");
+		n = document.getElementById("normal");
+		so = parseFloat(s.style.opacity);
+		no = parseFloat(n.style.opacity);
+		if(so >= 0){
+			so-=0.05;
+			no-=0.05;
+		}
+		if(so <= 0.05){
+			s.style.opacity = "0";
+			n.style.opacity = "0";
+		}
+		if(so <= 0.05){
+			if(svar == true){
+				update();
+				return "";
+			}
+			if(svar == false){
+				update2();
+				return "";
+			}
+		}else{
+			setTimeout(disappear, 15);
+			s.style.opacity = so;
+			n.style.opacity = no;
+		}
+	}
+	var started = false;
+	document.getElementById("survival").onclick = function(){started=true;svar=true;disappear();this.style.opacity=1;document.getElementById("normal").style.opacity=1};
+	document.getElementById("normal").onclick = function(){started=true;svar=false;disappear();this.style.opacity=1;document.getElementById("survival").style.opacity=1};
+	function update1(){
+		if(!started){
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+	                player1.x = mouseX;
+	                player1.y = mouseY;
+			updatePlayer(player1);
+		}
+		if(shover){
+			if(document.getElementById("survival").style.backgroundColor != "rgb(255, 255, 255)"){
+				col = document.getElementById("survival").style.backgroundColor;
+				vals = col.slice(4, col.length-1).split(',');
+				r = parseInt(vals[0])+6, g = parseInt(vals[1])+6, b = parseInt(vals[2])+6;
+				document.getElementById("survival").style.backgroundColor = "rgb("+r+", "+g+", "+b+")";
+			}
+			if(document.getElementById("survival").style.color != "rgb(0, 0, 0)"){
+				col = document.getElementById("survival").style.color;
+				vals = col.slice(4, col.length-1).split(',');
+				r = parseInt(vals[0])-6, g = parseInt(vals[1])-6, b = parseInt(vals[2])-6;
+				document.getElementById("survival").style.color = "rgb("+r+", "+g+", "+b+")";
+			}
+		}else{
+			if(document.getElementById("survival").style.backgroundColor != "rgb(0, 0, 0)"){
+                                col = document.getElementById("survival").style.backgroundColor;
+                                vals = col.slice(4, col.length-1).split(',');
+                                r = parseInt(vals[0])-6, g = parseInt(vals[1])-6, b = parseInt(vals[2])-6;
+                                document.getElementById("survival").style.backgroundColor = "rgb("+r+", "+g+", "+b+")";
+                        }
+			if(document.getElementById("survival").style.color != "rgb(255, 255, 255)"){
+				col = document.getElementById("survival").style.color;
+				vals = col.slice(4, col.length-1).split(',');
+				r = parseInt(vals[0])+6, g = parseInt(vals[1])+6, b = parseInt(vals[2])+6;
+				document.getElementById("survival").style.color = "rgb("+r+", "+g+", "+b+")";
+			}
+		}
+		if(nhover){
+			if(document.getElementById("normal").style.backgroundColor != "rgb(255, 255, 255)"){
+				col = document.getElementById("normal").style.backgroundColor;
+				vals = col.slice(4, col.length-1).split(',');
+				r = parseInt(vals[0])+6, g = parseInt(vals[1])+6, b = parseInt(vals[2])+6;
+				document.getElementById("normal").style.backgroundColor = "rgb("+r+", "+g+", "+b+")";
+			}
+			if(document.getElementById("normal").style.color != "rgb(0, 0, 0)"){
+				col = document.getElementById("normal").style.color;
+				vals = col.slice(4, col.length-1).split(',');
+				r = parseInt(vals[0])-6, g = parseInt(vals[1])-6, b = parseInt(vals[2])-6;
+				document.getElementById("normal").style.color = "rgb("+r+", "+g+", "+b+")";
+			}
+		}else{
+			if(document.getElementById("normal").style.backgroundColor != "rgb(0, 0, 0)"){
+                                col = document.getElementById("normal").style.backgroundColor;
+                                vals = col.slice(4, col.length-1).split(',');
+                                r = parseInt(vals[0])-6, g = parseInt(vals[1])-6, b = parseInt(vals[2])-6;
+                                document.getElementById("normal").style.backgroundColor = "rgb("+r+", "+g+", "+b+")";
+                        }
+			if(document.getElementById("normal").style.color != "rgb(255, 255, 255)"){
+				col = document.getElementById("normal").style.color;
+				vals = col.slice(4, col.length-1).split(',');
+				r = parseInt(vals[0])+6, g = parseInt(vals[1])+6, b = parseInt(vals[2])+6;
+				document.getElementById("normal").style.color = "rgb("+r+", "+g+", "+b+")";
+			}
+		}
+		setTimeout(update1, 15);
+	}
+	document.getElementById("survival").style.backgroundColor = "rgb(0, 0, 0)";
+	document.getElementById("normal").style.backgroundColor = "rgb(0, 0, 0)";
+	document.getElementById("survival").style.color = "rgb(255, 255, 255)";
+	document.getElementById("normal").style.color = "rgb(255, 255, 255)";
+	document.getElementById("survival").style.top = screen.height/2 - document.getElementById("survival").clientHeight + "px";
+	document.getElementById("normal").style.top = screen.height/2 - document.getElementById("normal").clientHeight + "px";
+	document.getElementById("survival").style.left = screen.width/2 - document.getElementById("survival").clientWidth*3/2 + "px";
+//	document.getElementById("normal").style.left = screen.width/2 + document.getElementById("normal").clientWidth/2 + "px";
+	document.getElementById("normal").style.right = screen.width/2 - document.getElementById("survival").clientWidth*3/2 + "px";
+	update1();
+//            update();
+
+            window.addEventListener("mousemove", mouseMoved);
+            window.addEventListener("mousedown", mouseClicked);
+
+        </script>
+
+    </body>
+
+</html>
+
+
