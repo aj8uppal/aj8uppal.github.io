@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
+                <style>
+                        body {
+                                padding: 25px;
+                        }
+                          @import url(http://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css);
+  body{
+                background: #ECECEC;
+                margin:0px ;
+                color:#333;
+        }
+        a.button{
+/*              float: left;*/
+                display: inline-block;
+                background: #ECECEC;
+                border-radius: 15px;
+                padding: 10px 20px;
+/*              display: block;*/
+                font-family: arial;
+                font-weight: bold;
+                color:#7f7f7f;
+                text-decoration: none;
+                text-shadow:0px 1px 0px #fff;
+                border:1px solid #a7a7a7;
+                width: 145px;
+                margin:0px auto;
+                margin-top:15px;
+                box-shadow: 0px 2px 1px white inset, 0px -2px 8px white, 0px 2px 5px rgba(0, 0, 0, 0.1), 0px 8px 10px rgba(0, 0, 0, 0.1);
+                -webkit-transition:box-shadow 0.5s;
+        }
+        a.button i{
+                float: right;
+                margin-top: 2px;
+        }
+        a.button:hover{
+                box-shadow: 0px 2px 1px white inset, 0px -2px 20px white, 0px 2px 5px rgba(0, 0, 0, 0.1), 0px 8px 10px rgba(0, 0, 0, 0.1);
+        }
+        a.button:active{
+                box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5) inset, 0px -2px 20px white, 0px 1px 5px rgba(0, 0, 0, 0.1), 0px 2px 10px rgba(0, 0, 0, 0.1);
+                background:-webkit-linear-gradient(top, #d1d1d1 0%,#ECECEC 100%);
+        }
+/*                      .foo {
+                          float: left;
+                          align: center;
+                        }*/
+                        input[type="text"] {
+                          background: #ECECEC;
+                          display: inline-block;
+                          margin: 0;
+/*                        width: 100%;*/
+                          font-family: sans-serif;
+                          font-size: 18px;
+                          appearance: none;
+                          box-shadow: none;
+                          border-radius: none;
+                          float: left;
+                        }
+                        input[type="text"]:focus {
+                          outline: none;
+                        }
+                        input[type="text"] {
+                          padding: 10px;
+                          border: solid 1px #dcdcdc;
+                          transition: box-shadow 0.3s, border 0.3s;
+                        }
+                        input[type="text"]:focus,
+                        input[type="text"].focus {
+                          border: solid 1px #707070;
+                          box-shadow: 0 0 5px 1px #969696;
+                        }
+                </style>
+        </head>
+        <body onload="FocusOnInput()">
+                <center>
+                <div class="foo" style="">
+                        <input type="text" id="mean" style="width: 31%;text-align:center" placeholder="Enter mean:">
+                        <input type="text" id="stdev" style="width: 31%;text-align:center" placeholder="Enter standard deviation:">
+                        <input type="text" id="reps" style="width: 31%;text-align:center" placeholder="Enter repetitions:">
+                </div>
+                <div class="foo" style="">
+                        <input type="text" id="mean2" style="width: 31%;text-align:center" placeholder="Enter mean:">
+                        <input type="text" id="stdev2" style="width: 31%;text-align:center" placeholder="Enter standard deviation:">
+                        <input type="text" id="reps2" style="width: 31%;text-align:center" placeholder="Enter repetitions:">
+                </div>
+<!--            <input type="text" id="nums" style="width:100%;text-align:center" onkeypress="handle(event)" readonly>--><br>
+                <a href="#" class="button" onclick="calculate()">Submit</a>
+                <a href="#" class="button" onclick="location=location.pathname">Clear</a>
+<!--            <input type="submit" onclick="calculate()" style="width:20%">
+                <input type="submit" onclick="location=location.pathname" style="width:20%" value="Clear">-->
+<br>            <canvas id="myChart" width="1280" height="400"></canvas>
+                </center>
+                <!--<canvas id="canvas"></canvas>-->
+                <script>
+                        var vars = [];
+                        var args = location.search.substring(1).split("&"); //max, reps
+                        if(args.length > 0){
+                                if(args[0].length > 0){
+                                        for(var a = 0; a < args.length; a++){
+                                                arg = args[a].split('=');
+                                                eval("var "+arg[0]+" = "+decodeURI(arg[1]));
+                                                vars.push([arg[0], eval(arg[0])]);
+                                        }
+                                }
+                        }
+                        names = vars.map(function(x){return x[0]})
+                        if(names.indexOf("reps") > -1){
+                                document.getElementById("reps").value = reps;
+                        }
+                        if(names.indexOf("mean") > -1){
+                                document.getElementById("mean").value = mean;
+                        }
+                        if(names.indexOf("stdev") > -1){
+                                document.getElementById("stdev").value = stdev;
+                        }
+                        if(names.indexOf("reps2") > -1){
+                                document.getElementById("reps2").value = reps2;
+                        }
+                        if(names.indexOf("mean2") > -1){
+                                document.getElementById("mean2").value = mean2;
+                        }
+                        if(names.indexOf("stdev2") > -1){
+                                document.getElementById("stdev2").value = stdev2;
+                        }
+                        var calculated = false;
+                        function FocusOnInput()
+                        {
+                             document.getElementById("mean").focus();
+                        }
+/*                      var randSet = [];
+                        var max = 100;
+                        for(var i = 0; i < 100; i ++){
+                                randSet.push(Math.ceil(Math.random()*max));
+                        }
+                        labels = [];
+                        for(var n=1;n<=max;n++){
+                                labels.push(n);
+                        }*/
+//                      document.getElementById("nums").value = randSet.map(function(x){return x.toString()}).join(',');
+                        Array.prototype.Mmin = function(comparer) {
+
+                        if (this.length === 0) return null;
+                        if (this.length === 1) return this[0];
+
+                        comparer = (comparer || Math.min);
+
+                            var v = this[0];
+                            for (var i = 1; i < this.length; i++) {
+                                v = comparer(this[i], v);
+                            }
+
+                            return v;
+                        }
+
+                        Array.prototype.Mmax = function(comparer) {
+
+                            if (this.length === 0) return null;
+                            if (this.length === 1) return this[0];
+
+                            comparer = (comparer || Math.max);
+
+                            var v = this[0];
+                        for (var i = 1; i < this.length; i++) {
+                            v = comparer(this[i], v);
+                        }
+
+                            return v;
+                        }
+                        Array.prototype.max = function() {
+                          return Math.max.apply(null, this);
+                        };
+
+                        Array.prototype.min = function() {
+                          return Math.min.apply(null, this);
+                        };
+                        function standardDeviation(values){
+                          var avg = average(values);
+
+                          var squareDiffs = values.map(function(value){
+                            var diff = value - avg;
+                            var sqrDiff = diff * diff;
+                            return sqrDiff;
+                          });
+
+                          var avgSquareDiff = average(squareDiffs);
+
+                          var stdDev = Math.sqrt(avgSquareDiff);
+                          return stdDev;
+                        }
+
+                        function average(data){
+                          var sum = data.reduce(function(sum, value){
+                            return sum + value;
+                          }, 0);
+
+                          var avg = sum / data.length;
+                          return avg;
+                        }
+
+/*                      function handle(e){
+                                if(e.keyCode === 13){
+                                        calculate();
+                                }
+                        }*/
+                        Array.prototype.sum = function(){for(var i=0,sum=0;i<this.length;sum+=this[i++]);return sum;}
+                        function createMemberInNormalDistribution(mean,std_dev){
+                            return mean + (gaussRandom()*std_dev);
+                        }
+
+                        /*
+                         * Returns random number in normal distribution centering on 0.
+                         * ~95% of numbers returned should fall between -2 and 2
+                         */
+                        function gaussRandom() {
+                            var u = 2*Math.random()-1;
+                            var v = 2*Math.random()-1;
+                            var r = u*u + v*v;
+                            /*if outside interval [0,1] start over*/
+                            if(r == 0 || r > 1) return gaussRandom();
+
+                            var c = Math.sqrt(-2*Math.log(r)/r);
+                            return u*c;
+
+                            /* todo: optimize this algorithm by caching (v*c)
+                             * and returning next time gaussRandom() is called.
+                             * left out for simplicity */
+                        }
+                        function getDists(reps, mean, stdev){
+                                var all = [];
+                                for(var i = 0; i < reps; i++){
+                                        all.push(createMemberInNormalDistribution(mean, stdev));
+                                }
+                                return all;
+                        }
+                        var mean, deviation;
+                        function findOccurrences(arr, val) {
+                            var i, j,
+                                count = 0;
+                            for (i = 0, j = arr.length; i < j; i++) {
+                                (arr[i] === val) && count++;
+                            }
+                            return count;
+                        }
+                        if(names.indexOf("stdev") > -1 && names.indexOf("mean") > -1 && names.indexOf("reps") > -1){
+                                calculate();
+                        }
+                        function calculate(){
+                                var reps = parseInt(document.getElementById("reps").value)
+                                var mean = parseFloat(document.getElementById("mean").value)
+                                var stdev = parseFloat(document.getElementById("stdev").value)
+                                var reps2 = parseInt(document.getElementById("reps2").value)
+                                var mean2 = parseFloat(document.getElementById("mean2").value)
+                                var stdev2 = parseFloat(document.getElementById("stdev2").value)
+                                if(calculated == false){
+                                        calculated = true;
+                                        dist = getDists(reps, mean, stdev);
+                                        dist = dist.map(function(x){return Math.round(x)});
+//                                      document.getElementById("nums").value = dist.map(function(x){return x.toString()}).join(',');
+                                        labels = [];
+                                        var d1 = [];
+/*                                      for(var i = dist.Mmin(); i < dist.Mmax(); i++){
+                                                labels.push(i);
+                                                d1.push(findOccurrences(dist, i));
+                                        }*/
+                                        dist2 = getDists(reps2, mean2, stdev2);
+                                        dist2 = dist2.map(function(x){return Math.round(x)});
+//                                      document.getElementById("nums").value = dist.map(function(x){return x.toString()}).join(',');
+                                        var d2 = [];
+                                        var both = dist.concat(dist2);
+                                        for(var i = both.Mmin(); i < both.Mmax(); i++){
+                                                labels.push(i);
+                                                d1.push(findOccurrences(dist, i));
+                                                d2.push(findOccurrences(dist2, i));
+                                        }
+                                        var second = false;
+                                        var scale = d1.Mmax()/d2.Mmax();
+                                        if(scale < 1){
+                                                scale = 1/scale;
+                                                second = true;
+                                        }
+                                        if(second){
+                                                d1 = d1.map(function(x){return x*scale});
+                                        }else{
+                                                d2 = d2.map(function(x){return x*scale});
+                                        }
+                                        var canvas = document.getElementById("myChart");
+                                        var ctx = canvas.getContext("2d");
+                                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                        var data = {
+                                          labels: labels,
+                                          datasets: [
+                                              {
+                                                    label: "My First dataset",
+                                                    fillColor: "rgba(34,139,34,0.5)",
+                                                    strokeColor: "rgba(34,139,34,0.8)",
+                                                    highlightFill: "rgba(34,139,34,0.75)",
+                                                    highlightStroke: "rgba(34,139,34,1)",
+                                                    data: d1
+                                                },
+                                              {
+                                                    label: "My Second dataset",
+                                                    fillColor: "rgba(102,205,170,0.5)",
+                                                    strokeColor: "rgba(102,205,170,0.8)",
+                                                    highlightFill: "rgba(102,205,170,0.75)",
+                                                    highlightStroke: "rgba(102,205,170,1)",
+                                                    data: d2
+                                                }
+                                        ]
+                                        };
+                                        var myBarChart = new Chart(ctx).Bar(data, {});
+                                }else{
+                                        window.location.href = "?reps="+reps+"&stdev="+stdev+"&mean="+mean+"&reps2="+reps2+"&mean2="+mean2+"&stdev2="+stdev2;
+                                }
+                        }
+                        document.addEventListener('keydown', function(event) {
+                            if(event.keyCode == 13 && document.getElementById("mean").value && document.getElementById("reps").value && document.getElementById("stdev").value) {
+                                calculate();
+                            }
+                        });
+                        //var canvas = document.getElementById("canvas"), ctx = canvas.getContext('2d');
+                        //canvas.width = window.innerWidth - 50;
+                        //canvas.height = window.innerHeight - 100;
+                </script>
+        </body>
+</html>
