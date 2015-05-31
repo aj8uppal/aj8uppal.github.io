@@ -7,7 +7,7 @@
   margin: 0px;
   padding: 0px;
 }
-div {
+.stripe {
   transition: 200ms;
   text-align: center;
 }
@@ -18,13 +18,14 @@ a {
   border: 0;
   display: inline-block;
   transition: 200ms;
-/*  float: left;*/
-  padding: 5px 10px;
+  float: left;
+  padding: 12.5px 15px;
   margin: 10px;
   font-family: Optima;
-  width: 20%;
-/*  height: 25px;*/
-  vertical-align: middle;
+  width: 22%;
+  height: 25px;
+/*  align: center;*/
+/*  vertical-align: middle;*/
 }
 p {
   font-family: Optima;
@@ -35,8 +36,10 @@ p {
 }
 a:hover {
   background-color: #910E00;
+/*  width: 100%;*/
+  height: 100px;
 }
-div:hover {
+.stripe:hover {
   background-color: #910E00;
 }
 a:link {
@@ -54,17 +57,23 @@ hr {
   height: 100px;
   background-color: #c0392b;
 }
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+  align: middle;
+  text-align: center;
+}
 		</style>
 	</head>
 	<body>
 		<div class="stripe"
 		<center><p>Welcome to AJ's Website!</p></center>
 		</div>
-		<center>
-		<a href="circle.html">Circle Game</a>
+		<center style="left: 10px">
+		<a href="circle.html">Circle Game<br><br>A circle game with two modes:<br><b>Normal:</b> Eat circles smaller than you to get bigger.<br><b>Survival:</b> Survive without touching anything.</a>
 		<a href="grinchjump.html">GrinchJump</a>
 		<a href="http://lahyc.herokuapp.com">LAHYC</a>
-		<a href="prismrunner.html">PrismRunner</a>
+		<a href="prismrunner.html">PrismRunner</a>	
 		</center>
 		<script>
 		</script>
