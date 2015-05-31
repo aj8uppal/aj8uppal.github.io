@@ -1,3 +1,4 @@
+
 <html>
     <head>
     	<title>GrinchJump</title>
@@ -26,8 +27,9 @@
             var keyboard = new THREEx.KeyboardState();
             var total = 0;
             var gravity = 0.0075;
-            var jump = 0.2912371236;
+            var jump = 0.25;
             var width = 0.25;
+            var friction = 0.0075;
             var hatwidth = 0.125;
 			var scene = new THREE.Scene();
             var scene2 = new THREE.Scene();
@@ -297,7 +299,7 @@
             cubes[32].position.x+=width;
             cubes[33].position.x+=4*width;
             cubes[34].position.x+=5*width;
-
+            
 			camera.position.z = 5;
             camera.position.y-=2;
             total = 0;
@@ -307,6 +309,7 @@
             text2 = addText(10, 10, camera.position.y);
             var propstage = 1;
             var stagetime;
+            var cmove = 0;
             // gravity = 0.01;
 			var render = function () {
                 text2.innerHTML = Number((score).toFixed(1))*10;
@@ -355,9 +358,9 @@
                                     stagetime = new Date();
                                 }
                                 if(plane.material.color.getHex() == 16738740){
-                                    total=1.75*getRandomArbitrary(0.23, 0.27);
+                                    total=1.75*jump
                                 }else{
-                                    total = getRandomArbitrary(0.23, 0.27);
+                                    total = jump;
                                 }
                             }
                         }
@@ -437,7 +440,7 @@
                         cubes[33].material = dlred;
                         cubes[34].material = transparent;
                     }
-                    if((new Date() - propellingtime)/1000 >= 4){
+                    if((new Date() - propellingtime)/1000 >= 2.25){
                         propelling = false;
                         cubes[0].material = white;
                         cubes[1].material = white;
@@ -468,10 +471,7 @@
                     location.reload();
                 }
                 if( keyboard.pressed("left") && camera.position.x <= 14){
-                    for(var c = 0;c<cubes.length;c++){
-                        cube = cubes[c];
-                        cube.position.x-=0.15;
-                    }
+                    cmove = -0.15;
                     // camera.position.x+=0.15;
                     // for(var i = 0;i < planes.length;i++){
                     //     plane = planes[i][0];
@@ -483,10 +483,7 @@
                     // }
                 } 
                 if( keyboard.pressed("right") && camera.position.x >= -13) {
-                    for(var c = 0;c<cubes.length;c++){
-                        cube = cubes[c];
-                        cube.position.x+=0.15;
-                    }
+                    cmove = 0.15;
                     // camera.position.x-=0.15;
                     // for(var i = 0;i < planes.length;i++){
                     //     plane = planes[h][0];
@@ -496,6 +493,22 @@
                     //     hat = hats[h];
                     //     hat.position.x-=0.15
                     // }
+                }
+                if(cmove > 0){
+                    cmove-=friction;
+                    if(cmove < 0){
+                        cmove = 0;
+                    }
+                }
+                if(cmove < 0){
+                    cmove+=friction;
+                    if(cmove > 0){
+                        cmove = 0;
+                    }
+                }
+                for(var c = 0;c<cubes.length;c++){
+                    cube = cubes[c];
+                    cube.position.x+=cmove;
                 }
                 renderer.clear();
                 renderer.render( scene, camera );
