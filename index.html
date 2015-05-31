@@ -1,528 +1,72 @@
+
+<!DOCTYPE html>
 <html>
-    <head>
-    	<title>GrinchJump</title>
+	<head>
 		<style>
-			body { margin: 0; }
-			canvas { width: 100%; height: 100% }
+* {
+  margin: 0px;
+  padding: 0px;
+}
+div {
+  transition: 200ms;
+  text-align: center;
+}
+a {
+  border-radius: .25em;
+  color: #fff;
+  background-color: #c0392b;
+  border: 0;
+  display: inline-block;
+  transition: 200ms;
+/*  float: left;*/
+  padding: 5px 10px;
+  margin: 10px;
+  font-family: Optima;
+  width: 20%;
+/*  height: 25px;*/
+  vertical-align: middle;
+}
+p {
+  font-family: Optima;
+  color: #fff;
+  padding: 10px 15px;
+/*  margin: 10px;*/
+  font-size: 40px;
+}
+a:hover {
+  background-color: #910E00;
+}
+div:hover {
+  background-color: #910E00;
+}
+a:link {
+  text-decoration: none;
+}
+hr {
+  border-color: #c0392b;
+  color: #c0392b;
+  background-color: #c0392b;
+  height: 100px;
+  position: absolute;
+}
+.stripe {
+  width: 100%
+  height: 100px;
+  background-color: #c0392b;
+}
 		</style>
 	</head>
 	<body>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.js"></script>
-        <script src="http://learningthreejs.com/data/THREEx/THREEx.KeyboardState.js"></script>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.js"></script>
-
+		<div class="stripe"
+		<center><p>Welcome to AJ's Website!</p></center>
+		</div>
+		<center>
+		<a href="circle.html">Circle Game</a>
+		<a href="grinchjump.html">GrinchJump</a>
+		<a href="http://lahyc.herokuapp.com">LAHYC</a>
+		<a href="prismrunner.html">PrismRunner</a>
+		</center>
 		<script>
-            function getRandomArbitrary(min, max) {
-                return Math.random() * (max - min) + min;
-            }
-            function getRandomInt(min, max) {
-                return Math.floor(Math.random() * (max - min + 1)) + min;
-            }
-            function choose(choices) {
-              var index = Math.floor(Math.random() * choices.length);
-              return choices[index];
-            }
-            var keyboard = new THREEx.KeyboardState();
-            var total = 0;
-            var gravity = 0.0075;
-            var jump = 0.25;
-            var width = 0.25;
-            var friction = 0.0075;
-            var hatwidth = 0.125;
-			var scene = new THREE.Scene();
-            var scene2 = new THREE.Scene();
-			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-
-			var renderer = new THREE.WebGLRenderer();
-			renderer.setSize( window.innerWidth, window.innerHeight );
-            renderer.autoClear = false;
-            var hats = [];
-			document.body.appendChild( renderer.domElement );
-            var pink = new THREE.MeshBasicMaterial( {color: '#FF69B4'} );
-            var white = new THREE.MeshBasicMaterial( {color: '#FFFFFF'} );
-            var lred = new THREE.MeshBasicMaterial( {color: '#B50000'} );
-            var lgreen = new THREE.MeshBasicMaterial( {color: '#35BA2A'} );
-            var dgreen = new THREE.MeshBasicMaterial( {color: '#009425'} );
-            var dred = new THREE.MeshBasicMaterial( {color: '#780000'} );
-            var yellow = new THREE.MeshBasicMaterial( {color: '#DECF09'} );
-            var beige = new THREE.MeshBasicMaterial( {color: '#AD9D4B'} );
-            var grey = new THREE.MeshBasicMaterial( {color: '#737373'} );
-            var salmon = new THREE.MeshBasicMaterial( {color: '#83F52C'} );
-            var dlred = new THREE.MeshBasicMaterial( {color: '#942700'} );
-            
-            var llred = new THREE.MeshBasicMaterial( {color: '#B83100'} );
-            var transparent = new THREE.MeshBasicMaterial( {color: '#000000', transparent: true, opacity: 0} );
-            var hatgeo = new THREE.BoxGeometry(hatwidth, hatwidth, hatwidth/2);
-            var yellows = [
-                new THREE.MeshBasicMaterial( {color: '#FFF761'} ),
-                new THREE.MeshBasicMaterial( {color: '#DED309'} ),
-                new THREE.MeshBasicMaterial( {color: '#C6B800'} ),
-                new THREE.MeshBasicMaterial( {color: '#B8AE00'} ),
-                new THREE.MeshBasicMaterial( {color: '#948A00'} ),
-                new THREE.MeshBasicMaterial( {color: '#787400'} ),
-                new THREE.MeshBasicMaterial( {color: '#544E00'} ),
-                new THREE.MeshBasicMaterial( {color: '#453A0D'} )];
-                function addText(x, y, message){
-                    var text2 = document.createElement('div');
-                    text2.style.position = 'absolute';
-                    //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
-                    text2.style.width = 100;
-                    text2.style.height = 100;
-                    // text2.style.backgroundColor = "blue";
-                    
-                    text2.style.top = y + 'px';
-                    text2.style.left = x + 'px';
-                    text2.style.fontFamily = 'Optima, sans-serif';
-                    text2.style.fontSize = '200%';
-                    text2.style.color = 'whiteSmoke';
-                    document.body.appendChild(text2);
-                    text2.innerHTML = message;
-                    return(text2);
-                }
-            function hat(x, y){
-                var hatcubes = []
-                for(var i = 0;i < 4;i++){
-                    var cube = new THREE.Mesh( hatgeo, yellows[0] );
-                    scene2.add(cube);
-                    hatcubes.push(cube);
-                }
-                for(var i = 0;i < 4;i++){
-                    var cube = new THREE.Mesh( hatgeo, yellows[1] );
-                    scene2.add(cube);
-                    hatcubes.push(cube);
-                }
-                for(var i = 0;i < 4;i++){
-                    var cube = new THREE.Mesh( hatgeo, yellows[2] );
-                    scene2.add(cube);
-                    hatcubes.push(cube);
-                }
-                for(var i = 0;i < 3;i++){
-                    var cube = new THREE.Mesh( hatgeo, yellows[3] );
-                    scene2.add(cube);
-                    hatcubes.push(cube);
-                }
-                for(var i = 0;i < 3;i++){
-                    var cube = new THREE.Mesh( hatgeo, yellows[4] );
-                    scene2.add(cube);
-                    hatcubes.push(cube);
-                }
-                for(var i = 0;i < 2;i++){
-                    var cube = new THREE.Mesh( hatgeo, yellows[5] );
-                    scene2.add(cube);
-                    hatcubes.push(cube);
-                }
-                for(var i = 0;i < 2;i++){
-                    var cube = new THREE.Mesh( hatgeo, yellows[6] );
-                    scene2.add(cube);
-                    hatcubes.push(cube);
-                }
-                var cube = new THREE.Mesh( hatgeo, yellows[4] );
-                scene2.add(cube);
-                hatcubes.push(cube);
-                var cube = new THREE.Mesh( hatgeo, yellows[5] );
-                scene2.add(cube);
-                hatcubes.push(cube);
-                var cube = new THREE.Mesh( hatgeo, yellows[6] );
-                scene2.add(cube);
-                hatcubes.push(cube);
-                var cube = new THREE.Mesh( hatgeo, yellows[6] );
-                scene2.add(cube);
-                hatcubes.push(cube);
-                var cube = new THREE.Mesh( hatgeo, yellows[7] );
-                scene2.add(cube);
-                hatcubes.push(cube);
-                // for(var i = 0;i < 5;i++){
-                //     var cube = new THREE.Mesh( hatgeo, yellows[7] );
-                //     scene2.add(cube);
-                //     hatcubes.push(cube);
-                // }
-                hatcubes[0].position.x = x;hatcubes[0].position.y = y+hatwidth;
-                hatcubes[1].position.x = x;hatcubes[1].position.y = y+2*hatwidth;
-                hatcubes[2].position.x = x+hatwidth;hatcubes[2].position.y = y+3*hatwidth;
-                hatcubes[3].position.x = x+2*hatwidth;hatcubes[3].position.y = y+4*hatwidth;
-                hatcubes[4].position.x = x+hatwidth;hatcubes[4].position.y = y+hatwidth;
-                hatcubes[5].position.x = x+hatwidth;hatcubes[5].position.y = y+2*hatwidth;
-                hatcubes[6].position.x = x+2*hatwidth;hatcubes[6].position.y = y+3*hatwidth;
-                hatcubes[7].position.x = x+3*hatwidth;hatcubes[7].position.y = y+4*hatwidth;
-                hatcubes[8].position.x = x+2*hatwidth;hatcubes[8].position.y = y+hatwidth;
-                hatcubes[9].position.x = x+2*hatwidth;hatcubes[9].position.y = y+2*hatwidth;
-                hatcubes[10].position.x = x+3*hatwidth;hatcubes[10].position.y = y+3*hatwidth;
-                hatcubes[11].position.x = x+4*hatwidth;hatcubes[11].position.y = y+4*hatwidth;
-                hatcubes[12].position.x = x+3*hatwidth;hatcubes[12].position.y = y+hatwidth;
-                hatcubes[13].position.x = x+3*hatwidth;hatcubes[13].position.y = y+2*hatwidth;
-                hatcubes[14].position.x = x+4*hatwidth;hatcubes[14].position.y = y+3*hatwidth;
-                hatcubes[15].position.x = x+4*hatwidth;hatcubes[15].position.y = y+hatwidth;
-                hatcubes[16].position.x = x+4*hatwidth;hatcubes[16].position.y = y+2*hatwidth;
-                hatcubes[17].position.x = x+5*hatwidth;hatcubes[17].position.y = y+3*hatwidth;
-                hatcubes[18].position.x = x+5*hatwidth;hatcubes[18].position.y = y+hatwidth;
-                hatcubes[19].position.x = x+5*hatwidth;hatcubes[19].position.y = y+2*hatwidth;
-                hatcubes[20].position.x = x+6*hatwidth;hatcubes[20].position.y = y+hatwidth;
-                hatcubes[21].position.x = x+6*hatwidth;hatcubes[21].position.y = y+2*hatwidth;
-                hatcubes[22].position.x = x+hatwidth;hatcubes[22].position.y = y+6*hatwidth;
-                hatcubes[23].position.x = x+2*hatwidth;hatcubes[23].position.y = y+6*hatwidth;
-                hatcubes[24].position.x = x+3*hatwidth;hatcubes[24].position.y = y+5*hatwidth;
-                hatcubes[25].position.x = x+4*hatwidth;hatcubes[25].position.y = y+6*hatwidth;
-                hatcubes[26].position.x = x+5*hatwidth;hatcubes[26].position.y = y+6*hatwidth;
-                this.hatcubes = hatcubes;
-            }
-    		var geometry = new THREE.BoxGeometry( width, width, width/2 );
-            var pgeometry = new THREE.BoxGeometry( 2.5, 0.25, 0.5);
-            var cubes = [];
-            var planes = [];
-            var score;
-            for(var i = 0;i < 4;i++){
-                var plane = new THREE.Mesh( pgeometry, salmon );
-                plane.position.x = getRandomArbitrary(-5, 6);
-                planes.push([plane, choose(["right", "left", "none"]), "none"]);
-                scene.add(plane);
-                
-            }
-            planes[0][0].position.y = getRandomArbitrary(0.5, 2.5);
-            planes[3][0].position.x = 1.25;
-            planes[1][0].position.y = getRandomArbitrary(-2, 0);
-            planes[2][0].position.y = getRandomArbitrary(-4.5, -2.5);
-            planes[3][0].position.y = getRandomArbitrary(-6, -4);
-            // for(var i = 0;i < planes.length;i++){
-            //     plane = planes[i][0]
-            //     myhat = new hat(plane.position.x-hatwidth*3, plane.position.y);
-            //     planes[i][2] = myhat;
-                
-            // }
-            for(var i = 0;i<7;i++){
-                var cube = new THREE.Mesh( geometry, white );
-                scene2.add(cube);
-                cubes.push(cube);
-            }
-            for(var i = 0;i<8;i++){
-                var cube = new THREE.Mesh( geometry, lred );
-                scene2.add(cube);
-                cubes.push(cube);
-            }
-            for(var i = 0;i<3;i++){
-                var cube = new THREE.Mesh( geometry, lgreen );
-                scene2.add(cube);
-                cubes.push(cube);
-            }
-            for(var i = 0;i<3;i++){
-                var cube = new THREE.Mesh( geometry, dgreen );
-                scene2.add(cube);
-                cubes.push(cube);
-            }
-            for(var i = 0;i<5;i++){
-                var cube = new THREE.Mesh( geometry, dred );
-                scene2.add(cube);
-                cubes.push(cube);
-            }
-            for(var i = 0;i<1;i++){
-                var cube = new THREE.Mesh( geometry,  yellow );
-                scene2.add(cube);
-                cubes.push(cube);
-            }
-            for(var i = 0;i<2;i++){
-                var cube = new THREE.Mesh( geometry, beige );
-                scene2.add(cube);
-                cubes.push(cube);
-            }
-            for(var i = 0;i<3;i++){
-                var cube = new THREE.Mesh( geometry, grey );
-                scene2.add(cube);
-                cubes.push(cube);
-            }
-            for(var i = 0;i<3;i++){
-                var cube = new THREE.Mesh( geometry, transparent);
-                scene2.add(cube);
-                cubes.push(cube);
-            }
-            cubes[1].position.x+=width;
-            cubes[1].position.y-=2*width;
-            cubes[2].position.x+=2*width;
-            cubes[2].position.y-=2*width;
-            cubes[3].position.x+=3*width;
-            cubes[3].position.y-=2*width;
-            cubes[4].position.x+=4*width;
-            cubes[4].position.y-=2*width;
-            cubes[5].position.y-=5*width;
-            cubes[6].position.x+=6*width;
-            cubes[6].position.y-=5*width;
-            cubes[7].position.x+=width;
-            cubes[7].position.y-=width;
-            cubes[8].position.x+=2*width;
-            cubes[8].position.y-=width;
-            cubes[9].position.x+=3*width;
-            cubes[9].position.y-=width;
-            cubes[10].position.x+=2*width;
-            cubes[10].position.y-=3*width;
-            cubes[11].position.x+=4*width;
-            cubes[11].position.y-=3*width;
-            cubes[12].position.x+=width;
-            cubes[12].position.y-=6*width;
-            cubes[13].position.x+=2*width;
-            cubes[13].position.y-=6*width;
-            cubes[14].position.x+=4*width;
-            cubes[14].position.y-=6*width;
-            cubes[15].position.x+=width;
-            cubes[15].position.y-=3*width;
-            cubes[16].position.x+=2*width;
-            cubes[16].position.y-=4*width;
-            cubes[17].position.x+=3*width;
-            cubes[17].position.y-=4*width;
-            cubes[18].position.x+=width;
-            cubes[18].position.y-=4*width;
-            cubes[19].position.x+=3*width;
-            cubes[19].position.y-=3*width;
-            cubes[20].position.x+=4*width;
-            cubes[20].position.y-=4*width;
-            cubes[21].position.x+=width;
-            cubes[21].position.y-=5*width;
-            cubes[22].position.x+=2*width;
-            cubes[22].position.y-=5*width;
-            cubes[23].position.x+=3*width;
-            cubes[23].position.y-=5*width;
-            cubes[24].position.x+=4*width;
-            cubes[24].position.y-=5*width;
-            cubes[25].position.x+=5*width;
-            cubes[25].position.y-=5*width;
-            cubes[26].position.x+=3*width;
-            cubes[26].position.y-=6*width;
-            cubes[27].position.x+=width;
-            cubes[27].position.y-=7*width;
-            cubes[28].position.x+=4*width;
-            cubes[28].position.y-=7*width;
-            cubes[29].position.x+=6*width;
-            cubes[29].position.y-=2*width;
-            cubes[30].position.x+=6*width;
-            cubes[30].position.y-=3*width;
-            cubes[31].position.x+=6*width;
-            cubes[31].position.y-=4*width;
-            cubes[32].position.x+=width;
-            cubes[33].position.x+=4*width;
-            cubes[34].position.x+=5*width;
-            
-			camera.position.z = 5;
-            camera.position.y-=2;
-            total = 0;
-            var score = 0;
-            var propelling = false;
-            var propellingtime;
-            text2 = addText(10, 10, camera.position.y);
-            var propstage = 1;
-            var stagetime;
-            var cmove = 0;
-            // gravity = 0.01;
-			var render = function () {
-                text2.innerHTML = Number((score).toFixed(1))*10;
-                total-=gravity;
-				requestAnimationFrame( render );
-                // console.log(planes[0].position.y);
-                
-                for(var i = 0;i < planes.length;i++){
-                        // plane.position.y-=total;
-                        plane = planes[i][0];
-                        dir = planes[i][1];
-                        myhat = planes[i][2];
-                        
-                        if(dir == "right"){
-                            plane.position.x+=(camera.position.y+2)/1000;
-                            if(myhat != "none"){
-                                for(var h = 0;h<myhat.hatcubes.length;h++){
-                                    thishat = myhat.hatcubes[h];
-                                    thishat.position.x+=(camera.position.y+2)/1000;
-                                }
-                            }
-                            if(plane.position.x - camera.position.x >= 5){
-                                planes[i][1] = "left";
-                            }
-                        }else if(dir == "left"){
-                            plane.position.x-=(camera.position.y+2)/1000;
-                            if(myhat != "none"){
-                                
-                                for(var h = 0;h<myhat.hatcubes.length;h++){
-                                    thishat = myhat.hatcubes[h];
-                                    thishat.position.x-=(camera.position.y+2)/1000;
-                                }
-                            }
-                            if(plane.position.x - camera.position.x <= -5){
-                                planes[i][1] = "right";
-                            }
-                        }else{
-                            plane.material = beige;
-                        }
-                        if(plane.position.y - (cubes[28].position.y+width) <= 0 && plane.position.y - (cubes[28].position.y+width) >= -0.5){
-                            if(plane.position.x <= cubes[29].position.x+0.5 && plane.position.x >= cubes[0].position.x-0.75 && total <= 0){
-                                if(myhat != "none"){
-                                    myhat = "none";
-                                    propelling = true;
-                                    propellingtime = new Date();
-                                    stagetime = new Date();
-                                }
-                                if(plane.material.color.getHex() == 16738740){
-                                    total=1.75*jump
-                                }else{
-                                    total = jump;
-                                }
-                            }
-                        }
-                        
-                        if(camera.position.y - plane.position.y >= 4.75){
-                            // myhat = new hat(plane.position.x, plane.position.y+0.25);
-                            
-                            randnum = getRandomInt(-50, 5)
-                            if(randnum <= 4){
-                                randnu = getRandomInt(1, 10);
-                                if(randnu == 1){
-                                    plane.position.y+=9
-                                    plane.position.x = getRandomArbitrary(camera.position.x-3, camera.position.x+4);
-                                    plane.material = pink;
-                                }
-                                else{
-                                    plane.position.y+=9
-                                    plane.position.x = getRandomArbitrary(camera.position.x-3, camera.position.x+4);
-                                    plane.material = salmon;
-                                }
-                            }else{
-                                
-                                plane.position.y+=9
-                                plane.position.x = getRandomArbitrary(camera.position.x-3, camera.position.x+4);
-                                var nplane = new THREE.Mesh( pgeometry, salmon );
-                                nplane.position.y+=getRandomArbitrary(8.5, 11.5);
-                                nplane.position.x = getRandomArbitrary(camera.position.x-3, camera.position.x+4);
-                                scene.add(nplane);
-                                planes.push([nplane, choose(["right", "left", "none"]), "none"]);
-                            }
-                            hatnum = getRandomInt(1, 100);
-                            if(hatnum == 1){
-                                dishat = new hat(plane.position.x-hatwidth*3, plane.position.y);
-                                planes[i][2] = dishat;
-                            }else{
-                                planes[i][2] = "none";
-                            }
-                        }
-                    }
-                    
-                if(propelling == true){
-                    if(total <= 0.3){
-                        total+=0.0075;
-                    }else{
-                        total = 0.3;
-                    }
-                    if((new Date() - stagetime)/1000 >= 0.1){
-                        if(propstage == 1){
-                            propstage = 2;
-                        }else{
-                            propstage = 1;
-                        }
-                        stagetime = new Date();
-                    }
-                    if(propstage == 1){
-                        cubes[0].material = dlred;
-                        cubes[1].material = dred;
-                        cubes[2].material = dred;
-                        cubes[3].material = dred;
-                        cubes[4].material = dred;
-                        cubes[7].material = transparent;
-                        cubes[8].material = dlred;
-                        cubes[9].material = dlred;
-                        cubes[32].material = llred;
-                        cubes[33].material = llred;
-                        cubes[34].material = dlred;
-                    }else if(propstage == 2){
-                        cubes[0].material = transparent;
-                        cubes[1].material = dred;
-                        cubes[2].material = dred;
-                        cubes[3].material = dred;
-                        cubes[4].material = dred;
-                        cubes[7].material = transparent;
-                        cubes[8].material = dlred;
-                        cubes[9].material = dlred;
-                        cubes[32].material = dlred;
-                        cubes[33].material = dlred;
-                        cubes[34].material = transparent;
-                    }
-                    if((new Date() - propellingtime)/1000 >= 2.25){
-                        propelling = false;
-                        cubes[0].material = white;
-                        cubes[1].material = white;
-                        cubes[2].material = white;
-                        cubes[3].material = white;
-                        cubes[4].material = white;
-                        cubes[7].material = lred;
-                        cubes[8].material = lred;
-                        cubes[9].material = lred;
-                        cubes[32].material = transparent;
-                        cubes[33].material = transparent;
-                        cubes[34].material = transparent;
-                    }
-                }
-                for(var i = 0;i < cubes.length;i++){
-                    cube = cubes[i];
-                    cube.position.y+=total;
-                }
-                if(cubes[10].position.y - camera.position.y >= 1.5){
-                    camera.position.y+=total;
-                    score = camera.position.y+2;
-                }
-                if(cubes[10].position.y - camera.position.y <= -3){
-                    camera.position.y+=total;
-                    window.close();
-                }
-                // camera.position.y+=total;
-                if( keyboard.pressed("space")){
-                    location.reload();
-                }
-                if( keyboard.pressed("left") && camera.position.x <= 14){
-                    cmove = -0.15;
-                    // camera.position.x+=0.15;
-                    // for(var i = 0;i < planes.length;i++){
-                    //     plane = planes[i][0];
-                    //     plane.position.x+=0.15;
-                    // }
-                    // for(var h = 0;h < hats.length;h++){
-                    //     hat = hats[i];
-                    //     hat.position.x+=0.15
-                    // }
-                } 
-                if( keyboard.pressed("right") && camera.position.x >= -13) {
-                    cmove = 0.15;
-                    // camera.position.x-=0.15;
-                    // for(var i = 0;i < planes.length;i++){
-                    //     plane = planes[h][0];
-                    //     plane.position.x-=0.15;
-                    // }
-                    // for(var h = 0;h < hats.length;h++){
-                    //     hat = hats[h];
-                    //     hat.position.x-=0.15
-                    // }
-                }
-                if(cmove > 0){
-                    cmove-=friction;
-                    if(cmove < 0){
-                        cmove = 0;
-                    }
-                }
-                if(cmove < 0){
-                    cmove+=friction;
-                    if(cmove > 0){
-                        cmove = 0;
-                    }
-                }
-                for(var c = 0;c<cubes.length;c++){
-                    cube = cubes[c];
-                    cube.position.x+=cmove;
-                }
-                renderer.clear();
-                renderer.render( scene, camera );
-                renderer.clearDepth();
-                renderer.render( scene2, camera );
-			};
-
-			render();
-			window.addEventListener("keydown", function(e) {
-			    // space and arrow keys
-			    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
-			        e.preventDefault();
-			    }
-			}, false);
 		</script>
 	</body>
 </html>
