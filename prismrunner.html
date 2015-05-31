@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>PrismRunner</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.js"></script>
+    <script src="keyboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.js"></script>
+    <!--<script src="meshnum.js"></script>-->
+    </head>
+    <body>
+<script>
+var vis = (function(){
+  var stateKey, eventKey, keys = {
+		hidden: "visibilitychange",
+		webkitHidden: "webkitvisibilitychange",
+		mozHidden: "mozvisibilitychange",
+		msHidden: "msvisibilitychange"
+	};
+	for (stateKey in keys) {
+		if (stateKey in document) {
+			eventKey = keys[stateKey];
+			break;
+		}
+	}
+	return function(c) {
+		if (c) document.addEventListener(eventKey, c);
+		return !document[stateKey];
+	}
+})();
+var text2 = document.createElement('div');
+text2.style.position = 'absolute';
+//text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+text2.style.width = 100;
+text2.style.height = 100;
+// text2.style.backgroundColor = "blue";
+
+text2.style.top = window.innerHeight/2-20 + 'px';
+text2.style.left = window.innerWidth/2-50 + 'px';
+text2.style.fontFamily = 'Optima, sans-serif';
+text2.style.fontSize = '200%';
+text2.style.color = 'whiteSmoke';
+var text = document.createElement('div');
+text.style.position = 'absolute';
+//text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+text.style.width = 100;
+text.style.height = 100;
+// text2.style.backgroundColor = "blue";
+
+text.style.top = 20 + 'px';
+text.style.left = 20 + 'px';
+text.style.fontFamily = 'Optima, sans-serif';
+text.style.fontSize = '200%';
+text.style.color = 'whiteSmoke';
+document.body.appendChild(text);
+document.body.appendChild(text2);
+var meshnum = 15;
+var keyboard = new THREEx.KeyboardState();
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+var geometries = [];
+var materials = [];
+for(var i = 0;i < meshnum; i ++){
+geometries.push(new THREE.BoxGeometry(1, 3, 0.75));
+materials.push(new THREE.MeshPhongMaterial( { color: 0x000000, specular: 0x666666, emissive: 0xf5f5f5, ambient: 0x000000, shininess: 10, shading: THREE.SmoothShading, opacity: 0, transparent: true } ))
+}
+
+var meshes = [];
+var transes = [];
+for(var i = 0;i < geometries.length;i++){
+meshes.push(new THREE.Mesh(geometries[i], materials[i]));
+// meshes[i].position.set(2, 0, (i*(20/meshnum))-15);
+meshes[i].position.set((Math.random() * 10) -5, 0, -(i*(15/meshnum))-15);
+scene.add(meshes[i]);
+transes.push(0);
+}
+
+var dead = false;
+var mult = 0.005;
+var time = new Date();
+var now = new Date();
+var prevmult = 0;
+var slow = 3;
+x = 'background.mp3';
+var background = new Audio(x);
+// if (navigator.appName=="Microsoft Internet Explorer"){
+// document.write('<bgsound src='+'"'+x+'"'+' loop="infinite">')
+// }else{
+// document.write('<embed src='+'"'+x+'"'+'hidden="true" border="0" width="1" height="1" autostart="true" loop="true">')
+// }
+background.loop = true;
+var hasfalse = false;
+background.play();
+var focused, done=true;
+foo = 0;
+var spacetime = new Date();
+var nowspace;
+var boss = false;
+function render() {
+  // if(vis() != false){
+  //   hasfalse = true;
+  // }
+  $(window).blur(function() {
+    hasfalse = true;
+    focused = false;
+  });
+  $(window).focus(function() {
+    if(hasfalse){
+      $(background).animate({volume: 0},2000);
+    }
+    focused = true;
+  });
+  if(hasfalse && focused && done){
+    if(foo < -2000){
+      location.reload();
+    }
+  }
+  if(hasfalse && focused){
+    var newTime = new Date();
+    var delta = newTime - time;
+    for(var i = 0;i<meshes.length;i++){
+      // meshes[i].position.z += delta * mult;
+      if(mult > 0){
+        text2.innerHTML = "Restarting...";
+        mult-=(0.0025)/slow
+        if(mult < 0){
+          mult = 0;
+        }
+      }
+      var op = meshes[i].material.opacity;
+      if(op > 0){
+        meshes[i].material.opacity -= 0.0065;
+      }
+      // if(op < 0){
+      // meshes[i].material.opacity = 0; 
+      // }
+      // console.log(op);
+      if(op == 0){
+      }
+      
+        foo-=1;
+    }
+  }else{
+  // delta in ms
+  var newTime = new Date();
+  var delta = newTime - time;
+  time = newTime;
+  if(dead == false && hasfalse == false){
+    // text.innerHTML = 5 * Math.round(((new Date()-now)/100)/5);
+    mult = (new Date()-now)/2500000;
+    text.innerHTML = Math.round(mult*50000);
+    mult+=0.005;
+  }
+  // move the boxes
+  for(var i = 0;i<meshes.length;i++){
+    meshes[i].position.z += delta * mult;
+    transes[i] = (-meshes[i].position.z)/(-(i*(15/meshnum))-15);
+    meshes[i].material.opacity = 1-(Math.abs(transes[i]));
+  }
+  
+  if( keyboard.pressed("left") && camera.position.x >= -4.85)     camera.position.x-=0.15;
+  if( keyboard.pressed("right") && camera.position.x <= 4.85 )     camera.position.x+=0.15;
+  if( keyboard.pressed("up") )     mult+=0.0005;
+  if( keyboard.pressed("down"))     mult-=0.0005;
+  nowspace = new Date();
+  if( keyboard.pressed("A+J") && ((nowspace - spacetime) > 0.5)){
+    boss = true;
+  }
+  if( keyboard.pressed("space")){
+      location.reload();
+  }
+  if(boss == false){
+      for(var i = 0;i<meshes.length;i++){
+        if(camera.position.x >= meshes[i].position.x-0.75 && camera.position.x <= meshes[i].position.x+0.75){
+          if(meshes[i].position.z <= 0 && meshes[i].position.z >= -1){
+            meshes[i].material = new THREE.MeshPhongMaterial( { color: 0xFF3300, specular: 0xFF3300, emissive: 0xFF3300, ambient: 0xFF3300, shininess: 10, shading: THREE.SmoothShading, opacity: 0, transparent: true } );
+            dead = true;
+            renderer.setClearColor( 0x000000, 0 );
+          }
+        }
+      }
+  }
+  if(dead == true && mult > -(0.01)/slow){
+    text2.innerHTML = "Game Over";
+    mult-=(0.0015)/slow
+    if(mult < -(0.01)/slow){
+      mult = -(0.01)/slow;
+    }
+  }
+  if(dead == false){
+    var multt = mult;
+  }
+}
+  // mult+=delta
+/*  material1 = new THREE.MeshNormalMaterial({
+  color: 'rgb(245, 245, 245)', transparent: true, opacity: trans1
+});
+  material2 = new THREE.MeshNormalMaterial({
+  color: 'rgb(245, 245, 245)', transparent: true, opacity: trans2
+});
+
+meshes = [];
+
+scene = new THREE.Scene();
+meshes.push(new THREE.Mesh(geometries[0], material2));
+meshes.push(new THREE.Mesh(geometries[1], material1));
+
+meshes[0].position.set(2, 0, -10);
+scene.add(meshes[0]);
+
+meshes[1].position.set(-2, 0, -15);
+scene.add(meshes[1]);*/
+  if(true){
+    for(var i = 0;i<meshes.length;i++){
+      if(meshes[i].position.z >= (multt/((0.0015)/slow))+1){
+        meshes[i].position.set((Math.random() * 10) -5, 0, -(i*(15/meshnum))-15);
+        meshes[i].material.opacity = 0;
+      }
+    }
+  }
+  
+  renderer.render(scene, camera);
+  requestAnimationFrame(render);
+};
+
+// to set the initial state
+requestAnimationFrame(render);
+window.addEventListener("keydown", function(e) {
+    // space and arrow keys
+    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+        e.preventDefault();
+    }
+}, false);
+</script>
+</body>
+</html>
