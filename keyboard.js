@@ -1,27 +1,3 @@
-Not shared
-General Info
-Type
-Javascript
-Size
-3 KB (3,294 bytes)
-Location
-My Drive
-Owner
-me
-Modified
-Mar 5 by me
-Opened
-Mar 5 by me
-Created
-Mar 5
-Description
-Add a description
-Download permissions
-Prevent viewers from downloading
-2 GB used (0%)
-Buy more storage
-keyboard.js
-Open with
 // THREEx.KeyboardState.js keep the current state of the keyboard.
 // It is possible to query it at any time. No need of an event.
 // This is particularly convenient in loop driven case, like in
