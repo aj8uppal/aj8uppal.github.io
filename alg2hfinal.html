@@ -398,9 +398,9 @@ function updateCircle(player){
 //	}
 //	player.color.r = 1-((player.x - canvas.width)/255)
 	if(planet == "neptune"){
-		player.color.r = Math.round((colors[pnum][0]) - (player.x / (canvas.width/colors[pnum][0]) - 15))
-		player.color.g = Math.round((colors[pnum][1]) - (player.x / (canvas.width/colors[pnum][1]) - 19))
-		player.color.b = Math.round((colors[pnum][2]) - (player.x / (canvas.width/colors[pnum][2]) - 45))
+		player.color.r = Math.round((colors[pnum][0]) - (player.x / (canvas.width/colors[pnum][0]) - 12))
+		player.color.g = Math.round((colors[pnum][1]) - (player.x / (canvas.width/colors[pnum][1]) - 12))
+		player.color.b = Math.round((colors[pnum][2]) - (player.x / (canvas.width/colors[pnum][2]) - 43))
 	}else{
 		player.color.r = Math.round(colors[pnum][0] - (player.x / (canvas.width/colors[pnum][0])))
 		player.color.g = Math.round(colors[pnum][1] - (player.x / (canvas.width/colors[pnum][1])))
