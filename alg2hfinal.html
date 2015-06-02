@@ -7,6 +7,8 @@
 		<style>
 			#canvas{
 				display: block;
+				margin: 0;
+				padding: 0;
 			}
 .body {
   margin:0 auto;
@@ -16,22 +18,31 @@
   transition: 1000ms;
   background-image:url("mercury.jpg");
 }
-			#planet {
+			#planet, #sum {
   /*font-family: "Raleway", sans-serif;*/
   font-family: Maven Pro;
-  font-size: 64px;
+/*  font-size: 64px;*/
 //  margin: 0;
 //  padding: 0;
   color: whiteSmoke;
-  top: 10px;
+/*  top: 10px;*/
   position: absolute;
 }
-			.flip-it {
+			.flip-itx {
     -moz-transform: scaleX(-1);
     -o-transform: scaleX(-1);
     -webkit-transform: scaleX(-1);
     -ms-transform: scaleX(-1);
     transform: scaleX(-1);
+    -ms-filter: "FlipH";
+    filter: FlipH;
+}
+			.flip-ity {
+    -moz-transform: scaleY(-1);
+    -o-transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+    -ms-transform: scaleY(-1);
+    transform: scaleY(-1);
     -ms-filter: "FlipH";
     filter: FlipH;
 }
@@ -43,7 +54,7 @@
 	</head>
 	<body>
 		<div id="banner_area">
-    <img class="active flip-it" src="http://i.imgur.com/Nw1sFIg.jpg">
+    <img class="active flip-itx" src="http://i.imgur.com/Nw1sFIg.jpg">
     <img src="http://www.yee7.com/wallpaper/planet/planet-venus-wallpaper-hd-venus-wallpaper-williams-fly-trap-swimwear-transit-2012-planet-de-milo-factor-project-facts.jpg">
     <img src="http://i.imgur.com/fgrT9Az.jpg">
     <img src="http://img0.mxstatic.com/wallpapers/b8771bc762f7c93a0893433da2b3b36f_large.jpeg">
@@ -52,7 +63,7 @@
     <img src="http://newartcolorz.com/images/uranus-wallpaper/kartandtinki1_uranus-wallpaper_14.jpg">
     <img src="http://i.imgur.com/P0CbNaB.jpg">
 </div>
-		<center><h2 id="sum" style="position: absolute;left:20%"></h2><h1 id="planet" style="position: absolute;top:0%;left:37.5%">Earth</h1></center>
+		<center><h4 id="sum" style="position: absolute;top:0%;left:2.5%"></h4><h1 id="planet" style="position: absolute;top:0%;left:37.5%;font-size:64px;">Earth</h1></center>
 		<canvas id="canvas"></canvas>
 		<script>
 sspawn = false;
@@ -134,14 +145,16 @@ $(document).keydown(function(event){
 		}
 	}
 	if(event.keyCode == 38){
-		if(spawnrate < 67){
+		if(spawnrate < 100){
 			spawnrate+=1;
+			document.getElementById("sum").innerHTML = "BPS: "+spawnrate;
 		}
 	}
 	if(event.keyCode == 40){
 		if(spawnrate > 1){
 			spawnrate-=1;
-v		}
+			document.getElementById("sum").innerHTML = "BPS: "+spawnrate;
+		}
 	}
 });
 
@@ -149,7 +162,7 @@ v		}
 function randInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-colors = [[98, 87, 41], [160, 87, 24], [34, 57, 95], [172, 85, 44], [139, 120, 107], [121, 103, 89], [91, 152, 157], [171, 205, 208]]
+colors = [/*[98, 87, 41], [170, 163, 127]*/[120, 110, 59], /*[160, 87, 24]*/[65, 32, 4], [34, 57, 95], [172, 85, 44], [139, 120, 107], [121, 103, 89], [91, 152, 157], [171, 205, 208]]
 dtraveled = 0;
 planets = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune']
 pnum = 0;
@@ -167,6 +180,7 @@ bounciness = (9999/10000)/(1*((g/earthg)*constant))
 var inertia = 0/*0.00075*(g/earthg)*2/3*/;
 g/=10;
 var spawnrate = 12;
+document.getElementById("sum").innerHTML = "BPS: "+spawnrate;
 var gravity = g/25,
     vertex = -1,
     jump = 0;
@@ -402,6 +416,12 @@ function updateCircle(player){
         ctx.fill();
 }
 
+window.addEventListener("keydown", function(e) {
+    // space and arrow keys
+    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+        e.preventDefault();
+    }
+}, false);
 window.addEventListener("mousemove", getPosition, false);
 window.addEventListener("onkeydown", getKeyPress, false);
 if(moved == true){
