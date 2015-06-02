@@ -1,0 +1,413 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="http://code.jquery.com/jquery-2.1.4.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Maven+Pro|Arvo' rel='stylesheet' type='text/css'>
+		<style>
+			#canvas{
+				display: block;
+			}
+.body {
+  margin:0 auto;
+  width:450px;
+  height:281px;
+  transition: background-image 1s ease-in-out;
+  transition: 1000ms;
+  background-image:url("mercury.jpg");
+}
+			#planet {
+  /*font-family: "Raleway", sans-serif;*/
+  font-family: Maven Pro;
+  font-size: 64px;
+//  margin: 0;
+//  padding: 0;
+  color: whiteSmoke;
+  top: 10px;
+  position: absolute;
+}
+			.flip-it {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    -ms-transform: scaleX(-1);
+    transform: scaleX(-1);
+    -ms-filter: "FlipH";
+    filter: FlipH;
+}
+#banner_area img {display:none; position: absolute; top: 0; left: 0;width: 100%;*/z-index:-1}
+
+#banner_area img:first-child {display:block;z-index:-1}
+		</style>
+		<title>Bounce</title>
+	</head>
+	<body>
+		<div id="banner_area">
+    <img class="active flip-it" src="http://i.imgur.com/Nw1sFIg.jpg">
+    <img src="http://www.yee7.com/wallpaper/planet/planet-venus-wallpaper-hd-venus-wallpaper-williams-fly-trap-swimwear-transit-2012-planet-de-milo-factor-project-facts.jpg">
+    <img src="http://i.imgur.com/fgrT9Az.jpg">
+    <img src="http://img0.mxstatic.com/wallpapers/b8771bc762f7c93a0893433da2b3b36f_large.jpeg">
+    <img src="http://newartcolorz.com/images/2014/3/jupiter-wallpaper-8969-9452-hd-wallpapers.jpg">
+    <img src="http://i.imgur.com/Pw3epVl.jpg">
+    <img src="http://newartcolorz.com/images/uranus-wallpaper/kartandtinki1_uranus-wallpaper_14.jpg">
+    <img src="http://i.imgur.com/P0CbNaB.jpg">
+</div>
+		<center><h2 id="sum" style="position: absolute;left:20%"></h2><h1 id="planet" style="position: absolute;top:0%;left:37.5%">Earth</h1></center>
+		<canvas id="canvas"></canvas>
+		<script>
+sspawn = false;
+rvar = 1;
+String.prototype.capitalizeFirstLetter = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+var canvas = document.getElementById("canvas"),
+    ctx = canvas.getContext('2d');
+
+function cycleImages(){
+    var images = $('#banner_area img'),
+        now    = images.filter(':visible'),
+        next   = now.next().length ? now.next() : images.first(),
+        speed  = 1000;
+    
+    now.fadeOut(speed);
+    next.fadeIn(speed);
+}
+
+//$(function() {
+//    setInterval(cycleImages, 1400);
+//});
+speed = 1000;
+$(document).keydown(function(event){
+	if(event.keyCode == 37){
+		if(pnum > 0){
+			pnum-=1;
+			planet = planets[pnum];
+			document.getElementById("planet").innerHTML = planet.capitalizeFirstLetter();
+			g = gs[planet];
+			bounciness = (9999/10000)/(1*((g/earthg)*constant));
+			inertia = 0.00075*(g/earthg)*2/3;
+			g/=10;
+			gravity = g/25;
+			console.log((canvas.height-mouseY)/(1-bounciness));
+			pindex = players.length - 1;
+			quadcoords = [];
+			var images = $('#banner_area img'),
+        		timage    = images.filter(':visible'),
+/*			after = images[images.index(timage[0]) - 1]
+    			timage.fadeOut(speed);
+			after = [after];
+    			after.fadeIn(speed);*/
+/*			after   = timage.next().length ? timage.next() : images.first();
+			timage.fadeOut(speed);
+			after.fadeIn(speed);*/
+			after   = timage.prev().length ? timage.prev() : images.last();
+			timage.fadeOut(speed);
+			after.fadeIn(speed);
+
+		}
+	}
+	if(event.keyCode == 39){
+		if(pnum < planets.length - 1){
+			pnum+=1;
+			planet = planets[pnum];
+			document.getElementById("planet").innerHTML = planet.capitalizeFirstLetter();
+			g = gs[planet];
+			bounciness = (9999/10000)/(1*((g/earthg)*constant));
+			inertia = 0.00075*(g/earthg)*2/3;
+			g/=10;
+			gravity = g/25;
+			console.log((canvas.height-mouseY)/(1-bounciness));
+			pindex = players.length - 1;
+			quadcoords = [];
+			var images = $('#banner_area img'),
+        		timage    = images.filter(':visible'),
+/*			after = images[images.index(timage[0]) + 1]
+    			timage.fadeOut(speed);
+			after = [after];
+    			after.fadeIn(speed);*/
+			after   = timage.next().length ? timage.next() : images.first();
+			timage.fadeOut(speed);
+			after.fadeIn(speed);
+/*			after   = timage.prev().length ? timage.prev() : images.last();
+			timage.fadeOut(speed);
+			after.fadeIn(speed);*/
+		}
+	}
+	if(event.keyCode == 38){
+		if(spawnrate < 67){
+			spawnrate+=1;
+		}
+	}
+	if(event.keyCode == 40){
+		if(spawnrate > 1){
+			spawnrate-=1;
+v		}
+	}
+});
+
+
+function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+colors = [[98, 87, 41], [160, 87, 24], [34, 57, 95], [172, 85, 44], [139, 120, 107], [121, 103, 89], [91, 152, 157], [171, 205, 208]]
+dtraveled = 0;
+planets = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune']
+pnum = 0;
+planet = planets[pnum];
+earthg = 32.1751969;
+gs = {'mercury': 12.1391076, 'venus': 29.1010499, 'earth': 32.1751969, 'mars': 12.1751969, 'jupiter': 81.332021, 'saturn': 34.2519685, 'uranus': 28.5104987, 'neptune': 36.5813648}
+control = gs['pluto']/earthg;
+g = gs[planet];
+constant = 3.5;
+//24.79/10;
+document.getElementById("planet").innerHTML = planet.capitalizeFirstLetter();
+canvas.width = window.innerWidth - 50;
+canvas.height = window.innerHeight - 22.5;
+bounciness = (9999/10000)/(1*((g/earthg)*constant))
+var inertia = 0/*0.00075*(g/earthg)*2/3*/;
+g/=10;
+var spawnrate = 12;
+var gravity = g/25,
+    vertex = -1,
+    jump = 0;
+v = 0;
+jumped = false;
+players = []
+circles = []
+then = new Date()/1000;
+moved = false;
+prevx = 0;
+prevy = 0;
+function getKeyPress(event){
+//	alert(event.keyCode);
+}
+function getPosition(event){
+	mouseX = event.clientX-canvas.offsetLeft;
+	mouseY = event.clientY-canvas.offsetTop;
+	if(players.length > 0){
+		pindex = players.length - 1;
+	}
+	quadcoords = [];
+	if(moved == false){
+		update();
+		moved = true;
+	}
+}
+count = 0
+function randColor(){
+	this.r = randInt(0, 255)
+	this.g = randInt(0, 255)
+	this.b = randInt(0, 255)
+	this.a = 1;
+	this.getColor = function(){
+		return 'rgba('+this.r+', '+this.g+', '+this.b+', '+this.a+')'
+	}
+}
+function color(r, g, b){
+	this.r = r
+	this.g = g
+	this.b = b
+	this.a = 1;
+	this.getColor = function(){
+		return 'rgba('+this.r+', '+this.g+', '+this.b+', '+this.a+')'
+	}
+}
+function addCircle(){
+	if(count == 0){
+		players.push({x: mouseX, y: mouseY, color: new color(colors[pnum][0], colors[pnum][1], colors[pnum][2]), radius: 10, velY: 0, velX: 2, jumped: false, jump: 0.02, max: 0, h: canvas.height-mouseX});
+		if(sspawn == true){
+			count+=1;
+		}
+	}
+}
+reached = 0, vX = canvas.width+10;
+first = new Date();
+//backgrounds = {'mercury': "url('http://www.imgbase.info/images/safe-wallpapers/space/planet/31815_planet_mercury.jpg')",'venus': ','earth': ,'mars': ,'jupiter': ,'saturn': ,'uranus': 'neptune': 'http://newartcolorz.com/images/2014/3/neptune-wallpaper-9729-10223-hd-wallpapers.jpg'}
+//backgrounds = {'mercury': "url('mercury.jpg')"}
+backgrounds = {'mercury': "url('fmercury.jpg')"}
+var vertex = {x: -1, y: -1};
+var root1 = {x: -1, y: -1};
+var root2 = {x: -1, y: -1};
+var focus = {x: -1, y: -1};
+var quadcoords = [];
+var pindex = 0;
+//document.body.style.backgroundImage = backgrounds['mercury']
+//document.body.setAttribute("class", "flip-it");
+function update(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+	t = new Date() - first;
+	now = new Date() / 1000;
+	if(now-then >= 1/spawnrate){
+		then = now;
+		addCircle();
+	}
+	if(players.length > 0){
+		p = players[pindex];
+		p1 = players[players.length-1];
+		if(p != undefined && p1 != undefined){
+			h = canvas.height - mouseY;
+			sol1 = Math.ceil((-1 + Math.sqrt(1 + 4*(2*(canvas.height-mouseY))/gravity))/2)
+	//		sol1 = Math.ceil((-1 + Math.sqrt(1 + 4*2*h))/2)*20
+			sol2 = Math.ceil((-1 - Math.sqrt(1 + 4*2*h))/2)*20
+	/*		updateCircle({x: mouseX+sol1*(1/gravity)*p.velX, y: canvas.height-10, radius: 10, color: '#FF0000'});
+			updateCircle({x: mouseX+sol2*(1/gravity)*p.velX, y: canvas.height-10, radius: 10, color: '#FF0000'});*/
+			dtraveled+=Math.abs(p.velY);
+			if(p.velY+gravity >= 0 && p.velY <= 0.5*gravity){
+				vX = p.x;
+				reached+=1;
+	//			players.push({x: vX, y: p.y+p.velY, color: '#FF0000', radius: 10, velY: 0, velX: 0, jumped: false, jump: 0.02, max: 0, h: canvas.height-mouseX});
+				vertex.x = vX;
+				vertex.y = p.y+p.velY;
+				root2.y = root1.y;
+				root2.x = vertex.x + (vertex.x - root1.x) - p.radius;
+				if(vertex.x != -1 && vertex.y != -1 && root1.x != -1 && root1.y != -1 && root2.x != -1 && root2.y != -1){
+					a1 = root1.x;
+					a2 = root2.x;
+					c = a1*a2;
+					b = a1+a1;
+					a = (vertex.y - c)/(Math.pow(vertex.x, 2)-vertex.x*b);
+					focus.x = vertex.x;
+					focus.y = vertex.y + 0.25*a;
+					focus.y -= (canvas.height-focus.y)/rvar;
+					tcoords = [root1.x, root1.y, focus.x, focus.y, root2.x, root2.y];
+		//			if(quadcoords.indexOf(tcoords) == -1){
+		//				console.log(quadcoords.indexOf(tcoords));
+		//			}
+					quadcoords.push(tcoords);
+	/*				for(var q = 0; q < quadcoords.length; q++){
+						qc = quadcoords[q];
+						drawQuadratic(qc[0], qc[1], qc[2], qc[3], qc[4], qc[5]);
+					}*/
+				}				
+
+//			players.push({x: vX, y: canvas.height-((canvas.height-mouseY)*Math.pow(bounciness, reached) + gravity+p.velY)-10, color: '#FF0000', radius: 10, velY: 0, velX: 0, jumped: false, jump: 0.02, max: 0, h: canvas.height-mouseX});
+		}
+		if(p.y+p.velY+p.radius > canvas.height){
+/*			if(vertex.x != 0){
+				if(root2.x > root1.x){
+					root2
+			}else{
+				root1.x = p.x+p.velX;
+				root1.y = p.y+p.velY;
+			}*/
+			root1.x = p.x+p.velX - p.radius;
+			root1.y = p.y+p.velY;
+//			console.log(focus, vertex);
+/*			console.log(a);
+			console.log(b);
+			console.log(c);*/
+//			console.log(root1, root2);
+		}
+//		console.log(dtraveled);
+//		console.log(p.h+(p.h/(1-bounciness)));
+		}
+	}
+//	updateCircle({x: vX, y: canvas.height-((canvas.height-mouseY)*Math.pow(bounciness, reached))-10, radius: 10, color: '#FF0000'});
+/*	if(vertex.x != -1 && vertex.y != -1 && root1.x != -1 && root1.y != -1 && root2.x != -1 && root2.y != -1){
+		a1 = root1.x;
+		a2 = root2.x;
+		c = a1*a2;
+		b = a1+a1;
+		a = (vertex.y - c)/(Math.pow(vertex.x, 2)-vertex.x*b);
+		focus.x = vertex.x;
+		focus.y = vertex.y + 0.25*a;
+		focus.y -= (canvas.height-focus.y)/rvar;
+		tcoords = [root1.x, root1.y, focus.x, focus.y, root2.x, root2.y];
+		if(quadcoords.indexOf(tcoords) == -1){
+			console.log(quadcoords.indexOf(tcoords));
+			quadcoords.push(tcoords);
+		}*/
+		for(var q = 0; q < quadcoords.length; q++){
+			qc = quadcoords[q];
+//			drawQuadratic(qc[0], qc[1], qc[2], qc[3], qc[4], qc[5]);
+		}
+//	}		
+	for(var c = 0; c < players.length; c++){
+//		console.log(bounciness);
+		circle = players[c];
+		if(circle.color == '#FF0000'){
+			updateCircle(circle);
+			continue;
+		}
+		circle.y+=circle.velY;
+		circle.x+=circle.velX;
+//		circle.velX-=inertia;
+		circle.velY+=gravity;
+		if(Math.abs(circle.velY) > Math.abs(circle.max)){
+			circle.max = circle.velY;
+		}
+		var inGround = circle.y + circle.radius - canvas.height;
+		if(inGround >= 0){
+			if(Math.abs(circle.velY) < 1){
+				circle.velY = 0;
+				circle.gravity = 0;
+			}else{
+				circle.velY *= -Math.sqrt(bounciness);
+			}
+            		circle.y -= 2*inGround;
+		}
+/*		if(circle.y + circle.radius/2 > canvas.height){
+			prev = circle.velY;
+//			circle.velY = circle.max*-Math.sqrt(3/4);
+			circle.velY*=-Math.sqrt(3/4);
+			console.log(prev+" "+circle.velY);
+			circle.max = 0;
+		}*/
+		updateCircle(circle);
+		if(circle.x-circle.radius > canvas.width){
+			players.splice(c, 1);
+		}
+
+	}
+        setTimeout(update, 10);
+}
+
+function drawQuadratic(x0, y0, x1, y1, x2, y2){
+	ctx.lineWidth = 6;
+	ctx.strokeStyle = "rgba(0, 0, 0, 1)";
+	ctx.beginPath();
+	ctx.moveTo(x0, y0);
+	ctx.quadraticCurveTo(x1, y1, x2, y2);
+	ctx.stroke();
+}
+function drawLine(x1, y1, x2, y2){
+	ctx.beginPath();
+	ctx.moveTo(x1, y1);
+	ctx.lineTo(x2, y2);
+	ctx.stroke();
+}
+
+function updateCircle(player){
+//	player.color.a = 1 - player.x/(/*1.5**/canvas.width) - 0/*.2*/;
+//	if(player.color.a < 0){
+//		player.color.a = 0;
+//	}
+//	player.color.r = 1-((player.x - canvas.width)/255)
+	if(planet == "neptune"){
+		player.color.r = Math.round((colors[pnum][0]) - (player.x / (canvas.width/colors[pnum][0]) - 15))
+		player.color.g = Math.round((colors[pnum][1]) - (player.x / (canvas.width/colors[pnum][1]) - 19))
+		player.color.b = Math.round((colors[pnum][2]) - (player.x / (canvas.width/colors[pnum][2]) - 45))
+	}else{
+		player.color.r = Math.round(colors[pnum][0] - (player.x / (canvas.width/colors[pnum][0])))
+		player.color.g = Math.round(colors[pnum][1] - (player.x / (canvas.width/colors[pnum][1])))
+		player.color.b = Math.round(colors[pnum][2] - (player.x / (canvas.width/colors[pnum][2])))
+	}
+//	player.color.r = Math.round(255 - (player.y / (canvas.height/255)))
+	if(player.color.g < 0){
+		player.color.g = 0;
+	}
+        ctx.fillStyle = player.color.getColor();
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+        ctx.fill();
+}
+
+window.addEventListener("mousemove", getPosition, false);
+window.addEventListener("onkeydown", getKeyPress, false);
+if(moved == true){
+	update();
+}
+		</script>
+	</body>
+</html>
+
