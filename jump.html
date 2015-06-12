@@ -1,0 +1,457 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+<!--		<link href='http://fonts.googleapis.com/css?family=Belleza' rel='stylesheet' type='text/css'>-->
+		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+		<title>Jump</title>
+		<style>
+html, body, div, canvas {
+    margin: 0;
+    padding: 0;
+}
+html {
+    background-color: whiteSmoke;
+}
+canvas {
+	display: block;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'AJ';
+  font-style: normal;
+  font-weight: 400;
+  src: local('AJ'), local('AJ-Regular'), url(font.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'AJ';
+  font-style: normal;
+  font-weight: 400;
+  src: local('AJ'), local('AJ-Regular'), url(font.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+</style>
+	</head>
+	<body>
+		<div id="score" style="top: 5%; left:7.5%;position: absolute;font-family: 'AJ';font-size:36px"></div>
+		<center>
+		<div id="gameover" style="top: 48%; left:-25%;position: absolute;font-family: 'AJ';color: whiteSmoke;font-size:36px;transition:750ms cubic-bezier(0.25, 0.46, 0.45, 0.94)">Game Over<br>Press Enter to try again</div>
+		<div id="won" style="top: 48%; left:-25%;position: absolute;font-family: 'AJ';color: whiteSmoke;font-size:36px;transition:750ms cubic-bezier(0.25, 0.46, 0.45, 0.94)">You Won!<br>Press Enter to continue</br></div>
+		<center>
+		<canvas id="canvas"></canvas>
+		<script>
+/*var difficulty = prompt("Enter the difficulty (easy, medium, hard): ")
+if(difficulty == "easy"){
+	difficulty = 0.75;
+}else if(difficulty == "hard"){
+	difficulty = 2;
+}else{
+	difficulty = 1;
+}*/
+//var difficulty = parseInt(prompt("Enter the difficulty (1-10): "))
+var difficulty = 1;
+var debug = false;
+function color(r, g, b){
+	this.r = r
+	this.g = g
+	this.b = b
+	this.a = 1;
+	this.getColor = function(){
+		return 'rgba('+this.r+', '+this.g+', '+this.b+', '+this.a+')'
+	}
+}
+function nums(i, b){
+	prev = 0
+	arr = []
+	for(var j = 0; j < i; j++){
+		prev+=150*Math.pow(0.5, j)
+		if(b){
+			arr.push([j*150, prev])
+			arr.push([j*150, -prev])
+		}else{
+			arr.push([(i-j)*150, prev])
+			arr.push([(i-j)*150, -prev])
+		}
+	}
+	return arr
+}
+function randInt(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randColor(){
+	return 'rgb('+randInt(0, 255)+', '+randInt(0, 255)+', '+randInt(0, 255)+')'
+}
+
+function PinR(px, py, rx, ry, rw, rh){
+	return (px >= rx && px <= rx+rw && py >= ry && py <= ry+rh)
+}
+
+function intersect(rx, ry, rw, rh){
+//	if(play.y+player.height == ry+rh){
+//		if(p.x+p.width >= rx && p
+	if(player.x+player.width >= rx && player.x <= rx+rw && player.y+player.height >= ry && player.y <= ry+rh){
+		if(player.velY >= 0){
+			player.y = ry-player.height;
+		}
+		return true;
+	}
+	return false;
+}
+function collide(p, rx, ry, rw, rh){
+//	if(p.y+p.height == ry+rh){
+//		if(p.x+p.width >= rx && p
+	if(p.x+p.width >= rx && p.x <= rx+rw && p.y >= ry+rh-2*Math.max(5, p.velY) && p.y <= ry+rh){
+		return true;
+	}
+	return false;
+}
+/*function collide(cx, cy, cr, rx, ry, rw, rh){
+	return (PinR(cx, cy, rx, ry, rw, rh) or */
+
+canvas = document.getElementById("canvas");
+ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+var up = false, jumped = false;
+
+var YMIDDLE = canvas.height/2 - 25/2,
+    XMIDDLE = canvas.width/2 - 100/2,
+    INDENT = 50;
+
+var haswon = false;
+
+_maps = {1: [[50, YMIDDLE], [300, YMIDDLE+50], [500, YMIDDLE-100], [650, YMIDDLE-250], [950, YMIDDLE-200], [1250, YMIDDLE+250], [1450, YMIDDLE+200], 
+       [1650, YMIDDLE+150], [1850, YMIDDLE+100], [2050, YMIDDLE+50], [2250, YMIDDLE], [2450, YMIDDLE-50], [2650, YMIDDLE-100], [2850, YMIDDLE-150],
+       [3050, YMIDDLE-200], [3150, YMIDDLE-175], [3250, YMIDDLE-150], [3350, YMIDDLE-125], [3450, YMIDDLE-100], [3550, YMIDDLE-75], 
+       [3650, YMIDDLE-50], [3750, YMIDDLE-25], [3850, YMIDDLE], [4100, YMIDDLE+300], [4300, YMIDDLE+200], [4500, YMIDDLE+100], [4700, YMIDDLE-50], 
+       [4900, YMIDDLE+100], [5100, YMIDDLE-50], [5300, YMIDDLE+50], [5500, YMIDDLE-100], [5700, YMIDDLE], [5900, YMIDDLE-150], [6100, YMIDDLE-50],
+       [6300, YMIDDLE-200], [6700, YMIDDLE+300]],
+	 2: [[50, YMIDDLE], [250, YMIDDLE-50], [600, YMIDDLE+200], [850, YMIDDLE+200], [1100, YMIDDLE+200], [1350, YMIDDLE+100], 
+	    [1500, YMIDDLE], [1650, YMIDDLE], [1800, YMIDDLE], [1900, YMIDDLE-100], [2050, YMIDDLE-100], [2200, YMIDDLE-100], 
+	    [2350, YMIDDLE-200], [2700, YMIDDLE+300], [2850, YMIDDLE+250], [3000, YMIDDLE+200], [3150, YMIDDLE+150], 
+	    [3300, YMIDDLE+100], [3450, YMIDDLE+50], [3600, YMIDDLE], [3700, YMIDDLE+250], [3800, YMIDDLE+50], 
+	    [3925, YMIDDLE-100], [4100, YMIDDLE-250], [4200, YMIDDLE-200], [4300, YMIDDLE-150], [4400, YMIDDLE-100],
+	    [4500, YMIDDLE-50], [4600, YMIDDLE], [4700, YMIDDLE+50], [4800, YMIDDLE+100], [4900, YMIDDLE+150], 
+	    [5000, YMIDDLE+200], [5200, YMIDDLE+300], [5400, YMIDDLE+150], [5500, YMIDDLE+50], [5700, YMIDDLE]].concat(
+			nums(6, true).map(
+				function(x){
+					return [x[0]+5850].concat(YMIDDLE+x[1])
+				}
+			)
+		).concat(
+			nums(6, false).reverse().map(
+				function(x){
+					return [x[0]+6600].concat(YMIDDLE+x[1])
+				}
+			)
+		).concat(
+			[[7600, YMIDDLE], [7700, YMIDDLE], [7800, YMIDDLE], [7900, YMIDDLE], [8000, YMIDDLE]]
+		), 
+	  3: [[]]}
+_map = _maps[difficulty]
+_map = _map.map(function(x){return [x[0]+=INDENT].concat(x[1])});
+//_map = _maps[1]
+//_map = _map.concat([[7600, YMIDDLE], [7700, YMIDDLE], [7800, YMIDDLE], [7900, YMIDDLE], [8000, YMIDDLE]])
+//_map = _map.map(function(x){return [x[0]+=INDENT].concat(x[1])})
+tdist = _map[_map.length-1][0]
+_allobcoords = {1: [[1350, YMIDDLE+100], [1550, YMIDDLE+50], [1750, YMIDDLE], [1950, YMIDDLE-50], [2150, YMIDDLE-100], [2350, YMIDDLE-150],
+		    [2550, YMIDDLE-200], [2750, YMIDDLE-250], [2950, YMIDDLE-300]],
+		2: [[725, YMIDDLE+50], [975, YMIDDLE+50], [1575, YMIDDLE-100], [1725, YMIDDLE-100], [3650, YMIDDLE-150]], 
+		3: [[]]}
+_obcoords = _allobcoords[difficulty]
+_obcoords = _obcoords.map(function(x){return [x[0]+=INDENT].concat(x[1])})
+objs = [];
+obs = [];
+gravity = 0.25;
+pcolor = new color(randInt(0, 255), randInt(0, 255), randInt(0, 255));
+player = {x: INDENT, y: YMIDDLE-75, velY: 0, color: pcolor, width: 25, height: 50}
+
+for(var i = 0; i < _map.length; i++){
+	m = _map[i];
+	objs.push([m[0], m[1], new color(51, 160, 48)]);
+}
+
+for(var i = 0; i < _obcoords.length; i++){
+	o = _obcoords[i];
+	obs.push([o[0], o[1], new color(145, 45, 21)]);
+}
+
+/*for(var i = 0; i < 20; i++){
+	objs.push([randInt(0, canvas.width), randInt(0, canvas.height-25), randColor()]);
+}*/
+dead = false;
+dist = 0;
+prevel = 0;
+restarting = false;
+$(document).keydown(function(event){
+	if(event.keyCode == 13){
+		restarting = true;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		backCol.a = 0;
+		document.body.style.backgroundColor = backCol.getColor();
+		document.getElementById("gameover").style.left = "-25%";
+		document.getElementById("won").style.left = "-25%";
+		_map = _maps[difficulty]
+		_obcoords = _allobcoords[difficulty]
+		objs = [];
+		obs = [];
+		dist = 0;
+		pcolor = new color(randInt(0, 255), randInt(0, 255), randInt(0, 255));
+		scoreCol = pcolor;
+		$('#score')[0].style.color = scoreCol.getColor();
+		player = {x: INDENT, y: YMIDDLE-75, velY: 0, color: pcolor, width: 25, height: 50}
+		for(var i = 0; i < _map.length; i++){
+			m = _map[i];
+			objs.push([m[0], m[1], new color(51, 160, 48)]);
+		}
+
+		for(var i = 0; i < _obcoords.length; i++){
+			o = _obcoords[i];
+			obs.push([o[0], o[1], new color(145, 45, 21)]);
+		}
+		if(haswon == false){
+			update();
+		}
+		if(dead == true){
+			update();
+		}
+		dead = false;
+//		setTimeout(update, 1000);
+	}
+	if(event.keyCode == 32){
+		wallspeed = 2;
+	}
+	if(event.keyCode == 38 && jumped == false){
+		player.velY = -2*(difficulty-1)-10;
+		jumped = true;
+	}
+	if(event.keyCode == 40){
+		gravity = 0.5*difficulty;
+	}
+	if(event.keyCode == 32){
+		paused = true;
+//		prevel = player.velY;
+	}
+		
+});
+paused = false;
+$(document).keyup(function(event){
+	if(event.keyCode == 38){
+//		up = false;
+	}
+	if(event.keyCode == 40){
+		gravity = 0.25*difficulty;
+	}
+	if(event.keyCode == 32){
+		paused = false;
+//		player.velY = prevel;
+	}
+});
+window.addEventListener("keydown", function(e) {
+    // space and arrow keys
+    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+        e.preventDefault();
+    }
+}, false);
+
+backCol = new color(0, 0, 0);
+backCol.a = 0;
+overCol = new color(245, 245, 245);
+//overCol.a = 0;
+document.body.style.backgroundColor = backCol.getColor();
+document.getElementById("gameover").style.color = overCol.getColor();
+wonCol = new color(0, 0, 0);
+$('#won')[0].style.color = wonCol.getColor();
+scoreCol = pcolor;
+$('#score')[0].style.color = scoreCol.getColor();
+istouching = false;
+gravity*=difficulty;
+function update(){
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	if(restarting == true){
+		restarting = false;
+		return true;
+	}
+	if(dist < tdist){
+ 		$('#score')[0].innerHTML = Math.round(((100*dist)/tdist)*100)/100+"%"
+	}else{
+		$('#score')[0].innerHTML = 100+"%"		
+	}
+	if(objs[objs.length-1][0] > canvas.width && debug == true){
+		wallspeed = 10;
+	}else{
+		wallspeed = 2;
+	}
+	wallspeed*=1+(difficulty-1)*0.5;
+//	objs.sort();
+	if(paused == true){
+		wallspeed = 0;
+//		player.velY = 0;
+	}
+	if(objs[objs.length-1][0] <= player.x-75){
+		wallspeed = 0;
+		dif = (player.x-75) - objs[objs.length-1][0]
+		objs[objs.length-1][0]+=dif;
+		objs[objs.length-2][0]+=dif;
+	}else{
+		dist+=wallspeed;
+	}
+	if(objs[objs.length-1][0] == player.x-75){
+		player.velY = 0;
+		$('#won')[0].style.left = '35%';
+		difficulty+=1;
+		_map = _maps[difficulty];
+		_obcoords = _allobcoords[difficulty];
+		tdist = _map[_map.length-1][0]
+		haswon = true;
+		gameWon();
+		return true;
+	}
+	istouching = false;
+	player.y+=player.velY;
+	ctx.fillStyle = player.color.getColor();
+	ctx.fillRect(player.x, player.y, player.width, player.height);
+	for(var o = 0; o<obs.length; o++){
+		ob = obs[o];
+		ob[0]-=wallspeed;
+		if(ob[0] >= -100 && ob[0] <= canvas.width){
+			if(collide(player, ob[0], ob[1], 100, 15) && player.velY < 0){
+				player.velY = 0;
+			}
+			ctx.fillStyle = ob[2].getColor();
+			ctx.fillRect(ob[0], ob[1], 100, 15);
+			if(objs[objs.length-1][0] > canvas.width && debug == true){
+				player.velY = 0;
+			}
+			if(ob[0] < -100){
+//				ob[0] = canvas.width;
+			}
+		}
+	}
+	for(var o = 0; o<objs.length; o++){
+		obj = objs[o];
+		obj[0]-=wallspeed;
+		if(obj[0] >= -100 && obj[0] <= canvas.width){
+			if(intersect(obj[0], obj[1], 100, 17.5)){
+				if(player.velY >= 0){
+					player.velY = 0;
+					istouching = true;
+					jumped = false;
+				}
+	/*			console.log(player.velY);
+				if(player.velY > 0 && obj[1] >= player.y-player.radius){
+					player.y = obj[1]-player.radius;
+					istouching = true;
+				}*/
+			}
+			if(objs[objs.length-1][0] > canvas.width && debug == true){
+				player.velY = 0;
+			}
+			ctx.fillStyle = obj[2].getColor();
+			ctx.fillRect(obj[0], obj[1], 100, 17.5);
+			if(obj[0] < -100){
+	//			obj[0] = canvas.width;
+	//			obj[1] = randInt(0, canvas.height - 17.5);
+	//			obj[2] = new color(randInt(0, 255), randInt(0, 255), randInt(0, 255));
+			}
+		}
+	}
+	if(istouching == false){
+		player.velY+=gravity;
+	}else{
+		player.velY = 0;
+	}
+	if(player.y + player.height >= canvas.height){
+		player.y = canvas.height - player.height;
+		player.velY = 0;
+//		overCol.a = 1;
+//		document.getElementById("gameover").style.color = overCol.getColor();
+		document.getElementById("gameover").style.left = "35%";
+		gameOver();
+		dead = true;
+		return true;
+	}
+	setTimeout(update, 10);
+}
+
+function updateCircle(player){
+	ctx.fillStyle = player.getColor();
+	ctx.beginPath();
+	ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+        ctx.fill();
+}
+
+function gameOver(){
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	if(backCol.a < 1){
+		backCol.a+=0.04;
+		document.body.style.backgroundColor = backCol.getColor();
+	}
+	if(player.color.a > 0){
+		player.color.a -= 0.04;
+		ctx.fillStyle = player.color.getColor();
+        	ctx.fillRect(player.x, player.y, player.width, player.height);
+	}else{
+		return true;
+	}
+	for(var i = 0; i < objs.length; i ++){
+		o = objs[i];
+		if(o[2].a > 0){
+			o[2].a -= 0.04;
+		}
+		ctx.fillStyle = o[2].getColor();
+                ctx.fillRect(o[0], o[1], 100, 17.5);
+	}
+	for(var i = 0; i < obs.length; i ++){
+		o = obs[i];
+		if(o[2].a > 0){
+			o[2].a -= 0.04;
+		}
+		ctx.fillStyle = o[2].getColor();
+                ctx.fillRect(o[0], o[1], 100, 15);
+	}
+	setTimeout(gameOver, 10);
+}
+function gameWon(){
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	if(restarting == true){
+		restarting = false;
+		haswon = false;
+		gravity = 0.25*difficulty;
+		setTimeout(update, 2000);
+		return true;
+	}
+	ctx.fillStyle = player.color.getColor();
+       	ctx.fillRect(player.x, player.y, player.width, player.height);
+	for(var i = 0; i < objs.length; i ++){
+		o = objs[i];
+		ctx.fillStyle = o[2].getColor();
+                ctx.fillRect(o[0], o[1], 100, 17.5);
+	}
+	for(var i = 0; i < obs.length; i ++){
+		o = obs[i];
+		ctx.fillStyle = o[2].getColor();
+                ctx.fillRect(o[0], o[1], 100, 15);
+	}
+	setTimeout(gameWon, 10);
+}
+function getPosition(event){
+	mouseX = event.clientX-canvas.offsetLeft;
+	mouseY = event.clientY-canvas.offsetTop;
+}
+function mouseClick(event){
+	objs.push([mouseX, mouseY, new color(51, 160, 48)]);
+}
+
+window.addEventListener("mousemove", getPosition);
+window.addEventListener("mousedown", mouseClick);
+update();
+//gameOver();
+		</script>
+	</body>
+</html>
