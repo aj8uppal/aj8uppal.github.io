@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+<script src="raphael.2.1.0.min.js"></script>
+<script src="justgage.1.0.1.min.js"></script>
+<script type="text/javascript" src="canvasjs.js"></script>
+<div id="chartContainer" style="height: 300px; width:100%;">
+        </div>
+<script>
+var accessToken = "ad3a95eb603a758af8519a9b2de8f078a79825f6"
+var deviceID = "250033000447343232363230"
+var url = "https://api.spark.io/v1/devices/" + deviceID + "/volts";
+var dps = [];
+var complete = false;
+var chart = new CanvasJS.Chart("chartContainer",{
+   title :{
+            text: "Volts"
+      },
+       data: [{
+             type: "line",
+     dataPoints: dps
+      }]
+});
+var chartvar = 1;
+var xVal = 0;
+                var yVal = 100;
+                var updateInterval = 5;
+                var dataLength = 500; // number of dataPoints visible at any point
+var updateChart = function (yval, count) {
+                        count = count || 1;
+                        // count is number of times loop runs to generate random dataPoints.
+
+                        for (var j = 0; j < count; j++) {
+                                yVal = yval;
+                                dps.push({
+                                        x: xVal,
+                                        y: yVal
+                                });
+                                xVal++;
+                        };
+                        if (dps.length > count)
+                        {
+                                dps.shift();
+                        }
+
+                        chart.render();
+
+                };
+
+                // generates first set of dataPoints
+//		updateChart(3.3, dataLength);
+                // update chart after specified time.
+                setInterval(function(){updateChart(chartvar)}, updateInterval);
+
+function callback(data, status){
+	if(status == "success"){
+		volts = parseFloat(data.result);
+		volts = volts.toFixed(2);
+		chartvar = parseFloat(volts);
+//		g.refresh(volts);
+		setTimeout(getReading, 20);
+	}else{
+		alert("There was a problem");
+	}
+}
+
+function getReading(){
+	$.get(url, {access_token: accessToken}, callback);
+}
+updateChart(chartvar, dataLength);
+getReading();
+</script>
+</head>
+
+<body>
+<div id="chartContainer" style="height: 300px; width:100%;">
+        </div>
+
+</body>
+</html>
