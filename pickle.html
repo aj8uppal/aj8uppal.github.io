@@ -435,7 +435,7 @@ function removeOverlay() {
                                                                                               var avg = sum/unique.length;
                                                                                               vals2 = dps2.map(function(x){return x["y"]});
                                                                                               var unique2 = [];
-                                                                                              $.each(vals, function(i, el){
+                                                                                              $.each(vals2, function(i, el){
                                                                                                      if($.inArray(el, unique2) === -1) unique2.push(el);
                                                                                                      });
                                                                                                      var sum2 = unique2.reduce(function(pv, cv) { return pv + cv; }, 0);
