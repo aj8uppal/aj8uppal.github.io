@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+            <meta charset="utf-8">
+                <title>Ground Overlays</title>
+                <style>
+                    html, body, #map-canvas {
+                        height: 100%;
+                        margin: 0px;
+                        padding: 0px
+                    }
+                </style>
+                <style>
+                    p {
+                        font-family: Belleza;
+                    }
+                    center {
+                        margin: 25px;
+                    }
+                .fade {
+                    font-family: Belleza;
+                    color: gainsboro;
+                    background-color: teal;
+                    border-radius: 3px;
+                    padding: 10px;
+                    margin: 20px;
+                    height: 35px;
+                    text-align: center;
+                    vertical-align: middle;
+                    display: inline;
+                    float: center;
+                    cursor: pointer;
+                    transition: 1000ms;
+                    opacity: 0;
+                }
+                .fade:hover {
+                    color: teal;
+                    background-color: gainsboro;
+                }
+                #maximum2, #current2 {
+                    color: #00628B;
+                }
+                #maximum, #current {
+                    color: #81A594;
+                }
+                </style>
+                <script src="http://maps.googleapis.com/maps/api/js"></script>
+                <link href='http://fonts.googleapis.com/css?family=Belleza ' rel='stylesheet' type='text/css'>
+                    <script src="http://code.jquery.com/jquery-2.1.4.js" type="text/javascript" charset="utf-8"></script>
+                    <script type="text/javascript" src="canvasjs.js"></script>
+                    <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script>
+                <script>
+                    var maximum = 0;
+                    var maximum2 = 0;
+var ids = [];
+var selected = false;
+photoncenters = {'3b0042000447343233323032': [38.897676, -77.036530], '250033000447343232363230': [19.075984, 72.877656], '48ff6a065067555036252287': [12.965583, 77.740859], '1d0021000447343233323032': [28.613939, 77.209021], '310024000747343337373738': [37.806816, -122.431488]}
+function convert(num){
+    return (num-0.2062)/0.0009911;
+}
+                
+function getCity(lat, long){
+    displayLocation(lat, long);
+    return city;
+}
+                var city;
+                function displayLocation(latitude,longitude){
+                    var request = new XMLHttpRequest();
+                    
+                    var method = 'GET';
+                    var url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng='+latitude+','+longitude+'&sensor=true';
+                    var async = true;
+                    
+                    request.open(method, url, async);
+                    request.onreadystatechange = function(){
+                        if(request.readyState == 4 && request.status == 200){
+                            var data = JSON.parse(request.responseText);
+                            var address = data.results[0];
+                            city = address.formatted_address;
+                        }
+                    };
+                    request.send();
+                };
+                
+                var successCallback = function(position){
+                    var x = position.coords.latitude;
+                    var y = position.coords.longitude;
+                    displayLocation(x,y);
+                };
+                
+                var errorCallback = function(error){
+                    var errorMessage = 'Unknown error';
+                    switch(error.code) {
+                        case 1:
+                        errorMessage = 'Permission denied';
+                        break;
+                        case 2:
+                        errorMessage = 'Position unavailable';
+                        break;
+                        case 3:
+                        errorMessage = 'Timeout';
+                        break;
+                    }
+                    document.write(errorMessage);
+                };
+                
+                var options = {
+                    enableHighAccuracy: true,
+                    timeout: 1000,
+                    maximumAge: 0
+                };
+window.onload = function(){
+    center = document.createElement("center");
+
+    //username = prompt("Enter your username (netnut@gmail.com) ");
+    //password = prompt("Enter your password (kd9gmc01) ");
+    //if(username == "" && password == ""){
+        username = "netnut@gmail.com";password = "kd9gmc01";
+    //}
+    spark.login({ username: username, password: password});
+    initialize('250033000447343232363230');
+}
+var token = 'YOUR_ACCESS_TOKEN_HERE';
+var devices = [];
+center = document.createElement("center");
+function sleepFor( sleepDuration ){
+    var now = new Date().getTime();
+    while(new Date().getTime() < now + sleepDuration){ /* do nothing */ }
+}
+spark.on('login', function() {
+     var devicesPr = spark.listDevices();
+     
+     devicesPr.then(
+                    function(devs){
+                    devices = devs;
+                    
+//                    document.body.insertBefore(center, document.body.firstChild);
+//                    for(var d = 0; d < devices.length; d++){
+//                    device = devices[d];
+//                    div = document.createElement("div");
+//                    div.className = "fade";
+////                    displayLocation(photoncenters[device.id][0], photoncenters[device.id][1]);
+////                    setTimeout(function(){div.innerHTML = device.name+" ("+city.split(",")[city.split(",").length-3].slice(1, Math.POSITIVE_INFINITY)+")"}, 250);
+//                    div.innerHTML = device.name;
+//                    div.title = "id: "+device.id;
+//                    div.onclick = function(){initialize(this.title.split(" ")[1]);start(this.title.split(" ")[1], this.innerHTML);for(var d=0;d<center.childNodes.length;d++){de=center.childNodes[d];de.style.opacity="0";setTimeout(deleteit, 1000)}};
+//                    center.appendChild(div);
+//                    }
+                    },
+                    function(err) {
+                    console.log('List devices call failed: ', err);
+                    }
+                    );
+//     setTimeout(opaque, 200);
+     });
+//     function opaque(){
+//         for(var d=0;d<center.childNodes.length;d++){de=center.childNodes[d];de.style.opacity="1";};
+//     }
+                    </script>
+            <script>
+                var mouseX = 0;
+                var mouseY = 0;
+var photon;
+var map;
+var centerx;
+var centery;
+var imageBounds;
+var photonlgs;
+factor = 3333;
+
+
+function initialize(id) {
+    centerx = photoncenters[id][0];
+    centery = photoncenters[id][1];
+    var sanfrancisco = new google.maps.LatLng(centerx, centery);
+
+   var mapOptions = {
+       zoom: 4,
+       center: sanfrancisco
+   };
+   
+   map = new google.maps.Map(document.getElementById('map-canvas'),
+                             mapOptions);
+     
+     google.maps.event.addListener(map, 'center_changed', function() {
+                                   // 3 seconds after the center of the map has changed, pan back to the
+                                   // marker.
+                                   $("#chartContainer")[0].style.opacity = "0";
+                                   $("#chartContainer")[0].style.zIndex = "-1";
+                                   $("#maximum")[0].style.opacity = "0";
+                                   $("#maximum")[0].style.zIndex = "-1";
+                                   $("#maximum2")[0].style.opacity = "0";
+                                   $("#maximum2")[0].style.zIndex = "-1";
+                                   $("#current")[0].style.opacity = "0";
+                                   $("#current")[0].style.zIndex = "-1";
+                                   $("#current2")[0].style.opacity = "0";
+                                   $("#current2")[0].style.zIndex = "-1";
+                                   $("#overlay")[0].style.opacity = "0";
+                                   $("#overlay")[0].style.zIndex = "-1";
+                                   
+                                   });
+ photons = [];
+ for(var devid in photoncenters){
+     coords = photoncenters[devid];
+     imageBounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(coords[0]-factor*0.00075, coords[1]-factor*0.00075),
+        new google.maps.LatLng(coords[0]+factor*0.00075, coords[1]+factor*0.00075));
+     photon = new google.maps.GroundOverlay(
+       'http://i.imgur.com/eZJ74Ff.png',
+       imageBounds);
+       google.maps.event.addListener(photon, "click", function (e) {
+                                     
+                                     //lat and lng is available in e object
+                                     var latLng = e.latLng;
+                                     coord = [latLng.lat(), latLng.lng()];
+                                     for(var key in photoncenters){
+                                        if(coord[0] >= photoncenters[key][0]-factor*0.00075 && coord[0] <= photoncenters[key][0]+factor*0.00075 && coord[1] >= photoncenters[key][1]-factor*0.00075 && coord[1] <= photoncenters[key][1]+factor*0.00075){
+                                     maximum = 0;
+                                     maximum2 = 0;
+                                     url = "https://api.spark.io/v1/devices/" + key + "/volts";
+                                     url2 = "https://api.spark.io/v1/devices/" + key + "/analog";
+                                     $("#chartContainer")[0].style.left = mouseX+"px";
+                                     $("#chartContainer")[0].style.top = mouseY+"px";
+                                     $("#overlay")[0].style.right = (window.innerWidth - (parseInt($('#chartContainer')[0].style.width.split("px")[0])+mouseX))+"px";
+                                     $("#overlay")[0].style.top = mouseY+186+"px";
+                                     $("#maximum")[0].style.left = mouseX+3+"px";
+                                     $("#maximum")[0].style.top = mouseY+200-70+"px";
+                                     $("#maximum2")[0].style.right = (window.innerWidth - (parseInt($('#chartContainer')[0].style.width.split("px")[0])+mouseX))+3+"px";
+                                     $("#maximum2")[0].style.top = mouseY+200-70+"px";
+                                     $("#current")[0].style.left = mouseX+3+"px";
+                                     $("#current")[0].style.top = mouseY+200-50+"px";
+                                     $("#current2")[0].style.right = (window.innerWidth - (parseInt($('#chartContainer')[0].style.width.split("px")[0])+mouseX))+3+"px";
+                                     $("#current2")[0].style.top = mouseY+200-50+"px";
+                                     if($("#chartContainer")[0].style.opacity == "0"){
+                                     $("#chartContainer")[0].style.opacity = "1";
+                                     $("#chartContainer")[0].style.zIndex = "99";
+                                     $("#maximum")[0].style.opacity = "1";
+                                     $("#maximum")[0].style.zIndex = "100";
+                                     $("#maximum2")[0].style.opacity = "1";
+                                     $("#maximum2")[0].style.zIndex = "100";
+                                     $("#current")[0].style.opacity = "1";
+                                     $("#current")[0].style.zIndex = "100";
+                                     $("#current2")[0].style.opacity = "1";
+                                     $("#current2")[0].style.zIndex = "100";
+                                     $("#overlay")[0].style.opacity = "1";
+                                     $("#overlay")[0].style.zIndex = "101";
+                                     }else{
+                                     $("#chartContainer")[0].style.opacity = "0";
+                                     $("#chartContainer")[0].style.zIndex = "-1";
+                                     $("#maximum")[0].style.opacity = "0";
+                                     $("#maximum")[0].style.zIndex = "-1";
+                                     $("#maximum2")[0].style.opacity = "0";
+                                     $("#maximum2")[0].style.zIndex = "-1";
+                                     $("#current")[0].style.opacity = "0";
+                                     $("#current")[0].style.zIndex = "-1";
+                                     $("#current2")[0].style.opacity = "0";
+                                     $("#current2")[0].style.zIndex = "-1";
+                                     $("#overlay")[0].style.opacity = "0";
+                                     $("#overlay")[0].style.zIndex = "-1";
+                                     }
+                                     spark.getDevice(key, function(err, device) {
+                                                     
+                                                     start(key, device.name)
+                                                     });
+                                         }
+                                     }
+//                                     alert();
+                                     
+                                     });
+       photon.setMap(map);
+       photons.push(photon);
+       
+ }
+}
+function deleteit(){
+    for(var d = 0; d < center.childNodes.length; d++){
+        e = center.childNodes[d];
+        e.setAttribute("style", "display:none");
+    }
+    document.body.removeChild(center);
+}
+            
+function addOverlay() {
+    imageBounds = new google.maps.LatLngBounds(
+       new google.maps.LatLng(centerx-(100*0.00075*(18-map.getZoom())), centery-(100*0.00075*(18-map.getZoom()))),
+       new google.maps.LatLng(centerx+(100*0.00075*(18-map.getZoom())), centery+(100*0.00075*(18-map.getZoom()))));
+    photon = new google.maps.GroundOverlay(
+      'photon.png',
+      imageBounds);
+      photon.setMap(map);
+}
+
+function removeOverlay() {
+    photon.setMap(null);
+}
+            function movement(event){
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+            }
+            window.addEventListener("mousemove", movement, false);
+
+                    </script>
+            <div id="chartContainer" style="height: 200px; width:400px;opacity: 0;position: absolute;"></div>
+            <p id="current" style="position: absolute;opacity: 0"></p>
+            <p id="current2" style="position: absolute;opacity: 0"></p>
+            <p id="maximum" style="position: absolute;opacity: 0"></p>
+            <p id="maximum2" style="position: absolute;opacity: 0"></p>
+            <div id="overlay" style="position: absolute; width: 75px; height: 14px; background-color: #E6E6DC; opacity: 0;"></div>
+            <center></center>
+                
+                <script>
+                    function deleteit(){
+                        for(var d = 0; d < center.childNodes.length; d++){
+                            e = center.childNodes[d];
+                            e.setAttribute("style", "display:none");
+                        }
+                    }
+                function start(id, name){
+                    var accessToken = "ad3a95eb603a758af8519a9b2de8f078a79825f6"
+                    var deviceID1 = id;
+//                    var url = "https://api.spark.io/v1/devices/" + deviceID1 + "/volts";
+//                    var url2 = "https://api.spark.io/v1/devices/" + deviceID1 + "/analog";
+                    var dps = [];
+                    var dps2 = [];
+                    var complete = false;
+                    var startTime = new Date();
+                    var chart = new CanvasJS.Chart("chartContainer",{
+                                                   animationEnabled: true,
+                                                   zoomEnabled: true,
+                                                   panEnabled: true,
+                                                   backgroundColor: "#E6E6DC",
+                                                   axisX: {
+                                                   title: "Elapsed Time (seconds)",
+                                                   fontFamily: "Belleza",
+                                                   fontWeight: "normal"
+                                                   },
+                                                   axisY: {						
+                                                   title: "Volts",
+                                                   fontFamily: "Belleza",
+                                                   gridColor: "#FFFFFF",
+//                                                   interval: 0.5,
+                                                   fontWeight: "normal"
+                                                   },
+                                                   axisY2: {
+                                                   title: "Analog Units",
+                                                   fontFamily: "Belleza",
+//                                                   interval: 1,
+                                                   fontWeight: "normal"
+                                                   },
+                                                   title :{
+                                                   text: "Analog/Volt Levels for "+name,
+                                                   fontFamily: "Belleza",
+                                                   fontWeight: "normal"
+                                                   },
+                                                   legend: {
+                                                   fontSize: 12,
+                                                   fontFamily: "Belleza"
+                                                   },
+                                                   data: [{type: "line", name: "Analog", color: "#81A594",axisYType: "secondary", dataPoints: dps2, showInLegend: true}, {
+                                                          type: "line", name: "Volts", color: "#00628B",
+                                                          dataPoints: dps, showInLegend: true
+                                                          }]
+                                                   });
+                                                                                   chartvar = 1;
+                                                                                   chartvar2 = 1;
+                                                                                   var xVal = 0;
+                                                                                   var yVal = 1;
+                                                                                   var xVal2 = 0;
+                                                                                   var yVal2 = 5;
+                                                                                   var updateInterval = 100;
+                                                                                   var dataLength = 125; // number of dataPoints visible at any point
+                                                                                   var updateChart = function (yval, yval2, count) {
+                                                                                       count = count || 1;
+                                                                                       // count is number of times loop runs to generate random dataPoints.
+                                                                                       
+                                                                                       for (var j = 0; j < count; j++) {
+                                                                                           yVal = yval;
+                                                                                           yVal2 = yval2;
+                                                                                           dps.push({
+                                                                                                    x: xVal,
+                                                                                                    y: yVal
+                                                                                                    });
+                                                                                                    dps2.push({
+                                                                                                              x: xVal,
+                                                                                                              y: yVal2
+                                                                                                              });
+                                                                                                              xVal/*++*/ = (new Date() - startTime)/1000;
+                                                                                       };
+                                                                                       if (dps.length > count)
+                                                                                       {
+                                                                                           dps.shift();
+                                                                                       }
+                                                                                       if (dps2.length > count)
+                                                                                       {
+                                                                                           dps2.shift();
+                                                                                       }
+                                                                                       
+                                                                                       chart.render();
+                                                                                       if(maximum == 0){
+                                                                                           $('#maximum')[0].innerHTML = "Max: ~";
+                                                                                       }else{
+                                                                                           $('#maximum')[0].innerHTML = "Max: "+maximum;
+                                                                                       }
+                                                                                       if(maximum2 == 0){
+                                                                                           $('#maximum2')[0].innerHTML = "Max: ~";
+                                                                                       }else{
+                                                                                           $('#maximum2')[0].innerHTML = "Max: "+maximum2;
+                                                                                       }
+                                                                                       $('#current')[0].innerHTML = "Current: "+yVal2;
+                                                                                       $('#current2')[0].innerHTML = "Current: "+yVal;
+                                                                                       setTimeout(function(){updateChart(chartvar, chartvar2)}, updateInterval);
+                                                                                   };
+                                                                                   chart2var = 1;
+                                                                                   chart2var2 = 1;
+                                                                                   var x2Val = 0;
+                                                                                   var y2Val = 1;
+                                                                                   var x2Val2 = 0;
+                                                                                   var y2Val2 = 5;
+                                                                                   
+                                                                                   
+                                                                                   // generates first set of dataPoints
+                                                                                   //		updateChart(, dataLength);
+                                                                                   // update chart after specified time.
+                                                                                   
+                                                                                   function callback(data, status){
+                                                                                       if(status == "success"){
+                                                                                           volts = parseFloat(data.result);
+                                                                                           volts = volts.toFixed(2);
+                                                                                           chartvar = parseFloat(volts)
+                                                                                           if(chartvar > maximum2){
+                                                                                               maximum2 = chartvar;
+                                                                                           }
+                                                                                           //		g.refresh(volts);
+                                                                                           setTimeout(getReading, 20);
+                                                                                       }else{
+                                                                                           alert("There was a problem");
+                                                                                       }
+                                                                                   }
+                                                                                   function callback2(data, status){
+                                                                                       if(status == "success"){
+                                                                                           ana = parseFloat(data.result)/400;
+                                                                                           ana = ana.toFixed(2);
+                                                                                           chartvar2 = parseFloat(ana);
+                                                                                           if(chartvar2 > maximum){
+                                                                                               maximum = chartvar2;
+                                                                                           }
+                                                                                           //		g.refresh(volts);
+                                                                                           setTimeout(getReading2, 20);
+                                                                                       }else{
+                                                                                           alert("There was a problem");
+                                                                                       }
+                                                                                   }
+                                                                                   
+                                                                                   function getReading(){
+                                                                                       $.get(url, {access_token: accessToken}, callback);
+                                                                                   }
+                                                                                   function getReading2(){
+                                                                                       $.get(url2, {access_token: accessToken}, callback2);
+                                                                                   }
+                                                                                   updateChart(chartvar, chartvar2, dataLength);
+                                                                                   getReading();
+                                                                                   getReading2();
+                }
+                </script>
+                </head>
+    <body>
+        <div id="map-canvas"></div>
+    </body>
+</html>
