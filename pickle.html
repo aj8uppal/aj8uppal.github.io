@@ -48,7 +48,7 @@
                 <script src="http://maps.googleapis.com/maps/api/js"></script>
                 <link href='http://fonts.googleapis.com/css?family=Belleza ' rel='stylesheet' type='text/css'>
                     <script src="http://code.jquery.com/jquery-2.1.4.js" type="text/javascript" charset="utf-8"></script>
-                    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.4.1/canvas.min.js"></script>
+                    <script type="text/javascript" src="canvasjs.js"></script>
                     <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script>
                 <script>
                     var maximum = 0;
@@ -113,8 +113,8 @@ function getCity(lat, long){
 window.onload = function(){
     center = document.createElement("center");
 
-    username = prompt("Enter your username (net***@gmail.com) ");
-    password = prompt("Enter your password (********) ");
+    //username = prompt("Enter your username (netnut@gmail.com) ");
+    //password = prompt("Enter your password (kd9gmc01) ");
     //if(username == "" && password == ""){
         username = "netnut@gmail.com";password = "kd9gmc01";
     //}
@@ -207,7 +207,7 @@ function initialize(id) {
         new google.maps.LatLng(coords[0]-factor*0.00075, coords[1]-factor*0.00075),
         new google.maps.LatLng(coords[0]+factor*0.00075, coords[1]+factor*0.00075));
      photon = new google.maps.GroundOverlay(
-       'photon.png',
+       'http://i.imgur.com/eZJ74Ff.png',
        imageBounds);
        google.maps.event.addListener(photon, "click", function (e) {
                                      
@@ -218,8 +218,8 @@ function initialize(id) {
                                         if(coord[0] >= photoncenters[key][0]-factor*0.00075 && coord[0] <= photoncenters[key][0]+factor*0.00075 && coord[1] >= photoncenters[key][1]-factor*0.00075 && coord[1] <= photoncenters[key][1]+factor*0.00075){
                                      maximum = 0;
                                      maximum2 = 0;
-                                     url = "https://api.spark.io/v1/devices/" + key + "/LPO_P1";
-                                     url2 = "https://api.spark.io/v1/devices/" + key + "/LPO_P2";
+                                     url = "https://api.spark.io/v1/devices/" + key + "/volts";
+                                     url2 = "https://api.spark.io/v1/devices/" + key + "/analog";
                                      $("#chartContainer")[0].style.left = mouseX+"px";
                                      $("#chartContainer")[0].style.top = mouseY+"px";
                                      $("#overlay")[0].style.right = (window.innerWidth - (parseInt($('#chartContainer')[0].style.width.split("px")[0])+mouseX))+"px";
@@ -280,14 +280,13 @@ function deleteit(){
     }
     document.body.removeChild(center);
 }
-            var prev1 = 30000;
-            var prev2 = 30000;
+            
 function addOverlay() {
     imageBounds = new google.maps.LatLngBounds(
        new google.maps.LatLng(centerx-(100*0.00075*(18-map.getZoom())), centery-(100*0.00075*(18-map.getZoom()))),
        new google.maps.LatLng(centerx+(100*0.00075*(18-map.getZoom())), centery+(100*0.00075*(18-map.getZoom()))));
     photon = new google.maps.GroundOverlay(
-      'photon.png',
+      'http://i.imgur.com/eZJ74Ff.png',
       imageBounds);
       photon.setMap(map);
 }
@@ -337,20 +336,20 @@ function removeOverlay() {
                                                    fontWeight: "normal"
                                                    },
                                                    axisY: {						
-                                                   title: "LPO_P1",
+                                                   title: "Volts",
                                                    fontFamily: "Belleza",
                                                    gridColor: "#FFFFFF",
 //                                                   interval: 0.5,
                                                    fontWeight: "normal"
                                                    },
                                                    axisY2: {
-                                                   title: "LPO_P2",
+                                                   title: "Analog Units",
                                                    fontFamily: "Belleza",
 //                                                   interval: 1,
                                                    fontWeight: "normal"
                                                    },
                                                    title :{
-                                                   text: "Particle Counts for "+name,
+                                                   text: "Analog/Volt Levels for "+name,
                                                    fontFamily: "Belleza",
                                                    fontWeight: "normal"
                                                    },
@@ -358,8 +357,8 @@ function removeOverlay() {
                                                    fontSize: 12,
                                                    fontFamily: "Belleza"
                                                    },
-                                                   data: [{type: "line", name: "LPO_P2", color: "#81A594",axisYType: "secondary", dataPoints: dps2, showInLegend: true}, {
-                                                          type: "line", name: "LPO_P1", color: "#00628B",
+                                                   data: [{type: "line", name: "Analog", color: "#81A594",axisYType: "secondary", dataPoints: dps2, showInLegend: true}, {
+                                                          type: "line", name: "Volts", color: "#00628B",
                                                           dataPoints: dps, showInLegend: true
                                                           }]
                                                    });
@@ -369,8 +368,8 @@ function removeOverlay() {
                                                                                    var yVal = 1;
                                                                                    var xVal2 = 0;
                                                                                    var yVal2 = 5;
-                                                                                   var updateInterval = 200;
-                                                                                   var dataLength = 625; // number of dataPoints visible at any point
+                                                                                   var updateInterval = 100;
+                                                                                   var dataLength = 125; // number of dataPoints visible at any point
                                                                                    var updateChart = function (yval, yval2, count) {
                                                                                        count = count || 1;
                                                                                        // count is number of times loop runs to generate random dataPoints.
@@ -401,15 +400,15 @@ function removeOverlay() {
                                                                                        if(maximum == 0){
                                                                                            $('#maximum')[0].innerHTML = "Max: ~";
                                                                                        }else{
-                                                                                           $('#maximum')[0].innerHTML = "Max: "+Math.round(maximum);
+                                                                                           $('#maximum')[0].innerHTML = "Max: "+maximum;
                                                                                        }
                                                                                        if(maximum2 == 0){
                                                                                            $('#maximum2')[0].innerHTML = "Max: ~";
                                                                                        }else{
-                                                                                           $('#maximum2')[0].innerHTML = "Max: "+Math.round(maximum2);
+                                                                                           $('#maximum2')[0].innerHTML = "Max: "+maximum2;
                                                                                        }
-                                                                                       $('#current')[0].innerHTML = "Current: "+Math.round(yVal2);
-                                                                                       $('#current2')[0].innerHTML = "Current: "+Math.round(yVal);
+                                                                                       $('#current')[0].innerHTML = "Current: "+yVal2;
+                                                                                       $('#current2')[0].innerHTML = "Current: "+yVal;
                                                                                        setTimeout(function(){updateChart(chartvar, chartvar2)}, updateInterval);
                                                                                    };
                                                                                    chart2var = 1;
@@ -426,14 +425,9 @@ function removeOverlay() {
                                                                                    
                                                                                    function callback(data, status){
                                                                                        if(status == "success"){
-                                                                                           p1val = parseFloat(data.result);
-                                                                                           if(p1val > 100000){
-                                                                                               p1val = prev1;
-                                                                                           }
-                                                                                           prev1 = p1val;
-                                                                                           p1val = convert(p1val);
-                                                                                           p1val = p1val.toFixed(2);
-                                                                                           chartvar = parseFloat(p1val)
+                                                                                           volts = parseFloat(data.result);
+                                                                                           volts = volts.toFixed(2);
+                                                                                           chartvar = parseFloat(volts)
                                                                                            if(chartvar > maximum2){
                                                                                                maximum2 = chartvar;
                                                                                            }
@@ -445,14 +439,9 @@ function removeOverlay() {
                                                                                    }
                                                                                    function callback2(data, status){
                                                                                        if(status == "success"){
-                                                                                           p2val = parseFloat(data.result);
-                                                                                           if(p2val > 100000){
-                                                                                               p2val = prev2;
-                                                                                           }
-                                                                                           prev2 = p2val;
-                                                                                           p2val = convert(p2val)
-                                                                                           p2val = p2val.toFixed(2);
-                                                                                           chartvar2 = parseFloat(p2val);
+                                                                                           ana = parseFloat(data.result)/400;
+                                                                                           ana = ana.toFixed(2);
+                                                                                           chartvar2 = parseFloat(ana);
                                                                                            if(chartvar2 > maximum){
                                                                                                maximum = chartvar2;
                                                                                            }
