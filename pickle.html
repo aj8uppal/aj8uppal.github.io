@@ -38,10 +38,10 @@
                     color: teal;
                     background-color: gainsboro;
                 }
-                #maximum2, #current2 {
+                #maximum2, #current2, #average2 {
                     color: #00628B;
                 }
-                #maximum, #current {
+                #maximum, #current, #average {
                     color: #81A594;
                 }
                 </style>
@@ -196,6 +196,10 @@ function initialize(id) {
                                    $("#current")[0].style.zIndex = "-1";
                                    $("#current2")[0].style.opacity = "0";
                                    $("#current2")[0].style.zIndex = "-1";
+                                   $("#average")[0].style.opacity = "0";
+                                   $("#average")[0].style.zIndex = "-1";
+                                   $("#average2")[0].style.opacity = "0";
+                                   $("#average2")[0].style.zIndex = "-1";
                                    $("#overlay")[0].style.opacity = "0";
                                    $("#overlay")[0].style.zIndex = "-1";
                                    
@@ -225,13 +229,17 @@ function initialize(id) {
                                      $("#overlay")[0].style.right = (window.innerWidth - (parseInt($('#chartContainer')[0].style.width.split("px")[0])+mouseX))+"px";
                                      $("#overlay")[0].style.top = mouseY+186+"px";
                                      $("#maximum")[0].style.left = mouseX+3+"px";
-                                     $("#maximum")[0].style.top = mouseY+200-70+"px";
+                                     $("#maximum")[0].style.top = mouseY+200-76+"px";
                                      $("#maximum2")[0].style.right = (window.innerWidth - (parseInt($('#chartContainer')[0].style.width.split("px")[0])+mouseX))+3+"px";
-                                     $("#maximum2")[0].style.top = mouseY+200-70+"px";
+                                     $("#maximum2")[0].style.top = mouseY+200-76+"px";
                                      $("#current")[0].style.left = mouseX+3+"px";
-                                     $("#current")[0].style.top = mouseY+200-50+"px";
+                                     $("#current")[0].style.top = mouseY+200-56+"px";
                                      $("#current2")[0].style.right = (window.innerWidth - (parseInt($('#chartContainer')[0].style.width.split("px")[0])+mouseX))+3+"px";
-                                     $("#current2")[0].style.top = mouseY+200-50+"px";
+                                     $("#current2")[0].style.top = mouseY+200-56+"px";
+                                     $("#average")[0].style.left = mouseX+3+"px";
+                                     $("#average")[0].style.top = mouseY+200-36+"px";
+                                     $("#average2")[0].style.right = (window.innerWidth - (parseInt($('#chartContainer')[0].style.width.split("px")[0])+mouseX))+3+"px";
+                                     $("#average2")[0].style.top = mouseY+200-36+"px";
                                      if($("#chartContainer")[0].style.opacity == "0"){
                                      $("#chartContainer")[0].style.opacity = "1";
                                      $("#chartContainer")[0].style.zIndex = "99";
@@ -243,6 +251,10 @@ function initialize(id) {
                                      $("#current")[0].style.zIndex = "100";
                                      $("#current2")[0].style.opacity = "1";
                                      $("#current2")[0].style.zIndex = "100";
+                                     $("#average")[0].style.opacity = "1";
+                                     $("#average")[0].style.zIndex = "102";
+                                     $("#average2")[0].style.opacity = "1";
+                                     $("#average2")[0].style.zIndex = "102";
                                      $("#overlay")[0].style.opacity = "1";
                                      $("#overlay")[0].style.zIndex = "101";
                                      }else{
@@ -256,6 +268,10 @@ function initialize(id) {
                                      $("#current")[0].style.zIndex = "-1";
                                      $("#current2")[0].style.opacity = "0";
                                      $("#current2")[0].style.zIndex = "-1";
+                                     $("#average")[0].style.opacity = "0";
+                                     $("#average")[0].style.zIndex = "-1";
+                                     $("#average2")[0].style.opacity = "0";
+                                     $("#average2")[0].style.zIndex = "-1";
                                      $("#overlay")[0].style.opacity = "0";
                                      $("#overlay")[0].style.zIndex = "-1";
                                      }
@@ -307,6 +323,8 @@ function removeOverlay() {
             <p id="current2" style="position: absolute;opacity: 0"></p>
             <p id="maximum" style="position: absolute;opacity: 0"></p>
             <p id="maximum2" style="position: absolute;opacity: 0"></p>
+            <p id="average" style="position: absolute;opacity: 0"></p>
+            <p id="average2" style="position: absolute;opacity: 0"></p>
             <div id="overlay" style="position: absolute; width: 75px; height: 14px; background-color: #E6E6DC; opacity: 0;"></div>
             <center></center>
                 
@@ -408,8 +426,24 @@ function removeOverlay() {
                                                                                        }else{
                                                                                            $('#maximum2')[0].innerHTML = "Max: "+Math.round(maximum2);
                                                                                        }
+                                                                                       vals = dps.map(function(x){return x["y"]});
+                                                                                       var unique = [];
+                                                                                       $.each(vals, function(i, el){
+                                                                                              if($.inArray(el, unique) === -1) unique.push(el);
+                                                                                              });
+                                                                                              var sum = unique.reduce(function(pv, cv) { return pv + cv; }, 0);
+                                                                                              var avg = sum/unique.length;
+                                                                                              vals2 = dps2.map(function(x){return x["y"]});
+                                                                                              var unique2 = [];
+                                                                                              $.each(vals, function(i, el){
+                                                                                                     if($.inArray(el, unique2) === -1) unique2.push(el);
+                                                                                                     });
+                                                                                                     var sum2 = unique2.reduce(function(pv, cv) { return pv + cv; }, 0);
+                                                                                                     var avg2 = sum2/unique2.length;
                                                                                        $('#current')[0].innerHTML = "Current: "+Math.round(yVal2);
                                                                                        $('#current2')[0].innerHTML = "Current: "+Math.round(yVal);
+                                                                                       $('#average')[0].innerHTML = "Average: "+Math.round(avg);
+                                                                                       $('#average2')[0].innerHTML = "Average: "+Math.round(avg2);
                                                                                        setTimeout(function(){updateChart(chartvar, chartvar2)}, updateInterval);
                                                                                    };
                                                                                    chart2var = 1;
