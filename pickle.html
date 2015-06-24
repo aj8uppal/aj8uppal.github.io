@@ -427,19 +427,19 @@ function removeOverlay() {
                                                                                            $('#maximum2')[0].innerHTML = "Max: "+Math.round(maximum2);
                                                                                        }
                                                                                        vals = dps.map(function(x){return x["y"]});
-                                                                                       var unique = [];
+                                                                                       unique = [];
                                                                                        $.each(vals, function(i, el){
                                                                                               if($.inArray(el, unique) === -1) unique.push(el);
                                                                                               });
-                                                                                              var sum = unique.reduce(function(pv, cv) { return pv + cv; }, 0);
-                                                                                              var avg = sum/unique.length;
+                                                                                              sum = unique.reduce(function(pv, cv) { return pv + cv; }, 0);
+                                                                                              avg = sum/unique.length;
                                                                                               vals2 = dps2.map(function(x){return x["y"]});
-                                                                                              var unique2 = [];
+                                                                                              unique2 = [];
                                                                                               $.each(vals2, function(i, el){
                                                                                                      if($.inArray(el, unique2) === -1) unique2.push(el);
                                                                                                      });
-                                                                                                     var sum2 = unique2.reduce(function(pv, cv) { return pv + cv; }, 0);
-                                                                                                     var avg2 = sum2/unique2.length;
+                                                                                                     sum2 = unique2.reduce(function(pv, cv) { return pv + cv; }, 0);
+                                                                                                     avg2 = sum2/unique2.length;
                                                                                        $('#current')[0].innerHTML = "Current: "+Math.round(yVal2);
                                                                                        $('#current2')[0].innerHTML = "Current: "+Math.round(yVal);
                                                                                        $('#average')[0].innerHTML = "Average: "+Math.round(avg);
