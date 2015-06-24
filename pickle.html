@@ -466,6 +466,9 @@ function removeOverlay() {
                                                                                                console.log(p1val+" "+prev1);
                                                                                                p1val = prev1;
                                                                                            }
+                                                                                           if(p1val < 0){
+                                                                                               p1val = 0;
+                                                                                           }
                                                                                            prev1 = p1val;
                                                                                            p1val = p1val.toFixed(2);
                                                                                            chartvar = parseFloat(p1val)
@@ -485,6 +488,9 @@ function removeOverlay() {
                                                                                            if(p2val > 100000){
                                                                                                console.log(p2val+" "+prev2);
                                                                                                p2val = prev2;
+                                                                                           }
+                                                                                           if(p2val < 0){
+                                                                                               p2val = 0;
                                                                                            }
                                                                                            prev2 = p2val;
                                                                                            p2val = p2val.toFixed(2);
