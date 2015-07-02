@@ -58,7 +58,8 @@ function len(objec){
 }
 levelReached = 1;
 create = false;
-var username = prompt("Enter your username (enter nothing for a guest account): ");
+guest = true;
+/*var username = prompt("Enter your username (enter nothing for a guest account): ");
 if(localStorage.credentials == undefined){
 	creds = [];
 	localStorage.credentials = JSON.stringify(creds);
@@ -106,7 +107,7 @@ if(usernames.length == 0){
 }
 }else{
 guest = true;
-}
+}*/
 //difficulty = levelReached;
 var debug = false;
 function color(r, g, b){
