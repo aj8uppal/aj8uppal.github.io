@@ -11,10 +11,26 @@ html, body, div, canvas {
     padding: 0;
 }
 html {
-    background-color: CadetBlue;
+    background-color: DarkCyan;
 }
 canvas {
 	display: block;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'AJ';
+  font-style: normal;
+  font-weight: 400;
+  src: local('AJ'), local('AJ-Regular'), url(font.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'AJ';
+  font-style: normal;
+  font-weight: 400;
+  src: local('AJ'), local('AJ-Regular'), url(font.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 body, #gameover, #won, img {
 	transition: 750ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -22,395 +38,489 @@ body, #gameover, #won, img {
 img:hover {
 	transform: rotate(180deg);
 }
+.complete {
+	color:gainsboro;
+	background-color:mediumaquamarine;
+}
+.incomplete {
+	color:mediumaquamarine;
+	background-color:gainsboro;
+}
+/*.incomplete:hover {
+	background-color:gainsboro;
+	color:mediumaquamarine;
+}
+.complete:hover {
+	background-color:mediumaquamarine;
+	color:gainsboro;
+}*/
+.level {
+	position: absolute;
+	width: 75px;
+	height: 35px;
+	font-size: 36px;
+	transition: 750ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+/*	background-color: black;
+	color: lavender;*/
+}
+/*.level: hover {
+	background-color: lavender;
+	color: black;
+}*/	
 </style>
 	</head>
 	<body>
-		<div id="score" style="top: 5%; left:7.5%;position: absolute;font-family: 'Belleza';font-size:36px"></div>
 		<center>
-		<div id="gameover" style="top: 48%; left:-25%;position: absolute;font-family: 'Belleza';color: whiteSmoke;font-size:36px;">Game Over<br>Press Enter to try again</div>
-		<div id="won" style="top: 48%; left:-25%;position: absolute;font-family: 'Belleza';color: whiteSmoke;font-size:36px;">You Won!<br>Press Enter to continue</br></div>
+		<div id="score" style="position: absolute;top: 5%;left: 46%;font-family: 'AJ';font-size:36px"></div>
+    		<div id="difflabel" style="font-family: 'AJ'; color: gainsboro;position:absolute;left:2%;font-size:40px;">Easy</div>
+    		<div id="levellabel" style="font-family: 'AJ'; color: gainsboro;position:absolute;right:2%;font-size:40px;"></div>
+		<div id="gameover" style="top: 48%; left:-25%;position: absolute;font-family: 'AJ';color: whiteSmoke;font-size:36px;">Game Over<br>Press Enter to try again</div>
+		<div id="won" style="top: 48%; left:-25%;position: absolute;font-family: 'AJ';color: whiteSmoke;font-size:36px;">You Won!<br>Press Enter to continue</br></div>
 		<img src="icon1.png" style="bottom: 2%; right: 2%; transition: 1000ms;position:absolute;" onclick="showSettings()">
-		<div id="sfx" onclick="toggleSound()" style="left: 50%;margin-left: -50px; position: absolute; font-family: 'Belleza'; color: darkKhaki;font-size:36px;opacity: 0">SFX               ON</div>
-		<div id="pauselabel" style="top: 48%; left: 45%; position: absolute; font-family: 'Belleza'; color: whiteSmoke; font-size:36px;opacity: 0">Paused</div>
+		<div id="sfx" onclick="toggleSound()" style="left: 50%;margin-left: -50px; position: absolute; font-family: 'AJ'; color: darkKhaki;font-size:36px;opacity: 0">SFX               ON</div>
+		<div id="pauselabel" style="top: 48%; left: 45%; position: absolute; font-family: 'AJ'; color: whiteSmoke; font-size:36px;opacity: 0">Paused</div>
 		<center>
 		<canvas id="canvas"></canvas>
-		<script>
-/*var difficulty = prompt("Enter the difficulty (easy, medium, hard): ")
-if(difficulty == "easy"){
-	difficulty = 0.75;
-}else if(difficulty == "hard"){
-	difficulty = 2;
-}else{
-	difficulty = 1;
+<style>
+.level {
+        font-family: 'AJ';
+        text-align: center;
+	display: block;
+        vertical-align: middle;
+        position: absolute;
+        width: 125px;
+        height: 50px;
+        transition: 750ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+/*        background-color: black;
+        color: wheat;*/
+        border-radius: 10px;
+	opacity: 1;
+}
+/*.level:hover {
+        background-color: wheat;
+        color: black;
 }*/
-settings = false;
-//var difficulty = parseInt(prompt("Enter the difficulty (1-10): "))
-//var difficulty = parseInt(prompt("Enter the difficulty (1-10): "))
-guest = false;
-var difficulty = 1;
-function len(objec){
-	s = 0;
-	for(var i in objec){
-		s+=1;
-	}
-	return s;
-}
-levelReached = 1;
-create = false;
-var username = prompt("Enter your username (enter nothing for a guest account): ");
-if(localStorage.credentials == undefined){
-	creds = [];
-	localStorage.credentials = JSON.stringify(creds);
-}else{
-	creds = JSON.parse(localStorage.credentials);
-}
-usernames = creds.map(function(x){return x[0]});
-var pword = prompt("Enter your password: ");
-if(username.length >= 1){
-if(usernames.indexOf(username) != -1){
-        if(creds[usernames.indexOf(username)][1] == pword){
-                alert("Welcome "+username+"!");
-		levelReached = creds[usernames.indexOf(username)][2];
-        }else{
-                alert("Login failure. Creating account...");
-                create = true;
-        }
-}else{
-	alert("Login failure. Creating account...");
-	create = true;
-}
-if(create == true){
-	if(usernames.indexOf(username) != -1){
-		username = prompt(username+" has already been taken. Enter your username: ");
-	}else{
-	        b = prompt("Would you like your username to be "+username+"?");
-	        if(b[0] == "y" || b[0] == "Y"){
-			//
-		}else{
-			username = prompt("Enter your username: ");
-		}
-	}
-        p = prompt("Would you like your password to be "+pword+"?");
-        if(p[0] == "y" || p[0] == "Y"){
-		//
-	}else{
-		pword = prompt("Enter your password: ");
-	}
-	creds = JSON.parse(localStorage.credentials);
-        creds.push([username, pword, levelReached])
-	localStorage.credentials = JSON.stringify(creds);
-}
-if(usernames.length == 0){
-	usernames.push(username);
-}
-}else{
-guest = true;
-}
-//difficulty = levelReached;
-var debug = false;
+                </style>
+                <script>
+</script>
+<script>
 function color(r, g, b){
-	this.r = r
-	this.g = g
-	this.b = b
-	this.a = 1;
-	this.getColor = function(){
-		return 'rgba('+this.r+', '+this.g+', '+this.b+', '+this.a+')'
-	}
+    this.r = r
+    this.g = g
+    this.b = b
+    this.a = 1;
+    this.getColor = function(){
+        return 'rgba('+this.r+', '+this.g+', '+this.b+', '+this.a+')'
+    }
 }
 function nums(i, b){
-	prev = 0
-	arr = []
-	for(var j = 0; j < i; j++){
-		prev+=150*Math.pow(0.5, j)
-		if(b){
-			arr.push([j*150, prev])
-			arr.push([j*150, -prev])
-		}else{
-			arr.push([(i-j)*150, prev])
-			arr.push([(i-j)*150, -prev])
-		}
-	}
-	return arr
+    prev = 0
+    arr = []
+    for(var j = 0; j < i; j++){
+        prev+=150*Math.pow(0.5, j)
+        if(b){
+            arr.push([j*150, prev])
+            arr.push([j*150, -prev])
+        }else{
+            arr.push([(i-j)*150, prev])
+            arr.push([(i-j)*150, -prev])
+        }
+    }
+    return arr
 }
 function randInt(min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function randColor(){
-	return 'rgb('+randInt(0, 255)+', '+randInt(0, 255)+', '+randInt(0, 255)+')'
+    return 'rgb('+randInt(0, 255)+', '+randInt(0, 255)+', '+randInt(0, 255)+')'
 }
 
 function PinR(px, py, rx, ry, rw, rh){
-	return (px >= rx && px <= rx+rw && py >= ry && py <= ry+rh)
+    return (px >= rx && px <= rx+rw && py >= ry && py <= ry+rh)
 }
 
 function intersect(rx, ry, rw, rh){
-//	if(play.y+player.height == ry+rh){
-//		if(p.x+p.width >= rx && p
-	if(player.x+player.width >= rx && player.x <= rx+rw && player.y+player.height >= ry && player.y <= ry+(1/3)*rh){
-		if(player.velY >= 0){
-			player.y = ry-player.height;
-		}
-		return true;
-	}
-	return false;
+    if(player.x+player.width >= rx && player.x <= rx+rw && player.y+player.height >= ry && player.y <= ry+(1/3)*rh){
+        if(player.velY >= 0){
+            player.y = ry-player.height;
+        }
+        return true;
+    }
+    return false;
 }
 function collide(p, rx, ry, rw, rh){
-//	if(p.y+p.height == ry+rh){
-//		if(p.x+p.width >= rx && p
-	if(p.x+p.width >= rx && p.x <= rx+rw && p.y >= ry+rh-2*Math.max(5, p.velY) && p.y <= ry+rh){
-		return true;
-	}
-	return false;
+    if(p.x+p.width >= rx && p.x <= rx+rw && p.y >= ry+rh-2*Math.max(5, p.velY) && p.y <= ry+rh){
+        return true;
+    }
+    return false;
 }
 /*function collide(cx, cy, cr, rx, ry, rw, rh){
-	return (PinR(cx, cy, rx, ry, rw, rh) or */
+return (PinR(cx, cy, rx, ry, rw, rh) or */
 
 soundOn = true;
 
 function toggleSound(){
-	if(settings == true){
-		if(soundOn == true){
-			soundOn = false;
-			$('#sfx')[0].innerHTML = 'SFX OFF'
-		}else{
-			soundOn = true;
-			$('#sfx')[0].innerHTML = 'SFX ON'
-		}
-	}
+    if(settings == true){
+        if(soundOn == true){
+            soundOn = false;
+            $('#sfx')[0].innerHTML = 'SFX OFF'
+        }else{
+            soundOn = true;
+            $('#sfx')[0].innerHTML = 'SFX ON'
+        }
+    }
 }
-
-canvas = document.getElementById("canvas");
-ctx = canvas.getContext('2d');
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-var up = false, jumped = false;
-var died = new Audio();
-var reached = new Audio();
-var hit = new Audio();
-
-// died.src = "dead.mp3";
-// reached.src = "reached.mp3";
-// hit.src = "hit.mp3";
-
-var YMIDDLE = canvas.height/2 - 25/2,
+function setLevel(lvl){
+    if(lvl <= maxlevel){
+      level = lvl;
+    }else{
+      alert("You have not reached that level yet. You may only play the levels highlighted in white.")
+      return true;
+    }
+    if(started == false){
+        elements = $('.level');
+        for(var e = 0; e < elements.length; e++){
+            ele = elements[e];
+            ele.style.opacity = "0";
+        }
+	$('#levellabel')[0].innerHTML = level;
+        start();
+        started = true;
+    }
+}
+divs = [];
+for(var x = 1; x <= 5; x++){
+    for(var y = 1; y <= 3; y++){
+        div = document.createElement("div");
+        div.innerHTML = (5*(y-1)+x).toString();
+        div.className = "level";
+        div.style.top = (y*150)+"px";
+        div.style.left = (x*200)+"px";
+        div.onclick = function(){setLevel(parseInt(this.innerHTML))};
+        divs.push(div);
+        document.body.appendChild(div);
+    }
+}
+settings = false;
+guest = false;
+var difficulty = 1;
+function len(objec){
+    s = 0;
+    for(var i in objec){
+        s+=1;
+    }
+    return s;
+}
+difficulty = "easy";
+level = 1;
+maxlevel = 1;
+create = false;
+username = prompt("Enter your username (enter nothing for a guest account): ");
+if(localStorage.credentials == undefined){
+    creds = [];
+    localStorage.credentials = JSON.stringify(creds);
+}else{
+    creds = JSON.parse(localStorage.credentials);
+}
+usernames = creds.map(function(x){return x[0]});
+pword = prompt("Enter your password: ");
+// difficulty = prompt("Enter the desired difficulty (easy, medium, hard, expert): ");
+$('#difflabel')[0].innerHTML = difficulty[0].toUpperCase()+difficulty.slice(1, difficulty.length);
+posdif = ["easy", "medium", "hard", "expert"];
+difind = posdif.indexOf(difficulty);
+if(username.length >= 1){
+    if(usernames.indexOf(username) != -1){
+        if(creds[usernames.indexOf(username)][1] == pword){
+            alert("Welcome "+username+"!");
+            level = creds[usernames.indexOf(username)][2+difind];
+            maxlevel = level;
+        }else{
+            alert("Login failure. Creating account...");
+            create = true;
+        }
+    }else{
+        alert("Login failure. Creating account...");
+        create = true;
+    }
+    if(create == true){
+        if(usernames.indexOf(username) != -1){
+            username = prompt(username+" has already been taken. Enter your username: ");
+        }else{
+            b = prompt("Would you like your username to be "+username+"?");
+            if(!(b[0] == "y" || b[0] == "Y")){
+                username = prompt("Enter your username: ");
+            }
+        }
+        p = prompt("Would you like your password to be "+pword+"?");
+        if(!(p[0] == "y" || p[0] == "Y")){
+            pword = prompt("Enter your password: ");
+        }
+        creds = JSON.parse(localStorage.credentials);
+        creds.push([username, pword, 1, 1, 1, 1]);
+        maxlevel = 1;
+        usernames.push(username);
+        localStorage.credentials = JSON.stringify(creds);
+    }
+    if(usernames.length == 0){
+        usernames.push(username);
+    }
+}else{
+    guest = true;
+    glevels = [1, 1, 1, 1];
+}
+colors = {"complete": {"ibg": "mediumaquamarine", "irg": "gainsboro", "bg": "gainsboro", "rg": "mediumaquamarine"},
+	  "incomplete": {"ibg": "gainsboro", "irg": "mediumaquamarine", "bg": "mediumaquamarine", "rg": "gainsboro"}}
+for(var d = 0; d < divs.length; d++){
+    div = divs[d];
+    if(parseInt(div.innerHTML) <= maxlevel){
+        div.className+=" complete";
+	div.onmouseover = function(){this.style.backgroundColor = colors.complete["bg"]};
+	div.onmouseover = function(){this.style.color = colors.complete["rg"]};
+	div.onmouseout = function(){this.style.backgroundColor = colors.complete["ibg"]};
+	div.onmouseout = function(){this.style.color = colors.complete["irg"]};
+    }else{
+        div.className+=" incomplete";
+	div.onmouseover = function(){this.style.backgroundColor = colors.incomplete["bg"]};
+	div.onmouseover = function(){this.style.color = colors.incomplete["rg"]};
+	div.onmouseout = function(){this.style.backgroundColor = colors.incomplete["ibg"]};
+	div.onmouseout = function(){this.style.color = colors.incomplete["irg"]};
+    }
+}
+function start(){
+    debug = false;
+    
+    canvas = document.getElementById("canvas");
+    ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    up = false, jumped = false;
+    died = new Audio();
+    reached = new Audio();
+    hit = new Audio();
+    
+    died.src = "dead.mp3";
+    reached.src = "reached.mp3";
+    hit.src = "hit.mp3";
+    
+    YMIDDLE = canvas.height/2 - 25/2,
     XMIDDLE = canvas.width/2 - 100/2,
     INDENT = 50;
-
-var haswon = false;
-
-_maps = {1: [[50, YMIDDLE], [300, YMIDDLE+50], [500, YMIDDLE-100], [650, YMIDDLE-250], [950, YMIDDLE-200], [1250, YMIDDLE+250], [1450, YMIDDLE+200], 
-       [1650, YMIDDLE+150], [1850, YMIDDLE+100], [2050, YMIDDLE+50], [2250, YMIDDLE], [2450, YMIDDLE-50], [2650, YMIDDLE-100], [2850, YMIDDLE-150],
-       [3050, YMIDDLE-200], [3150, YMIDDLE-175], [3250, YMIDDLE-150], [3350, YMIDDLE-125], [3450, YMIDDLE-100], [3550, YMIDDLE-75], 
-       [3650, YMIDDLE-50], [3750, YMIDDLE-25], [3850, YMIDDLE], [4100, YMIDDLE+300], [4300, YMIDDLE+200], [4500, YMIDDLE+100], [4700, YMIDDLE-50], 
-       [4900, YMIDDLE+100], [5100, YMIDDLE-50], [5300, YMIDDLE+50], [5500, YMIDDLE-100], [5700, YMIDDLE], [5900, YMIDDLE-150], [6100, YMIDDLE-50],
-       [6300, YMIDDLE-200], [6700, YMIDDLE+300], [6800, YMIDDLE+300], [6900, YMIDDLE+300], [7000, YMIDDLE+300]],
-	 2: [[50, YMIDDLE], [250, YMIDDLE-50], [600, YMIDDLE+200], [850, YMIDDLE+200], [1100, YMIDDLE+200], [1350, YMIDDLE+100], 
-	    [1500, YMIDDLE], [1650, YMIDDLE], [1800, YMIDDLE], [1900, YMIDDLE-100], [2050, YMIDDLE-100], [2200, YMIDDLE-100], 
-	    [2350, YMIDDLE-200], [2700, YMIDDLE+300], [2850, YMIDDLE+250], [3000, YMIDDLE+200], [3150, YMIDDLE+150], 
-	    [3300, YMIDDLE+100], [3450, YMIDDLE+50], [3600, YMIDDLE], [3700, YMIDDLE+250], [3800, YMIDDLE+50], 
-	    [3925, YMIDDLE-100], [4100, YMIDDLE-250], [4200, YMIDDLE-200], [4300, YMIDDLE-150], [4400, YMIDDLE-100],
-	    [4500, YMIDDLE-50], [4600, YMIDDLE], [4700, YMIDDLE+50], [4800, YMIDDLE+100], [4900, YMIDDLE+150], 
-	    [5000, YMIDDLE+200], [5200, YMIDDLE+300], [5400, YMIDDLE+150], [5500, YMIDDLE+50], [5700, YMIDDLE]].concat(
-			nums(6, true).map(
-				function(x){
-					return [x[0]+5850].concat(YMIDDLE+x[1])
-				}
-			)
-		).concat(
-			nums(6, false).reverse().map(
-				function(x){
-					return [x[0]+6600].concat(YMIDDLE+x[1])
-				}
-			)
-		).concat(
-			[[7600, YMIDDLE], [7700, YMIDDLE], [7800, YMIDDLE], [7900, YMIDDLE], [8000, YMIDDLE]]
-		),
-	  3: [[0, YMIDDLE+100], [100, YMIDDLE+150], [300, YMIDDLE+300], [450, YMIDDLE+150], [600, YMIDDLE], [750, YMIDDLE-150], [950, YMIDDLE-200],
-	      [1200, YMIDDLE+250], [1400, YMIDDLE+300], [1600, YMIDDLE+150], [1800, YMIDDLE]].concat(
-			nums(5, true).map(
-				function(x){
-					return [x[0]+2000].concat(YMIDDLE+x[1])
-				}
-			)
-	      ).concat(
-	     [[2625, YMIDDLE+150], [2800, YMIDDLE]]
-	      ),
-	  4: [[25, YMIDDLE+50], [125, YMIDDLE+50], [300, YMIDDLE-100], [500, YMIDDLE-225], [900, YMIDDLE+275], [1150, YMIDDLE+275], 
-	      [1400, YMIDDLE+275], [1650, YMIDDLE+275], [1900, YMIDDLE+275]],
-	  5: [[1000, YMIDDLE], [1500, YMIDDLE-100]]
-	  }
-maxlevel = len(_maps);
-if(levelReached >= 1 && guest == false){
-	difficulty = levelReached;
-	if(difficulty > maxlevel){
-		l = prompt("You beat the game, so choose whatever level you want, or enter 'clear' if you want to restart:")
-		if(l == "clear"){
-			creds[usernames.indexOf(username)][2] = 1;
-			localStorage.credentials = JSON.stringify(creds);
-			difficulty = 1;
-			alert("You are on level 1!")
-		}else{
-			difficulty = parseInt(l);
-		}
-	}else if(difficulty > 1){
-		alert("Your progress has been saved, you were on level "+difficulty+".");
-		w = prompt("Would you like to clear your progress and start on level 1?");
-		if(["y", "Y"].indexOf(w[0]) != -1){
-			creds[usernames.indexOf(username)][2] = 1;
-			localStorage.credentials = JSON.stringify(creds);
-			difficulty = 1;
-			alert("You are on level 1!");
-		}
-	}
-}else{
-	levelReached = 1;
-	difficulty = 1;
+    
+    haswon = false;
+    
+    _maps = {'easy': {1: [[50, YMIDDLE], [300, YMIDDLE+50], [500, YMIDDLE-100], [650, YMIDDLE-250], [950, YMIDDLE-200], [1250, YMIDDLE+250], [1450, YMIDDLE+200],
+        [1650, YMIDDLE+150], [1850, YMIDDLE+100], [2050, YMIDDLE+50], [2250, YMIDDLE], [2450, YMIDDLE-50], [2650, YMIDDLE-100], [2850, YMIDDLE-150],
+        [3050, YMIDDLE-200], [3150, YMIDDLE-175], [3250, YMIDDLE-150], [3350, YMIDDLE-125], [3450, YMIDDLE-100], [3550, YMIDDLE-75],
+        [3650, YMIDDLE-50], [3750, YMIDDLE-25], [3850, YMIDDLE], [4100, YMIDDLE+300], [4300, YMIDDLE+200], [4500, YMIDDLE+100], [4700, YMIDDLE-50],
+        [4900, YMIDDLE+100], [5100, YMIDDLE-50], [5300, YMIDDLE+50], [5500, YMIDDLE-100], [5700, YMIDDLE], [5900, YMIDDLE-150], [6100, YMIDDLE-50],
+        [6300, YMIDDLE-200], [6700, YMIDDLE+300], [6800, YMIDDLE+300], [6900, YMIDDLE+300], [7000, YMIDDLE+300]],
+        2: [[50, YMIDDLE], [250, YMIDDLE-50], [600, YMIDDLE+200], [850, YMIDDLE+200], [1100, YMIDDLE+200], [1350, YMIDDLE+100],
+        [1500, YMIDDLE], [1650, YMIDDLE], [1800, YMIDDLE], [1900, YMIDDLE-100], [2050, YMIDDLE-100], [2200, YMIDDLE-100],
+        [2350, YMIDDLE-200], [2700, YMIDDLE+300], [2850, YMIDDLE+250], [3000, YMIDDLE+200], [3150, YMIDDLE+150],
+        [3300, YMIDDLE+100], [3450, YMIDDLE+50], [3600, YMIDDLE], [3700, YMIDDLE+250], [3800, YMIDDLE+50],
+        [3925, YMIDDLE-100], [4100, YMIDDLE-250], [4200, YMIDDLE-200], [4300, YMIDDLE-150], [4400, YMIDDLE-100],
+        [4500, YMIDDLE-50], [4600, YMIDDLE], [4700, YMIDDLE+50], [4800, YMIDDLE+100], [4900, YMIDDLE+150],
+        [5000, YMIDDLE+200], [5200, YMIDDLE+300], [5400, YMIDDLE+150], [5500, YMIDDLE+50], [5700, YMIDDLE]].concat(
+        nums(6, true).map(
+        function(x){
+            return [x[0]+5850].concat(YMIDDLE+x[1])
+        }
+        )
+        ).concat(
+        nums(6, false).reverse().map(
+        function(x){
+            return [x[0]+6600].concat(YMIDDLE+x[1])
+        }
+        )
+        ).concat(
+        [[7600, YMIDDLE], [7700, YMIDDLE], [7800, YMIDDLE], [7900, YMIDDLE], [8000, YMIDDLE]]
+        ), 
+	3: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	4: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	5: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	6: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	7: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	8: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	9: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	10: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	11: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	12: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	13: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	14: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	15: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+    }, 'medium': {
+        1: [[0, YMIDDLE+100], [100, YMIDDLE+150], [300, YMIDDLE+300], [450, YMIDDLE+150], [600, YMIDDLE], [750, YMIDDLE-150], [950, YMIDDLE-200],
+        [1200, YMIDDLE+250], [1400, YMIDDLE+300], [1600, YMIDDLE+150], [1800, YMIDDLE]].concat(
+        nums(5, true).map(
+        function(x){
+            return [x[0]+2000].concat(YMIDDLE+x[1])
+        }
+        )
+        ).concat(
+        [[2625, YMIDDLE+150], [2800, YMIDDLE]]
+    ), 
+  2: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+  3: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	4: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	5: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	6: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	7: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	8: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	9: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	10: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	11: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	12: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	13: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	14: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+	15: [[0, YMIDDLE+100], [100, YMIDDLE+100]]
+    }, 'hard': {
+        1: [[25, YMIDDLE+50], [125, YMIDDLE+50], [300, YMIDDLE-100], [500, YMIDDLE-225], [900, YMIDDLE+275], [1150, YMIDDLE+275],
+    [1400, YMIDDLE+275], [1650, YMIDDLE+275], [1900, YMIDDLE+275]],
+        2: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+        3: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+        4: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+      	5: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+      	6: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+      	7: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+      	8: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+      	9: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+      	10: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+      	11: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+      	12: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+      	13: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+      	14: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+      	15: [[0, YMIDDLE+100], [100, YMIDDLE+100]]
+    }, 'expert': {
+    1: [[1000, YMIDDLE], [1500, YMIDDLE-100]],
+    2: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+    3: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+    4: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+  	5: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+  	6: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+  	7: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+  	8: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+  	9: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+  	10: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+  	11: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+  	12: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+  	13: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+  	14: [[0, YMIDDLE+100], [100, YMIDDLE+100]],
+  	15: [[0, YMIDDLE+100], [100, YMIDDLE+100]]}
 }
-_map = _maps[difficulty]
+allmaxlevel = len(_maps[difficulty]);
+_map = _maps[difficulty][level];
 _map = _map.map(function(x){return [x[0]+=INDENT].concat(x[1])});
-//_map = _maps[1]
-//_map = _map.concat([[7600, YMIDDLE], [7700, YMIDDLE], [7800, YMIDDLE], [7900, YMIDDLE], [8000, YMIDDLE]])
-//_map = _map.map(function(x){return [x[0]+=INDENT].concat(x[1])})
 tdist = _map[_map.length-1][0]
-_allobcoords = {1: [[1350, YMIDDLE+100], [1550, YMIDDLE+50], [1750, YMIDDLE], [1950, YMIDDLE-50], [2150, YMIDDLE-100], [2350, YMIDDLE-150],
-		    [2550, YMIDDLE-200], [2750, YMIDDLE-250], [2950, YMIDDLE-300]],
-		2: [[725, YMIDDLE+50], [975, YMIDDLE+50], [1575, YMIDDLE-100], [1725, YMIDDLE-100], [3650, YMIDDLE-150]],
-		3: [[1300, YMIDDLE+150]],
-		4: [[950, YMIDDLE+150], [1200, YMIDDLE+150], [1450, YMIDDLE+150], [1700, YMIDDLE+150]],
-		5: [[]]}
-_obcoords = _allobcoords[difficulty]
+_allobcoords = {'easy': {1: [[1350, YMIDDLE+100], [1550, YMIDDLE+50], [1750, YMIDDLE], [1950, YMIDDLE-50], [2150, YMIDDLE-100], [2350, YMIDDLE-150],
+    [2550, YMIDDLE-200], [2750, YMIDDLE-250], [2950, YMIDDLE-300]],
+2: [[725, YMIDDLE+50], [975, YMIDDLE+50], [1575, YMIDDLE-100], [1725, YMIDDLE-100], [3650, YMIDDLE-150]],
+3: [[]],
+4: [[]],
+5: [[]],
+6: [[]],
+7: [[]],
+8: [[]],
+9: [[]],
+10: [[]],
+11: [[]],
+12: [[]],
+13: [[]],
+14: [[]],
+15: [[]]
+},
+'medium': {1: [[1300, YMIDDLE+150]],
+           2: [[]],
+           3: [[]],
+           4: [[]],
+           5: [[]],
+           6: [[]],
+           7: [[]],
+           8: [[]],
+           9: [[]],
+           10: [[]],
+           11: [[]],
+           12: [[]],
+           13: [[]],
+           14: [[]],
+           15: [[]]
+           },
+'hard':	{1: [[950, YMIDDLE+150], [1200, YMIDDLE+150], [1450, YMIDDLE+150], [1700, YMIDDLE+150]],
+         2: [[]],
+         3: [[]],
+         4: [[]],
+         5: [[]],
+         6: [[]],
+         7: [[]],
+         8: [[]],
+         9: [[]],
+         10: [[]],
+         11: [[]],
+         12: [[]],
+         13: [[]],
+         14: [[]],
+         15: [[]]},
+'expert': {
+1: [[]],
+2: [[]],
+3: [[]],
+4: [[]],
+5: [[]],
+6: [[]],
+7: [[]],
+8: [[]],
+9: [[]],
+10: [[]],
+11: [[]],
+12: [[]],
+13: [[]],
+14: [[]],
+15: [[]]
+}
+}
+_obcoords = _allobcoords[difficulty][level]
 _obcoords = _obcoords.map(function(x){return [x[0]+=INDENT].concat(x[1])})
-allblockcoords = {1: [[]], 2: [[]], 3: [[/*2825, YMIDDLE+150*/]], 4: [[]], 5: [[0, YMIDDLE], [100, YMIDDLE], [200, YMIDDLE], [300, YMIDDLE], [400, YMIDDLE], [500, YMIDDLE], [600, YMIDDLE], [700, YMIDDLE], [800, YMIDDLE], [1250, YMIDDLE+150]]}
-blockcoords = allblockcoords[difficulty]
+allblockcoords = {'easy': {1: [[]], 2: [[]], 3: [[]], 4: [[]], 5: [[]], 6: [[]], 7: [[]], 8: [[]], 9: [[]], 10: [[]], 11: [[]], 12: [[]], 13: [[]], 14: [[]], 15: [[]], }, 'medium': {1: [[/*2825, YMIDDLE+150*/]], 2: [[]], 3: [[]], 4: [[]], 5: [[]], 6: [[]], 7: [[]], 8: [[]], 9: [[]], 10: [[]], 11: [[]], 12: [[]], 13: [[]], 14: [[]], 15: [[]]}, 'hard': {1: [[]], 2: [[]], 3: [[]], 4: [[]], 5: [[]], 6: [[]], 7: [[]], 8: [[]], 9: [[]], 10: [[]], 11: [[]], 12: [[]], 13: [[]], 14: [[]], 15: [[]]}, 'expert': {1: [[0, YMIDDLE], [100, YMIDDLE], [200, YMIDDLE], [300, YMIDDLE], [400, YMIDDLE], [500, YMIDDLE], [600, YMIDDLE], [700, YMIDDLE], [800, YMIDDLE], [1250, YMIDDLE+150]], 2: [[]], 3: [[]], 4: [[]], 5: [[]], 6: [[]], 7: [[]], 8: [[]], 9: [[]], 10: [[]], 11: [[]], 12: [[]], 13: [[]], 14: [[]], 15: [[]]}}
+blockcoords = allblockcoords[difficulty][level]
 blocks = [];
 objs = [];
 obs = [];
 gravity = 0.25;
-//pcolor = new color(randInt(0, 255), randInt(0, 255), randInt(0, 255));
 pcolor = new color(16, 62, 90);
+pcolor.a = 0;
 player = {x: INDENT, y: YMIDDLE-75, velY: 0, color: pcolor, width: 25, height: 50}
 
 for(var i = 0; i < _map.length; i++){
-	m = _map[i];
-	objs.push([m[0], m[1], new color(51, 160, 48)]);
+    m = _map[i];
+    _col = new color(220, 220, 220);
+    _col.a = 0;
+    objs.push([m[0], m[1], _col]);
 }
-final = [m[0]+100, m[1]-75, new color(145, 45, 21), 25, 92.5];
+_fcol = new color(145, 45, 21);
+_fcol.a = 0;
+final = [m[0]+100, m[1]-75, _fcol, 25, 92.5];
 
 for(var i = 0; i < _obcoords.length; i++){
-	o = _obcoords[i];
-	obs.push([o[0], o[1], new color(145, 45, 21)]);
+    o = _obcoords[i];
+    _ocol = new color(102, 205, 170);
+    _ocol.a = 0;
+    obs.push([o[0], o[1], _ocol]);
 }
 
 for(var b = 0; b < blockcoords.length; b++){
-	block = blockcoords[b];
-	blocks.push([block[0], block[1], new color(255, 179, 41)]);
+    block = blockcoords[b];
+    _bcol = new color(32, 178, 170);
+    _bcol.a = 0;
+    blocks.push([block[0], block[1], _bcol]);
 }
 
-/*for(var i = 0; i < 20; i++){
-	objs.push([randInt(0, canvas.width), randInt(0, canvas.height-25), randColor()]);
-}*/
 dead = false;
 dist = 0;
 restarting = false;
-$(document).keydown(function(event){
-	if(event.keyCode == 13){
-		prevel = 0;
-		restarting = true;
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-//		backCol.a = 0;
-		wonCol.a = 0;
-		overCol.a = 0;
-		document.body.style.backgroundColor = backCol.getColor();
-//		document.body.style.opacity = 0;
-		document.getElementById("gameover").style.left = "-25%";
-		document.getElementById("won").style.left = "-25%";
-		document.getElementById("gameover").style.color = overCol.getColor();
-		document.getElementById("won").style.color = wonCol.getColor();
-		_map = _maps[difficulty]
-		_obcoords = _allobcoords[difficulty]
-		objs = [];
-		obs = [];
-		blockcoords = allblockcoords[difficulty];
-		blocks = [];
-		dist = 0;
-		pcolor = new color(randInt(0, 255), randInt(0, 255), randInt(0, 255));
-		scoreCol = pcolor;
-		$('#score')[0].style.color = scoreCol.getColor();
-		player = {x: INDENT, y: YMIDDLE-75, velY: 0, color: pcolor, width: 25, height: 50}
-		for(var i = 0; i < _map.length; i++){
-			m = _map[i];
-			objs.push([m[0], m[1], new color(51, 160, 48)]);
-		}
-		final = [m[0]+100, m[1]-75, new color(145, 45, 21), 25, 92.5];
-		for(var i = 0; i < _obcoords.length; i++){
-			o = _obcoords[i];
-			obs.push([o[0], o[1], new color(145, 45, 21)]);
-		}
-		for(var b = 0; b < blockcoords.length; b++){
-			block = blockcoords[b];
-			blocks.push([block[0], block[1], new color(255, 179, 41)]);
-		}
-		if(haswon == false){
-			update();
-		}
-		if(dead == true){
-			update();
-		}
-		dead = false;
-//		setTimeout(update, 1000);
-	}
-/*	if(event.keyCode == 32){
-		wallspeed = 2;	
-	}*/
-	if(event.keyCode == 38 && jumped == false){
-		if(soundOn == true){
-			hit.play();
-		}
-		player.velY = -2*(difficulty-1)-10;
-		jumped = true;
-	}
-	if(event.keyCode == 40){
-		gravity = 0.5*difficulty;
-	}
-	if(event.keyCode == 32){
-		if(player.velY != 0){
-			prevel = player.velY;
-		}
-		if(paused == false){
-			paused = true;
-			player.velY = 0;
-		}else{
-			player.velY = prevel;
-			paused = false;
-		}
-//		prevel = player.velY;
-	}
-		
-});
 paused = false;
-$(document).keyup(function(event){
-	if(event.keyCode == 38){
-//		up = false;
-	}
-	if(event.keyCode == 40){
-		gravity = 0.25*difficulty;
-	}
-	if(event.keyCode == 32){
-		//paused = false;
-//		player.velY = prevel;
-	}
-});
-window.addEventListener("keydown", function(e) {
-    // space and arrow keys
-    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
-        e.preventDefault();
-    }
-}, false);
-
-backCol = new color(95, 158, 160);
+backCol = new color(0, 139, 139); //RGB for DarkCyan
 backCol.a = 1;
 overCol = new color(245, 245, 245);
 overCol.a = 0;
@@ -420,363 +530,530 @@ wonCol = new color(0, 0, 0);
 wonCol.a = 0;
 $('#won')[0].style.color = wonCol.getColor();
 scoreCol = pcolor;
+scoreCol.a = 1;
 $('#score')[0].style.color = scoreCol.getColor();
 istouching = false;
-gravity*=difficulty;
+gravity*=(difind+1);
 prevel = player.velY;
-function update(){
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if(settings == true){
-                _opacity = parseFloat($('#pauselabel')[0].style.opacity);
-                if(_opacity > 0){
-                        _opacity-=0.04;
-                        $('#pauselabel')[0].style.opacity = _opacity;
-                }
-                sfxopacity = parseFloat($('#sfx')[0].style.opacity);
-		if(sfxopacity < 1){
-			sfxopacity+=0.04;
-			$('#sfx')[0].style.opacity = sfxopacity;
-		}
+
+update();
+}
+$(document).keydown(function(event){
+    if(event.keyCode == 37){
+      if(difind > 0){
+        difind-=1;
+        difficulty = posdif[difind];
+        if(guest == false){
+          _creds = JSON.parse(localStorage.credentials);
+          level = _creds[usernames.indexOf(username)][2+difind];
+        }else{
+          level = glevels[difind];
         }
-        if(settings == "off"){
-                _opacity = parseFloat($('#pauselabel')[0].style.opacity);
-                sfxopacity = parseFloat($('#sfx')[0].style.opacity);
-		if(sfxopacity > 0){
-			sfxopacity-=0.04;
-			$('#sfx')[0].style.opacity = sfxopacity;
-		}
-                if(_opacity > 0){
-                        _opacity-=0.04;
-                        $('#pauselabel')[0].style.opacity = _opacity;
+        maxlevel = level;
+        for(var d = 0; d < divs.length; d++){
+          div = divs[d];
+          if(parseInt(div.innerHTML) <= maxlevel){
+              div.className = "level complete";
+          }else{
+              div.className = "level incomplete";
+          }
+        }
+        $('#difflabel')[0].innerHTML = difficulty[0].toUpperCase()+difficulty.slice(1, difficulty.length);
+      }
+    }
+    if(event.keyCode == 39){
+      if(difind < 3){
+        difind+=1;
+        difficulty = posdif[difind];
+        if(guest == false){
+          _creds = JSON.parse(localStorage.credentials);
+          level = _creds[usernames.indexOf(username)][2+difind];
+        }else{
+          level = glevels[difind];
+        }
+        maxlevel = level;
+        for(var d = 0; d < divs.length; d++){
+          div = divs[d];
+          if(parseInt(div.innerHTML) <= maxlevel){
+              div.className = "level complete";
+          }else{
+              div.className = "level incomplete";
+          }
+        }
+        $('#difflabel')[0].innerHTML = difficulty[0].toUpperCase()+difficulty.slice(1, difficulty.length);
+      }
+    }
+    if(event.keyCode == 38 && jumped == false){
+        if(soundOn == true){
+            hit.play();
+        }
+        player.velY = -2*difind-10;
+        jumped = true;
+    }
+    if(event.keyCode == 40){
+        gravity = 0.5*(difind+1);
+    }
+    if(event.keyCode == 32){
+        if(player.velY != 0){
+            prevel = player.velY;
+        }
+        if(paused == false){
+            paused = true;
+            player.velY = 0;
+        }else{
+            player.velY = prevel;
+            paused = false;
+        }
+    }
+    
+});
+$(document).keyup(function(event){
+    if(event.keyCode == 40){
+        gravity = 0.25*(difind+1);
+    }
+});
+window.addEventListener("keydown", function(e) {
+    // space and arrow keys
+    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+        e.preventDefault();
+    }
+}, false);
+opstart = false;
+function update(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if(settings == true){
+        _opacity = parseFloat($('#pauselabel')[0].style.opacity);
+        if(_opacity > 0){
+            _opacity-=0.04;
+            $('#pauselabel')[0].style.opacity = _opacity;
+        }
+        sfxopacity = parseFloat($('#sfx')[0].style.opacity);
+        if(sfxopacity < 1){
+            sfxopacity+=0.04;
+            $('#sfx')[0].style.opacity = sfxopacity;
+        }
+    }
+    if(settings == "off"){
+        _opacity = parseFloat($('#pauselabel')[0].style.opacity);
+        sfxopacity = parseFloat($('#sfx')[0].style.opacity);
+        if(sfxopacity > 0){
+            sfxopacity-=0.04;
+            $('#sfx')[0].style.opacity = sfxopacity;
+        }
+        if(_opacity > 0){
+            _opacity-=0.04;
+            $('#pauselabel')[0].style.opacity = _opacity;
+        }
+        if(sfxopacity == 0 && _opacity == 0){
+            settings = false;
+        }
+    }
+    if(restarting == true){
+        restarting = false;
+        return true;
+    }
+    if(dist < tdist){
+        $('#score')[0].innerHTML = Math.round(((100*dist)/tdist)*100)/100+"%"
+    }else{
+        $('#score')[0].innerHTML = 100+"%"
+    }
+    if(objs[objs.length-1][0] > canvas.width && debug == true){
+        wallspeed = 10;
+    }else{
+        wallspeed = 2;
+    }
+    if(player.color.a < 1 && opstart == false){
+        wallspeed = 0;
+        player.velY = 0;
+        player.color.a+=0.0025;
+        if(final[2].a < 1){
+            final[2].a += 0.0025;
+            ctx.fillStyle = final[2].getColor();
+            ctx.fillRect(final[0], final[1], final[3], final[4]);
+        }
+        for(var i = 0; i < objs.length; i ++){
+            o = objs[i];
+            if(o[2].a < 1){
+                o[2].a += 0.0025;
+            }
+            ctx.fillStyle = o[2].getColor();
+            ctx.fillRect(o[0], o[1], 100, 17.5);
+        }
+        for(var i = 0; i < obs.length; i ++){
+            o = obs[i];
+            if(o[2].a < 1){
+                o[2].a += 0.0025;
+            }
+            ctx.fillStyle = o[2].getColor();
+            ctx.fillRect(o[0], o[1], 100, 15);
+        }
+        for(var i = 0; i < blocks.length; i ++){
+            o = blocks[i];
+            if(o[2].a < 1){
+                o[2].a += 0.25;
+            }
+            ctx.fillStyle = o[2].getColor();
+            ctx.fillRect(o[0], o[1], 100, 15);
+        }
+    }
+    if(player.color.a >= 1){
+      opstart = true;
+    }
+    wallspeed*=1+difind*0.5;
+    if(paused == true){
+        if(settings == false){
+            _opacity = parseFloat($('#pauselabel')[0].style.opacity);
+            if(_opacity < 1){
+                _opacity+=0.04;
+                $('#pauselabel')[0].style.opacity = _opacity;
+            }
+        }
+        if(player.color.a > 0.5){
+            player.color.a -= 0.04;
+        }
+        ctx.fillStyle = player.color.getColor();
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+        if(final[2].a > 0.5){
+            final[2].a -= 0.04;
+        }else{
+          final[2].a = 0.5;
+        }
+        ctx.fillStyle = final[2].getColor();
+        ctx.fillRect(final[0], final[1], final[3], final[4]);
+        for(var i = 0; i < objs.length; i ++){
+            o = objs[i];
+            if(o[2].a > 0.5){
+                o[2].a -= 0.04;
+            }else{
+              o[2].a = 0.5;
+            }
+            ctx.fillStyle = o[2].getColor();
+            ctx.fillRect(o[0], o[1], 100, 17.5);
+        }
+        for(var i = 0; i < obs.length; i ++){
+            o = obs[i];
+            if(o[2].a > 0.5){
+                o[2].a -= 0.04;
+            }else{
+              o[2].a = 0.5;
+            }
+            ctx.fillStyle = o[2].getColor();
+            ctx.fillRect(o[0], o[1], 100, 15);
+        }
+        wallspeed = 0;
+    }else{
+        _opacity = parseFloat($('#pauselabel')[0].style.opacity);
+        if(_opacity > 0){
+            _opacity-=0.025;
+            $('#pauselabel')[0].style.opacity = _opacity;
+        }
+        if(player.color.a < 1){
+            player.color.a += 0.04;
+        }
+        ctx.fillStyle = player.color.getColor();
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+        if(final[2].a < 1){
+            final[2].a += 0.04;
+        }
+        ctx.fillStyle = final[2].getColor();
+        ctx.fillRect(final[0], final[1], final[3], final[4]);
+        for(var i = 0; i < objs.length; i ++){
+            o = objs[i];
+            if(o[2].a < 1){
+                o[2].a += 0.04;
+            }
+            ctx.fillStyle = o[2].getColor();
+            ctx.fillRect(o[0], o[1], 100, 17.5);
+        }
+        for(var i = 0; i < obs.length; i ++){
+            o = obs[i];
+            if(o[2].a < 1){
+                o[2].a += 0.04;
+            }
+            ctx.fillStyle = o[2].getColor();
+            ctx.fillRect(o[0], o[1], 100, 15);
+        }
+        if(objs[objs.length-1][0] <= player.x-75){
+            wallspeed = 0;
+            dif = (player.x-75) - objs[objs.length-1][0]
+                objs[objs.length-1][0]+=dif;
+            objs[objs.length-2][0]+=dif;
+        }else{
+            dist+=wallspeed;
+        }
+        if(objs[objs.length-1][0] == player.x-75){
+            if(soundOn == true){
+                reached.play();
+            }
+            player.velY = 0;
+            level+=1;
+            if(level > maxlevel){
+              maxlevel = level;
+            }
+            
+            for(var d = 0; d < divs.length; d++){
+              div = divs[d];
+              if(parseInt(div.innerHTML) == level){
+                div.className = div.className.split(" ")[0]+" complete";
+              }
+            }
+            if(guest == false){
+                credentials = JSON.parse(localStorage.credentials);
+                lvl = credentials[usernames.indexOf(username)][2+difind];
+                if(level > lvl){
+                    credentials[usernames.indexOf(username)][2+difind] = level;
+                    localStorage.credentials = JSON.stringify(credentials);
                 }
-                if(sfxopacity == 0 && _opacity == 0){
-			settings = false;
+            }else{
+              glevels[difind]=level;
+            }
+            elements = $('.level');
+            for(var e = 0; e < elements.length; e++){
+                ele = elements[e];
+                ele.style.opacity = "1";
+            }
+                
+            if(allmaxlevel < level){
+                alert("You beat the game on "+difficulty);
+            }
+            opstart = false;
+            haswon = true;
+            started = false;
+            clear();
+            //gameWon();
+            return true;
+        }
+        istouching = false;
+        if(paused == false){
+            player.y+=player.velY;
+        }
+        ctx.fillStyle = player.color.getColor();
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+        final[0]-=wallspeed;
+        ctx.fillStyle = final[2].getColor();
+        ctx.fillRect(final[0], final[1], final[3], final[4]);
+        for(var o = 0; o<obs.length; o++){
+            ob = obs[o];
+            ob[0]-=wallspeed;
+            if(ob[0] >= -100 && ob[0] <= canvas.width){
+                if(collide(player, ob[0], ob[1], 100, 15) && player.velY < 0){
+                    player.velY = 0;
                 }
-        }       
-	if(restarting == true){
-		restarting = false;
-		return true;
-	}
-	if(dist < tdist){
- 		$('#score')[0].innerHTML = Math.round(((100*dist)/tdist)*100)/100+"%"
-	}else{
-		$('#score')[0].innerHTML = 100+"%"		
-	}
-	if(objs[objs.length-1][0] > canvas.width && debug == true){
-		wallspeed = 10;
-	}else{
-		wallspeed = 2;
-	}
-	wallspeed*=1+(difficulty-1)*0.5;
-//	objs.sort();
-	if(paused == true){
-/*		if(player.velY != 0){
-			prevel = player.velY;
-		}*/
-	//	if(backCol.a < 1){
-	//		backCol.a+=0.04;
-	//		document.body.style.backgroundColor = backCol.getColor();
-	//	}
-		if(settings == false){
-			_opacity = parseFloat($('#pauselabel')[0].style.opacity);
-			if(_opacity < 1){
-				_opacity+=0.04;
-				$('#pauselabel')[0].style.opacity = _opacity;
-			}
-		}
-		if(player.color.a > 0.5){
-			player.color.a -= 0.04;
-		}else{
-//			return true;
-		}
-		ctx.fillStyle = player.color.getColor();
-        	ctx.fillRect(player.x, player.y, player.width, player.height);
-		if(final[2].a > 0.5){
-			final[2].a -= 0.04;
-		}
-		ctx.fillStyle = final[2].getColor();
-		ctx.fillRect(final[0], final[1], final[3], final[4]);
-		for(var i = 0; i < objs.length; i ++){
-			o = objs[i];
-			if(o[2].a > 0.5){
-				o[2].a -= 0.04;
-			}
-			ctx.fillStyle = o[2].getColor();
-	                ctx.fillRect(o[0], o[1], 100, 17.5);
-		}
-		for(var i = 0; i < obs.length; i ++){
-			o = obs[i];
-			if(o[2].a > 0.5){
-				o[2].a -= 0.04;
-			}
-			ctx.fillStyle = o[2].getColor();
-	                ctx.fillRect(o[0], o[1], 100, 15);
-		}
-		wallspeed = 0;
-	}else{
-	_opacity = parseFloat($('#pauselabel')[0].style.opacity);
-	if(_opacity > 0){
-		_opacity-=0.04;
-		$('#pauselabel')[0].style.opacity = _opacity;
-	}
-	if(player.color.a < 1){
-		player.color.a += 0.04;
-	}
-	ctx.fillStyle = player.color.getColor();
-       	ctx.fillRect(player.x, player.y, player.width, player.height);
-	if(final[2].a < 1){
-		final[2].a += 0.04;
-	}
-	ctx.fillStyle = final[2].getColor();
-	ctx.fillRect(final[0], final[1], final[3], final[4]);
-	for(var i = 0; i < objs.length; i ++){
-		o = objs[i];
-		if(o[2].a < 1){
-			o[2].a += 0.04;
-		}
-		ctx.fillStyle = o[2].getColor();
-                ctx.fillRect(o[0], o[1], 100, 17.5);
-	}
-	for(var i = 0; i < obs.length; i ++){
-		o = obs[i];
-		if(o[2].a < 1){
-			o[2].a += 0.04;
-		}
-		ctx.fillStyle = o[2].getColor();
-                ctx.fillRect(o[0], o[1], 100, 15);
-	}
-	if(objs[objs.length-1][0] <= player.x-75){
-		wallspeed = 0;
-		dif = (player.x-75) - objs[objs.length-1][0]
-		objs[objs.length-1][0]+=dif;
-		objs[objs.length-2][0]+=dif;
-	}else{
-		dist+=wallspeed;
-	}
-	if(objs[objs.length-1][0] == player.x-75){
-		if(soundOn == true){
-			reached.play();
-		}
-		player.velY = 0;
-		difficulty+=1;
-		levelReached = difficulty;
-		if(guest == false){
-		credentials = JSON.parse(localStorage.credentials);
-		lvl = credentials[usernames.indexOf(username)][2];
-		if(levelReached > lvl){
-			credentials[usernames.indexOf(username)][2] = levelReached;
-			localStorage.credentials = JSON.stringify(credentials);
-		}
-//		if(parseInt(localStorage.level) <= difficulty){
-		if(parseInt(localStorage.level) <= maxlevel){
-			localStorage.level = difficulty;
-		}
-		}
-		if(maxlevel < difficulty){
-			localStorage.level = maxlevel+1;
-			alert("You beat the game!");
-			return true;
-		}else{
-			wonCol.a = 1;
-			$('#won')[0].style.color = wonCol.getColor();
-			$('#won')[0].style.left = '35%';
-			_map = _maps[difficulty];
-			_obcoords = _allobcoords[difficulty];
-			tdist = _map[_map.length-1][0]
-			haswon = true;
-			gameWon();
-			return true;
-		}
-	}
-	istouching = false;
-	if(paused == false){
-		player.y+=player.velY;
-	}
-	ctx.fillStyle = player.color.getColor();
-	ctx.fillRect(player.x, player.y, player.width, player.height);
-	final[0]-=wallspeed;
-	ctx.fillStyle = final[2].getColor();
-	ctx.fillRect(final[0], final[1], final[3], final[4]);
-	for(var o = 0; o<obs.length; o++){
-		ob = obs[o];
-		ob[0]-=wallspeed;
-		if(ob[0] >= -100 && ob[0] <= canvas.width){
-			if(collide(player, ob[0], ob[1], 100, 15) && player.velY < 0){
-				player.velY = 0;
-			}
-			ctx.fillStyle = ob[2].getColor();
-			ctx.fillRect(ob[0], ob[1], 100, 15);
-			if(objs[objs.length-1][0] > canvas.width && debug == true){
-				player.velY = 0;
-			}
-			if(ob[0] < -100){
-//				ob[0] = canvas.width;
-			}
-		}
-	}
-	for(var b = 0; b < blocks.length; b++){
-		block = blocks[b];
-		block[0]-=wallspeed;
-		if(block[0] >= -100 && block[0] <= canvas.width){
-			if(intersect(block[0], block[1], 100, 20)){
-				if(player.velY >= 0){
-					player.velY*=-1;
-//					istouching = true;
-					jumped = false;
-				}
-			}					
-			if(blocks[blocks.length-1][0] > canvas.width && debug == true){
-				player.velY = 0;
-			}
-//			if(collide(player, ob[0], ob[1], 100, 20) && player.velY < 0){
-//				player.velY = 0;
-//			}
-			ctx.fillStyle = block[2].getColor();
-			ctx.fillRect(block[0], block[1], 100, 20);
-		}
-	}
-	for(var o = 0; o<objs.length; o++){
-		obj = objs[o];
-		obj[0]-=wallspeed;
-		if(obj[0] >= -100 && obj[0] <= canvas.width){
-			if(intersect(obj[0], obj[1], 100, 17.5)){
-				if(player.velY >= 0){
-					player.velY = 0;
-					istouching = true;
-					jumped = false;
-				}
-	/*			console.log(player.velY);
-				if(player.velY > 0 && obj[1] >= player.y-player.radius){
-					player.y = obj[1]-player.radius;
-					istouching = true;
-				}*/
-			}
-			if(objs[objs.length-1][0] > canvas.width && debug == true){
-				player.velY = 0;
-			}
-			ctx.fillStyle = obj[2].getColor();
-			ctx.fillRect(obj[0], obj[1], 100, 17.5);
-			if(obj[0] < -100){
-	//			obj[0] = canvas.width;
-	//			obj[1] = randInt(0, canvas.height - 17.5);
-	//			obj[2] = new color(randInt(0, 255), randInt(0, 255), randInt(0, 255));
-			}
-		}
-	}
-	}
-	if(istouching == false && paused == false){
-		player.velY+=gravity;
-	}else{
-		player.velY = 0;
-	}
-	if(player.y + player.height >= canvas.height){
-		if(soundOn == true){
-			died.play();
-		}
-		player.y = canvas.height - player.height;
-		player.velY = 0;
-		overCol.a = 1;
-		document.getElementById("gameover").style.color = overCol.getColor();
-		document.getElementById("gameover").style.left = "35%";
-		document.body.style.backgroundColor = "black";
-//		document.body.style.opacity = 1;
-		gameOver();
-		dead = true;
-		return true;
-	}
-	setTimeout(update, 10);
+                ctx.fillStyle = ob[2].getColor();
+                ctx.fillRect(ob[0], ob[1], 100, 15);
+                if(objs[objs.length-1][0] > canvas.width && debug == true){
+                    player.velY = 0;
+                }
+                if(ob[0] < -100){
+                }
+            }
+        }
+        for(var b = 0; b < blocks.length; b++){
+            block = blocks[b];
+            block[0]-=wallspeed;
+            if(block[0] >= -100 && block[0] <= canvas.width){
+                if(intersect(block[0], block[1], 100, 20)){
+                    if(player.velY >= 0){
+                        player.velY*=-1;
+                        jumped = false;
+                    }
+                }
+                if(blocks[blocks.length-1][0] > canvas.width && debug == true){
+                    player.velY = 0;
+                }
+                ctx.fillStyle = block[2].getColor();
+                ctx.fillRect(block[0], block[1], 100, 20);
+            }
+        }
+        for(var o = 0; o<objs.length; o++){
+            obj = objs[o];
+            obj[0]-=wallspeed;
+            if(obj[0] >= -100 && obj[0] <= canvas.width){
+                if(intersect(obj[0], obj[1], 100, 17.5)){
+                    if(player.velY >= 0){
+                        player.velY = 0;
+                        istouching = true;
+                        jumped = false;
+                    }
+                }
+                if(objs[objs.length-1][0] > canvas.width && debug == true){
+                    player.velY = 0;
+                }
+                ctx.fillStyle = obj[2].getColor();
+                ctx.fillRect(obj[0], obj[1], 100, 17.5);
+                if(obj[0] < -100){
+                }
+            }
+        }
+    }
+    if(istouching == false && paused == false){
+        player.velY+=gravity;
+    }else{
+        player.velY = 0;
+    }
+    if(player.y + player.height >= canvas.height){
+        if(soundOn == true){
+            died.play();
+        }
+        opstart = false;
+        player.y = canvas.height - player.height;
+        player.velY = 0;
+        overCol.a = 1;
+        elements = $('.level');
+                for(var e = 0; e < elements.length; e++){
+                    ele = elements[e];
+                    ele.style.opacity = "1";
+                }
+                started = false;
+        clear();
+        dead = true;
+        return true;
+    }
+    setTimeout(update, 10);
 }
 
 function updateCircle(player){
-	ctx.fillStyle = player.getColor();
-	ctx.beginPath();
-	ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-        ctx.fill();
+    ctx.fillStyle = player.getColor();
+    ctx.beginPath();
+    ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function clear(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if(player.color.a > 0){
+        player.color.a -= 0.04;
+        ctx.fillStyle = player.color.getColor();
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+    }else{
+        return true;
+    }
+    if(final[2].a > 0){
+        final[2].a -= 0.04;
+        ctx.fillStyle = final[2].getColor();
+        ctx.fillRect(final[0], final[1], final[3], final[4]);
+    }
+    for(var i = 0; i < objs.length; i ++){
+        o = objs[i];
+        if(o[2].a > 0){
+            o[2].a -= 0.04;
+        }
+        ctx.fillStyle = o[2].getColor();
+        ctx.fillRect(o[0], o[1], 100, 17.5);
+    }
+    for(var i = 0; i < obs.length; i ++){
+        o = obs[i];
+        if(o[2].a > 0){
+            o[2].a -= 0.04;
+        }
+        ctx.fillStyle = o[2].getColor();
+        ctx.fillRect(o[0], o[1], 100, 15);
+    }
+    for(var i = 0; i < blocks.length; i ++){
+        o = blocks[i];
+        if(o[2].a > 0){
+            o[2].a -= 0.04;
+        }
+        ctx.fillStyle = o[2].getColor();
+        ctx.fillRect(o[0], o[1], 100, 15);
+    }
+    setTimeout(clear, 10);
 }
 
 function gameOver(){
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	if(backCol.a < 1){
-		backCol.a+=0.04;
-		document.body.style.backgroundColor = backCol.getColor();
-	}
-	if(player.color.a > 0){
-		player.color.a -= 0.04;
-		ctx.fillStyle = player.color.getColor();
-        	ctx.fillRect(player.x, player.y, player.width, player.height);
-	}else{
-		return true;
-	}
-	if(final[2].a > 0){
-		final[2].a -= 0.04;
-		ctx.fillStyle = final[2].getColor();
-		ctx.fillRect(final[0], final[1], final[3], final[4]);
-	}
-	for(var i = 0; i < objs.length; i ++){
-		o = objs[i];
-		if(o[2].a > 0){
-			o[2].a -= 0.04;
-		}
-		ctx.fillStyle = o[2].getColor();
-                ctx.fillRect(o[0], o[1], 100, 17.5);
-	}
-	for(var i = 0; i < obs.length; i ++){
-		o = obs[i];
-		if(o[2].a > 0){
-			o[2].a -= 0.04;
-		}
-		ctx.fillStyle = o[2].getColor();
-                ctx.fillRect(o[0], o[1], 100, 15);
-	}
-	setTimeout(gameOver, 10);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if(backCol.a < 1){
+        backCol.a+=0.04;
+        document.body.style.backgroundColor = backCol.getColor();
+    }
+    if(player.color.a > 0){
+        player.color.a -= 0.04;
+        ctx.fillStyle = player.color.getColor();
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+    }else{
+        return true;
+    }
+    if(final[2].a > 0){
+        final[2].a -= 0.04;
+        ctx.fillStyle = final[2].getColor();
+        ctx.fillRect(final[0], final[1], final[3], final[4]);
+    }
+    for(var i = 0; i < objs.length; i ++){
+        o = objs[i];
+        if(o[2].a > 0){
+            o[2].a -= 0.04;
+        }
+        ctx.fillStyle = o[2].getColor();
+        ctx.fillRect(o[0], o[1], 100, 17.5);
+    }
+    for(var i = 0; i < obs.length; i ++){
+        o = obs[i];
+        if(o[2].a > 0){
+            o[2].a -= 0.04;
+        }
+        ctx.fillStyle = o[2].getColor();
+        ctx.fillRect(o[0], o[1], 100, 15);
+    }
+    for(var i = 0; i < blocks.length; i ++){
+        o = blocks[i];
+        if(o[2].a > 0){
+            o[2].a -= 0.04;
+        }
+        ctx.fillStyle = o[2].getColor();
+        ctx.fillRect(o[0], o[1], 100, 15);
+    }
+    setTimeout(gameOver, 10);
 }
 function gameWon(){
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	if(restarting == true){
-		restarting = false;
-		haswon = false;
-		gravity = 0.25*difficulty;
-		setTimeout(update, 2000);
-		return true;
-	}
-	ctx.fillStyle = player.color.getColor();
-       	ctx.fillRect(player.x, player.y, player.width, player.height);
-	ctx.fillStyle = final[2].getColor();
-	ctx.fillRect(final[0], final[1], final[3], final[4]);
-	for(var i = 0; i < objs.length; i ++){
-		o = objs[i];
-		ctx.fillStyle = o[2].getColor();
-                ctx.fillRect(o[0], o[1], 100, 17.5);
-	}
-	for(var i = 0; i < obs.length; i ++){
-		o = obs[i];
-		ctx.fillStyle = o[2].getColor();
-                ctx.fillRect(o[0], o[1], 100, 15);
-	}
-	setTimeout(gameWon, 10);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if(restarting == true){
+        restarting = false;
+        haswon = false;
+        gravity = 0.25*(difind+1);
+        return true;
+    }
+    ctx.fillStyle = player.color.getColor();
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+    ctx.fillStyle = final[2].getColor();
+    ctx.fillRect(final[0], final[1], final[3], final[4]);
+    for(var i = 0; i < objs.length; i ++){
+        o = objs[i];
+        ctx.fillStyle = o[2].getColor();
+        ctx.fillRect(o[0], o[1], 100, 17.5);
+    }
+    for(var i = 0; i < obs.length; i ++){
+        o = obs[i];
+        ctx.fillStyle = o[2].getColor();
+        ctx.fillRect(o[0], o[1], 100, 15);
+    }
+    for(var i = 0; i < blocks.length; i ++){
+        o = blocks[i];
+        ctx.fillStyle = o[2].getColor();
+        ctx.fillRect(o[0], o[1], 100, 15);
+    }
+    setTimeout(gameWon, 10);
 }
 function getPosition(event){
-	mouseX = event.clientX-canvas.offsetLeft;
-	mouseY = event.clientY-canvas.offsetTop;
-//	paused = true;
+    mouseX = event.clientX-canvas.offsetLeft;
+    mouseY = event.clientY-canvas.offsetTop;
 }
 function mouseClick(event){
-	objs.push([mouseX, mouseY, new color(51, 160, 48)]);
-	paused = false;
+    temp = [[mouseX, mouseY, new color(220, 220, 220)]];
+    newtemp = temp.concat(objs);
+    objs = newtemp;
 }
 
 function showSettings(){
-	if(settings == false){
-		settings = true;
-	}else if(settings == true){
-		settings = "off";
-	}
+    if(settings == false){
+        settings = true;
+    }else if(settings == true){
+        settings = "off";
+    }
 }
 
 window.addEventListener("mousemove", getPosition);
 canvas.addEventListener("mousedown", mouseClick);
-update();
-//gameOver();
+started = false;
 		</script>
 	</body>
 </html>
