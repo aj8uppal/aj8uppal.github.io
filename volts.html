@@ -1,81 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
-<script src="raphael.2.1.0.min.js"></script>
-<script src="justgage.1.0.1.min.js"></script>
-<script type="text/javascript" src="canvasjs.js"></script>
-<div id="chartContainer" style="height: 300px; width:100%;">
-        </div>
-<script>
-var accessToken = "ad3a95eb603a758af8519a9b2de8f078a79825f6"
-var deviceID = "250033000447343232363230"
-var url = "https://api.spark.io/v1/devices/" + deviceID + "/volts";
-var dps = [];
-var complete = false;
-var chart = new CanvasJS.Chart("chartContainer",{
-   title :{
-            text: "Volts"
-      },
-       data: [{
-             type: "line",
-     dataPoints: dps
-      }]
-});
-var chartvar = 1;
-var xVal = 0;
-                var yVal = 100;
-                var updateInterval = 5;
-                var dataLength = 500; // number of dataPoints visible at any point
-var updateChart = function (yval, count) {
-                        count = count || 1;
-                        // count is number of times loop runs to generate random dataPoints.
-
-                        for (var j = 0; j < count; j++) {
-                                yVal = yval;
-                                dps.push({
-                                        x: xVal,
-                                        y: yVal
-                                });
-                                xVal++;
-                        };
-                        if (dps.length > count)
-                        {
-                                dps.shift();
-                        }
-
-                        chart.render();
-
-                };
-
-                // generates first set of dataPoints
-//		updateChart(3.3, dataLength);
-                // update chart after specified time.
-                setInterval(function(){updateChart(chartvar)}, updateInterval);
-
-function callback(data, status){
-	if(status == "success"){
-		volts = parseFloat(data.result);
-		volts = volts.toFixed(2);
-		chartvar = parseFloat(volts);
-//		g.refresh(volts);
-		setTimeout(getReading, 20);
-	}else{
-		alert("There was a problem");
-	}
+<style>
+h1, p {
+	font-family: AJ;
 }
-
-function getReading(){
-	$.get(url, {access_token: accessToken}, callback);
+/* latin-ext */
+@font-face {
+  font-family: 'AJ';
+  font-style: normal;
+  font-weight: 400;
+  src: local('AJ'), local('AJ-Regular'), url(font.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
-updateChart(chartvar, dataLength);
-getReading();
-</script>
+/* latin */
+@font-face {
+  font-family: 'AJ';
+  font-style: normal;
+  font-weight: 400;
+  src: local('AJ'), local('AJ-Regular'), url(font.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+</style>
 </head>
-
 <body>
-<div id="chartContainer" style="height: 300px; width:100%;">
-        </div>
-
+<h1><b>Lesson 1:</b> <i>Hello World!</i></h1><br>
+<p>The first program that is generally written in a new language is called <i>Hello World!</i>, named such because it involves the coder simply getting the program to print out <code><span style="color: darkGreen; font-weight: bold">"Hello World!"</span></code>.<br>
+The first component of this program is known as the <code>print</code> statement. The <code>print</code> statement takes an argument after it, and outputs it to the console.</p>
+<pre>>>> <span style="color:red"><b>print</b></span> <span style="color: darkGreen; font-weight: bold">"hi"</span>
+hi
+>>> <span style="color:red"><b>print</b></span> 9
+9
+>>> <span style="color:red"><b>print</b></span> <span style='color: darkBlue; font-weight: bold'>'Dave the legend'</span>
+Dave the legend</pre>
+<p>The second component is known as a <i>string</i>. This <i>string</i> is the argument after the <code>print</code> statement, and is the text that is outputted to the console.<br>
+A <i>string</i> is simply a piece of text that is surrounded by either single quotes <code><span style='color: darkBlue; font-weight: bold'>'dave'</span></code> or double quotes <code><span style="color: darkGreen; font-weight: bold">"dave"</span></code>.</p><br><br>
+<p>Finally, putting all this together, our program to print out <code><span style="color: darkGreen; font-weight: bold">"Hello World!"</span></code> is as follows:</p>
+<pre>>>> <span style="color:red"><b>print</b></span> <span style="color: darkGreen; font-weight: bold">"Hello World!"</span>
+Hello World!</pre>
+<hr>
+<h1><b>Lesson 2:</b> Basic Types</h1><br>
+<p>There are many types involved in python, but the few we shall cover this lesson are <code>int</code>, <code>float</code>, and <code>str</code>.</p>
+<p>Objects in python are grouped by their type, integers being grouped as <i>ints</i>, non-integer values (decimals) being grouped as <i>floats</i>, and as noted earlier, pieces of text grouped as <i>strings</i> (<code>str</code>).</p>
+<pre>>>> type(9) == <span style="color:darkSalmon"><b>int</b></span>
+<span style="color:rosyBrown"><b>True</b></span>
+>>> type(2.3) == <span style="color:darkSalmon"><b>float</b></span>
+<span style="color:rosyBrown"><b>True</b></span>
+>>> type(<span style="color: darkGreen; font-weight: bold">"Hello World!"</span>) == <span style="color:darkSalmon"><b>str</b></span>
+<span style="color:rosyBrown"><b>True</b></span></pre>
+ 
 </body>
 </html>
