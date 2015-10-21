@@ -2,53 +2,199 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<link href='http://fonts.googleapis.com/css?family=Belleza' rel='stylesheet' type='text/css'>
 <style>
-h1, p {
-	font-family: AJ;
+.sidebar {
+   width: 100px;
+   height: 100%;
+   position: fixed;
+   left: 0px;
+   top: -1px;
+   border: 1px solid black;
+   text-align: center;
+   display: table-cell;
+   vertical-align: middle;
+/*   padding-top: 250px;*/
+
 }
-/* latin-ext */
-@font-face {
-  font-family: 'AJ';
-  font-style: normal;
-  font-weight: 400;
-  src: local('AJ'), local('AJ-Regular'), url(font.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+h1, p, table, th, td, div {
+	font-family: 'Belleza', sans-serif;
 }
-/* latin */
-@font-face {
-  font-family: 'AJ';
-  font-style: normal;
-  font-weight: 400;
-  src: local('AJ'), local('AJ-Regular'), url(font.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+a {
+	transition: 1000ms;
+	font-size: 20px;
+}
+a:visited {
+	color: inherit;
+}
+a:hover {
+	color: white;;
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    text-align: left;
 }
 </style>
+<div class='sidebar'>
+	<a href="#Lesson1">Lesson 1</a><br><br>
+	<a href="#Lesson2">Lesson 2</a><br><br>
+	<a href="#Lesson3">Lesson 3</a><br><br>
+	<a href="#Lesson4">Lesson 4</a><br><br>
+	<a href="#Lesson5">Lesson 5</a><br><br>
+	<a href="#Lesson6">Lesson 6</a><br><br>
+	<a href="#Lesson7">Lesson 7</a><br><br>
+	<a href="#Lesson8">Lesson 8</a><br><br>
+</div>
 </head>
-<body>
-<h1><b>Lesson 1:</b> <i>Hello World!</i></h1><br>
-<p>The first program that is generally written in a new language is called <i>Hello World!</i>, named such because it involves the coder simply getting the program to print out <code><span style="color: darkGreen; font-weight: bold">"Hello World!"</span></code>.<br>
-The first component of this program is known as the <code>print</code> statement. The <code>print</code> statement takes an argument after it, and outputs it to the console.</p>
-<pre>>>> <span style="color:red"><b>print</b></span> <span style="color: darkGreen; font-weight: bold">"hi"</span>
-hi
->>> <span style="color:red"><b>print</b></span> 9
-9
->>> <span style="color:red"><b>print</b></span> <span style='color: darkBlue; font-weight: bold'>'Dave the legend'</span>
-Dave the legend</pre>
-<p>The second component is known as a <i>string</i>. This <i>string</i> is the argument after the <code>print</code> statement, and is the text that is outputted to the console.<br>
-A <i>string</i> is simply a piece of text that is surrounded by either single quotes <code><span style='color: darkBlue; font-weight: bold'>'dave'</span></code> or double quotes <code><span style="color: darkGreen; font-weight: bold">"dave"</span></code>.</p><br><br>
-<p>Finally, putting all this together, our program to print out <code><span style="color: darkGreen; font-weight: bold">"Hello World!"</span></code> is as follows:</p>
-<pre>>>> <span style="color:red"><b>print</b></span> <span style="color: darkGreen; font-weight: bold">"Hello World!"</span>
-Hello World!</pre>
-<hr>
-<h1><b>Lesson 2:</b> Basic Types</h1><br>
-<p>There are many types involved in python, but the few we shall cover this lesson are <code>int</code>, <code>float</code>, and <code>str</code>.</p>
-<p>Objects in python are grouped by their type, integers being grouped as <i>ints</i>, non-integer values (decimals) being grouped as <i>floats</i>, and as noted earlier, pieces of text grouped as <i>strings</i> (<code>str</code>).</p>
-<pre>>>> type(9) == <span style="color:darkSalmon"><b>int</b></span>
-<span style="color:rosyBrown"><b>True</b></span>
->>> type(2.3) == <span style="color:darkSalmon"><b>float</b></span>
-<span style="color:rosyBrown"><b>True</b></span>
->>> type(<span style="color: darkGreen; font-weight: bold">"Hello World!"</span>) == <span style="color:darkSalmon"><b>str</b></span>
-<span style="color:rosyBrown"><b>True</b></span></pre>
+<body style="padding-left: 100px">
+<a name='Lesson1'><h1><b>Lesson 1:</b> <i>Hello World!</i></h1></a><br></span>
+<p>The first program that is generally written in a new language is called <i>Hello World!</i>, named such because it involves the coder simply getting the program to print out <code><span style="color: darkGreen; font-weight: bold">"Hello World!"</span></code>.<br></span>
+The first component of this program is known as the <code>print</code> statement. The <code>print</code> statement takes an argument after it, and outputs it to the console.</p></span>
+<pre>>>> print <span style="color: darkGreen; font-weight: bold">"hi"</span></span>
+hi</span>
+>>> <span style="color:red"><b>print</b></span> 9</span>
+9</span>
+>>> <span style="color:red"><b>print</b></span> <span style='color: darkBlue; font-weight: bold'>'Dave the legend'</span></span>
+Dave the legend</pre></span>
+<p>The second component is known as a <i>string</i>. This <i>string</i> is the argument after the <code>print</code> statement, and is the text that is outputted to the console.<br></span>
+A <i>string</i> is simply a piece of text that is surrounded by either single quotes <code><span style='color: darkBlue; font-weight: bold'>'dave'</span></code> or double quotes <code><span style="color: darkGreen; font-weight: bold">"dave"</span></code>.</p></span>
+<p>Finally, putting all this together, our program to print out <code><span style="color: darkGreen; font-weight: bold">"Hello World!"</span></code> is as follows:</p></span>
+<pre>>>> print <span style="color: darkGreen; font-weight: bold">"Hello World!"</span></span>
+Hello World!</pre></span>
+<hr></span>
+<a name='Lesson2'><h1><b>Lesson 2:</b> Basic Types</h1></a><br></span>
+<p>There are many types involved in python, but the few we shall cover this lesson are <code>int</code>, <code>float</code>, and <code>str</code>.</p></span>
+<p>Objects in python are grouped by their type, integers being grouped as <i>ints</i>, non-integer values (decimals) being grouped as <i>floats</i>, and as noted earlier, pieces of text grouped as <i>strings</i> (<code>str</code>).</p></span>
+<pre>>>> type(9) == int</span>
+True</span>
+>>> type(2.3) == <span style="color:darkSalmon"><b>float</b></span></span>
+True</span>
+>>> type(<span style="color: darkGreen; font-weight: bold">"Hello World!"</span>) == <span style="color:darkSalmon"><b>str</b></span></span>
+True</pre></span>
+<hr></span>
+<a name='Lesson3'><h1><b>Lesson 3:</b> Basic Math Operations</h1></a><br></span>
+<p>In order to perform simple mathematical operations in python, simply use the operators as one would expect:</p></span>
+<pre>>>> 9 + 5</span>
+14</span>
+>>> 4.5 - 2.1</span>
+2.4</span>
+>>> 4.5 * 4</span>
+18.0</span>
+>>> 8/3</span>
+2</pre><br></span>
+<p>Notice how in the last example, although 8 divided by 3 is really equivalent to 2.667, it shows <code>8/3</code> as being <code>2</code>.</p></span>
+<p>This is because we are dividing two integers by each other. However, if you replace at least one of the arguments with a float, the result is also a float:</p></span>
+<pre>>>> 8.0/3</span>
+2.6666666666666665</pre></span>
+<hr></span>
+<a name='Lesson4'><h1><b>Lesson 4:</b> Variables</h1></a><br></span>
+<p>A variable is, for lack of a better term, something which a value is associated with. To assign a variable to a value, use a single equals sign.</p></span>
+<pre>>>> weather = <span style="color: darkGreen; font-weight: bold">"nice"</span></span>
+>>> height = 57.6</span>
+>>> age = 15</span>
+>>> <span style="color:red"><b>print</b></span> height</span>
+57.6</pre><br></span>
+<hr></span>
+<a name='Lesson5'><h1><b>Lesson 5:</b> Comments</h1></a><br></span>
+<p>When making a piece of open-source code that is visible to the public, it is always helpful to add comments to lines of code to explain their purpose.</p></span>
+<p>To make a single-line comment, precede the line with a simple hashtag <b></code><span style="color: rgb(162, 162, 162); font-weight: bold">#<code></b></p></span>
+<pre>>>> 9 + 5 <span style="color: rgb(162, 162, 162); font-weight: bold">#This is a comment</span>
+14</span>
+>>> 2.5 * 2.5 <span style="color: rgb(162, 162, 162); font-weight: bold">#So is this</span>
+6.25</span>
+>>> <span style="color:red"><b>print</b></span> <span style="color: darkGreen; font-weight: bold">"This is not a comment"</span> <span style="color: rgb(162, 162, 162); font-weight: bold">#But this is</span>
+This is not a comment</pre><br></span>
+<p>To make a multi-line comment, surround the comments with triple quotes <code>"""</code>:</p></span>
+<pre>>>> """This is a comment</span>
+... <span style="color:red"><b>and</b></span> it continues</span>
+... <span style="color:red"><b>and</b></span> continues</span>
+... <span style="color:red"><b>and</b></span> continues...</span>
+... until you close it"""</span>
+<span style='color: darkBlue; font-weight: bold'>'This is a comment\nand it continues\nand continues\nand continues...\nuntil you close it'</span></pre></span>
+<p>Although it prints out the string after you close the quotes, when you run the program the line will be ignored as the string is not processed.</p></span>
+<hr></span>
+<a name='Lesson6'><h1><b>Lesson 6:</b> Conditions, and booleans</h1></a><br></span>
+<p>A boolean is a variable whose value is either <code>True</code> or <code>False</code>. A condition is an expression that evaluates into a boolean, for example <code>5 < 8</code>.</p></span>
+<p>To compare two values, one may use:</p></span>
+<table style="width:25%">
+  <caption>Comparators</caption>
+  <tr>
+    <th>Comparator</th>
+    <th>Meaning</th>
+  </tr>
+  <tr>
+    <td>==</td>
+    <td>Equal to</td>
+  </tr>
+  <tr>
+    <td>!=</td>
+    <td>Not equal to</td>
+  </tr>
+  <tr>
+    <td><=</td>
+    <td>Less than or equal to</td>
+  </tr>
+  <tr>
+    <td>>=</td>
+    <td>Greater than or equal to</td>
+  </tr>
+  <tr>
+    <td><</td>
+    <td>Less than</td>
+  </tr>
+  <tr>
+    <td><</td>
+    <td>Greater than</td>
+  </tr>
+</table></span>
+<a name='Lesson7'><h1><b>Lesson 7:</b> <code>if</code>, <code>elif</code>, <code>else</code></h1></a><br></span>
+<p>An <code>if</code> statement consists of two parts: the <code>if</code>, and then the condition (a boolean). If the condition results in <code>True</code>, the section of code nested within the <code>if</code> statement is run. Otherwise, it gets skipped over, and proceeds to the <code>elif</code> or the <code>else</code>, if either one exists.</span>
+The <code>elif</code> is another <code>if</code> statement, but it is connected to its parent <code>if</code> in that the code will only proceed to the <code>elif</code> if the <code>if</code> statement is not valid. If the <code>elif</code> and <code>if</code> are invalid, and an <code>else</code> statement exists, the code will proceed to the <code>else</code>, which takes no condition.</p></span>
+<pre>if expression1:</span>
+    proceed to line 1 if the expression1 is true</span>
+    proceed to line 2 if the expression1 is true</span>
+    ...</span>
+elif expression2:</span>
+    proceed to line 1 if the expression2 is true</span>
+    proceed to line 2 if the expression2 is true</span>
+    ...</span>
+else:</span>
+    proceed to line 2 if expression1 and expression2 are false</span>
+    proceed line 2 if expression1 and expression2 are false</span>
+    ...</pre></span>
+<hr></span>
+<pre>>>> height_in_inches = 65</span>
+>>> <span style="color:red"><b>if</b></span> height_in_inches < 60:</span>
+...     <span style="color:red"><b>print</b></span> <span style="color: darkGreen; font-weight: bold">"You are shorter than 5 feet"</span></span>
+... <span style="color:red"><b>elif</b></span> height_in_inches >= 72:</span>
+...     <span style="color:red"><b>print</b></span> <span style="color: darkGreen; font-weight: bold">"You are taller than 6 feet"</span></span>
+... <span style="color:red"><b>else</b></span>: <span style="color: rgb(162, 162, 162); font-weight: bold">#60 <= height_in_inches < 72</span>
+...     <span style="color:red"><b>print</b></span> <span style="color: darkGreen; font-weight: bold">"You are between 5 and 6 feet tall"</span></span>
+... </span>
+You are between 5 and 6 feet tall</span>
+>>> </pre></span>
+<a name='Lesson8'><h1><b>Lesson 8:</b> Loops</h1></a></span>
+<p>There are two types of loops in python: the <code>while</code> loop and the <code>for</code> loop. The while loop is an elongated <code>if</code> statement, it runs <b>until</b> the condition evaluates to False:</p></span>
+<pre>>>> x = 0</span>
+>>> <span style="color:red"><b>while</b></span> x < 10: <span style="color: rgb(162, 162, 162); font-weight: bold">#Until x is not less than 10...</span>
+...     x = x + 1 <span style="color: rgb(162, 162, 162); font-weight: bold">#Add 1 to x...</span>
+...     <span style="color:red"><b>print</b></span> x   <span style="color: rgb(162, 162, 162); font-weight: bold">#And print it.</span>
+... </span>
+1</span>
+2</span>
+3</span>
+4</span>
+5</span>
+6</span>
+7</span>
+8</span>
+9</span>
+10</span>
+>>> </pre></span>
  
 </body>
 </html>
