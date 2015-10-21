@@ -2,7 +2,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link href='http://fonts.googleapis.com/css?family=Belleza' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Belleza' rel='stylesheet' type='text/css'>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
 <style>
 .sidebar {
    width: 100px;
@@ -23,6 +24,7 @@ h1, p, table, th, td, div {
 a {
 	transition: 1000ms;
 	font-size: 20px;
+	color: black;
 }
 a:visited {
 	color: inherit;
@@ -38,6 +40,22 @@ th, td {
     padding: 5px;
     text-align: left;
 }
+/* latin-ext */
+@font-face {
+  font-family: 'AJ';
+  font-style: normal;
+  font-weight: 400;
+  src: local('AJ'), local('AJ-Regular'), url(font.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'AJ';
+  font-style: normal;
+  font-weight: 400;
+  src: local('AJ'), local('AJ-Regular'), url(font.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
 </style>
 <div class='sidebar'>
 	<a href="#Lesson1">Lesson 1</a><br><br>
@@ -49,7 +67,22 @@ th, td {
 	<a href="#Lesson7">Lesson 7</a><br><br>
 	<a href="#Lesson8">Lesson 8</a><br><br>
 </div>
-</head>
+<script>
+$(function() {
+  $('a[href*=#]:not([href=#])').click(function() {
+    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+      var target = $(this.hash);
+      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+      if (target.length) {
+        $('html,body').animate({
+          scrollTop: target.offset().top
+        }, 1000);
+        return false;
+      }
+    }
+  });
+});
+</script>
 <body style="padding-left: 100px">
 <a name='Lesson1'><h1><b>Lesson 1:</b> <i>Hello World!</i></h1></a><br></span>
 <p>The first program that is generally written in a new language is called <i>Hello World!</i>, named such because it involves the coder simply getting the program to print out <code><span style="color: darkGreen; font-weight: bold">"Hello World!"</span></code>.<br></span>
@@ -194,6 +227,19 @@ You are between 5 and 6 feet tall</span>
 8</span>
 9</span>
 10</span>
+>>> </pre></span>
+<p>A <code>for</code> loop, on the other hand, has 4 components: The <code>for</code> statement, the variable declaration, the <code>in</code> statement, and the designated variable to loop over.</span>
+For example, the following <code>for</code> loop syntax <code>for i in <span style="color: darkGreen; font-weight: bold">"Hello World"</span>:</code> loops through the string <code><span style="color: darkGreen; font-weight: bold">"Hello World"</span></code>, assigning <code>i</code> to each character every time the loop completes.</span>
+The designated variable to loop over may be a string, or could also be a <a href="#Lesson9">list</a> or a <a href="#Lesson10">dictionary</a>.</span>
+The following <code>for</code> loop uses the counting of spaces in the string to get the word count:</p></span>
+<pre>>>> name = <span style="color: darkGreen; font-weight: bold">"This is a sentence"</span></span>
+>>> wordCount = 1 <span style="color: rgb(162, 162, 162); font-weight: bold">#Initialize the variable to keep a track of the word count</span>
+>>> <span style="color:red"><b>for</b></span> i <span style="color:red"><b>in</b></span> name: <span style="color: rgb(162, 162, 162); font-weight: bold">#Loop over name, assigning i to each character in name</span>
+...     <span style="color:red"><b>if</b></span> i == <span style="color: darkGreen; font-weight: bold">" "</span>: <span style="color: rgb(162, 162, 162); font-weight: bold">#If i is a space</span>
+...             wordCount = wordCount + 1 <span style="color: rgb(162, 162, 162); font-weight: bold">#Add 1 to the word count</span>
+... </span>
+>>> <span style="color:red"><b>print</b></span> wordCount <span style="color: rgb(162, 162, 162); font-weight: bold">#Print out our result</span>
+4</span>
 >>> </pre></span>
  
 </body>
