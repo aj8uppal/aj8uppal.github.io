@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Signin Template for Bootstrap</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+    <link href="css/signin.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="firstName" class="sr-only">FirstName</label>
+        <input type="name" id="firstName" class="form-control" placeholder="First Name" required>
+        <label for="lastName" class="sr-only">Last Name</label>
+        <input type="name" id="lastName" class="form-control" placeholder="Last Name" required>
+        <label for="username" class="sr-only">Username</label>
+        <input type="name" id="username" class="form-control" placeholder="Username" required>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <label for="inputConfirmPassword" class="sr-only">Confirm password</label>
+        <input type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirm password" required disabled>
+        <button href="dashboard.html" id="signup" class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
+      </form>
+
+    </div> <!-- /container -->
+
+
+	<script>
+var socket = io.connect('ws://ca4b646c.ngrok.io');
+$(document).ready(function() {
+	if(window.location.href.split("?").length > 1){
+		var name = window.location.href.split("?")[1].split("=")[1];
+		if(name != undefined){
+			$("#firstName")[0].value = name;
+		}
+	}
+	socket.on("signupsuccess", function(){
+		window.location.replace("login.html");
+		return false;
+	});
+	$('#signup').click(function(){
+		firstname = $('#firstName').val();
+		lastname = $('#lastName').val();
+		email = $('#inputEmail').val();
+		passwd = $('#inputPassword').val();
+		username = $('#username').val();
+		socket.emit("signup", {"firstname": firstname, "lastname": lastname, "username": username,"email": email, "password": passwd});
+	});
+	$('#inputPassword').focus(function() {
+		$(this).keyup(function() {
+			var value = $(this).val();
+			if(value.length != 0){
+				$('#inputConfirmPassword').prop('disabled', false)
+			}else{
+				$('#inputConfirmPassword').prop('disabled', true)
+			}
+		});
+	});
+	$('#inputConfirmPassword').focus(function() {
+		
+		$(this).keyup(function() {
+				$(this).popover();
+		var popover = $(this).data('bs.popover');
+			var value = $(this).val();
+			if(value.length != 0  && $(this).val() != $('#inputPassword').val())
+			{
+				popover.options.content = 'Passwords do not match.';
+				console.log($(this).val()+" "+$('#inputPassword').val());
+				if($('.popover').length == 0){
+					$(this).popover('show');
+					$(this).next('.popover').addClass('popover-danger');
+				}
+			}else{
+					$(this).popover('hide');
+			}
+		});
+	});
+});
+	</script>
+  </body>
+</html>
