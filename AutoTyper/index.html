@@ -12,18 +12,29 @@
   </head>
   <body>
     <div class="container">
-      <div class="row">
-    <textarea id="text" rows=6 placeholder="Post your problem here. Only post a single, specific question. The more details you can give, the better."></textarea>
-
-    <textarea id="text1" rows=6 placeholder="Post your problem here. Only post a single, specific question. The more details you can give, the better."></textarea>
-
-    <textarea id="text2" rows=6 placeholder="Post your problem here. Only post a single, specific question. The more details you can give, the better."></textarea>
-    </div>
-	<div class="row" style="text-align: center; margin-top: 15vh">
+	<center>
+		<h1><a href="js/AutoTyper.js"><code>AutoTyper.js</code></a></h1>
+	</center>
+	<hr />
+	<div class="row" style="text-align: center; margin: 3vh">
 	<center style="margin: auto">
 		<i>Usage:&nbsp;</i><code>let typer = new Typer({element_selector}, {cycle_strings}, {speed}, {autoStart=true});</code>
 </center>
 	</div>
+	<hr/>
+      <div class="row">
+	<center style="margin: auto">
+	<code>let typer = new Typer('#sqlHelp', ["I need to pull...", "I'm having trouble getting...", "I'm trying to join two tables..."], 50);</code>
+    <textarea id="sqlHelp" rows=6 placeholder="Post your problem here. Only post a single, specific question. The more details you can give, the better."></textarea>
+<hr/>
+	<code>let typer = new Typer('#fast', ["Once upon a time, in a faraway land...", "The best features of Gmail are...", "Compile Bootstrap with your own asset pipeline by..."], 15, <i>false</i>);</code>
+    <textarea id="fast" rows=6 placeholder="Post your problem here. Only post a single, specific question. The more details you can give, the better."></textarea>
+	<button onclick="startType()" style="margin-top: 1rem; background-color: indianRed; color: whiteSmoke;filter: drop-shadow(indianRed 0px 0px 5px);cursor: pointer;">Click to Start!</button>
+<hr/>
+	<code>let typer = new Typer('#slow', ["Once upon a time, in a faraway land...", "The best features of Gmail are...", "Compile Bootstrap with your own asset pipeline by..."], 125);</code>
+    <textarea id="slow" rows=6 placeholder="Post your problem here. Only post a single, specific question. The more details you can give, the better."></textarea>
+	</center>
+    </div>
     </div>
   </body>
 </html>
