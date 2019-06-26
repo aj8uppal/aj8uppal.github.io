@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
     <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/AutoTyper.js"></script>
     <script src="js/main.js"></script>
@@ -19,7 +20,7 @@
 	<hr />
 	<div class="row" style="text-align: center; margin: 3vh">
 	<center style="margin: auto">
-		<i>Usage:&nbsp;</i><code>let typer = new Typer({element_selector}, {cycle_strings}, {speed}, {autoStart=true}, {deleteAnimation=false}, {waitTime=1000});</code>
+		<i>Usage:&nbsp;</i><code class="autoColor">let typer = new Typer(<span data-toggle="tooltip" data-placement="top" title="Element selector (e.g. '#divToTypeIn').">{element_selector}</span>, <span data-toggle="tooltip" data-placement="top" title="Array of strings to cycle through when typing.">{cycle_strings}</span>, <span data-toggle="tooltip" data-placement="top" title="Integer value for millisecond wait time between character typing. Higher value means lower speed (greater wait time between typing).">{speed}</span>, <span data-toggle="tooltip" data-placement="top" title="Boolean value for whether or not to automatically start typing. If set to false, use Typer.start(). Default set to true.">{autoStart=true}</span>, <span data-toggle="tooltip" data-placement="top" title="Boolean value for whether or not to animate the deletion. Default set to false.">{deleteAnimation=false}</span>, <span data-toggle="tooltip" data-placement="top" title="Integer value (in ms) for the wait time before deleting. Default set to 1000 ms.">{waitTime=1000}</span>);</code>
 </center>
 	</div>
 	<hr/>

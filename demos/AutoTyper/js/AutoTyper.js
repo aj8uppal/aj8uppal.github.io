@@ -22,10 +22,10 @@ class Typer {
       }
     }
     if(autoStart){
-      this.start(element);
+      this.start();
     }
   }
-  start(ele){
+  start(){
     if(!this.paused){
     let character = this.strings[this.curString][this.curIndex];
     if(this.delete == false){
@@ -65,8 +65,6 @@ class Typer {
     this.curString = 0;
     this.curIndex = 0;
   }
-    setTimeout((ele)=>{
-      this.start(ele);
-    }, this.speed);
+  setTimeout(()=>{this.start()}, this.speed);
   }
 }
