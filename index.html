@@ -1,85 +1,309 @@
-
 <!DOCTYPE html>
-<html>
-	<head>
-		<link href='http://fonts.googleapis.com/css?family=Belleza' rel='stylesheet' type='text/css'>
-		<style>
-* {
-  margin: 0px;
-  padding: 0px;
-  font-family: 'Belleza', sans-serif;
-}
-.stripe {
-  transition: 200ms;
-  text-align: center;
-}
-a {
-  border-radius: .25em;
-  color: #fff;
-  background-color: #c0392b;
-  border: 0;
-  display: inline-block;
-  transition: 500ms;
-  float: center;
-  padding: 12.5px 15px;
-  margin: 10px;
-/*  font-family: Belleza;*/
-  width: 20%;
-  height: 25px;
-/*  align: center;*/
-/*  vertical-align: middle;*/
-}
-p {
-/*  font-family: Optima;*/
-  color: #fff;
-  padding: 10px 15px;
-/*  margin: 10px;*/
-  font-size: 40px;
-}
-a:hover {
-  background-color: #910E00;
-/*  width: 100%;*/
-  height: 125px;
-}
-.stripe:hover {
-  background-color: #910E00;
-}
-a:link {
-  text-decoration: none;
-}
-hr {
-  border-color: #c0392b;
-  color: #c0392b;
-  background-color: #c0392b;
-  height: 100px;
-  position: absolute;
-}
-.stripe {
-  width: 100%
-  height: 100px;
-  background-color: #c0392b;
-}
-.centered {
-  margin-left: auto;
-  margin-right: auto;
-  align: middle;
-  text-align: center;
-}
-		</style>
-	</head>
-	<body>
-		<div class="stripe"
-		<center><p>Welcome to my website!</p></center>
-		</div>
-		<center style="left: 10px">
-		<a href="alg2hfinal.html" style="width:96%">Algebra 2 Honors Final Project<br><br>My final project for Algebra 2 Honors, it accurately demonstrates how a ball would bounce on each of the 8 planets, using physics that realistaically scale to a computer screen.</a><br>
-		<a href="circle.html" style="width:96%">Circle<br><br>A circle game with two modes:  <b>Normal:</b> Eat circles smaller than you to get bigger.  <b>Survival:</b> Survive without touching anything.</a><br>
-		<a href="grinchjump.html" style="width:96%">GrinchJump<br><br>3D Doodle Jump.<br>
-		<a href="http://lahyc.herokuapp.com" style="width:96%">LAHYC<br><br>Homepage for the Los Altos Hills Youth Commission.</a><br>
-		<a href="prismrunner.html" style="width:96%">PrismRunner<br><br>A 3D game where you avoid oncoming obstacles.</a>
-		</center>
-		<script>
-		</script>
-	</body>
-</html>
+<html class="no-js" lang="en">
 
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AJ Uppal</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
+  <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id="mobile-menu-open" class="shadow-large">
+    <i class="fa fa-bars" aria-hidden="true"></i>
+  </div>
+  <!-- End #mobile-menu-toggle -->
+  <header>
+    <div id="mobile-menu-close">
+      <span>Close</span> <i class="fa fa-times" aria-hidden="true"></i>
+    </div>
+    <ul id="menu" class="shadow">
+      <li>
+        <a href="#about">About</a>
+      </li>
+      <li>
+        <a href="#experience">Experience</a>
+      </li>
+      <li>
+        <a href="#education">Education</a>
+      </li>
+      <li>
+        <a href="#projects">Projects</a>
+      </li>
+      <li>
+        <a href="#skills">Skills</a>
+      </li>
+    </ul>
+  </header>
+  <!-- End header -->
+
+  <div id="lead">
+    <div id="lead-content">
+      <h1>AJ Uppal</h1>
+      <h2>Software Engineer</h2>
+      <form method="get" action="attachments/resume.pdf">
+        <a href="#" class="btn-rounded-white"><button type="submit">Download Resume</button></a>
+      </form>
+    </div>
+    <!-- End #lead-content -->
+
+    <div id="lead-overlay"></div>
+
+    <div id="lead-down">
+      <span>
+        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+      </span>
+    </div>
+    <!-- End #lead-down -->
+  </div>
+  <!-- End #lead -->
+
+  <div id="about">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h2 class="heading">About Me</h2>
+        </div>
+        <div class="col-md-8">
+          <p>
+            Hi, I'm A.J. Uppal. I am a maker at heart, and I have a penchant for creating everything from air pollution monitors to 3D games. I love music and running, and on a nice summer day, you can find me in the garden, growing heirloom tomatoes! I am currently studying Computer Science (B.S.) and Astrophysics (B.S.) at the University of Massachusetts, Amherst. I love to code, but my passion for cosmology extends further back. Ever since I turned four, I have had a dream of becoming an astronaut, venturing into the deep reaches of space. And while that may not be most feasible career option, studying the (computational!) physics and math of the Universe captivates me like nothing else.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End #about -->
+
+  <div id="experience" class="background-alt">
+    <h2 class="heading">Experience</h2>
+    <div id="experience-timeline">
+      <div data-date="Summer 2019">
+        <h3>Got It, Inc.</h3>
+        <h4>Software Engineering Intern</h4>
+        <p>
+          Engineered for the <a href="https://www.got-it.io/solutions/excel-chat">ExcelChat</a> chrome extension (javascript, React.js, Redux.js), built javascript modules (<a href="https://github.com/aj8uppal/aj8uppal.github.io/tree/master/demos/AutoTyper">AutoTyper</a>, <a href="https://github.com/aj8uppal/aj8uppal.github.io/tree/master/demos/Carousel">testimonial carousel</a>), built a “bot” to maintain problem volume on the <a href="https://student.photostudy.co">Got It Study</a> platform (python, Flask, React.js, Network APIs), built a mobile app for converting Natural Language to SQL (microservices, React.js), schema scraping from GitHub/SQLFiddle (python).
+        </p>
+      </div>
+
+      <div data-date="Summer 2018">
+        <h3>YouWeb, Inc.</h3>
+        <h4>Software Engineering Intern</h4>
+        <p>
+          Led the marketing campaign for a YouWeb Inc (Discord, Got-it) project, and built the campaign website and web application (javascript, node.js, Adobe Photoshop, Adobe Illustrator)
+        </p>
+      </div>
+
+      <div data-date="Summer 2017">
+        <h3> Bay Area Air Quality Management District</h3>
+        <h4>Air Quality Scientist & Data Analysis Intern</h4>
+        <p>
+          Built, tested, and calibrated low cost air pollution monitors (C) at the Bay Area Air Quality Management District. Built the cloud networking interface to view the data globally (python, javascript, node.js). Secured a $3000 grant for Los Altos High School to integrate air pollution monitor building into APES curriculum.
+        </p>
+      </div>
+
+      <div data-date="2015-2018">
+        <h3><a href="https://theajuppal.com">theajuppal.com</a></h3>
+        <h4>Full Stack Web Developer</h4>
+        <p>
+          Designed and developed custom websites by hand for clients. Self-run business. (node.js, javascript, React, python)
+        </p>
+      </div>
+
+      <div data-date="Summer 2015, 2016">
+        <h3>VeloCloud Networks (acquired by VMware)</h3>
+        <h4>Software Development Intern</h4>
+        <p>
+          Carried out performance analysis of the network appliance using Ixia, built a web front end to animate the deployment of geographically distributed sites. (javascript)
+        </p>
+      </div>
+
+    </div>
+  </div>
+  <!-- End #experience -->
+
+  <div id="education">
+    <h2 class="heading">Education</h2>
+    <div class="education-block">
+      <h3>University of Massachusetts</h3>
+      <span class="education-date">Sept 2018 - June 2022</span>
+      <h4>Bachelor of Science in Computer Science, Bachelor of Science in Astrophysics</h4>
+      <ul>
+        Classes Taken
+        <li>
+          <a href="https://www.cics.umass.edu/content/spring-19-course-descriptions#187">CS 187: Data Structures</a>
+        </li>
+        <li>
+          <a href="https://www.cics.umass.edu/content/spring-19-course-descriptions#230">CS 230: Computer Systems Principles</a>
+        </li>
+        <li>
+          <a href="https://www.astro.umass.edu/course/astrophysics-1-starsgalaxies-0">Astrophysics 228: Stars & Galaxies</a>
+        </li>
+        <li>
+          <a href="https://www.physics.umass.edu/academics/course-catalog/phy-181-physics-i-mechanics">Physics 181: Mechanics</a>
+        </li>
+        <li>
+          <a href="https://www.physics.umass.edu/academics/course-catalog/phy-182-physics-ii-electricity-and-magnetism">Physics 182: Electricity and Magnetism</a>
+        </li>
+      </ul>
+      <ul>
+        Classes Taking
+        <li>
+          <a href="https://www.cics.umass.edu/content/spring-19-course-descriptions#220">CS 220: Programming Methodology</a>
+        </li>
+        <li>
+          <a href="https://www.cics.umass.edu/content/spring-19-course-descriptions#240">CS 240: Reasoning Under Uncertainty</a>
+        </li>
+        <li>
+          <a href="https://www.physics.umass.edu/academics/course-catalog/phy-281-introduction-to-computational-physics">Physics 281: Computational Physics</a>
+        </li>
+        <li>
+          <a href="https://www.physics.umass.edu/academics/course-catalog/phy-287-physics-iii-thermodynamics">Physics 287: Thermodynamics</a>
+        </li>
+      </ul>
+    </div>
+    <!-- End .education-block -->
+  </div>
+  <!-- End #education -->
+
+  <div id="projects" class="background-alt">
+    <h2 class="heading">Projects</h2>
+    <div class="container">
+      <div class="row">
+        <div class="project shadow-large">
+          <div class="project-image">
+            <img src="images/pickle.jpg" />
+          </div>
+          <!-- End .project-image -->
+          <div class="project-info">
+            <h3>PICKLE</h3>
+            <p>
+              Designed, built, and calibrated low cost air pollution monitors in an effort to spread awareness of air pollution. Collaborated with Sonoma Tech, BAAQMD, Manylabs. Used the Particle Photon and Electron (C) as microcontrollers, Python and R for data analysis, TempoDB(IQ) and AT&T M2X for time series databases, plot.ly for data visualization.
+            </p>
+            <a href="http://indiaairquality.com">Website</a>
+          </div>
+        </div>
+        <div class="project shadow-large">
+          <div class="project-image">
+            <img src="images/prismrunner.png" />
+          </div>
+          <!-- End .project-image -->
+          <div class="project-info">
+            <h3>PrismRunner</h3>
+            <p>
+              Made a first-person 3D “runner” game. Players move forward and attempt to avoid oncoming prisms.
+            </p>
+            <a href="http://aj8uppal.github.io/prismrunner.html">Website</a>
+          </div>
+        </div>
+        <div class="project shadow-large">
+          <div class="project-image">
+            <img src="images/grinchjump.png" />
+          </div>
+          <!-- End .project-image -->
+          <div class="project-info">
+            <h3>GrinchJump</h3>
+            <p>
+              Designed a 3D version of doodle jump using Three.js. The character is an 8-bit style “grinch”.
+            </p>
+            <a href="http://aj8uppal.github.io/grinchjump.html">Website</a>
+          </div>
+        </div>
+        <div class="project shadow-large">
+          <div class="project-image">
+            <img src="images/wherestyler.png" />
+          </div>
+          <!-- End .project-image -->
+          <div class="project-info">
+            <h3>Facial Recognition</h3>
+            <p>
+              Used facial recognition software to quickly detect distinct faces. Once recognized, alerts the computer.
+            </p>
+            <a href="http://wherestyler.github.io">Website</a>
+          </div>
+        </div>
+
+        <!-- End .project -->
+      </div>
+    </div>
+  </div>
+  <!-- End #projects -->
+
+  <div id="skills">
+    <h2 class="heading">Skills</h2>
+    <h3>Languages</h3>
+    <ul>
+      <li>Python/li>
+      <li>JavaScript</li>
+      <li>Java</li>
+      <li>C</li>
+      <li>SQL</li>
+      <li>HTML/CSS</li>
+    <h3>Frameworks</h3>
+      <li>React.js</li>
+      <li>Node.js</li>
+      <li>Socket.io</li>
+      <li>jQuery</li>
+      <li>PyTorch</li>
+      <li>Flask</li>
+      <li>Redux.js</li>
+      <li>Three.js</li>
+      <li>OpenCV</li>
+    </ul>
+  </div>
+  <!-- End #skills -->
+
+  <!-- <div id="contact"> Uncomment when contact server is set up
+    <h2>Get in Touch</h2>
+    <div id="contact-form">
+      <form method="POST" action="https://formspree.io/email@email.com">
+        <input type="hidden" name="_subject" value="Contact request from personal website" />
+        <input type="email" name="_replyto" placeholder="Your email" required>
+        <textarea name="message" placeholder="Your message" required></textarea>
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </div> -- >
+  <!-- End #contact -->
+
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-5 copyright">
+          <p>
+            Copyright &copy; 2019 A.J. Uppal
+          </p>
+        </div>
+        <div class="col-sm-2 top">
+          <span id="to-top">
+            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="col-sm-5 social">
+          <ul>
+            <li>
+              <a href="https://github.com/aj8uppal/" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
+            </li>
+            <li>
+              <a href="https://stackoverflow.com/users/3113477/a-j-uppal" target="_blank"><i class="fa fa-stack-overflow" aria-hidden="true"></i></a>
+            </li>
+            <li>
+              <a href="https://www.linkedin.com/in/aj-uppal/" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- End footer -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="js/scripts.min.js"></script>
+</body>
+
+</html>

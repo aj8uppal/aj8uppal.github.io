@@ -9,7 +9,7 @@ class Typer {
     this.paused = false
     this.waiting = false;
     this.waitTime = waitTime;
-    this.delteAnimation = deleteAnimation;
+    this.deleteAnimation = deleteAnimation;
     this.element.onfocus = () => {
       if(this.paused == false){
         this.element.value = "";
