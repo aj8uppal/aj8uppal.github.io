@@ -39,14 +39,31 @@ $(document).ready(function(){
     socket.emit('updateClientCoords', {x: mouseX, y: mouseY})
   });
 
-  socket.on('sendID', function(socketID){
-    id = socketID;
+  socket.on('info', function(data){
+    id = data.id;
+    circles = Object.values(data.users);
     main();
   });
 
-  socket.on('updateFromServer', function(users){
-    delete users[id];
-    circles = Object.values(users);
+  socket.on('newUser', function(user){
+    circles.push(user)
+  })
+
+  socket.on('userLeft', function(id){
+    circles.forEach((circle, index)=>{
+      if(circle.id === id){
+        circles.splice(index, 1);
+      }
+    })
+  })
+
+  socket.on('userMoved', function(user){
+    circles.forEach((circle)=>{
+      if(circle.id === user.id){
+        circle.x = user.x;
+        circle.y = user.y;
+      }
+    })
   });
 
 });

@@ -22,19 +22,19 @@ let users = {};
 
 io.on('connection', function(socket){
   console.log('a user connected');
-  users[socket.id] = {x: -1, y: -1, radius: 15};
+  socket.emit('info', {id: socket.id, users: users});
+  users[socket.id] = {x: -1, y: -1, radius: 15, id: socket.id};
   console.log(users);
-  socket.emit('sendID', socket.id)
+  socket.broadcast.emit('newUser', users[socket.id])
   socket.on('disconnect', function(){
     console.log('user disconnected');
     delete users[socket.id]
     console.log(users);
+    socket.broadcast.emit('userLeft', socket.id);
   });
   socket.on('updateClientCoords', function(data){
     users[socket.id].x = data.x;
     users[socket.id].y = data.y;
+    socket.broadcast.emit('userMoved', users[socket.id]);
   });
-  setInterval(() => {
-    io.emit('updateFromServer', users);
-  }, 50);
 });
