@@ -1,0 +1,8 @@
+{
+  "name": "socket-circles",
+  "version": "0.0.1",
+  "description": "Real Time Circles",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}
