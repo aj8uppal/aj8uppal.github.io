@@ -38,7 +38,7 @@ $(document).ready(function(){
     mouseY = e.clientY;
     socket.emit('updateClientCoords', {x: mouseX, y: mouseY})
   });
-
+  alert("connecting...");
   socket.on('info', function(data){
     id = data.id;
     circles = Object.values(data.users);
