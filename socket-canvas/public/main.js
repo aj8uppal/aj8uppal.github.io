@@ -1,4 +1,23 @@
 $(document).ready(function(){
+  var xPos = null;
+  var yPos = null;
+  window.addEventListener( "touchmove", function ( event ) {
+      var touch = event.originalEvent.touches[ 0 ];
+      oldX = xPos;
+      oldY = yPos;
+      xPos = touch.pageX;
+      yPos = touch.pageY;
+      if ( oldX == null && oldY == null ) {
+          return false;
+      }
+      else {
+          if ( Math.abs( oldX-xPos ) > Math.abs( oldY-yPos ) ) {
+              event.preventDefault();
+              return false;
+          }
+      }
+  } );
+
   let socket = io('ws://ccdb5e92.ngrok.io');
   let canvas = $("#canvas")[0];
   let ctx = canvas.getContext('2d');
