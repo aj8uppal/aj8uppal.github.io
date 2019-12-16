@@ -5,7 +5,9 @@ $(document).ready(function(){
   canvas.height = window.innerHeight;
 
   let circleRadius = 15;
-  let player = {x: canvas.width/2-circleRadius/2, y: canvas.height/2-circleRadius/2, radius: circleRadius, color: "green"};
+  let mouseX = canvas.width/2-circleRadius/2;
+  let mouseY = canvas.height/2-circleRadius/2;
+  let player = {x: mouseX, y: mouseY, radius: circleRadius, color: "navy"};
 
   let circles = [];
 
@@ -15,20 +17,22 @@ $(document).ready(function(){
       let circle = circles[c];
       drawCircle(circle);
     }
-    player.x = 
+    player.x = mouseX;
+    player.y = mouseY;
     drawCircle(player);
     window.requestAnimationFrame(main);
   }
   let drawCircle = (circle) => {
     ctx.fillStyle = circle.color;
     ctx.beginPath();
-    ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+    ctx.arc(circle.x-circle.radius/2, circle.y-circle.radius/2, circle.radius, 0, 2 * Math.PI);
     ctx.stroke();
     ctx.fill();
   }
 
   $("#canvas").mousemove(function(e){
-
+    mouseX = e.clientX;
+    mouseY = e.clientY;
   });
 
   main();
