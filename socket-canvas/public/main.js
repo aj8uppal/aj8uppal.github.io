@@ -17,8 +17,8 @@ $(document).ready(function(){
   //         }
   //     }
   // } );
-  document.addEventListener('touchstart', function(e) {e.preventDefault()}, false);
-  document.addEventListener('touchmove', function(e) {e.preventDefault()}, false);
+  // document.addEventListener('touchstart', function(e) {e.preventDefault()}, false);
+  // document.addEventListener('touchmove', function(e) {e.preventDefault()}, false);
 
   let socket = io('ws://ccdb5e92.ngrok.io');
   let canvas = $("#canvas")[0];
@@ -29,7 +29,8 @@ $(document).ready(function(){
   let circleRadius = 15;
   let mouseX = canvas.width/2-circleRadius/2;
   let mouseY = canvas.height/2-circleRadius/2;
-  let player = {x: mouseX, y: mouseY, radius: circleRadius, color: "navy"};
+  let player = {x: mouseX, y: mouseY, targetX: mouseX, targetY: mouseY, radius: circleRadius, color: "navy"};
+  let speed = 5;
 
   let circles = [];
 
@@ -39,10 +40,38 @@ $(document).ready(function(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for(let c = 0; c < circles.length; ++c){
       let circle = circles[c];
+      dX = circle.targetX - circle.x;
+      dY = circle.targetY - circle.y;
+      if(dX === 0){
+        if(Math.abs(dY) > speed){
+          circle.y+=dY > 0 ? speed : -speed;
+        }
+      }else if(dX**2 + dY**2 > speed*2){
+        theta = Math.atan2(dY, dX);
+        circle.x+=speed*Math.cos(theta)
+        circle.y+=speed*Math.sin(theta)
+      }else{
+        circle.x = circle.targetX;
+        circle.y = circle.targetY;
+      }
       drawCircle(circle);
     }
-    player.x = mouseX;
-    player.y = mouseY;
+    dX = player.targetX - player.x;
+    dY = player.targetY - player.y;
+    if(dX === 0){
+      if(Math.abs(dY) > speed){
+        player.y+=dY > 0 ? speed : -speed;
+      }
+    }else if(dX**2 + dY**2 > speed*2){
+      theta = Math.atan2(dY, dX);
+      player.x+=speed*Math.cos(theta)
+      player.y+=speed*Math.sin(theta)
+    }else{
+      player.x = player.targetX;
+      player.y = player.targetY;
+    }
+    // player.x = mouseX;
+    // player.y = mouseY;
     drawCircle(player);
     window.requestAnimationFrame(main);
   }
@@ -55,11 +84,11 @@ $(document).ready(function(){
   }
 
   $("#canvas").mousemove(function(e){
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    socket.emit('updateClientCoords', {x: mouseX, y: mouseY})
+    player.targetX = e.clientX+player.radius/2;
+    player.targetY = e.clientY+player.radius/2;
+    socket.emit('updateClientCoords', {targetX: player.targetX, targetY: player.targetY})
   });
-  alert("connecting 2222...");
+  // alert("connecting 2222...");
   socket.on('info', function(data){
     id = data.id;
     circles = Object.values(data.users);
@@ -81,8 +110,8 @@ $(document).ready(function(){
   socket.on('userMoved', function(user){
     circles.forEach((circle)=>{
       if(circle.id === user.id){
-        circle.x = user.x;
-        circle.y = user.y;
+        circle.targetX = user.targetX;
+        circle.targetY = user.targetY;
       }
     })
   });

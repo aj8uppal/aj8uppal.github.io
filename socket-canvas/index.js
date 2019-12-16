@@ -23,7 +23,7 @@ let users = {};
 io.on('connection', function(socket){
   console.log('a user connected');
   socket.emit('info', {id: socket.id, users: users});
-  users[socket.id] = {x: -1, y: -1, radius: 15, id: socket.id};
+  users[socket.id] = {x: -1, y: -1, radius: 15, id: socket.id, targetX: -1, targetY: -1};
   console.log(users);
   socket.broadcast.emit('newUser', users[socket.id])
   socket.on('disconnect', function(){
@@ -33,8 +33,8 @@ io.on('connection', function(socket){
     socket.broadcast.emit('userLeft', socket.id);
   });
   socket.on('updateClientCoords', function(data){
-    users[socket.id].x = data.x;
-    users[socket.id].y = data.y;
+    users[socket.id].targetX = data.targetX;
+    users[socket.id].targetY = data.targetY;
     socket.broadcast.emit('userMoved', users[socket.id]);
   });
 });
