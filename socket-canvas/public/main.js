@@ -30,50 +30,63 @@ $(document).ready(function(){
   let mouseX = canvas.width/2-circleRadius/2;
   let mouseY = canvas.height/2-circleRadius/2;
   let player = {x: mouseX, y: mouseY, targetX: mouseX, targetY: mouseY, radius: circleRadius, color: "navy"};
-  let speed = 5;
+  let speed = 10;
+  let fps = 30;
+
+  let BOARD_WIDTH = 10000;
+  let BOARD_HEIGHT = 7500;
+
+  let offset = {x: 1000, y: 1000};
 
   let circles = [];
 
   let id = '';
 
   let main = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for(let c = 0; c < circles.length; ++c){
-      let circle = circles[c];
-      dX = circle.targetX - circle.x;
-      dY = circle.targetY - circle.y;
+    requestAnimationFrame(main);
+
+    // calc elapsed time since last loop
+
+    now = Date.now();
+    elapsed = now - then;
+    if(elapsed > fpsInterval){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for(let c = 0; c < circles.length; ++c){
+        let circle = circles[c];
+        dX = circle.targetX - circle.x;
+        dY = circle.targetY - circle.y;
+        if(dX === 0){
+          if(Math.abs(dY) > speed){
+            circle.y+=dY > 0 ? speed : -speed;
+          }
+        }else if(dX**2 + dY**2 > speed*2){
+          theta = Math.atan2(dY, dX);
+          circle.x+=speed*Math.cos(theta)
+          circle.y+=speed*Math.sin(theta)
+        }else{
+          circle.x = circle.targetX;
+          circle.y = circle.targetY;
+        }
+        drawCircle(circle);
+      }
+      dX = player.targetX - player.x;
+      dY = player.targetY - player.y;
       if(dX === 0){
         if(Math.abs(dY) > speed){
-          circle.y+=dY > 0 ? speed : -speed;
+          player.y+=dY > 0 ? speed : -speed;
         }
       }else if(dX**2 + dY**2 > speed*2){
         theta = Math.atan2(dY, dX);
-        circle.x+=speed*Math.cos(theta)
-        circle.y+=speed*Math.sin(theta)
+        player.x+=speed*Math.cos(theta)
+        player.y+=speed*Math.sin(theta)
       }else{
-        circle.x = circle.targetX;
-        circle.y = circle.targetY;
+        player.x = player.targetX;
+        player.y = player.targetY;
       }
-      drawCircle(circle);
+      // player.x = mouseX;
+      // player.y = mouseY;
+      drawCircle(player);
     }
-    dX = player.targetX - player.x;
-    dY = player.targetY - player.y;
-    if(dX === 0){
-      if(Math.abs(dY) > speed){
-        player.y+=dY > 0 ? speed : -speed;
-      }
-    }else if(dX**2 + dY**2 > speed*2){
-      theta = Math.atan2(dY, dX);
-      player.x+=speed*Math.cos(theta)
-      player.y+=speed*Math.sin(theta)
-    }else{
-      player.x = player.targetX;
-      player.y = player.targetY;
-    }
-    // player.x = mouseX;
-    // player.y = mouseY;
-    drawCircle(player);
-    window.requestAnimationFrame(main);
   }
   let drawCircle = (circle) => {
     ctx.fillStyle = circle.color || "red";
@@ -92,6 +105,9 @@ $(document).ready(function(){
   socket.on('info', function(data){
     id = data.id;
     circles = Object.values(data.users);
+    fpsInterval = 1000 / fps;
+    then = Date.now();
+    startTime = then;
     main();
   });
 

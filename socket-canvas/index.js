@@ -19,6 +19,8 @@ http.listen(3000, function(){
 //APP
 
 let users = {};
+let BOARD_WIDTH = 10000;
+let BOARD_HEIGHT = 7500;
 
 io.on('connection', function(socket){
   console.log('a user connected');
@@ -33,8 +35,14 @@ io.on('connection', function(socket){
     socket.broadcast.emit('userLeft', socket.id);
   });
   socket.on('updateClientCoords', function(data){
-    users[socket.id].targetX = data.targetX;
-    users[socket.id].targetY = data.targetY;
-    socket.broadcast.emit('userMoved', users[socket.id]);
+    try {
+      users[socket.id].targetX = data.targetX;
+      users[socket.id].targetY = data.targetY;
+      users[socket.id].x = data.x;
+      users[socket.id].y = data.y;
+      socket.broadcast.emit('userMoved', users[socket.id]);
+    }catch(e){
+      //;
+    }
   });
 });
