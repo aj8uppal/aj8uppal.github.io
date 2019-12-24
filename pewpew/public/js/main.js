@@ -1,7 +1,7 @@
 $(function(){
   let name = prompt("What is your name?");
-  let socket = io('ws://abd63da9.ngrok.io');
-  // let socket = io('ws://localhost:3010');
+  // let socket = io('ws://abd63da9.ngrok.io');
+  let socket = io('ws://localhost:3010');
   let scene = new THREE.Scene();
   let camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
   camera.position.z = 4;
@@ -131,6 +131,22 @@ $(function(){
   socket.on('opponentShot', function(){
     console.log('opponentShot');
     bullets.push(new Bullet(...opponent.position.toArray(), scene, camera.position.z, false));
+
+  });
+
+  socket.on('playerKeyDown', function(keyCode){
+    keyPresses[keyCode] = true;
+    console.log('move down');
+  })
+
+  socket.on('playerKeyUp', function(keyCode){
+    keyPresses[keyCode] = false;
+    console.log('move up');
+  })
+
+  socket.on('playerShot', function(){
+    console.log('playerShot');
+    bullets.push(new Bullet(...player.position.toArray(), scene, floorDepth, true));
   });
 
   socket.on('lost', function(){
@@ -175,7 +191,16 @@ $(function(){
         opponent.position.x-=0.05;
       }
     }
-
+    // if(opponentKeyPresses[87]){
+    //   // if(player.position.x > -(floorWidth/2-playerWidth/2)){
+    //     opponent.position.z+=0.05;
+    //   // }
+    // }
+    // if(opponentKeyPresses[83]){
+    //   // if(player.position.x < (floorWidth/2-playerWidth/2)){
+    //     opponent.position.z-=0.05;
+    //   // }
+    // }
     if(keyPresses[65]){
       if(player.position.x > -(floorWidth/2-playerWidth/2)){
         player.position.x-=0.05;
@@ -186,8 +211,18 @@ $(function(){
         player.position.x+=0.05;
       }
     }
+    // if(keyPresses[87]){
+    //   // if(player.position.x > -(floorWidth/2-playerWidth/2)){
+    //     player.position.z-=0.05;
+    //   // }
+    // }
+    // if(keyPresses[83]){
+    //   // if(player.position.x < (floorWidth/2-playerWidth/2)){
+    //     player.position.z+=0.05;
+    //   // }
+    // }
     if(keyPresses[32] && !shot && !gameOver){
-      bullets.push(new Bullet(...player.position.toArray(), scene, floorDepth, true));
+      // bullets.push(new Bullet(...player.position.toArray(), scene, floorDepth, true));
       shot = true;
       socket.emit('shot');
     }
@@ -196,23 +231,30 @@ $(function(){
   };
 
   animate();
+
   function onDocumentKeyDown(event) {
       if(connected && matched){
         let keyCode = event.which;
-        keyPresses[event.which] = true;
-        if(keyCode === 65 || keyCode === 68){
+        // keyPresses[event.which] = true;
+        if(keyCode === 32){
+          keyPresses[32] = true;
+        }
+        if(keyCode === 65 || keyCode === 68 || keyCode === 83 || keyCode === 87){
           socket.emit('keyDown', keyCode);
+          // console.log('down');
         }
       }
   };
   function onDocumentKeyUp(event) {
       if(connected && matched){
         let keyCode = event.which;
-        keyPresses[event.which] = false;
+
         if(keyCode === 32){
+          keyPresses[32] = false;
           shot = false;
-        }else if(keyCode === 65 || keyCode === 68){
+        }else if(keyCode === 65 || keyCode === 68 || keyCode === 83 || keyCode === 87){
           socket.emit('keyUp', keyCode);
+          // console.log('up')
         }
       }
   };

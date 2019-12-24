@@ -1,14 +1,53 @@
+* {
+  font-family: Optima;
+}
+
 body {
   margin: 0;
 }
 
+#playagain, #newgame {
+  display: none;
+}
+
 .label {
   font-size: 48px;
-  color: white;
+  color: whiteSmoke;
   position: absolute;
   left: 50%;
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
   top: 10%;
   transition: 500ms ease;
+}
+
+.choices {
+  position: absolute;
+  top: calc(10% + 60px);
+  width: 100%;
+  margin: auto;
+  text-align: center;
+  display: none;
+  opacity: 0;
+}
+
+.choice {
+  width: 15%;
+  height: 10% !important;
+  background: whiteSmoke;
+  color: black;
+  font-size: 24px;
+  display:inline-block;
+  padding: 1%;
+  margin:1%;
+  border-radius:6px;
+  transition: 500ms ease-in-out;
+  opacity: 1;
+  cursor: pointer;
+}
+
+.choice:hover {
+  /* background: black;
+  color: whiteSmoke; */
+  opacity: 0.5;
 }

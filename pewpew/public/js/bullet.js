@@ -8,8 +8,8 @@ class Bullet {
     this.playerFlag = playerFlag;
     this.thresholdDepth = thresholdDepth;
     this.color = 0xff9500;
-    this.speed = playerFlag ? 0.05 : -0.05;
-    this.radius = 0.25;
+    this.speed = playerFlag ? 0.2 : -0.2;
+    this.radius = 0.1;
     this.geometry = new THREE.SphereGeometry( this.radius, 32, 32 );
     this.material = new THREE.MeshBasicMaterial( {color: this.color} );
     this.materialDanger = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
