@@ -126,6 +126,10 @@ $(function(){
     opponentKeyPresses[keyCode] = false;
   })
 
+  socket.on('opponentShot', function(){
+    bullets.push(new Bullet(...opponent.position.toArray(), scene, floorDepth, false));
+  })
+
   let animate = () =>  {
     requestAnimationFrame( animate );
     if(!connected || !matched){
@@ -165,7 +169,7 @@ $(function(){
       }
     }
     if(keyPresses[32] && !shot){
-      bullets.push(new Bullet(...player.position.toArray(), scene, floorDepth));
+      bullets.push(new Bullet(...player.position.toArray(), scene, floorDepth, true));
       shot = true;
       socket.emit('shot');
     }

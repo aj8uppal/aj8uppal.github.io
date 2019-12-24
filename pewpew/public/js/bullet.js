@@ -5,7 +5,7 @@ class Bullet {
     this.y = y;
     this.z = z;
     this.scene = scene;
-    this.thresholdDepth = thresholdDepth;
+    this.thresholdDepth = playerFlag ? thresholdDepth : -thresholdDepth;
     this.color = 0xff9500;
     this.speed = playerFlag ? 0.05 : -0.05;
     this.radius = 0.25;
