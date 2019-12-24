@@ -146,6 +146,9 @@ $(function(){
       return;
     }
     for(let b in bullets){
+      if(!gameOver){
+        break;
+      }
       let bullet = bullets[b];
       let valid = bullet.move(opponent, playerWidth, playerHeight, playerDepth);
       if(valid === -1){
