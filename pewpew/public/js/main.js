@@ -146,7 +146,7 @@ $(function(){
       return;
     }
     for(let b in bullets){
-      if(!gameOver){
+      if(gameOver){
         break;
       }
       let bullet = bullets[b];
