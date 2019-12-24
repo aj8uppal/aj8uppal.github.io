@@ -5,7 +5,8 @@ class Bullet {
     this.y = y;
     this.z = z;
     this.scene = scene;
-    this.thresholdDepth = playerFlag ? thresholdDepth : -thresholdDepth;
+    this.playerFlag = playerFlag;
+    this.thresholdDepth = thresholdDepth;
     this.color = 0xff9500;
     this.speed = playerFlag ? 0.05 : -0.05;
     this.radius = 0.25;
@@ -19,11 +20,19 @@ class Bullet {
   move(obj, pW, pH, pD){
     //returns -1 if object has expired, 1 if it collided with the opponent, 0 otherwise
     this.bullet.position.z-=this.speed;
-    if(this.bullet.position.z < -this.thresholdDepth){
-      this.scene.remove( this.bullet );
-      return -1;
+
+    if(this.playerFlag){
+      if(this.bullet.position.z < -this.thresholdDepth){
+        this.scene.remove( this.bullet );
+        return -1;
+      }
+      return this.checkCollisionWith(obj, pW, pH, pD);
+    }else{
+      if(this.bullet.position.z > this.thresholdDepth){
+        this.scene.remove( this.bullet );
+        return -1;
+      }
     }
-    return this.checkCollisionWith(obj, pW, pH, pD);
   }
   checkCollisionWith(obj, pW, pH, pD){
     //returns 0 if no collision, 1 if collision

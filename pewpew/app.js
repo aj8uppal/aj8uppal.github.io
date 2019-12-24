@@ -64,7 +64,10 @@ io.on('connection', function(socket){
   socket.on('keyUp', function(keyCode){
     io.to(users[socket.id]).emit('opponentKeyUp', keyCode);
   });
-  socket.on('shot', function(keyCode){
+  socket.on('shot', function(){
     io.to(users[socket.id]).emit('opponentShot');
   });
+  socket.on('hit', function(){
+    io.to(users[socket.id]).emit('lost');
+  })
 });

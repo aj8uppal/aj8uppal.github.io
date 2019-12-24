@@ -1,6 +1,7 @@
 $(function(){
   let name = prompt("What is your name?");
   let socket = io('ws://abd63da9.ngrok.io');
+  // let socket = io('ws://localhost:3010');
   let scene = new THREE.Scene();
   let camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
   camera.position.z = 4;
@@ -30,6 +31,7 @@ $(function(){
 
   let connected = false;
   let matched = false;
+  let gameOver = false;
 
   let keyPresses = {87: false, 65: false, 83: false, 68: false, 32: false}; //W A S D SPACE
   let opponentKeyPresses = {65: false, 68: false}; //A D
@@ -127,7 +129,15 @@ $(function(){
   })
 
   socket.on('opponentShot', function(){
-    bullets.push(new Bullet(...opponent.position.toArray(), scene, floorDepth, false));
+    console.log('opponentShot');
+    bullets.push(new Bullet(...opponent.position.toArray(), scene, camera.position.z, false));
+  });
+
+  socket.on('lost', function(){
+    $("#info").css("display", "block");
+    $("#info").html("You lost!");
+    $("#info").css("opacity", 1);
+    gameOver = true;
   })
 
   let animate = () =>  {
@@ -140,10 +150,15 @@ $(function(){
       let valid = bullet.move(opponent, playerWidth, playerHeight, playerDepth);
       if(valid === -1){
         bullets.splice(b, 1);
-      }else if(valid === 1){
+      }else if(valid === 1 && bullet.playerFlag === true){
         scene.remove(bullet.bullet);
         bullets.splice(b, 1);
         scene.remove(opponent);
+        socket.emit('hit');
+        $("#info").css("display", "block");
+        $("#info").html("You won!");
+        $("#info").css("opacity", 1);
+        gameOver = true;
       }
     }
 
@@ -168,7 +183,7 @@ $(function(){
         player.position.x+=0.05;
       }
     }
-    if(keyPresses[32] && !shot){
+    if(keyPresses[32] && !shot && !gameOver){
       bullets.push(new Bullet(...player.position.toArray(), scene, floorDepth, true));
       shot = true;
       socket.emit('shot');
