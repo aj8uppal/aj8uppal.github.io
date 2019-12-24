@@ -96,7 +96,7 @@ $(function(){
 
   mc.on("panleft", (ev) => {
       alert("left");
-      console.log(ev.deltaX);
+      alert(ev.deltaX);
       player.position.x-=5;
   });
   mc.on("panright", (ev) => {
