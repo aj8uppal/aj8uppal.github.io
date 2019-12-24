@@ -215,6 +215,16 @@ $(function(){
         $("#info").html("You won!");
         $("#info").css("opacity", 1);
         gameOver = true;
+        setTimeout(function(){
+          $("#info").css("opacity", 0);
+          setTimeout(function(){
+            $("#info").css("display", "none");
+            $("#playagain").css("display", "block");
+            $("#playagain").css("opacity", 1);
+            $(".choices").css("display", "block");
+            $(".choices").css("opacity", 1);
+          }, 500);
+        }, 2500);
       }
     }
 

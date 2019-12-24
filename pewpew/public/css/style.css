@@ -8,6 +8,7 @@ body {
 
 #playagain, #newgame {
   display: none;
+  opacity: 0;
 }
 
 .label {
