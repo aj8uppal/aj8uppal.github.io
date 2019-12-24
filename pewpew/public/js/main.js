@@ -7,11 +7,11 @@ $(function(){
   camera.position.z = 4;
   camera.position.y = -0.5;
 
-  let renderer = new THREE.WebGLRenderer();
+  let renderer = new THREE.WebGLRenderer({canvas: document.getElementById("canvas")});
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
-  var myElement = document.body;
+  var myElement = document.getElementById("canvas");
 
   // create a simple instance
   // by default, it only adds horizontal recognizers
