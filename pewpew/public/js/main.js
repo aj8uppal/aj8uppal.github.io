@@ -97,11 +97,21 @@ $(function(){
   mc.on("panleft", (ev) => {
       keyPresses[65] = true;
       keyPresses[68] = false;
+      socket.emit('keyDown', {keyCode: 65});
+      socket.emit('keyUp', {keyCode: 68, pos: player.position.x});
   });
   mc.on("panright", (ev) => {
       // player.position.x+=5;
       keyPresses[68] = true;
       keyPresses[65] = false;
+      socket.emit('keyDown', {keyCode: 68});
+      socket.emit('keyUp', {keyCode: 65, pos: player.position.x});
+  });
+
+  mc.on("panup pandown", (ev) => {
+      // player.position.x+=5;
+      keyPresses[32] = true;
+      shot = false;
   });
 
   const color = 0x000000;  // white
