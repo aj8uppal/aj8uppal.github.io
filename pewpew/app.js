@@ -15,12 +15,10 @@ http.listen(3010, function(){
 });
 
 //APP
-let LOOP_RATE = 60; //per second
 
 let users = {};
 let usersWaiting = [];
 let names = {};
-let callQueue = [];
 
 let getFirstAvailableUser = (users, id) => {
   let match = Object.entries(users).find(ele => ele[0] != id && ele[1] === -1);
@@ -61,31 +59,15 @@ io.on('connection', function(socket){
     }
   });
   socket.on('keyDown', function(keyCode){
-    callQueue.push({id: users[socket.id], event: 'opponentKeyDown', params: keyCode});
-    callQueue.push({id: socket.id, event: 'playerKeyDown', params: keyCode});
-    // io.to(users[socket.id]).emit('opponentKeyDown', keyCode);
+    io.to(users[socket.id]).emit('opponentKeyDown', keyCode);
   });
-  socket.on('keyUp', function(keyCode){
-    callQueue.push({id: users[socket.id], event: 'opponentKeyUp', params: keyCode});
-    callQueue.push({id: socket.id, event: 'playerKeyUp', params: keyCode});
-    // io.to(users[socket.id]).emit('opponentKeyUp', keyCode);
+  socket.on('keyUp', function(data){
+    io.to(users[socket.id]).emit('opponentKeyUp', data);
   });
   socket.on('shot', function(){
-    callQueue.push({id: users[socket.id], event: 'opponentShot'});
-    callQueue.push({id: socket.id, event: 'playerShot'});
-    console.log('shot');
+    io.to(users[socket.id]).emit('opponentShot');
   });
   socket.on('hit', function(){
-    callQueue.push({id: users[socket.id], event: 'lost'});
+    io.to(users[socket.id]).emit('lost');
   })
 });
-
-let loop = () => {
-  while(callQueue.length > 0){
-    let call = callQueue[0];
-    io.to(call.id).emit(call.event, call.params);
-    callQueue.splice(0, 1);
-  }
-}
-
-let loopTimer = setInterval(loop, 1000/LOOP_RATE);

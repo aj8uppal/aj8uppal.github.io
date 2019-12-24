@@ -11,6 +11,19 @@ $(function(){
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
+  var myElement = document.body;
+
+  // create a simple instance
+  // by default, it only adds horizontal recognizers
+  var mc = new Hammer(myElement, {inputClass: Hammer.TouchInput});
+
+  // let the pan gesture support all directions.
+  // this will block the vertical scrolling on a touch-device while on the element
+  mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+
+  // listen to events...
+
+
   const visibleHeightAtZDepth = ( depth, camera ) => {
   // compensate for cameras not positioned at z=0
     const cameraOffset = camera.position.z;
@@ -32,6 +45,8 @@ $(function(){
   let connected = false;
   let matched = false;
   let gameOver = false;
+  let fade = false;
+  let opponentFade = false;
 
   let keyPresses = {87: false, 65: false, 83: false, 68: false, 32: false}; //W A S D SPACE
   let opponentKeyPresses = {65: false, 68: false}; //A D
@@ -41,13 +56,14 @@ $(function(){
   let playerWidth = 1;
   let playerHeight = 1;
   let playerDepth = 0.75;
+  let playerOpacity = 0.8;
   let floorWidth = visibleWidthAtZDepth(0, camera);
   let floorHeight = 0.5;
   let floorDepth = 15;
 
   let cubeGeometry = new THREE.BoxGeometry( playerWidth, playerHeight, playerDepth );
-  let playerMaterial = new THREE.MeshBasicMaterial( { color: 0x228b22, opacity: 0.8, transparent: true } );
-  let opponentMaterial = new THREE.MeshBasicMaterial( { color: 0x9b111e } );
+  let playerMaterial = new THREE.MeshBasicMaterial( { color: 0x228b22, opacity: playerOpacity, transparent: true } );
+  let opponentMaterial = new THREE.MeshBasicMaterial( { color: 0x9b111e, opacity: playerOpacity+0.1, transparent: true } );
 
   //player
   let player = new THREE.Mesh( cubeGeometry, playerMaterial );
@@ -78,6 +94,12 @@ $(function(){
   opponentWireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
   opponent.add( opponentWireframe );
 
+  mc.on("panleft", function(ev) {
+      player.position.x-=5;
+  });
+  mc.on("panright", function(ev) {
+      player.position.x+=5;
+  });
 
   const color = 0x000000;  // white
   const near = 1;
@@ -124,29 +146,14 @@ $(function(){
     opponentKeyPresses[keyCode] = true;
   })
 
-  socket.on('opponentKeyUp', function(keyCode){
-    opponentKeyPresses[keyCode] = false;
+  socket.on('opponentKeyUp', function(data){
+    opponentKeyPresses[data.keyCode] = false;
+    opponent.position.x = -data.pos;
   })
 
   socket.on('opponentShot', function(){
     console.log('opponentShot');
     bullets.push(new Bullet(...opponent.position.toArray(), scene, camera.position.z, false));
-
-  });
-
-  socket.on('playerKeyDown', function(keyCode){
-    keyPresses[keyCode] = true;
-    console.log('move down');
-  })
-
-  socket.on('playerKeyUp', function(keyCode){
-    keyPresses[keyCode] = false;
-    console.log('move up');
-  })
-
-  socket.on('playerShot', function(){
-    console.log('playerShot');
-    bullets.push(new Bullet(...player.position.toArray(), scene, floorDepth, true));
   });
 
   socket.on('lost', function(){
@@ -154,6 +161,7 @@ $(function(){
     $("#info").html("You lost!");
     $("#info").css("opacity", 1);
     gameOver = true;
+    fade = true;
   })
 
   let animate = () =>  {
@@ -161,6 +169,21 @@ $(function(){
     if(!connected || !matched){
       return;
     }
+    if(fade){
+      player.material.opacity-=0.01;
+      if(player.material.opacity < 0.1){
+        player.material.opacity = 0.1;
+        fade = false;
+      }
+    }
+    if(opponentFade){
+      opponent.material.opacity-=0.01;
+      if(opponent.material.opacity < 0.1){
+        opponent.material.opacity = 0.1;
+        opponentFade = false;
+      }
+    }
+
     for(let b in bullets){
       if(gameOver){
         break;
@@ -172,7 +195,8 @@ $(function(){
       }else if(valid === 1 && bullet.playerFlag === true){
         scene.remove(bullet.bullet);
         bullets.splice(b, 1);
-        scene.remove(opponent);
+        // scene.remove(opponent);
+        opponentFade = true;
         socket.emit('hit');
         $("#info").css("display", "block");
         $("#info").html("You won!");
@@ -222,7 +246,7 @@ $(function(){
     //   // }
     // }
     if(keyPresses[32] && !shot && !gameOver){
-      // bullets.push(new Bullet(...player.position.toArray(), scene, floorDepth, true));
+      bullets.push(new Bullet(...player.position.toArray(), scene, floorDepth, true));
       shot = true;
       socket.emit('shot');
     }
@@ -231,30 +255,23 @@ $(function(){
   };
 
   animate();
-
   function onDocumentKeyDown(event) {
       if(connected && matched){
         let keyCode = event.which;
-        // keyPresses[event.which] = true;
-        if(keyCode === 32){
-          keyPresses[32] = true;
-        }
+        keyPresses[event.which] = true;
         if(keyCode === 65 || keyCode === 68 || keyCode === 83 || keyCode === 87){
           socket.emit('keyDown', keyCode);
-          // console.log('down');
         }
       }
   };
   function onDocumentKeyUp(event) {
       if(connected && matched){
         let keyCode = event.which;
-
+        keyPresses[event.which] = false;
         if(keyCode === 32){
-          keyPresses[32] = false;
           shot = false;
         }else if(keyCode === 65 || keyCode === 68 || keyCode === 83 || keyCode === 87){
-          socket.emit('keyUp', keyCode);
-          // console.log('up')
+          socket.emit('keyUp', {keyCode: keyCode, pos: player.position.x});
         }
       }
   };
