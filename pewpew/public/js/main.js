@@ -95,12 +95,13 @@ $(function(){
   opponent.add( opponentWireframe );
 
   mc.on("panleft", (ev) => {
-      alert("left");
-      alert(ev.deltaX);
-      player.position.x-=5;
+      keyPresses[65] = true;
+      keyPresses[68] = false;
   });
   mc.on("panright", (ev) => {
-      player.position.x+=5;
+      // player.position.x+=5;
+      keyPresses[68] = true;
+      keyPresses[65] = false;
   });
 
   const color = 0x000000;  // white
