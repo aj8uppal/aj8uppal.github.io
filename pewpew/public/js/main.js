@@ -94,10 +94,12 @@ $(function(){
   opponentWireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
   opponent.add( opponentWireframe );
 
-  mc.on("panleft", function(ev) {
+  mc.on("panleft", (ev) => {
+      alert("left");
+      console.log(ev.deltaX);
       player.position.x-=5;
   });
-  mc.on("panright", function(ev) {
+  mc.on("panright", (ev) => {
       player.position.x+=5;
   });
 
