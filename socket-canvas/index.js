@@ -3,8 +3,6 @@ var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
-io.origins('*:*')
-
 //SETUP
 app.use(express.static(__dirname + '/public'));
 
