@@ -1,7 +1,7 @@
 $(function(){
   let name = prompt("What is your name?");
-  // let socket = io('ws://abd63da9.ngrok.io');
-  let socket = io('ws://localhost:3010');
+  let socket = io('ws://abd63da9.ngrok.io');
+  // let socket = io('ws://localhost:3010');
   let scene = new THREE.Scene();
   let camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
   camera.position.z = 4;
