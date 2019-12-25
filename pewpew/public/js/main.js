@@ -17,6 +17,7 @@ $(function(){
   // by default, it only adds horizontal recognizers
   var mc = new Hammer(myElement, {inputClass: Hammer.TouchInput});
   mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+  mc.add( new Hammer.Tap({ event: 'singletap' }) );
 
   const visibleHeightAtZDepth = ( depth, camera ) => {
   // compensate for cameras not positioned at z=0
@@ -95,20 +96,36 @@ $(function(){
       keyPresses[65] = true;
       keyPresses[68] = false;
       socket.emit('keyDown', 65);
-      socket.emit('keyUp', {keyCode: 68, pos: player.position.x});
+      socket.emit('keyUp', {keyCode: 68, pos: {x: player.position.x, y: player.position.y}});
   });
   mc.on("panright", (ev) => {
       // player.position.x+=5;
       keyPresses[68] = true;
       keyPresses[65] = false;
       socket.emit('keyDown', 68);
-      socket.emit('keyUp', {keyCode: 65, pos: player.position.x});
+      socket.emit('keyUp', {keyCode: 65, pos: {x: player.position.x, y: player.position.y}});
   });
-
-  mc.on("panup pandown", (ev) => {
+  mc.on("singletap", function(ev) {
+    keyPresses[32] = true;
+    shot = false;
+    keyPresses[87] = false;
+    keyPresses[83] = false;
+    socket.emit('keyUp', {keyCode: 87, pos: {x: player.position.x, y: player.position.y}});
+    socket.emit('keyUp', {keyCode: 83, pos: {x: player.position.x, y: player.position.y}});
+  });
+  mc.on("panup", (ev) => {
       // player.position.x+=5;
-      keyPresses[32] = true;
-      shot = false;
+      keyPresses[87] = true;
+      keyPresses[83] = false;
+      socket.emit('keyDown', 87);
+      socket.emit('keyUp', {keyCode: 83, pos: {x: player.position.x, y: player.position.y}});
+  });
+  mc.on("pandown", (ev) => {
+      // player.position.x+=5;
+      keyPresses[83] = true;
+      keyPresses[87] = false;
+      socket.emit('keyDown', 83);
+      socket.emit('keyUp', {keyCode: 87, pos: {x: player.position.x, y: player.position.y}});
   });
 
   const color = 0x000000;  // white
