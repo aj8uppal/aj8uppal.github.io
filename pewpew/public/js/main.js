@@ -16,13 +16,7 @@ $(function(){
   // create a simple instance
   // by default, it only adds horizontal recognizers
   var mc = new Hammer(myElement, {inputClass: Hammer.TouchInput});
-
-  // let the pan gesture support all directions.
-  // this will block the vertical scrolling on a touch-device while on the element
   mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-
-  // listen to events...
-
 
   const visibleHeightAtZDepth = ( depth, camera ) => {
   // compensate for cameras not positioned at z=0
@@ -47,11 +41,14 @@ $(function(){
   let gameOver = false;
   let fade = false;
   let opponentFade = false;
+  let fadeIn = false;
+  let opponentFadeIn = false;
 
   let keyPresses = {87: false, 65: false, 83: false, 68: false, 32: false}; //W A S D SPACE
   let opponentKeyPresses = {65: false, 68: false}; //A D
   let bullets = [];
   let shot = false;
+  let rematchOpen = true;
 
   let playerWidth = 1;
   let playerHeight = 1;
@@ -161,7 +158,8 @@ $(function(){
 
   socket.on('opponentKeyUp', function(data){
     opponentKeyPresses[data.keyCode] = false;
-    opponent.position.x = -data.pos;
+    opponent.position.x = -data.pos.x;
+    opponent.position.y = data.pos.y;
   })
 
   socket.on('opponentShot', function(){
@@ -175,7 +173,51 @@ $(function(){
     $("#info").css("opacity", 1);
     gameOver = true;
     fade = true;
-  })
+    rematchOpen = true;
+    setTimeout(function(){
+      $("#info").css("opacity", 0);
+      setTimeout(function(){
+        $("#info").css("display", "none");
+        $("#playagain").css("display", "block");
+        $("#playagain").css("opacity", 1);
+        $(".choices").css("display", "block");
+        $(".choices").css("opacity", 1);
+      }, 500);
+    }, 2500);
+  });
+
+  socket.on('rematch', function(flag){
+    if(flag){
+      for(let b in bullets){
+        bullets[b].remove();
+      }
+      bullets = [];
+      gameOver = false;
+      fadeIn = true;
+      opponentFadeIn = true;
+      $("#playagain").css("opacity", 0);
+      $(".choices").css("opacity", 0);
+      $("#opponentrematch").css("opacity", 0);
+      setTimeout(function(){
+        $("#playagain").css("display", "none");
+        $(".choices").css("display", "none");
+        $("#opponentrematch").css("display", "none");
+      }, 500);
+    }else{
+      if(rematchOpen){
+        $("#opponentrematch").html("Opponent does not want a rematch!");
+        $("#opponentrematch").css("display", "block");
+        $("#opponentrematch").css("opacity", 1);
+        rematchOpen = false;
+      }
+    }
+  });
+
+  socket.on('acceptedRematch', function(flag){
+    $("#opponentrematch").html(flag ? "Opponent wants a rematch!" : "Opponent does not want a rematch!");
+    $("#opponentrematch").css("display", "block");
+    $("#opponentrematch").css("opacity", 1);
+  });
 
   let animate = () =>  {
     requestAnimationFrame( animate );
@@ -196,6 +238,29 @@ $(function(){
         opponentFade = false;
       }
     }
+    if(fadeIn){
+      player.material.opacity+=0.01;
+      if(player.material.opacity > 1){
+        player.material.opacity = 1;
+        fadeIn = false;
+      }
+    }
+    if(opponentFadeIn){
+      opponent.material.opacity+=0.01;
+      if(opponent.material.opacity > 1){
+        opponent.material.opacity = 1;
+        opponentFadeIn = false;
+      }
+    }
+
+    if(!rematchOpen){
+      $("#playagain").css("opacity", 0);
+      setTimeout(function(){
+        $("#playagain").css("display", "none");
+        $("#newgame").css("display", "block");
+        $("#newgame").css("opacity", 1);
+      }, 500);
+    }
 
     for(let b in bullets){
       if(gameOver){
@@ -215,6 +280,7 @@ $(function(){
         $("#info").html("You won!");
         $("#info").css("opacity", 1);
         gameOver = true;
+        rematchOpen = true;
         setTimeout(function(){
           $("#info").css("opacity", 0);
           setTimeout(function(){
@@ -238,6 +304,16 @@ $(function(){
         opponent.position.x-=0.05;
       }
     }
+    if(opponentKeyPresses[83]){
+      // if(opponent.position.x < (floorWidth/2-playerWidth/2)){
+        opponent.position.y-=0.05;
+      // }
+    }
+    if(opponentKeyPresses[87]){
+      // if(opponent.position.x > -(floorWidth/2-playerWidth/2)){
+        opponent.position.y+=0.05;
+      // }
+    }
     // if(opponentKeyPresses[87]){
     //   // if(player.position.x > -(floorWidth/2-playerWidth/2)){
     //     opponent.position.z+=0.05;
@@ -257,6 +333,16 @@ $(function(){
       if(player.position.x < (floorWidth/2-playerWidth/2)){
         player.position.x+=0.05;
       }
+    }
+    if(keyPresses[83]){
+      // if(player.position.x > -(floorWidth/2-playerWidth/2)){
+        player.position.y-=0.05;
+      // }
+    }
+    if(keyPresses[87]){
+      // if(player.position.x < (floorWidth/2-playerWidth/2)){
+        player.position.y+=0.05;
+      // }
     }
     // if(keyPresses[87]){
     //   // if(player.position.x > -(floorWidth/2-playerWidth/2)){
@@ -294,7 +380,7 @@ $(function(){
         if(keyCode === 32){
           shot = false;
         }else if(keyCode === 65 || keyCode === 68 || keyCode === 83 || keyCode === 87){
-          socket.emit('keyUp', {keyCode: keyCode, pos: player.position.x});
+          socket.emit('keyUp', {keyCode: keyCode, pos: {x: player.position.x, y: player.position.y}});
         }
       }
   };
@@ -308,4 +394,22 @@ $(function(){
 
   document.addEventListener("keydown", onDocumentKeyDown, false);
   document.addEventListener("keyup", onDocumentKeyUp, false);
+  $(".choice").click(function(){
+    if(rematchOpen === true){
+      //Rematch?
+      if($(this).index() === 0){ //User clicked "yes"
+        socket.emit("rematch", true);
+      }else{ //User clicked no
+        socket.emit("rematch", false);
+        rematchOpen = false;
+      }
+    }else{
+      //New Game?
+      if($(this).index() === 0){ //User clicked "yes"
+        socket.emit('ready', name);
+      }else{ //User clicked no
+        alert("Goodbye!");
+      }
+    }
+  })
 });

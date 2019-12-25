@@ -11,6 +11,15 @@ body {
   opacity: 0;
 }
 
+#opponentrematch {
+  font-size: 20px;
+  color: #228b22;
+  display: none;
+  opacity; 0;
+  transition: 500ms ease-in-out;
+  top: calc(10% + 150px);
+}
+
 .label {
   font-size: 48px;
   color: whiteSmoke;

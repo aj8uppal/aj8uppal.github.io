@@ -19,9 +19,11 @@ http.listen(3010, function(){
 let users = {};
 let usersWaiting = [];
 let names = {};
+let acceptedRematch = [];
+let deniedRematch = [];
 
-let getFirstAvailableUser = (users, id) => {
-  let match = Object.entries(users).find(ele => ele[0] != id && ele[1] === -1);
+let getFirstAvailableUser = (users, id, flagid) => {
+  let match = Object.entries(users).find(ele => ele[0] != id && ele[0] != flagid && ele[1] === -1);
   return match ? match[0] : match;
 }
 
@@ -31,6 +33,8 @@ io.on('connection', function(socket){
   socket.on('disconnect', function(){
     if((opponentId = users[socket.id]) !== -1){
       io.to(opponentId).emit('opponentDC');
+      delete users[opponentId];
+      users[socket.id] = -1;
     }else{
       usersWaiting.splice(usersWaiting.indexOf(socket.id), 1); //if this throws an error, it means the disconnecting user was neither in the queue nor was it matched...
     }
@@ -38,24 +42,40 @@ io.on('connection', function(socket){
     console.log(`${socket.id} has left.`)
   });
   socket.on('ready', function(name){
+    let oID;
     names[socket.id] = name;
-    let match;
-    // assert(usersWaiting.length < 2);
-    if(usersWaiting.length > 0){
-      match = usersWaiting[0];
-      usersWaiting.splice(0, 1);
-    }else{
-      match = getFirstAvailableUser(users, socket.id);
+    if(Object.values(users).indexOf(socket.id) !== -1){
+      oID = users[socket.id];
     }
+    // let match;
+    // assert(usersWaiting.length < 2);
+    // if(usersWaiting.length > 0){
+    //   match = usersWaiting[0];
+    //   usersWaiting.splice(0, 1);
+    // }else{
+    //   match = getFirstAvailableUser(users, socket.id, oID);
+    // }
+    let match;
+    if((newOppIndex = usersWaiting.findIndex(i => i !== oID)) !== -1){
+      // console.log(newOppIndex);
+      match = usersWaiting[newOppIndex];
+      usersWaiting.splice(newOppIndex, 1);
+      console.log(`Matched ${socket.id} to ${match} and vice-versa. Removed ${match} from queue. Queue is now ${usersWaiting.length} long. There are ${Object.values(users).length} users online.`);
+    }else{
+      match = getFirstAvailableUser(users, socket.id, oID);
+    }
+    // let match = usersWaiting.find(i => i !== oID) ||
     if(match === undefined){
-      usersWaiting.push(socket.id)
-      console.log(`${socket.id} could not find match. Retrying...`);
+      if(usersWaiting.indexOf(socket.id) === -1){
+        console.log(`Adding ${socket.id} to match queue...`);
+        usersWaiting.push(socket.id)
+      }
+      // console.log(`${socket.id} could not find match. Retrying...`);
     }else{
       users[match] = socket.id;
       users[socket.id] = match;
       socket.emit('matched', {id: match, name: names[match]});
       io.to(match).emit('matched', {id: socket.id, name: names[socket.id]});
-      console.log(`Matched ${socket.id} to ${match} and vice-versa`);
     }
   });
   socket.on('keyDown', function(keyCode){
@@ -69,5 +89,35 @@ io.on('connection', function(socket){
   });
   socket.on('hit', function(){
     io.to(users[socket.id]).emit('lost');
-  })
+  });
+  socket.on('rematch', function(flag){
+    if(accepted = acceptedRematch.indexOf(users[socket.id]) > -1){ //opponent wants rematch
+      io.to(users[socket.id]).emit('rematch', flag);
+      socket.emit('rematch', flag);
+      if(flag){
+        acceptedRematch.splice(accepted, 1);
+        return;
+      }else{
+        users[users[socket.id]] = -1;
+        delete users[socket.id];
+      }
+    }else if(denied = deniedRematch.indexOf(users[socket.id]) > -1 && accepted === -1){ //opponent does not want rematch
+      deniedRematch.splice(denied, 1);
+      socket.emit('rematch', false);
+      delete users[users[socket.id]];
+      if(flag){
+        users[socket.id] = -1;
+      }else{
+        delete users[socket.id];
+      }
+      return;
+    }else{
+      io.to(users[socket.id]).emit('acceptedRematch', flag); //opponnet has not responded
+    }
+    if(flag){
+      acceptedRematch.push(socket.id);
+    }else{
+      deniedRematch.push(socket.id);
+    }
+  });
 });

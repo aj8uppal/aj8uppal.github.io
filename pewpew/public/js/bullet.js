@@ -7,7 +7,8 @@ class Bullet {
     this.scene = scene;
     this.playerFlag = playerFlag;
     this.thresholdDepth = thresholdDepth;
-    this.color = 0xff9500;
+    // this.color = 0xff9500;
+    this.color = playerFlag ? 0x228b22 : 0x9b111e;
     this.speed = playerFlag ? 0.2 : -0.2;
     this.radius = 0.1;
     this.geometry = new THREE.SphereGeometry( this.radius, 32, 32 );
@@ -23,20 +24,25 @@ class Bullet {
 
     if(this.playerFlag){
       if(this.bullet.position.z < -this.thresholdDepth){
-        this.scene.remove( this.bullet );
+        this.remove();
         return -1;
       }
       return this.checkCollisionWith(obj, pW, pH, pD);
     }else{
       if(this.bullet.position.z > this.thresholdDepth){
-        this.scene.remove( this.bullet );
+        this.remove();
         return -1;
       }
     }
   }
   checkCollisionWith(obj, pW, pH, pD){
     //returns 0 if no collision, 1 if collision
-    return (Number)( ( this.bullet.position.z + this.radius > obj.position.z - pD/2 && this.bullet.position.z - this.radius < obj.position.z + pD/2 )  &&
-      ( this.bullet.position.x + this.radius > obj.position.x - pW/2 && this.bullet.position.x - this.radius < obj.position.x + pW/2 ) );
+    return (Number)( ( ( this.bullet.position.z + this.radius > obj.position.z - pD/2 && this.bullet.position.z - this.radius < obj.position.z + pD/2 )  &&
+      ( this.bullet.position.x + this.radius > obj.position.x - pW/2 && this.bullet.position.x - this.radius < obj.position.x + pW/2 ) ) &&
+      ( ( this.bullet.position.z + this.radius > obj.position.z - pD/2 && this.bullet.position.z - this.radius < obj.position.z + pD/2 )  &&
+        ( this.bullet.position.y + this.radius > obj.position.y - pH/2 && this.bullet.position.y - this.radius < obj.position.y + pH/2 ) ) );
+  }
+  remove(){
+    this.scene.remove(this.bullet);
   }
 }
