@@ -16,6 +16,8 @@ class Bullet {
     this.materialDanger = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
     this.bullet = new THREE.Mesh( this.geometry, this.material );
     this.bullet.position.set( this.x, this.y, this.z );
+    this.bullet.receiveShadow = true;
+    this.bullet.castShadow = true;
     this.scene.add( this.bullet );
   }
   move(obj, pW, pH, pD){

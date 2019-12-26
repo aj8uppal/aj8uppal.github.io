@@ -28,7 +28,7 @@ body {
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
   top: 10%;
-  transition: 500ms ease;
+  transition: 250ms ease;
 }
 
 .choices {
@@ -59,5 +59,11 @@ body {
 .choice:hover {
   /* background: black;
   color: whiteSmoke; */
+  /* opacity: 0.5; */
+  transform: scale(1.15);
+}
+
+.disabled {
   opacity: 0.5;
+  cursor: not-allowed;
 }

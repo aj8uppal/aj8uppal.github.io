@@ -1,5 +1,6 @@
 $(function(){
   let name = prompt("What is your name?");
+  let opponentName;
   let socket = io('ws://abd63da9.ngrok.io');
   // let socket = io('ws://localhost:3010');
   let scene = new THREE.Scene();
@@ -8,6 +9,8 @@ $(function(){
   camera.position.y = -0.5;
 
   let renderer = new THREE.WebGLRenderer({canvas: document.getElementById("canvas")});
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
@@ -37,6 +40,12 @@ $(function(){
     return height * camera.aspect;
   };
 
+  let textLabel = new AnimatedElement("#info", "text");
+  textLabel.appear();
+  let choiceLabel = new AnimatedElement(".choices", "button");
+  let rematchLabel = new AnimatedElement("#opponentrematch", "text");
+
+  let newGameOption = false;
   let connected = false;
   let matched = false;
   let gameOver = false;
@@ -55,6 +64,7 @@ $(function(){
   let playerHeight = 1;
   let playerDepth = 0.75;
   let playerOpacity = 0.8;
+  let cameraHeight = visibleHeightAtZDepth(0, camera);
   let floorWidth = visibleWidthAtZDepth(0, camera);
   let floorHeight = 0.5;
   let floorDepth = 15;
@@ -131,18 +141,32 @@ $(function(){
   const color = 0x000000;  // white
   const near = 1;
   const far = 20;
+
+  // opponent.receiveShadow = true;
+  opponent.castShadow = true;
+
+  // player.receiveShadow = true;
+  player.castShadow = true;
+
+  floor.receiveShadow = true;
   scene.add( player );
   scene.add( opponent );
   scene.add(floor);
   scene.background = new THREE.Color(color);
   scene.fog = new THREE.Fog(color, near, far);
 
+  let light = new THREE.DirectionalLight( 0xffffff, 1);
+  light.position.set( opponent.x, 3, opponent.z ); 			//default; light shining from top
+  light.castShadow = true;            // default false
+  scene.add( light );
+
+
   //socket stuff
   let initiateConnection = (ellipsisLength) => {
     if(matched){
       return;
     }
-    $("#info").html("Connecting"+".".repeat(ellipsisLength))
+    textLabel.changeHTML("Connecting"+".".repeat(ellipsisLength));
     setTimeout(function(){
       initiateConnection(ellipsisLength === 3 ? 0 : ellipsisLength + 1);
     }, 250);
@@ -156,17 +180,16 @@ $(function(){
 
   socket.on('matched', function(data){
     matched = true;
-    $("#info").html(`Matched with ${data.name}.`);
-    setTimeout(function(){
-      $("#info").css({opacity: 0});
-      setTimeout(function(){
-        $("#info").css({display: "none"});
-      }, 500);
-    }, 1500);
+    gameOver = false;
+    textLabel.changeText(`Matched with ${data.name}.`);
+    textLabel.disappearIn(1500);
+    opponentName = data.name;
   });
 
   socket.on('opponentDC', function(){
-    alert("Your opponent disconnected. They suck.");
+    if(matched){
+      alert("Your opponent disconnected. They suck.");
+    }
   });
 
   socket.on('opponentKeyDown', function(keyCode){
@@ -179,62 +202,63 @@ $(function(){
     opponent.position.y = data.pos.y;
   })
 
-  socket.on('opponentShot', function(){
+  socket.on('playerShot', function(pos){
+    console.log('playerShot');
+    bullets.push(new Bullet(...pos, scene, floorDepth, true));
+  })
+
+  socket.on('opponentShot', function(pos){
     console.log('opponentShot');
-    bullets.push(new Bullet(...opponent.position.toArray(), scene, camera.position.z, false));
+    bullets.push(new Bullet(...[-pos[0], pos[1], opponent.position.z], scene, camera.position.z, false));
   });
 
   socket.on('lost', function(){
-    $("#info").css("display", "block");
-    $("#info").html("You lost!");
-    $("#info").css("opacity", 1);
+    textLabel.changeText("You lost!");
     gameOver = true;
     fade = true;
     rematchOpen = true;
-    setTimeout(function(){
-      $("#info").css("opacity", 0);
-      setTimeout(function(){
-        $("#info").css("display", "none");
-        $("#playagain").css("display", "block");
-        $("#playagain").css("opacity", 1);
-        $(".choices").css("display", "block");
-        $(".choices").css("opacity", 1);
-      }, 500);
-    }, 2500);
+    textLabel.changeTextIn("Rematch?", 2000);
+    choiceLabel.appearIn(2000);
   });
 
   socket.on('rematch', function(flag){
     if(flag){
-      for(let b in bullets){
-        bullets[b].remove();
-      }
-      bullets = [];
-      gameOver = false;
-      fadeIn = true;
-      opponentFadeIn = true;
-      $("#playagain").css("opacity", 0);
-      $(".choices").css("opacity", 0);
-      $("#opponentrematch").css("opacity", 0);
-      setTimeout(function(){
-        $("#playagain").css("display", "none");
-        $(".choices").css("display", "none");
-        $("#opponentrematch").css("display", "none");
-      }, 500);
+      init();
+      textLabel.disappear();
     }else{
+      matched = false;
       if(rematchOpen){
-        $("#opponentrematch").html("Opponent does not want a rematch!");
-        $("#opponentrematch").css("display", "block");
-        $("#opponentrematch").css("opacity", 1);
+        $("#yes").addClass("disabled");
         rematchOpen = false;
       }
     }
   });
 
   socket.on('acceptedRematch', function(flag){
-    $("#opponentrematch").html(flag ? "Opponent wants a rematch!" : "Opponent does not want a rematch!");
-    $("#opponentrematch").css("display", "block");
-    $("#opponentrematch").css("opacity", 1);
+    if(flag){
+      rematchLabel.css("color", "#228b22");
+      rematchLabel.changeHTML(`${opponentName || "Opponent"} wants a rematch!`);
+    }else{
+      rematchOpen = false;
+      matched = false;
+      rematchLabel.css("color", "#9b111e");
+      rematchLabel.changeHTML(`${opponentName || "Opponent"} has left.`);
+      $("#yes").addClass("disabled");
+    }
+    rematchLabel.appear();
   });
+
+  let init = () => {
+    for(let b in bullets){
+      bullets[b].remove();
+    }
+    bullets = [];
+    gameOver = false;
+    fadeIn = true;
+    opponentFadeIn = true;
+    choiceLabel.disappear();
+    rematchLabel.disappear();
+  }
 
   let animate = () =>  {
     requestAnimationFrame( animate );
@@ -270,13 +294,11 @@ $(function(){
       }
     }
 
-    if(!rematchOpen){
-      $("#playagain").css("opacity", 0);
-      setTimeout(function(){
-        $("#playagain").css("display", "none");
-        $("#newgame").css("display", "block");
-        $("#newgame").css("opacity", 1);
-      }, 500);
+    if(!rematchOpen && !newGameOption){
+      textLabel.changeTextIn("New Game?", 500, () => {
+        $("#yes").removeClass("disabled");
+        newGameOption = true;
+      });
     }
 
     for(let b in bullets){
@@ -290,24 +312,15 @@ $(function(){
       }else if(valid === 1 && bullet.playerFlag === true){
         scene.remove(bullet.bullet);
         bullets.splice(b, 1);
-        // scene.remove(opponent);
         opponentFade = true;
         socket.emit('hit');
-        $("#info").css("display", "block");
-        $("#info").html("You won!");
-        $("#info").css("opacity", 1);
+        textLabel.changeHTML("You won!");
+        textLabel.appear();
         gameOver = true;
         rematchOpen = true;
-        setTimeout(function(){
-          $("#info").css("opacity", 0);
-          setTimeout(function(){
-            $("#info").css("display", "none");
-            $("#playagain").css("display", "block");
-            $("#playagain").css("opacity", 1);
-            $(".choices").css("display", "block");
-            $(".choices").css("opacity", 1);
-          }, 500);
-        }, 2500);
+        textLabel.changeTextIn("Rematch?", 2500, () => {
+          choiceLabel.appear();
+        });
       }
     }
 
@@ -322,25 +335,17 @@ $(function(){
       }
     }
     if(opponentKeyPresses[83]){
-      // if(opponent.position.x < (floorWidth/2-playerWidth/2)){
+      if(opponent.position.y > -2){
         opponent.position.y-=0.05;
-      // }
+      }
     }
     if(opponentKeyPresses[87]){
       // if(opponent.position.x > -(floorWidth/2-playerWidth/2)){
+      if(opponent.position.y < 1.2){
         opponent.position.y+=0.05;
-      // }
+      }
     }
-    // if(opponentKeyPresses[87]){
-    //   // if(player.position.x > -(floorWidth/2-playerWidth/2)){
-    //     opponent.position.z+=0.05;
-    //   // }
-    // }
-    // if(opponentKeyPresses[83]){
-    //   // if(player.position.x < (floorWidth/2-playerWidth/2)){
-    //     opponent.position.z-=0.05;
-    //   // }
-    // }
+
     if(keyPresses[65]){
       if(player.position.x > -(floorWidth/2-playerWidth/2)){
         player.position.x-=0.05;
@@ -352,29 +357,19 @@ $(function(){
       }
     }
     if(keyPresses[83]){
-      // if(player.position.x > -(floorWidth/2-playerWidth/2)){
+      if(player.position.y > -2){
         player.position.y-=0.05;
-      // }
+      }
     }
     if(keyPresses[87]){
-      // if(player.position.x < (floorWidth/2-playerWidth/2)){
+      if(player.position.y < 1.2){
         player.position.y+=0.05;
-      // }
+      }
     }
-    // if(keyPresses[87]){
-    //   // if(player.position.x > -(floorWidth/2-playerWidth/2)){
-    //     player.position.z-=0.05;
-    //   // }
-    // }
-    // if(keyPresses[83]){
-    //   // if(player.position.x < (floorWidth/2-playerWidth/2)){
-    //     player.position.z+=0.05;
-    //   // }
-    // }
     if(keyPresses[32] && !shot && !gameOver){
-      bullets.push(new Bullet(...player.position.toArray(), scene, floorDepth, true));
+      // bullets.push(new Bullet(...player.position.toArray(), scene, floorDepth, true));
       shot = true;
-      socket.emit('shot');
+      socket.emit('shot', player.position.toArray());
     }
 
     renderer.render( scene, camera );
@@ -420,12 +415,20 @@ $(function(){
         socket.emit("rematch", false);
         rematchOpen = false;
       }
-    }else{
+    }else if(newGameOption === true){
       //New Game?
       if($(this).index() === 0){ //User clicked "yes"
-        socket.emit('ready', name);
+        rematchLabel.disappear();
+        textLabel.changeText("Connecting...", function(){
+          socket.emit('ready', name);
+          matched = false;
+          init();
+          initiateConnection(3);
+        });
+        choiceLabel.disappear();
       }else{ //User clicked no
         alert("Goodbye!");
+        document.write("");
       }
     }
   })

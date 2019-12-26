@@ -56,7 +56,7 @@ io.on('connection', function(socket){
     //   match = getFirstAvailableUser(users, socket.id, oID);
     // }
     let match;
-    if((newOppIndex = usersWaiting.findIndex(i => i !== oID)) !== -1){
+    if((newOppIndex = usersWaiting.findIndex(i => i !== oID && i !== socket.id)) !== -1){
       // console.log(newOppIndex);
       match = usersWaiting[newOppIndex];
       usersWaiting.splice(newOppIndex, 1);
@@ -84,8 +84,9 @@ io.on('connection', function(socket){
   socket.on('keyUp', function(data){
     io.to(users[socket.id]).emit('opponentKeyUp', data);
   });
-  socket.on('shot', function(){
-    io.to(users[socket.id]).emit('opponentShot');
+  socket.on('shot', function(pos){
+    socket.emit('playerShot', pos);
+    io.to(users[socket.id]).emit('opponentShot', pos);
   });
   socket.on('hit', function(){
     io.to(users[socket.id]).emit('lost');
