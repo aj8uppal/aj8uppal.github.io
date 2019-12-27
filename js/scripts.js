@@ -81,5 +81,18 @@
             $('#more-projects').fadeIn(300);
         });
     });
+    $("#contact-form-sel").submit(function(event) {
+      event.preventDefault();
+      // console.log($(this).serialize());
+      $.ajax({
+       type: "POST",
+        url: "http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:3000/",
+        data: $(this).serialize(),
+        success: function(data) {
+          alert(JSON.parse(data.msg).response);
+         }
+      })
+
+    })
 
 })(jQuery);
