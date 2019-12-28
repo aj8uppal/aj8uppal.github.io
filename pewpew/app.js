@@ -1,7 +1,9 @@
-var express = require('express');
-var app = express();
-var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+const express = require('express');
+const app = express();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+
+const PORT = 3010;
 
 //SETUP
 app.use(express.static(__dirname + '/public'));
@@ -10,8 +12,8 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/public/index.html');
 });
 
-http.listen(3010, function(){
-  console.log('listening on *:3010');
+http.listen(PORT, function(){
+  console.log(`listening on *:${PORT}`);
 });
 
 //APP

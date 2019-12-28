@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+}
+
+.row {
+  position: absolute;
+  color: white;
+  transform: translateX(calc(50vw - 50%));
+  display: inline-block;
+}
