@@ -1,5 +1,5 @@
 $(function(){
-  let socket = io('ws://localhost:6355');
+  // let socket = io('ws://localhost:6355');
   let scene = new THREE.Scene();
   let camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
   camera.position.set(100, 0, 0);
