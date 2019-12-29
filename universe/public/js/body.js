@@ -4,7 +4,9 @@ class Body {
     this.x = x;
     this.y = y;
     this.z = z;
-    this.radius = radius;
+    this.initialRadius = radius;
+    this.scale = 1;
+    this.radius = this.initialRadius*this.scale;
     this.temperature = temperature;
     this.scene = scene;
     this.color = Math.random() * 0xffffff; //some function of temperature
@@ -22,5 +24,11 @@ class Body {
   setPos(x, y, z){
     this.body.position.set(x, y, z);
     // console.log(x, y, z);
+  }
+  scaleRadius(scale){
+    this.scale = scale;
+    this.body.scale.x = this.scale;
+    this.body.scale.y = this.scale;
+    this.body.scale.z = this.scale;
   }
 }

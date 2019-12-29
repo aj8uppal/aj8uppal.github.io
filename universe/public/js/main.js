@@ -1,8 +1,8 @@
 $(function(){
   // let socket = io('ws://localhost:6355');
   let scene = new THREE.Scene();
-  let camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
-  camera.position.set(100, 0, 0);
+  let camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 100000 );
+  camera.position.set(-783.2, 30.823, -400);
   camera.lookAt(0, 0, 0);
 
   let renderer = new THREE.WebGLRenderer({canvas: document.getElementById("canvas")});
@@ -18,8 +18,9 @@ $(function(){
   var ambientLight = new THREE.AmbientLight( 0x404040, 0.25 ); // soft white light
   scene.add( ambientLight );
 
-  let SCALE = 100;
-  let timeScale = 0.02;
+  let PLANET_SCALE = 1;
+  let ABS_SCALE = 1000;
+  let timeScale = 0.001;
 
   let planets = [];
   let info = {
@@ -81,30 +82,40 @@ $(function(){
 
   for(let p in info){
     planet = info[p];
-    planets.push(new Planet(planet.ecc, planet.sma, planet.per, planet.rad*1e3, 273.15, scene, SCALE, p))
+    planets.push(new Planet(planet.ecc, planet.sma*ABS_SCALE, planet.per, planet.rad*ABS_SCALE*PLANET_SCALE, 273.15, scene, p))
   }
 
-  // let mercury = new Planet(0.205630, 0.387499, 0.240846, 1.63e-2, 273.15, scene, SCALE);
-  // let venus = new Planet(0.006772, 0.723332, 0.615198, 4.04538e-2, 273.15, scene, SCALE);
-  // let earth = new Planet(0.0167, 1, 1, 4.2635e-2, 273.15, scene, SCALE);
-  // let mars = new Planet(0.0934, 1.523679, 1.88082, 2.27075e-2, 273.15, scene, SCALE);
-  // let jupiter = new Planet(0.0489, 5.2044, 11.862, 4.779e-1, 273.15, scene, SCALE);
-  // let saturn = new Planet(0.0565, 9.5826, 29.4571, 4.02867e-1, 273.15, scene, SCALE);
-  // let uranus = new Planet(0.046381, 19.2184, 84.0205, 1.7085e-1, 273.15, scene, SCALE);
-  // let neptune = new Planet(0.009456, 30.11, 164.8, 1.6554e-1, 273.15, scene, SCALE);
-  // let pluto = new Planet(	0.2488, 39.482, 247.94, 7.888e-3, 273.15, scene, SCALE);
+  // let mercury = new Planet(0.205630, 0.387499, 0.240846, 1.63e-2, 273.15, scene, ABS_SCALE);
+  // let venus = new Planet(0.006772, 0.723332, 0.615198, 4.04538e-2, 273.15, scene, ABS_SCALE);
+  // let earth = new Planet(0.0167, 1, 1, 4.2635e-2, 273.15, scene, ABS_SCALE);
+  // let mars = new Planet(0.0934, 1.523679, 1.88082, 2.27075e-2, 273.15, scene, ABS_SCALE);
+  // let jupiter = new Planet(0.0489, 5.2044, 11.862, 4.779e-1, 273.15, scene, ABS_SCALE);
+  // let saturn = new Planet(0.0565, 9.5826, 29.4571, 4.02867e-1, 273.15, scene, ABS_SCALE);
+  // let uranus = new Planet(0.046381, 19.2184, 84.0205, 1.7085e-1, 273.15, scene, ABS_SCALE);
+  // let neptune = new Planet(0.009456, 30.11, 164.8, 1.6554e-1, 273.15, scene, ABS_SCALE);
+  // let pluto = new Planet(	0.2488, 39.482, 247.94, 7.888e-3, 273.15, scene, ABS_SCALE);
 
 
 
   // stars.push(new Star(50, 50, 50, 5, 1000, scene, 0xffffff));
-  geometry = new THREE.SphereGeometry( 25, 32, 32 );
-  material = new THREE.MeshBasicMaterial( {color: 0xf9d71c, transparent: true, opacity: 0.75} );
-  source = new THREE.Mesh( geometry, material );
-  source.position.set(0, 0, 0)
-  scene.add(source);
+  // geometry = new THREE.SphereGeometry( 0.00465*ABS_SCALE, 32, 32 );
+  // material = new THREE.MeshBasicMaterial( {color: 0xf9d71c, transparent: true, opacity: 0.75} );
+  // sun = new THREE.Mesh( geometry, material );
+  // sun.position.set(0, 0, 0)
+  // scene.add(sun);
+  let sun = new Star(0, 0, 0, 0.00465*ABS_SCALE, 1000, scene);
   let controls = new THREE.OrbitControls( camera, renderer.domElement );
   controls.target = new THREE.Vector3(0, 0, 0);
   controls.addEventListener('change', function(){renderer.render( scene, camera );});
+
+  let modifyScale = (scale) => {
+    for(let p in planets){
+      planets[p].scaleRadius(scale);
+    }
+    sun.scaleRadius(scale);
+  }
+
+  modifyScale(250);
 
   let animate = () => {
     requestAnimationFrame( animate );
@@ -120,6 +131,7 @@ $(function(){
     //     // stars[s].star.position.y+=Math.sin(stars[s].theta);
     //     stars[s].star.position.z+=Math.cos(stars[s].theta)/10;
     // }
+    // console.log(camera.position);
     renderer.render( scene, camera );
   }
   animate();
@@ -127,5 +139,8 @@ $(function(){
     for(let p in planets){
       planets[p].calculateDTheta(parseFloat($(this).val()));
     }
-  })
+  });
+  $("#radiusscale").change(function(){
+    modifyScale(parseFloat($(this).val()));
+  });
 });

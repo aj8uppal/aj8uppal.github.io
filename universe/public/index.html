@@ -13,12 +13,17 @@
     <script src="js/three.js"></script>
     <script src="js/body.js"></script>
     <script src="js/planet.js"></script>
+    <script src="js/star.js"></script>
     <script src="js/OrbitControls.js"></script>
     <script src="js/main.js"></script>
     <canvas id="canvas"></canvas>
     <div class="row">
       <div id="time">Elapsed time: 0 years</div>
-      <input step="0.01" type="number" id="timescale" value="0.02"/>
+      <input step="0.01" type="number" id="timescale" value="0.001"/>
+      <input step="1" type="number" id="radiusscale" value="250"/>
+      <br>
+      <div id="tscale">Time Scale</div>
+      <div id="rscale">Radius Scale</div>
     </div>
   </body>
 </html>

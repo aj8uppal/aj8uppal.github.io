@@ -2,6 +2,17 @@ body {
   margin: 0;
 }
 
+#time {
+  text-align: center;
+}
+
+#rscale, #tscale {
+    width: 49%;
+    text-align: center;
+    margin-top: 4px;
+    display: inline-block;
+}
+
 .row {
   position: absolute;
   color: white;
