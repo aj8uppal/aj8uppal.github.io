@@ -8,6 +8,8 @@ $(function(){
   camera.position.z = 4;
   camera.position.y = -0.5;
 
+  const MAX_BULLETS = 5;
+
   let renderer = new THREE.WebGLRenderer({canvas: document.getElementById("canvas")});
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -56,7 +58,9 @@ $(function(){
 
   let keyPresses = {87: false, 65: false, 83: false, 68: false, 32: false}; //W A S D SPACE
   let opponentKeyPresses = {65: false, 68: false}; //A D
-  let bullets = [];
+  let playerBullets = [];
+  let opponentBullets = [];
+  let sparks = [];
   let shot = false;
   let rematchOpen = true;
 
@@ -85,14 +89,24 @@ $(function(){
 
   //floor plane (thin box)
   let floorGeometry = new THREE.BoxGeometry(floorWidth, floorHeight, floorDepth);
-  let floorMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0.75, transparent: false } );
+  let floorMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, opacity: 0.75, transparent: false } );
   let floor = new THREE.Mesh( floorGeometry, floorMaterial );
+  floor.receiveShadow = true;
   floor.position.y = player.position.y-(playerHeight-floorHeight/2);
 
   //add edges
   let lineMaterial = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 10 } );
   let playerEdgeGeometry = new THREE.EdgesGeometry( player.geometry );
   let opponentEdgeGeometry = new THREE.EdgesGeometry( opponent.geometry );
+
+  // let playerConstraintsGeometry = new THREE.BoxGeometry(floorWidth, 3.2, playerDepth);
+  // let playerConstraintsMaterial = new THREE.MeshBasicMaterial( { color: 0x9b111e, opacity: 0.25, transparent: true } );
+  // let playerConstraints = new THREE.Mesh(playerConstraintsGeometry, playerConstraintsMaterial);
+  // playerConstraints.position.y = 0;
+  // playerConstraints.position.z = 0.75;
+  // playerConstraints.position.x = 0;
+  // scene.add(playerConstraints);
+
 
   let playerWireframe = new THREE.LineSegments( playerEdgeGeometry, lineMaterial );
   playerWireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
@@ -142,11 +156,13 @@ $(function(){
   const near = 1;
   const far = 20;
 
+  const colorFunc = d3.scaleLinear().domain([-1, 0, 1]).range(["#EC1B00", "#FAD002"]);
+
   // opponent.receiveShadow = true;
-  opponent.castShadow = true;
+  // opponent.castShadow = true;
 
   // player.receiveShadow = true;
-  player.castShadow = true;
+  // player.castShadow = true;
 
   floor.receiveShadow = true;
   scene.add( player );
@@ -155,10 +171,38 @@ $(function(){
   scene.background = new THREE.Color(color);
   scene.fog = new THREE.Fog(color, near, far);
 
-  let light = new THREE.DirectionalLight( 0xffffff, 1);
-  light.position.set( opponent.x, 3, opponent.z ); 			//default; light shining from top
-  light.castShadow = true;            // default false
-  scene.add( light );
+  // var plight = new THREE.PointLight( 0x404040, 2);
+  // plight.position.set( 0, 5, -floorDepth/2 );
+  // scene.add( plight );
+  var ambientLight = new THREE.AmbientLight( 0x404040, 2.5 ); // soft white light
+scene.add( ambientLight );
+
+    let light = new THREE.DirectionalLight(0xace5ee, 1);
+    light.position.set(0, 10, 0);
+    light.position.multiplyScalar(1.3);
+
+    light.castShadow = true;
+    light.shadowCameraVisible = true;
+
+    light.shadowMapWidth = 512;
+    light.shadowMapHeight = 512;
+
+    var d = 10;
+
+    light.shadowCameraLeft = -d;
+    light.shadowCameraRight = d;
+    light.shadowCameraTop = d;
+    light.shadowCameraBottom = -d;
+
+    light.shadowCameraFar = 100;
+    light.shadowDarkness = 0.5;
+
+    scene.add(light);
+
+  // let light = new THREE.DirectionalLight( 0xffffff, 1);
+  // light.position.set( opponent.x, 3, opponent.z ); 			//default; light shining from top
+  // light.castShadow = true;            // default false
+  // scene.add( light );
 
 
   //socket stuff
@@ -204,12 +248,12 @@ $(function(){
 
   socket.on('playerShot', function(pos){
     console.log('playerShot');
-    bullets.push(new Bullet(...pos, scene, floorDepth, true));
+    playerBullets.push(new Bullet(...pos, scene, floorDepth, true));
   })
 
   socket.on('opponentShot', function(pos){
     console.log('opponentShot');
-    bullets.push(new Bullet(...[-pos[0], pos[1], opponent.position.z], scene, camera.position.z, false));
+    opponentBullets.push(new Bullet(...[-pos[0], pos[1], opponent.position.z], scene, camera.position.z, false));
   });
 
   socket.on('lost', function(){
@@ -249,10 +293,14 @@ $(function(){
   });
 
   let init = () => {
-    for(let b in bullets){
-      bullets[b].remove();
+    for(let b in playerBullets){
+      playerBullets[b].remove();
     }
-    bullets = [];
+    for(let b in opponentBullets){
+      opponentBullets[b].remove();
+    }
+    opponentBullets = [];
+    playerBullets = [];
     gameOver = false;
     fadeIn = true;
     opponentFadeIn = true;
@@ -267,29 +315,29 @@ $(function(){
     }
     if(fade){
       player.material.opacity-=0.01;
-      if(player.material.opacity < 0.1){
-        player.material.opacity = 0.1;
+      if(player.material.opacity < 0.25){
+        player.material.opacity = 0.25;
         fade = false;
       }
     }
     if(opponentFade){
       opponent.material.opacity-=0.01;
-      if(opponent.material.opacity < 0.1){
-        opponent.material.opacity = 0.1;
+      if(opponent.material.opacity < 0.25){
+        opponent.material.opacity = 0.25;
         opponentFade = false;
       }
     }
     if(fadeIn){
       player.material.opacity+=0.01;
-      if(player.material.opacity > 1){
-        player.material.opacity = 1;
+      if(player.material.opacity > 0.75){
+        player.material.opacity = 0.75;
         fadeIn = false;
       }
     }
     if(opponentFadeIn){
       opponent.material.opacity+=0.01;
-      if(opponent.material.opacity > 1){
-        opponent.material.opacity = 1;
+      if(opponent.material.opacity > 0.75){
+        opponent.material.opacity = 0.75;
         opponentFadeIn = false;
       }
     }
@@ -300,18 +348,26 @@ $(function(){
         newGameOption = true;
       });
     }
-
-    for(let b in bullets){
+    for(let s in sparks){
+      sparks[s].move();
+    }
+    for(let b in playerBullets){
       if(gameOver){
         break;
       }
-      let bullet = bullets[b];
+      let bullet = playerBullets[b];
+      if(bullet.checkCollisionWithBullets(opponentBullets)){
+        playerBullets.splice(b, 1);
+        console.log("bullet collision");
+        sparks.push(new Spark(bullet.bullet.position.x, bullet.bullet.position.y, bullet.bullet.position.z, scene, colorFunc));
+        continue;
+      }
       let valid = bullet.move(opponent, playerWidth, playerHeight, playerDepth);
       if(valid === -1){
-        bullets.splice(b, 1);
+        playerBullets.splice(b, 1);
       }else if(valid === 1 && bullet.playerFlag === true){
         scene.remove(bullet.bullet);
-        bullets.splice(b, 1);
+        playerBullets.splice(b, 1);
         opponentFade = true;
         socket.emit('hit');
         textLabel.changeHTML("You won!");
@@ -321,6 +377,16 @@ $(function(){
         textLabel.changeTextIn("Rematch?", 2500, () => {
           choiceLabel.appear();
         });
+      }
+    }
+    for(let o in opponentBullets){
+      if(gameOver){
+        break;
+      }
+      let bullet = opponentBullets[o];
+      let valid = bullet.move(opponent, playerWidth, playerHeight, playerDepth);
+      if(valid === -1){
+        opponentBullets.splice(o, 1);
       }
     }
 
@@ -366,8 +432,8 @@ $(function(){
         player.position.y+=0.05;
       }
     }
-    if(keyPresses[32] && !shot && !gameOver){
-      // bullets.push(new Bullet(...player.position.toArray(), scene, floorDepth, true));
+    if(keyPresses[32] && !shot && !gameOver && playerBullets.length < MAX_BULLETS){
+      // playerBullets.push(new Bullet(...player.position.toArray(), scene, floorDepth, true));
       shot = true;
       socket.emit('shot', player.position.toArray());
     }

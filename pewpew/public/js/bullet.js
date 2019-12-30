@@ -12,11 +12,11 @@ class Bullet {
     this.speed = playerFlag ? 0.2 : -0.2;
     this.radius = 0.1;
     this.geometry = new THREE.SphereGeometry( this.radius, 32, 32 );
-    this.material = new THREE.MeshBasicMaterial( {color: this.color} );
-    this.materialDanger = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+    this.material = new THREE.MeshPhongMaterial( {color: this.color} );
+    this.materialDanger = new THREE.MeshPhongMaterial( { color: 0xff0000 } );
     this.bullet = new THREE.Mesh( this.geometry, this.material );
     this.bullet.position.set( this.x, this.y, this.z );
-    this.bullet.receiveShadow = true;
+    // this.bullet.receiveShadow = true;
     this.bullet.castShadow = true;
     this.scene.add( this.bullet );
   }
@@ -29,7 +29,7 @@ class Bullet {
         this.remove();
         return -1;
       }
-      return this.checkCollisionWith(obj, pW, pH, pD);
+      return this.checkCollisionWithPlayer(obj, pW, pH, pD);
     }else{
       if(this.bullet.position.z > this.thresholdDepth){
         this.remove();
@@ -37,14 +37,28 @@ class Bullet {
       }
     }
   }
-  checkCollisionWith(obj, pW, pH, pD){
+  checkCollisionWithPlayer(obj, pW, pH, pD){
     //returns 0 if no collision, 1 if collision
     return (Number)( ( ( this.bullet.position.z + this.radius > obj.position.z - pD/2 && this.bullet.position.z - this.radius < obj.position.z + pD/2 )  &&
       ( this.bullet.position.x + this.radius > obj.position.x - pW/2 && this.bullet.position.x - this.radius < obj.position.x + pW/2 ) ) &&
       ( ( this.bullet.position.z + this.radius > obj.position.z - pD/2 && this.bullet.position.z - this.radius < obj.position.z + pD/2 )  &&
         ( this.bullet.position.y + this.radius > obj.position.y - pH/2 && this.bullet.position.y - this.radius < obj.position.y + pH/2 ) ) );
   }
+  checkCollisionWithBullets(opponentBullets){
+    for(let o in opponentBullets){
+      if(Math.abs(this.bullet.position.distanceTo(opponentBullets[o].bullet.position)) < this.radius + opponentBullets[o].radius){
+        opponentBullets[o].remove();
+        this.remove();
+        opponentBullets.splice(o, 1);
+        return true;
+      }
+    }
+    return false;
+  }
   remove(){
     this.scene.remove(this.bullet);
+  }
+  getPos(){
+    return this.bullet.position;
   }
 }
