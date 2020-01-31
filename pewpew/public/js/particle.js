@@ -21,7 +21,7 @@ class Particle {
     this.z+=this.velZ;
     this.velY-=this.gravity;
     if(this.startFade){
-      this.material.opacity-=0.02;
+      this.material.opacity-=Math.random()*0.015;
       if(this.material.opacity <= 0){
         return false;
       }

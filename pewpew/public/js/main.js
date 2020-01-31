@@ -1,14 +1,16 @@
 $(function(){
   let name = prompt("What is your name?");
   let opponentName;
-  let socket = io('ws://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:3010');
-  // let socket = io('ws://localhost:3010');
+  // let socket = io('ws://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:3010');
+  let socket = io('ws://localhost:3010');
   let scene = new THREE.Scene();
   let camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
   camera.position.z = 4;
   camera.position.y = -0.5;
 
   const MAX_BULLETS = 5;
+  let queueLen = 0;
+  let userLen = 0;
 
   let renderer = new THREE.WebGLRenderer({canvas: document.getElementById("canvas")});
   renderer.shadowMap.enabled = true;
@@ -46,6 +48,7 @@ $(function(){
   textLabel.appear();
   let choiceLabel = new AnimatedElement(".choices", "button");
   let rematchLabel = new AnimatedElement("#opponentrematch", "text");
+  let onlineLabel = new AnimatedElement("#online", "text");
 
   let newGameOption = false;
   let connected = false;
@@ -156,7 +159,9 @@ $(function(){
   const near = 1;
   const far = 20;
 
-  const colorFunc = d3.scaleLinear().domain([-1, 0, 1]).range(["#EC1B00", "#FAD002"]);
+  const color1 = "#EC1B00";
+  const color2 = "#FAD002";
+  const colorFunc = d3.scaleLinear().domain([-1, 0, 1]).range([color1, color2]);
 
   // opponent.receiveShadow = true;
   // opponent.castShadow = true;
@@ -216,9 +221,20 @@ scene.add( ambientLight );
     }, 250);
   }
 
+  socket.on('usersOnline', function(data){ //this is the handler for when the server spits back the user count
+    queueLen = data[0];
+    userLen = data[1];
+    console.log(userLen);
+    onlineLabel.changeHTML(`There are ${userLen} user(s) online, and ${queueLen} user(s) in the queue.`);
+    onlineLabel.appear();
+    // onlineLabel.disappearIn(5000);
+  })
+
+
   socket.on('connected', function(){
     initiateConnection(3);
     connected = true;
+    socket.emit('usersOnline'); // when I connect, I am asking the server how many users are online
     socket.emit('ready', name);
   });
 

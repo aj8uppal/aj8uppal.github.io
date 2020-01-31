@@ -93,6 +93,9 @@ io.on('connection', function(socket){
   socket.on('hit', function(){
     io.to(users[socket.id]).emit('lost');
   });
+  socket.on('usersOnline', function(){
+    socket.emit('usersOnline', [usersWaiting.length, Object.values(users).length]);
+  });
   socket.on('rematch', function(flag){
     if(accepted = acceptedRematch.indexOf(users[socket.id]) > -1){ //opponent wants rematch
       io.to(users[socket.id]).emit('rematch', flag);
@@ -124,3 +127,10 @@ io.on('connection', function(socket){
     }
   });
 });
+let updateUserCount = () => {
+  for(let i in users){
+    io.to(i).emit('usersOnline', [usersWaiting.length, Object.values(users).length]);
+  }
+  setTimeout(updateUserCount, 2500);
+}
+updateUserCount();

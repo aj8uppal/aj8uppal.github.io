@@ -3,10 +3,10 @@ class Spark {
     this.x = x;
     this.y = y;
     this.z = z;
-    this.gravity = 0.0075; //0.0981
-    this.numOfParticles = 20;
+    this.gravity = 0.0025; //0.0981
+    this.numOfParticles = 210;
     this.particles = [];
-    this.radius = 0.05;
+    this.radius = 0.04;
     this.particleGeometry = new THREE.SphereGeometry( this.radius, 32, 32 );
     this.colorFunc = colorFunc;
     this.scene = scene;

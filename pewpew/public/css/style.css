@@ -20,6 +20,17 @@ body {
   top: calc(10% + 150px);
 }
 
+#online {
+  font-size: 14px;
+  color: #228b22;
+  display: none;
+  opacity; 0;
+  transition: 500ms ease-in-out;
+  left: 5px;
+  top: 5px;
+  transform: none;
+}
+
 .label {
   font-size: 48px;
   color: whiteSmoke;
