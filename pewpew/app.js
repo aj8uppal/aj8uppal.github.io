@@ -31,7 +31,8 @@ let getFirstAvailableUser = (users, id, flagid) => {
 
 io.on('connection', function(socket){
   users[socket.id] = -1;
-  socket.emit('connected')
+  socket.emit('connected');
+  io.emit('usersOnline', [usersWaiting.length, Object.values(users).length]);
   socket.on('disconnect', function(){
     if((opponentId = users[socket.id]) !== -1){
       io.to(opponentId).emit('opponentDC');
@@ -42,6 +43,7 @@ io.on('connection', function(socket){
     }
     delete users[socket.id];
     console.log(`${socket.id} has left.`)
+    io.emit('usersOnline', [usersWaiting.length, Object.values(users).length]);
   });
   socket.on('ready', function(name){
     let oID;
@@ -79,6 +81,7 @@ io.on('connection', function(socket){
       socket.emit('matched', {id: match, name: names[match]});
       io.to(match).emit('matched', {id: socket.id, name: names[socket.id]});
     }
+    io.emit('usersOnline', [usersWaiting.length, Object.values(users).length]);
   });
   socket.on('keyDown', function(keyCode){
     io.to(users[socket.id]).emit('opponentKeyDown', keyCode);
@@ -105,7 +108,10 @@ io.on('connection', function(socket){
         return;
       }else{
         users[users[socket.id]] = -1;
-        delete users[socket.id];
+        users[socket.id] = -1;
+        acceptedRematch.splice(accepted, 1);
+        return;
+        // delete users[socket.id];
       }
     }else if(denied = deniedRematch.indexOf(users[socket.id]) > -1 && accepted === -1){ //opponent does not want rematch
       deniedRematch.splice(denied, 1);
@@ -127,10 +133,3 @@ io.on('connection', function(socket){
     }
   });
 });
-let updateUserCount = () => {
-  for(let i in users){
-    io.to(i).emit('usersOnline', [usersWaiting.length, Object.values(users).length]);
-  }
-  setTimeout(updateUserCount, 2500);
-}
-updateUserCount();
