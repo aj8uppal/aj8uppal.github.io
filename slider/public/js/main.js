@@ -73,6 +73,24 @@ $(function(){
     coords[ticker][0] = tempX;
     coords[ticker][1] = tempY;
     draw();
+    if(getState(coords) == "123456780"){
+      setTimeout(function(){
+        // alert("solved!");
+        // $(".number").css({transition: "none"});
+        $(".number").css({background: "#4caf50"});
+        $(".number").css({border: "0.11vw solid #4caf50"});
+        $(".container").css({border: "0.15vw dashed #4caf50"});
+        setTimeout(function(){
+          $(".number").css({transition: "0.5s ease"});
+          $(".number").css({background: "#424242"});
+          $(".number").css({border: "0.11vw solid #424242"});
+          $(".container").css({border: "0.15vw dashed #424242"});
+        }, 500);
+
+        // debugger;
+      }, 500);
+      return true;
+    }
   }
 
   let getState = (coords) => {
@@ -84,11 +102,9 @@ $(function(){
   }
 
   let solvePath = (path) => {
-    if(path.length <= 0){
-      alert("Solved!");
+    if(slide(path[0])){
       return;
     }
-    slide(path[0])
     setTimeout(function(){
       solvePath(path.slice(1))
     }, 500);

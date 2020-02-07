@@ -37,7 +37,7 @@ ul {
     margin: auto;
     height: 9vw;
     width: 9vw;
-    border: 0.11vw solid black;
+    border: 0.11vw solid #4242;
     transition: 0.5s ease;
     border-radius: 20px;
 }
