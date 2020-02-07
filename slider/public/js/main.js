@@ -15,27 +15,28 @@ $(function(){
       x = coords[ticker][0];
       y = coords[ticker][1];
       $(ele).css({"top": (y+1)*offset+(y*scale)-borderWidth+"vw", "left": (x+1)*offset+(x*scale)-borderWidth+"vw"})
-      if(ticker == "9"){
+      if(ticker == "0"){
         blankX = x;
         blankY = y;
       }
     });
   }
-
-  $(".number").each((i, ele)=>{
-    x = i%3;
-    y = Math.floor(i/3);
-    coords[$(ele).find("span").html()] = [x, y];
-    // console.log(i%3+", "+Math.floor(i/3));
-
-  });
+  let process = () => {
+    $(".number").each((i, ele)=>{
+      x = i%3;
+      y = Math.floor(i/3);
+      coords[$(ele).find("span").html()] = [x, y];
+      // console.log(i%3+", "+Math.floor(i/3));
+    });
+  }
+  process();
   draw();
 
 
   $(".number").click(function(e){
     let ticker = $(this).find("span").html()
-    blankX = coords["9"][0];
-    blankY = coords["9"][1];
+    blankX = coords["0"][0];
+    blankY = coords["0"][1];
     let delta_x = blankX-coords[ticker][0];
     let delta_y = blankY-coords[ticker][1];
     let dir = "not valid";
@@ -53,8 +54,8 @@ $(function(){
     slide(dir)
   })
   let slide = (dir) => {
-    let tempX = coords["9"][0];
-    let tempY = coords["9"][1];
+    let tempX = coords["0"][0];
+    let tempY = coords["0"][1];
     let x = tempX;
     let y = tempY;
     if(dir == "left"){
@@ -67,11 +68,10 @@ $(function(){
       y = tempY - 1;
     }
     ticker = Object.entries(coords).find(i=>i[1].toString() == [x, y].toString())[0];
-    coords["9"][0] = x;
-    coords["9"][1] = y;
+    coords["0"][0] = x;
+    coords["0"][1] = y;
     coords[ticker][0] = tempX;
     coords[ticker][1] = tempY;
-    console.log(getState(coords))
     draw();
   }
 
@@ -80,7 +80,7 @@ $(function(){
         return coords[i].slice().reverse().concat(i)
     });
     let sorted = arr.sort()
-    return sorted.map((i)=>i[2]).join("").replace("9", "0");
+    return sorted.map((i)=>i[2]).join("");
   }
 
   let solvePath = (path) => {
@@ -95,12 +95,30 @@ $(function(){
   }
 
   $("button").click(function(){
-    $.get(
-        "http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:5000/api/path",
-        {path: getState(coords)},
-        function(data) {
-           solvePath(JSON.parse(data));
-        }
-    );
+    if($(this).html() == "Solve"){
+      $.get(
+          "http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:5000/api/path",
+          {path: getState(coords)},
+          function(data) {
+             solvePath(JSON.parse(data));
+          }
+      );
+    }else{
+      $.get(
+          "http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:5000/api/randomize",
+          (data) => {
+            let board = JSON.parse(data);
+            let counter = 0
+            for(let y = 0; y < 3; y++){
+              for(let x = 0; x < 3; x++){
+                coords[board[counter++]] = [x, y]
+              }
+            }
+            draw();
+             // debugger;
+          }
+      );
+    }
+
   })
 });

@@ -4,6 +4,8 @@
   height: 30vw;
   border: 0.15vw dashed #424242;
   padding: 0;
+
+  transition: 0.5s ease;
 }
 
 .row {
@@ -71,4 +73,8 @@ button {
 }
 button:hover {
   filter: drop-shadow(0px 1px 4px #424242);
+}
+
+.btn-wrapper:last-child > button {
+    top: calc(50vh + 16vw) !important;
 }
