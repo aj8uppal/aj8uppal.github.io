@@ -1,5 +1,5 @@
 .container {
-  transform: translateY(calc(50vh - 15vw));
+  transform: translateY(calc(50vh - 15vw - 7.5vw));
   width: 30vw;
   height: 30vw;
   border: 0.15vw dashed #424242;
@@ -63,8 +63,8 @@ ul {
 
 button {
   position: absolute;
-    top: calc(50vh - 20vw);
-    left: 50%;
+    top: calc(50vh + 18vw);
+    left: 42%;
     transform: translateX(-50%);
     font-size: 2.5vw;
     font-family: monospace;
@@ -80,5 +80,40 @@ button:focus {
 }
 
 .btn-wrapper:last-child > button {
-    top: calc(50vh + 16vw) !important;
+   margin-right: 100px;
+   left: 55.5%;
+}
+
+.title {
+  font-family: monospace;
+  font-weight: bold;
+  transform: translateY(10vh);
+    font-size: 7.5vw;
+}
+
+body {
+  text-align: center;
+}
+
+@media only screen and (max-width: 560px){
+  /* .container {
+    transform: translateY(calc(50vh - 37.5vw - 4.5rem));
+    width: 75vw;
+    height: 75vw;
+  } */
+  body {
+    transform: scale(2);
+  }
+  .container {
+    transform: translateY(10vh);
+    /* width: 75vw;
+    height: 75vw; */
+  }
+  button {
+    position:fixed;
+      top: calc(35vh) !important;
+  }
+  .title {
+    font-size: 10.5vw;
+  }
 }

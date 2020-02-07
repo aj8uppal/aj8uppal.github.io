@@ -125,7 +125,7 @@ $(function() {
         }
         setTimeout(function() {
             solvePath(path.slice(1))
-        }, 500);
+        }, 375);
     }
 
     $("button").click(function() {
