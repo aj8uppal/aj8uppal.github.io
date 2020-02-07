@@ -7,6 +7,7 @@ $(function(){
   let borderWidth = 0.15;
   let blankX;
   let blankY;
+  let solving = false;
 
 
   let draw = () => {
@@ -26,7 +27,6 @@ $(function(){
       x = i%3;
       y = Math.floor(i/3);
       coords[$(ele).find("span").html()] = [x, y];
-      // console.log(i%3+", "+Math.floor(i/3));
     });
   }
   process();
@@ -53,7 +53,7 @@ $(function(){
     }
     slide(dir)
   })
-  let slide = (dir) => {
+  let slide = (dir, delay) => {
     let tempX = coords["0"][0];
     let tempY = coords["0"][1];
     let x = tempX;
@@ -64,7 +64,7 @@ $(function(){
       x = tempX - 1;
     }else if(dir == "up"){
       y = tempY + 1;
-    }else{
+    }else if(dir == "down"){
       y = tempY - 1;
     }
     ticker = Object.entries(coords).find(i=>i[1].toString() == [x, y].toString())[0];
@@ -74,9 +74,10 @@ $(function(){
     coords[ticker][1] = tempY;
     draw();
     if(getState(coords) == "123456780"){
+      if(solving == true){
+        solving = false;
+      }
       setTimeout(function(){
-        // alert("solved!");
-        // $(".number").css({transition: "none"});
         $(".number").css({background: "#4caf50"});
         $(".number").css({border: "0.11vw solid #4caf50"});
         $(".container").css({border: "0.15vw dashed #4caf50"});
@@ -87,8 +88,7 @@ $(function(){
           $(".container").css({border: "0.15vw dashed #424242"});
         }, 500);
 
-        // debugger;
-      }, 500);
+      }, delay || 500);
       return true;
     }
   }
@@ -112,10 +112,24 @@ $(function(){
 
   $("button").click(function(){
     if($(this).html() == "Solve"){
+      if(solving){
+        return;
+      }else if(getState(coords) == "123456780"){
+        slide("not valid", 100)
+        return;
+      }else{
+        solving = true;
+      }
+      $(this).css({cursor: "progress"})
+      $(this).html("Solving...");
+      $(this).addClass("disabled");
       $.get(
           "http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:5000/api/path",
           {path: getState(coords)},
-          function(data) {
+          (data) => {
+              $(this).html("Solve");
+              $(this).removeClass("disabled");
+              $(this).css({cursor: "pointer"})
              solvePath(JSON.parse(data));
           }
       );
@@ -131,7 +145,6 @@ $(function(){
               }
             }
             draw();
-             // debugger;
           }
       );
     }
