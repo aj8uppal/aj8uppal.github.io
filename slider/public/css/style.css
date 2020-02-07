@@ -40,6 +40,10 @@ ul {
     border: 0.11vw solid #4242;
     transition: 0.5s ease;
     border-radius: 20px;
+    -webkit-border-top-left-radius: 20px;
+    -webkit-border-bottom-left-radius: 20px;
+    -webkit-border-bottom-right-radius: 20px;
+    -webkit-border-top-right-radius: 20px;
 }
 
 .number:hover {
