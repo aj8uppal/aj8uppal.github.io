@@ -8,6 +8,7 @@ $(function() {
     let blankX;
     let blankY;
     let solving = false;
+    let randomStates = [];
 
     let draw = ()=>{
         $(".number").each((i,ele)=>{
@@ -77,10 +78,20 @@ $(function() {
         coords[ticker][1] = tempY;
         draw();
         if (getState(coords) == "123456780") {
+
             if (solving == true) {
                 solving = false;
             }
+
+            let btn = $($("button")[0])
             setTimeout(function() {
+              if(btn.html() == "Solving..."){
+                  btn.html("Solved.");
+                  btn.removeClass("disabled");
+                  btn.css({
+                      cursor: "pointer"
+                  })
+              }
                 $(".number").css({
                     background: "#4caf50"
                 });
@@ -91,6 +102,7 @@ $(function() {
                     border: "0.15vw dashed #4caf50"
                 });
                 setTimeout(function() {
+                    btn.html("Solve");
                     $(".number").css({
                         transition: "0.5s ease"
                     });
@@ -128,7 +140,7 @@ $(function() {
         }, 375);
     }
 
-    $("button").click(function() {
+    $("button").click(async function() {
         if ($(this).html() == "Solve") {
             if (solving) {
                 return;
@@ -146,27 +158,34 @@ $(function() {
             $.get("http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:5000/api/path", {
                 path: getState(coords)
             }, (data)=>{
-                $(this).html("Solve");
-                $(this).removeClass("disabled");
-                $(this).css({
-                    cursor: "pointer"
-                })
                 solvePath(JSON.parse(data));
             }
             );
         } else {
-            $.get("http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:5000/api/randomize", (data)=>{
-                let board = JSON.parse(data);
-                let counter = 0
-                for (let y = 0; y < 3; y++) {
-                    for (let x = 0; x < 3; x++) {
-                        coords[board[counter++]] = [x, y]
-                    }
+              if(randomStates.length == 0){
+                $(this).html("Randomizing...");
+                $(this).addClass("disabled");
+                $(this).css({
+                    cursor: "progress"
+                })
+                await $.get("http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:5000/api/randomize", (data)=>{
+                    randomStates = JSON.parse(data);
+                    $(this).html("Randomize");
+                    $(this).removeClass("disabled");
+                    $(this).css({
+                        cursor: "pointer"
+                    })
+                });
+              }
+            let board = randomStates.pop();
+            let counter = 0
+            for (let y = 0; y < 3; y++) {
+                for (let x = 0; x < 3; x++) {
+                    coords[board[counter++]] = [x, y]
                 }
-                draw();
             }
-            );
-        }
+            draw();
 
-    })
+    }
+  })
 });
