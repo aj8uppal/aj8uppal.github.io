@@ -148,7 +148,7 @@ $("input").change(function(){
   }
 })
 
-$("button").click(async () => {
+$("button").click(async function(){
   if ($(this).html() == "Solve") {
     if (solving) {
       return;
@@ -186,7 +186,7 @@ $("button").click(async () => {
         children = $(rows[c++]).children("td");
         for(let j = 0; j < children.length; j++){
           // debugger;
-          $(children[j]).html(data[i][j]+(j==0 ? " sec" : ""));
+          $(children[j]).html(data[i][j]+(j==0 ? "" : ""));
         }
       }
       solvePath(data.path);
