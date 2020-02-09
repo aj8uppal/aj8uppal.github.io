@@ -127,10 +127,10 @@ table {
     height: 75vw;
   } */
   .container {
-    transform: translateY(calc(50vh - 37.5vw - 7.5vw)) scale(2);
+    transform: translateY(calc(50vh - 37.5vw - 25vw)) scale(2);
   }
   .row {
-    transform: translateY(calc(50vh - 27.5vw)) scale(2);
+    transform: translateY(calc(50vh - 45vw)) scale(1);
   }
   /* body {
     transform: scale(2);
@@ -146,6 +146,9 @@ table {
   } */
   .title {
     font-size: 10.5vw;
-    transform: translateY(calc(50vh - 37.5vw - 25vw))
+    transform: translateY(calc(50vh - 37.5vw - 40vw))
+  }
+  table {
+    font-size: 0.75rem;
   }
 }

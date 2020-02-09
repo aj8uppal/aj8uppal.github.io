@@ -148,7 +148,7 @@ $("input").change(function(){
   }
 })
 
-$("button").click(async function() {
+$("button").click(async () => {
   if ($(this).html() == "Solve") {
     if (solving) {
       return;
