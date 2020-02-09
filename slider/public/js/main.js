@@ -155,7 +155,7 @@ $(function() {
             })
             $(this).html("Solving...");
             $(this).addClass("disabled");
-            $.get("http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:5000/api/path", {
+            $.get("https://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:5000/api/path", {
                 path: getState(coords)
             }, (data)=>{
                 solvePath(JSON.parse(data));
@@ -168,7 +168,7 @@ $(function() {
                 $(this).css({
                     cursor: "progress"
                 })
-                await $.get("http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:5000/api/randomize", (data)=>{
+                await $.get("https://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:5000/api/randomize", (data)=>{
                     randomStates = JSON.parse(data);
                     $(this).html("Randomize");
                     $(this).removeClass("disabled");
