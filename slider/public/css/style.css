@@ -1,17 +1,17 @@
 .container {
-  transform: translateY(calc(50vh - 15vw - 7.5vw));
-  width: 30vw;
-  height: 30vw;
-  border: 0.15vw dashed #424242;
+  transform: translateY(calc(50vh - 0vw - 50vmin)) scale(1.2);
+  width: 30vmin;
+  height: 30vmin;
+  border: 0.15vmin dashed #424242;
   padding: 0;
 
   transition: 0.5s ease;
 }
 
 .row {
-  transform: translateY(calc(50vh - 15vw - 6.75vw));
+  transform: translateY(calc(50vh - 46vmin));
   margin: auto;
-  width: 35vw;
+  width: 40vmin;
 }
 
 .btn-wrapper {
@@ -28,18 +28,18 @@ ul {
     background: #424242;
     cursor: pointer;
     color: whitesmoke;
-    top: 10vw;
-    left: 10vw;
-    font-size: 3vw;
+    top: 10vmin;
+    left: 10vmin;
+    font-size: 3vmin;
     font-family: monospace;
     text-align: center;
     vertical-align: middle;
     position: absolute;
     display: table;
     margin: auto;
-    height: 9vw;
-    width: 9vw;
-    border: 0.11vw solid #4242;
+    height: 9vmin;
+    width: 9vmin;
+    border: 0.11vmin solid #4242;
     transition: 0.5s ease;
     border-radius: 20px;
     -webkit-border-top-left-radius: 20px;
@@ -69,9 +69,9 @@ ul {
 
 button {
     display: inline-block;
-    font-size: 2.5vw;
+    font-size: 3.5vmin;
     font-family: monospace;
-    border-radius: 1vw;
+    border-radius: 1vmin;
     transition: 0.5s ease;
 }
 button:hover {
@@ -90,12 +90,34 @@ button:focus {
 .title {
   font-family: monospace;
   font-weight: bold;
-  transform: translateY(10vh);
-    font-size: 7.5vw;
+  transform: translateY(calc(50vh - 50vmin));
+    font-size: 7.5vmax;
 }
 
 body {
   text-align: center;
+}
+
+input {
+  margin:10px;
+}
+
+.check {
+    text-align: left;
+    margin-left: 10px;
+}
+
+.metrics {
+  position:fixed;
+  /* transform: translateY(calc(50vh - 50vmin)); */
+  bottom: 0px;
+  width: 100vw;
+}
+
+table {
+
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
 @media only screen and (max-width: 560px){
@@ -124,5 +146,6 @@ body {
   } */
   .title {
     font-size: 10.5vw;
+    transform: translateY(calc(50vh - 37.5vw - 25vw))
   }
 }
