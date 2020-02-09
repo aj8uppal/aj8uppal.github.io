@@ -149,7 +149,7 @@ $("input").change(function(){
 })
 
 $("button").click(async function(){
-  if ($(this).html() == "Solve") {
+  if ($(this).html()[0] == "S") {
     if (solving) {
       return;
     } else if (getState(coords) == "123456780") {
