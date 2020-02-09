@@ -11,7 +11,7 @@
 .row {
   transform: translateY(calc(50vh - 46vmin));
   margin: auto;
-  width: 40vmin;
+  width: 50vmin;
 }
 
 .btn-wrapper {
@@ -41,11 +41,11 @@ ul {
     width: 9vmin;
     border: 0.11vmin solid #4242;
     transition: 0.5s ease;
-    border-radius: 20px;
-    -webkit-border-top-left-radius: 20px;
-    -webkit-border-bottom-left-radius: 20px;
-    -webkit-border-bottom-right-radius: 20px;
-    -webkit-border-top-right-radius: 20px;
+    /* border-radius: 20px; */
+    -webkit-border-top-left-radius: 2vmin;
+    -webkit-border-bottom-left-radius: 2vmin;
+    -webkit-border-bottom-right-radius: 2vmin;
+    -webkit-border-top-right-radius: 2vmin;
 }
 
 .number:hover {
@@ -108,16 +108,25 @@ input {
 }
 
 .metrics {
-  position:fixed;
+  position:relative;
+  margin-top: 3vh;
+  transform: translateY(calc(50vh - 50vmin));
   /* transform: translateY(calc(50vh - 50vmin)); */
-  bottom: 0px;
-  width: 100vw;
+  /* bottom: 0px;
+  width: 100vw; */
 }
 
 table {
 
   opacity: 0;
   transition: opacity 0.5s ease;
+}
+
+@media only screen and (max-height: 560px){
+  .metrics {
+    bottom: inherit;
+    transform: translateY(calc(50vh - 46vmin));
+  }
 }
 
 @media only screen and (max-width: 560px){

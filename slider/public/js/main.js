@@ -104,7 +104,7 @@ let slide = (dir,delay)=>{
       setTimeout(function() {
         btn.html("Solve");
         $(".number").css({
-          transition: "0.5s ease"
+          transition: "all 0.5s ease"
         });
         $(".number").css({
           background: "#424242"
