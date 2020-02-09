@@ -151,4 +151,7 @@ table {
   table {
     font-size: 0.75rem;
   }
+  .table td, .table th {
+    padding: 0.35rem;
+  }
 }
