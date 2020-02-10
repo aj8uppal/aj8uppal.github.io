@@ -9,6 +9,14 @@ $(function() {
   let blankY;
   let solving = false;
   let randomStates = [];
+  let ip;
+  $.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
+    ip = data.split("ip=")[1].split("\n")[0];
+    $.get("http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:5000/api/visit", {
+      ip: ip
+    }, (data)=>{
+    });
+  });
 
   let draw = ()=>{
     $(".number").each((i,ele)=>{
