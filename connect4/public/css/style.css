@@ -1,0 +1,105 @@
+.container {
+  margin: auto;
+  text-align: center;
+}
+.board {
+  display: flex;
+  width: 49vmax;
+  margin: auto;
+  margin-top: 3.5vmax;
+}
+.column {
+
+  display: inline-block;
+  margin: auto;
+}
+svg {
+  height: 6vmax;
+}
+.hole {
+  /* position: absolute;
+  left: 50px;
+  top: 50px; */
+  /* font-size: 0; */
+  position: relative;
+  left: 1vmax;
+  top: 1vmax;
+  width: 5vmax;
+  height: 5vmax;
+  border-radius: 50%;
+  box-shadow: 0 0 0 99999px #aaa;
+}
+.hole-wrapper {
+  /* font-size: 0; */
+  overflow: hidden;
+  width: 7vmax;
+  height: 7vmax;
+}
+.token {
+  width: 5vmax;
+  height: 5vmax;
+  position: absolute;
+  border-radius: 50%;
+  transition: 1.5s ease;
+  transform: translateY(0px);
+  pointer-events: none;
+  /* display: none; */
+  /* color: blue; */
+}
+.hovertoken {
+  transition: 0.5s ease;
+}
+.hole-wrapper, .hole {
+  pointer-events: none;
+}
+.p1 {
+  background: blue;
+}
+
+.p2 {
+  background: red;
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	/* font-size: 100%; */
+	/* font: inherit; */
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
