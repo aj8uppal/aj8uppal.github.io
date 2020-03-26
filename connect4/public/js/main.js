@@ -1,5 +1,6 @@
 $(function(){
   let id = -1;
+  let gameOver = false;
   $.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
     ip = data.split("ip=")[1].split("\n")[0];
     $.get("http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:8000/api/visit", {
@@ -27,7 +28,7 @@ $(function(){
     $(".board").prepend(newToken);
     setTimeout(function(){
       newToken.css("transform", `translateY(${45.5-board[col].length*7}vmax)`);
-    }, 10);
+    }, 75);
     $(".hovertoken").removeClass(`p${curPlayer}`);
     curPlayer = curPlayer == 2 ? 1 : 2;
     $(".hovertoken").addClass(`p${curPlayer}`);
@@ -35,14 +36,29 @@ $(function(){
   $(".column").on("click", function(e){
     // console.log(board[hoverCol-1]);
     // console.log(hoverCol);
-    if(board[hoverCol].length == 6){
+    if(gameOver || board[hoverCol].length == 6){
       return;
     }
     if(curPlayer == 1){
       move(hoverCol);
       $.get("http://ec2-3-19-227-224.us-east-2.compute.amazonaws.com:8000/api/move", {col: hoverCol, id: id}, (data) => {
         console.log(data);
-        move(parseInt(JSON.parse(data)));
+        data = JSON.parse(data);
+        if(data.length){
+          if(data[0] == "computerwin"){
+            move(parseInt(data[1]));
+            setTimeout(function(){
+              alert("Computer won!")
+            }, 1500);
+          }else{
+            setTimeout(function(){
+              alert("Player won!")
+            }, 1500);
+          }
+          gameOver = true;
+        }else{
+          move(parseInt(JSON.parse(data)));
+        }
       })
     }
   })
