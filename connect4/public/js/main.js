@@ -6,7 +6,7 @@ $(function(){
       ip: ip
     }, (data)=>{
       id = parseInt(JSON.parse(data));
-      alert(id);
+      // alert(id);
     });
   });
   let curPlayer = 1 //1: p1, 2: p2
