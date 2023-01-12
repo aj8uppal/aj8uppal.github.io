@@ -3,6 +3,6 @@
   "version": "0.0.1",
   "description": "Real Time Circles",
   "dependencies": {
-    "express": "^4.15.2"
+    "express": "^4.18.2"
   }
 }
