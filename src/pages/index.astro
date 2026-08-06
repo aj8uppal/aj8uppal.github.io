@@ -223,36 +223,39 @@ const heroLabel =
     <div class="grid">
       {/* saltline */}
       <article class="card card--full" data-reveal>
-        <div class="shot shot--lead">
-          <Picture
-            src={asset(saltline.lead.asset)}
-            alt={saltline.lead.alt}
-            widths={LEAD_W}
-            sizes={LEAD_S}
-            formats={['avif']}
-            fallbackFormat="webp"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-          />
-          <p class="flag">{saltline.lead.flag}</p>
-        </div>
-
-        <p class="plate-cap"><b>{saltline.spread.t}.</b> {saltline.spread.s}</p>
-
-        <div class="card__copy">
-          <span class="card__index">{saltline.spread.n}</span>
-          <div class="card__badges">
-            <Pill status={saltline.status} label="Live" />
-            <span class="pill">01 &middot; Flagship</span>
-            <span class="pill">Six frames &middot; one seed</span>
+        <div class="card__hero">
+          <div class="shot shot--lead">
+            <Picture
+              src={asset(saltline.lead.asset)}
+              alt={saltline.lead.alt}
+              widths={LEAD_W}
+              sizes={LEAD_S}
+              formats={['avif']}
+              fallbackFormat="webp"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+            <p class="flag">{saltline.lead.flag}</p>
           </div>
 
-          <h3 class="display">
-            <a href={saltline.href} target="_blank" rel="noopener">{saltline.name}</a>
-          </h3>
-          <p class="card__sub">{saltline.sub}</p>
+          <div class="card__intro">
+            <span class="card__index">{saltline.spread.n}</span>
+            <div class="card__badges">
+              <Pill status={saltline.status} label="Live" />
+              <span class="pill">01 &middot; Flagship</span>
+              <span class="pill">Six frames &middot; one seed</span>
+            </div>
 
+            <h3 class="display">
+              <a href={saltline.href} target="_blank" rel="noopener">{saltline.name}</a>
+            </h3>
+            <p class="card__sub">{saltline.sub}</p>
+            <p class="plate-cap"><b>{saltline.spread.t}.</b> {saltline.spread.s}</p>
+          </div>
+        </div>
+
+        <div class="card__copy">
           <div class="card__cols">
             <div class="card__body">
               {saltline.prose.map((p) => <p>{p}</p>)}
@@ -301,35 +304,38 @@ const heroLabel =
 
       {/* Ember Wilds */}
       <article class="card card--full" data-reveal>
-        <div class="shot shot--lead">
-          <Picture
-            src={asset('ember-spread-fallowmere-dusk')}
-            alt="Fallowmere in Ember Wilds at dusk: an ember-orange plain of voxel trees, a level thirty character in the centre, quest log and satchel along the edges."
-            widths={LEAD_W}
-            sizes={LEAD_S}
-            formats={['avif']}
-            fallbackFormat="webp"
-            loading="lazy"
-            decoding="async"
-          />
-          <p class="flag">Fallowmere &middot; level 30 &middot; dusk</p>
-        </div>
-
-        <p class="plate-cap"><b>{ember.spread.t}.</b> {ember.spread.s}</p>
-
-        <div class="card__copy">
-          <span class="card__index">{ember.spread.n}</span>
-          <div class="card__badges">
-            <Pill status={ember.status} label="Live multiplayer" />
-            <span class="pill">02 &middot; In production</span>
-            <span class="pill">Two players &middot; one live realm</span>
+        <div class="card__hero">
+          <div class="shot shot--lead">
+            <Picture
+              src={asset('ember-spread-fallowmere-dusk')}
+              alt="Fallowmere in Ember Wilds at dusk: an ember-orange plain of voxel trees, a level thirty character in the centre, quest log and satchel along the edges."
+              widths={LEAD_W}
+              sizes={LEAD_S}
+              formats={['avif']}
+              fallbackFormat="webp"
+              loading="lazy"
+              decoding="async"
+            />
+            <p class="flag">Fallowmere &middot; level 30 &middot; dusk</p>
           </div>
 
-          <h3 class="display">
-            <a href={ember.href} target="_blank" rel="noopener">{ember.name}</a>
-          </h3>
-          <p class="card__sub">{ember.sub}</p>
+          <div class="card__intro">
+            <span class="card__index">{ember.spread.n}</span>
+            <div class="card__badges">
+              <Pill status={ember.status} label="Live multiplayer" />
+              <span class="pill">02 &middot; In production</span>
+              <span class="pill">Two players &middot; one live realm</span>
+            </div>
 
+            <h3 class="display">
+              <a href={ember.href} target="_blank" rel="noopener">{ember.name}</a>
+            </h3>
+            <p class="card__sub">{ember.sub}</p>
+            <p class="plate-cap"><b>{ember.spread.t}.</b> {ember.spread.s}</p>
+          </div>
+        </div>
+
+        <div class="card__copy">
           <div class="card__cols">
             <div class="card__body">
               {ember.prose.map((p) => <p>{p}</p>)}
@@ -568,7 +574,6 @@ const heroLabel =
       <div>
         <h2 class="display head__t--long">{playground.statement}</h2>
         <p class="head__lead">{playground.prose[0]}</p>
-        <p class="head__lead">{playground.prose[1]}</p>
       </div>
     </div>
 

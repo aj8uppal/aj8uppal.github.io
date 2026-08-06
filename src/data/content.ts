@@ -481,10 +481,7 @@ export const errata = [
 
 export const playground = {
   statement: 'I opened all twenty-five and kept the twelve that still run.',
-  prose: [
-    'Twenty-five old demos in this repository, audited one at a time against what each one claimed to do.',
-    'Three of them are below, running inline rather than photographed. Move them.',
-  ],
+  prose: ['Three of them are below, running inline rather than photographed. Move them.'],
   items: [
     {
       yr: 'c. 2019',
