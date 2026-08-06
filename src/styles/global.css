@@ -14,36 +14,47 @@
 :root {
   color-scheme: dark;
 
-  /* Grounds. Every section stands on exactly one of these. */
-  --ink: #0b0d0e;
-  --ink-2: #121617;
-  --ink-3: #171a19;
-  --paper: #f2efe6;
-  --paper-2: #e7e2d6;
+  /* Grounds. Every section stands on exactly one of these. Shadow grey is
+     the page, walnut is anything raised off it. */
+  --ink: #242331;
+  --ink-2: #533e2d;
+  --ink-3: #35302f;
+  --paper: #efe6d4;
+  --paper-2: #e3d8c0;
 
-  /* Text on dark, in four steps. All measured against --ink-3, the lightest
-     dark ground on the page, so they hold on every one of them. */
-  --on-ink: #f2efe6;
-  --on-ink-2: #c8ccc5;
-  --on-ink-3: #a6aaa4;
-  --on-ink-4: #949891;
+  /* The screen colour. Behind a canvas or a running game, and nowhere else:
+     a screen should read as darker than the page it sits on. */
+  --screen: #17161f;
+
+  /* Text on dark, in four steps. All measured against --ink-2, the walnut,
+     which is the lightest dark ground on the page, so they hold on every
+     one of them. */
+  --on-ink: #efe6d4;
+  --on-ink-2: #cfc4b0;
+  --on-ink-3: #bbb09c;
+  --on-ink-4: #b0a591;
 
   /* Text on light. Measured against --paper-2, the darker light ground. */
-  --on-paper: #0b0d0e;
-  --on-paper-2: #3f423d;
-  --on-paper-3: #55584f;
+  --on-paper: #242331;
+  --on-paper-2: #4a4438;
+  --on-paper-3: #5d5646;
 
-  /* Accents. Acid is the primary, coral the secondary, cyan is interaction
-     and focus only, lilac is the one atmospheric wash. */
-  --acid: #d8f55f;
-  --coral: #ff6b4a;
-  --cyan: #76e6d6;
-  --lilac: #b8a1ff;
+  /* One hue family, three steps. Sand is the primary and carries every
+     interaction the page has, including focus. Camel is the secondary and
+     the hover. Earth is a border and a wash: at 3.6 against the page ground
+     it is not allowed to carry small text anywhere. */
+  --sand: #ddca7d;
+  --camel: #b88b4a;
+  --earth: #a27035;
 
-  --line-dark: rgb(242 239 230 / 16%);
-  --line-dark-2: rgb(242 239 230 / 28%);
-  --line-light: rgb(11 13 14 / 18%);
-  --line-light-2: rgb(11 13 14 / 34%);
+  /* Golden earth, deepened until it carries small text on the light grounds.
+     The bright earth is 3.0 on paper-2; this is 5.5. */
+  --earth-ink: #74491a;
+
+  --line-dark: rgb(239 230 212 / 16%);
+  --line-dark-2: rgb(239 230 212 / 28%);
+  --line-light: rgb(36 35 49 / 18%);
+  --line-light-2: rgb(36 35 49 / 34%);
 
   --max: 1240px;
   --pad: clamp(1.1rem, 4vw, 3.5rem);
@@ -117,11 +128,11 @@ p {
 
 ::selection {
   color: var(--ink);
-  background: var(--acid);
+  background: var(--sand);
 }
 
 :focus-visible {
-  outline: 3px solid var(--cyan);
+  outline: 3px solid var(--sand);
   outline-offset: 4px;
   border-radius: 3px;
 }
@@ -138,7 +149,7 @@ header[id] {
   left: 0.7rem;
   padding: 0.75rem 1rem;
   color: var(--ink);
-  background: var(--acid);
+  background: var(--sand);
   font-weight: 800;
   text-decoration: none;
   transform: translateY(-180%);
@@ -224,15 +235,15 @@ header[id] {
   border-color: var(--paper);
 }
 
-.btn--acid {
+.btn--sand {
   color: var(--ink);
-  background: var(--acid);
-  border-color: var(--acid);
+  background: var(--sand);
+  border-color: var(--sand);
 }
 
-.btn--acid:hover {
-  background: var(--cyan);
-  border-color: var(--cyan);
+.btn--sand:hover {
+  background: var(--camel);
+  border-color: var(--camel);
 }
 
 .btn--sm {
@@ -260,7 +271,7 @@ header[id] {
 .btn__tag {
   padding: 0.2rem 0.45rem;
   border-radius: 999px;
-  background: rgb(11 13 14 / 12%);
+  background: rgb(36 35 49 / 12%);
   font: 800 0.62rem/1.4 var(--mono);
   text-transform: uppercase;
 }
@@ -282,10 +293,10 @@ header[id] {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.45rem 0.55rem 0.45rem 0.85rem;
-  border: 1px solid rgb(242 239 230 / 17%);
+  border: 1px solid rgb(239 230 212 / 17%);
   border-radius: 999px;
   color: var(--paper);
-  background: rgb(11 13 14 / 78%);
+  background: rgb(36 35 49 / 78%);
   box-shadow: 0 14px 45px rgb(0 0 0 / 22%);
   backdrop-filter: blur(18px) saturate(125%);
 }
@@ -308,7 +319,7 @@ header[id] {
   place-items: center;
   border-radius: 50%;
   color: var(--ink);
-  background: var(--acid);
+  background: var(--sand);
   font: 900 0.65rem/1 var(--sans);
 }
 
@@ -320,7 +331,7 @@ header[id] {
 
 .nav__links a {
   padding: 0.4rem 0.3rem;
-  color: #d5d6d0;
+  color: var(--on-ink-2);
   text-decoration: none;
   font-size: 0.78rem;
   font-weight: 750;
@@ -328,7 +339,7 @@ header[id] {
 
 .nav__links a:hover,
 .nav__links a[aria-current='true'] {
-  color: var(--acid);
+  color: var(--sand);
 }
 
 .nav__cta {
@@ -339,7 +350,7 @@ header[id] {
 }
 
 .nav__cta:hover {
-  background: var(--acid);
+  background: var(--sand);
 }
 
 /* ── 6. HERO ─────────────────────────────────────────────────────────── */
@@ -359,7 +370,7 @@ header[id] {
   z-index: -1;
   inset: auto 0 0;
   height: 44%;
-  background: linear-gradient(to top, rgb(11 13 14 / 90%), transparent);
+  background: linear-gradient(to top, rgb(36 35 49 / 90%), transparent);
   pointer-events: none;
 }
 
@@ -376,7 +387,7 @@ header[id] {
 }
 
 .hero:has(#hero-canvas:focus-visible) {
-  box-shadow: inset 0 0 0 3px var(--cyan);
+  box-shadow: inset 0 0 0 3px var(--sand);
 }
 
 .hero__in {
@@ -390,7 +401,7 @@ header[id] {
   align-items: flex-end;
   gap: 1rem;
   margin-bottom: 1.4rem;
-  color: #d7d9d3;
+  color: var(--on-ink-2);
   font: 700 clamp(0.68rem, 1vw, 0.78rem) / 1.4 var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -402,8 +413,8 @@ header[id] {
   height: 0.55rem;
   margin-right: 0.45rem;
   border-radius: 50%;
-  background: var(--acid);
-  box-shadow: 0 0 0 6px rgb(216 245 95 / 12%);
+  background: var(--sand);
+  box-shadow: 0 0 0 6px rgb(221 202 125 / 12%);
 }
 
 .hero h1 {
@@ -457,15 +468,15 @@ header[id] {
   padding: 0.55rem 0.75rem;
   border: 1px solid var(--line-dark);
   border-radius: 999px;
-  color: #cbcfc8;
-  background: rgb(11 13 14 / 50%);
+  color: var(--on-ink-2);
+  background: rgb(36 35 49 / 50%);
   font: 650 0.66rem/1 var(--mono);
   letter-spacing: 0.06em;
   pointer-events: none;
 }
 
 .hint b {
-  color: var(--cyan);
+  color: var(--sand);
   font-size: 1rem;
 }
 
@@ -474,7 +485,7 @@ header[id] {
   overflow: hidden;
   border-block: 1px solid var(--line-dark);
   color: var(--ink);
-  background: var(--acid);
+  background: var(--sand);
 }
 
 .ticker__track {
@@ -525,14 +536,14 @@ header[id] {
   background: var(--ink-3);
 }
 
-.sec--acid {
+.sec--sand {
   color: var(--on-paper);
-  background: var(--acid);
+  background: var(--sand);
 }
 
-.sec--coral {
+.sec--camel {
   color: var(--on-paper);
-  background: var(--coral);
+  background: var(--camel);
 }
 
 .head {
@@ -609,7 +620,7 @@ header[id] {
   color: var(--on-ink-2);
 }
 
-.sec--acid .method {
+.sec--sand .method {
   border-top-color: var(--line-light-2);
 }
 
@@ -724,7 +735,7 @@ header[id] {
   top: -22vw;
   left: -20vw;
   border-radius: 50%;
-  background: radial-gradient(circle, rgb(184 161 255 / 13%), transparent 68%);
+  background: radial-gradient(circle, rgb(162 112 53 / 18%), transparent 68%);
   pointer-events: none;
 }
 
@@ -828,7 +839,7 @@ header[id] {
 .card__sub {
   max-width: 58ch;
   margin: 0 0 1rem;
-  color: var(--acid);
+  color: var(--sand);
   font: 700 0.75rem/1.5 var(--mono);
 }
 
@@ -888,8 +899,8 @@ header[id] {
 
 .pill--live {
   color: var(--ink);
-  background: var(--acid);
-  border-color: var(--acid);
+  background: var(--sand);
+  border-color: var(--sand);
 }
 
 .pill--live::before {
@@ -901,15 +912,15 @@ header[id] {
 }
 
 .pill--wip {
-  color: var(--cyan);
-  border-color: rgb(118 230 214 / 40%);
+  color: var(--sand);
+  border-color: rgb(221 202 125 / 40%);
 }
 
 .pill--off {
   color: var(--on-ink-3);
 }
 
-.sec--acid .pill {
+.sec--sand .pill {
   color: var(--on-paper);
   border-color: var(--line-light-2);
 }
@@ -943,14 +954,14 @@ header[id] {
 }
 
 .specs a {
-  color: var(--acid);
+  color: var(--sand);
 }
 
 .shot {
   position: relative;
   min-width: 0;
   overflow: hidden;
-  background: #171819;
+  background: var(--screen);
 }
 
 .shot img {
@@ -974,7 +985,7 @@ header[id] {
   content: '';
   position: absolute;
   inset: 44% 0 0;
-  background: linear-gradient(transparent, rgb(11 13 14 / 76%));
+  background: linear-gradient(transparent, rgb(36 35 49 / 76%));
   pointer-events: none;
 }
 
@@ -991,10 +1002,10 @@ header[id] {
   align-items: center;
   gap: 0.5rem;
   padding: 0.55rem 0.75rem;
-  border: 1px solid rgb(242 239 230 / 30%);
+  border: 1px solid rgb(239 230 212 / 30%);
   border-radius: 999px;
   color: var(--paper);
-  background: rgb(11 13 14 / 72%);
+  background: rgb(36 35 49 / 72%);
   backdrop-filter: blur(10px);
   font: 750 0.67rem/1 var(--mono);
   letter-spacing: 0.04em;
@@ -1006,8 +1017,8 @@ header[id] {
   width: 0.48rem;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: var(--acid);
-  box-shadow: 0 0 0 4px rgb(216 245 95 / 13%);
+  background: var(--sand);
+  box-shadow: 0 0 0 4px rgb(221 202 125 / 13%);
 }
 
 .plate-cap {
@@ -1089,7 +1100,7 @@ header[id] {
   overflow: hidden;
   border: 1px solid var(--line-dark);
   border-radius: var(--r-sm);
-  background: #171819;
+  background: var(--screen);
 }
 
 .fs__slide {
@@ -1137,7 +1148,7 @@ header[id] {
   padding: 1px;
 }
 
-/* The acid pill is one element driven by a live spring, not seven CSS
+/* The sand pill is one element driven by a live spring, not seven CSS
    transitions. Clicking through tabs quickly carries velocity across the
    interruption instead of restarting from the new tab. */
 .fs__ind {
@@ -1146,7 +1157,7 @@ header[id] {
   inset: 1px auto 1px 0;
   width: 0;
   border-radius: 999px;
-  background: var(--acid);
+  background: var(--sand);
   transform-origin: left center;
   will-change: transform, width;
 }
@@ -1171,8 +1182,8 @@ header[id] {
 }
 
 .fs__tab:hover {
-  color: var(--acid);
-  border-color: rgb(216 245 95 / 45%);
+  color: var(--sand);
+  border-color: rgb(221 202 125 / 45%);
 }
 
 .fs__tab[aria-selected='true'] {
@@ -1223,7 +1234,7 @@ header[id] {
 
 .fs__read dd {
   margin: 0;
-  color: var(--acid);
+  color: var(--sand);
   font: 700 0.72rem/1.6 var(--mono);
 }
 
@@ -1252,10 +1263,10 @@ header[id] {
   gap: 0.2rem;
   margin: 0;
   padding: 0.55rem 0.7rem;
-  border: 1px solid rgb(242 239 230 / 26%);
+  border: 1px solid rgb(239 230 212 / 26%);
   border-radius: var(--r-sm);
   color: var(--on-ink-2);
-  background: rgb(11 13 14 / 72%);
+  background: rgb(36 35 49 / 72%);
   backdrop-filter: blur(10px);
   font: 700 0.62rem/1.3 var(--mono);
   letter-spacing: 0.06em;
@@ -1263,7 +1274,7 @@ header[id] {
 }
 
 .arc__clock b {
-  color: var(--acid);
+  color: var(--sand);
   font-size: 0.95rem;
   letter-spacing: -0.01em;
 }
@@ -1330,7 +1341,7 @@ header[id] {
 
 .arc__tick[aria-pressed='true'] {
   color: var(--ink);
-  background: var(--acid);
+  background: var(--sand);
 }
 
 /* ── 12. WORK LOG ────────────────────────────────────────────────────── */
@@ -1424,7 +1435,7 @@ header[id] {
 }
 
 .role__when .now {
-  color: #b23a1c;
+  color: var(--earth-ink);
 }
 
 .role h3 {
@@ -1460,9 +1471,9 @@ header[id] {
   max-width: 68ch;
   margin-top: 0.65rem;
   padding: 0.45rem 0.6rem;
-  border: 1px dashed #94614a;
-  color: #6b3a24;
-  background: rgb(255 107 74 / 9%);
+  border: 1px dashed var(--earth);
+  color: var(--earth-ink);
+  background: rgb(162 112 53 / 12%);
   font: 700 0.68rem/1.45 var(--mono);
 }
 
@@ -1583,7 +1594,7 @@ header[id] {
   border-radius: 20px;
   color: var(--on-ink);
   background: var(--ink);
-  box-shadow: 8px 8px 0 rgb(11 13 14 / 18%);
+  box-shadow: 8px 8px 0 rgb(36 35 49 / 18%);
 }
 
 .lab--wide {
@@ -1613,7 +1624,7 @@ header[id] {
 .lab__date {
   display: block;
   margin-bottom: 0.65rem;
-  color: var(--acid);
+  color: var(--sand);
   font: 750 0.64rem/1 var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1640,7 +1651,7 @@ header[id] {
 .stage {
   flex: 1;
   padding: clamp(0.8rem, 1.6vw, 1.1rem);
-  background: #111617;
+  background: var(--screen);
 }
 
 .stage__label {
@@ -1664,15 +1675,15 @@ header[id] {
   align-items: flex-start;
   gap: 0.55rem;
   padding: 1.05rem;
-  border: 1px solid rgb(216 245 95 / 28%);
+  border: 1px solid rgb(221 202 125 / 28%);
   border-radius: 13px;
   color: var(--paper);
-  background: #080c0d;
+  background: var(--screen);
   font: 760 clamp(0.96rem, 1.6vw, 1.24rem) / 1.45 var(--mono);
 }
 
 .term__p {
-  color: var(--acid);
+  color: var(--sand);
 }
 
 .term__out {
@@ -1683,7 +1694,7 @@ header[id] {
   flex: 0 0 auto;
   width: 0.55em;
   height: 1.35em;
-  border-right: 2px solid var(--acid);
+  border-right: 2px solid var(--sand);
   animation: caret 0.8s steps(1) infinite;
 }
 
@@ -1714,8 +1725,8 @@ header[id] {
 .choice[aria-pressed='true'],
 .choice:hover {
   color: var(--ink);
-  background: var(--acid);
-  border-color: var(--acid);
+  background: var(--sand);
+  border-color: var(--sand);
 }
 
 .stage--dev {
@@ -1727,9 +1738,9 @@ header[id] {
 .stage--dev canvas {
   width: 100%;
   aspect-ratio: 2.6 / 1;
-  border: 1px solid rgb(118 230 214 / 28%);
+  border: 1px solid rgb(221 202 125 / 28%);
   border-radius: var(--r-sm);
-  background: #080c0d;
+  background: var(--screen);
 }
 
 .ranges {
@@ -1752,13 +1763,13 @@ header[id] {
 }
 
 .range output {
-  color: var(--cyan);
+  color: var(--sand);
 }
 
 .range input {
   width: 100%;
   height: 36px;
-  accent-color: var(--acid);
+  accent-color: var(--sand);
   cursor: pointer;
 }
 
@@ -1771,7 +1782,7 @@ header[id] {
   overflow: hidden;
   border: 1px solid var(--line-dark);
   border-radius: var(--r-sm);
-  background: #080c0d;
+  background: var(--screen);
 }
 
 .playframe img,
@@ -1800,7 +1811,7 @@ header[id] {
   padding: 1rem;
   border: 0;
   color: var(--paper);
-  background: rgb(8 12 13 / 38%);
+  background: rgb(23 22 31 / 38%);
   cursor: pointer;
   text-align: center;
 }
@@ -1812,7 +1823,7 @@ header[id] {
   aspect-ratio: 1;
   border-radius: 50%;
   color: var(--ink);
-  background: var(--acid);
+  background: var(--sand);
   font-size: 1.35rem;
   transition: transform 0.25s ease;
 }
@@ -1882,12 +1893,12 @@ button.toolbar__link {
 
 .toolbar__link:hover {
   color: var(--ink);
-  background: var(--acid);
-  border-color: var(--acid);
+  background: var(--sand);
+  border-color: var(--sand);
 }
 
 .toolbar__link:hover kbd {
-  border-color: rgb(11 13 14 / 38%);
+  border-color: rgb(36 35 49 / 38%);
 }
 
 /* Earlier work has no demo and no link, so it gets rows rather than cards. */
@@ -1949,7 +1960,7 @@ button.toolbar__link {
 .skills h3 {
   min-height: 2.2em;
   margin: 0 0 1rem;
-  color: var(--accent, var(--acid));
+  color: var(--sand);
   font: 800 0.7rem/1.25 var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1968,22 +1979,6 @@ button.toolbar__link {
   font-size: 0.88rem;
 }
 
-.skills > section:nth-child(2) {
-  --accent: var(--coral);
-}
-
-.skills > section:nth-child(3) {
-  --accent: var(--cyan);
-}
-
-.skills > section:nth-child(4) {
-  --accent: var(--lilac);
-}
-
-.skills > section:nth-child(5) {
-  --accent: #ffd865;
-}
-
 /* ── 15. CONTACT ─────────────────────────────────────────────────────── */
 .contact {
   position: relative;
@@ -1996,7 +1991,7 @@ button.toolbar__link {
   right: -1vw;
   bottom: -9vw;
   color: transparent;
-  -webkit-text-stroke: 1px rgb(11 13 14 / 24%);
+  -webkit-text-stroke: 1px rgb(36 35 49 / 24%);
   font: 900 min(32vw, 28rem) / 1 var(--display);
   letter-spacing: -0.09em;
   pointer-events: none;
@@ -2047,7 +2042,7 @@ button.toolbar__link {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.78rem 0;
-  border-bottom: 1px solid rgb(11 13 14 / 35%);
+  border-bottom: 1px solid rgb(36 35 49 / 35%);
   text-decoration: none;
   font-weight: 800;
   transition: padding-left 0.2s ease;
@@ -2059,7 +2054,6 @@ button.toolbar__link {
 
 .links a span:last-child {
   font: 700 0.78rem/1.6 var(--mono);
-  opacity: 0.72;
 }
 
 .resume {
@@ -2071,7 +2065,7 @@ button.toolbar__link {
   margin-top: 0.65rem;
   border-color: var(--line-light-2);
   color: var(--on-paper);
-  background: rgb(11 13 14 / 7%);
+  background: rgb(36 35 49 / 7%);
 }
 
 .foot {
@@ -2385,7 +2379,7 @@ button.toolbar__link {
 
   .lab {
     border-radius: 14px;
-    box-shadow: 5px 5px 0 rgb(11 13 14 / 20%);
+    box-shadow: 5px 5px 0 rgb(36 35 49 / 20%);
   }
 
   .stage {

@@ -26,7 +26,7 @@ interface Props {
  * lights, which is a comparison rather than a tour, so they sit in a tile strip
  * that shows all six at once.
  *
- * The selected pill is a single acid element driven by a live spring rather than
+ * The selected pill is a single sand element driven by a live spring rather than
  * a CSS transition, so clicking through tabs quickly carries velocity instead of
  * restarting each time.
  */
