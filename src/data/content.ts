@@ -56,10 +56,11 @@ export const contact = {
   github: 'https://github.com/aj8uppal',
   linkedin: 'https://www.linkedin.com/in/aj-uppal/',
   stackoverflow: 'https://stackoverflow.com/users/3113477/a-j-uppal',
-  /* No resume URL here on purpose. The 2024 PDF has a home address and a phone
-     number on it, so there is nothing safe to point the button at yet. */
-  resumeNote:
-    'The current PDF is from 2024 and has my home address on it, so it’s not going on a public page. Email me and I’ll send you a current one.',
+  /* The 2026 PDF is the first one safe to serve: the home address is off it.
+     The phone number stays, published deliberately. The 2024 file it replaces
+     is gone from the repo. */
+  resume: '/attachments/resume2026.pdf',
+  resumeYear: '2026',
 } as const;
 
 /**

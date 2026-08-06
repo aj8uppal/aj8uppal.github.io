@@ -285,8 +285,7 @@ await run(
         skills: cols('.skills'),
         filterChips: document.querySelectorAll('.filter__chips .choice').length,
         roles: document.querySelectorAll('.role').length,
-        resumeDisabled: document.querySelector('.btn--off').disabled,
-        resumeHref: document.querySelector('.resume a') !== null,
+        resumeHref: document.querySelector('.resume a[data-resume]')?.getAttribute('href') ?? '',
         education: document.getElementById('education') !== null,
       };
     });
@@ -322,7 +321,11 @@ await run(
     note(m.filterChips > 1, 'the work log has a stack filter', `${m.filterChips} chips`);
     note(m.roles === 8, 'eight roles', `${m.roles}`);
     note(m.education, 'education keeps its own anchor', '');
-    note(m.resumeDisabled && !m.resumeHref, 'resume is a disabled control, not a link', '');
+    note(
+      m.resumeHref === '/attachments/resume2026.pdf',
+      'the resume button points at the 2026 PDF',
+      m.resumeHref || 'no link',
+    );
 
     /* The three live ports. Screenshots and links were explicitly not the ask. */
     const play = await page.evaluate(async () => {

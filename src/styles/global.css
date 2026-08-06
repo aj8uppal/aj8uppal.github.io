@@ -252,23 +252,8 @@ header[id] {
   font-size: 0.85rem;
 }
 
-/* Disabled rather than pointed at nothing: the control is real and the state
-   says so to a pointer and to a screen reader at the same time. */
-.btn--off {
-  gap: 0.6rem;
-  color: var(--on-paper);
-  border-color: var(--line-light-2);
-  border-style: dashed;
-  cursor: not-allowed;
-}
-
-.btn--off:hover {
-  color: var(--on-paper);
-  background: transparent;
-  border-color: var(--line-light-2);
-}
-
 .btn__tag {
+  margin-left: 0.6rem;
   padding: 0.2rem 0.45rem;
   border-radius: 999px;
   background: rgb(36 35 49 / 12%);
@@ -1478,23 +1463,6 @@ header[id] {
   color: var(--on-paper-2);
 }
 
-.pending {
-  display: inline-block;
-  max-width: 68ch;
-  margin-top: 0.65rem;
-  padding: 0.45rem 0.6rem;
-  border: 1px dashed var(--earth);
-  color: var(--earth-ink);
-  background: rgb(162 112 53 / 12%);
-  font: 700 0.68rem/1.45 var(--mono);
-}
-
-.pending b {
-  display: block;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .errata {
   margin: 1.4rem 0 0;
 }
@@ -2095,14 +2063,6 @@ button.toolbar__link {
 
 .resume {
   margin-top: 1.3rem;
-}
-
-.resume .pending {
-  display: block;
-  margin-top: 0.65rem;
-  border-color: var(--line-light-2);
-  color: var(--on-paper);
-  background: rgb(36 35 49 / 7%);
 }
 
 .foot {

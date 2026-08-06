@@ -691,19 +691,15 @@ const heroLabel =
         <a class="contact__mail" href={`mailto:${contact.email}`}>{contact.email}</a>
 
         {
-          /* Disabled rather than a link to nowhere: the control is real, it is
-            simply not available, and disabled is the one state that says that
-            to a screen reader and to a mouse at the same time. */
+          /* A new tab rather than a forced download: a PDF opens in the reader
+            every browser already ships, and saving it from there is one more
+            click that the person who wants the file will happily make. */
         }
         <div class="resume">
-          <button class="btn btn--off" type="button" disabled>
+          <a class="btn btn--sand" href={contact.resume} target="_blank" rel="noopener" data-resume>
             Résumé (PDF)
-            <span class="btn__tag">Not yet</span>
-          </button>
-          <span class="pending">
-            <b>Pending &middot; author's note</b>
-            {contact.resumeNote}
-          </span>
+            <span class="btn__tag">{contact.resumeYear}</span>
+          </a>
         </div>
       </div>
 
