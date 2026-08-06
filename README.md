@@ -1,7 +1,7 @@
 # aj8uppal.github.io
 
 My personal site.
-Astro and TypeScript, built static, one React island.
+Astro and TypeScript, built static, six React islands.
 
 ## Running it
 
@@ -69,7 +69,9 @@ Not decorative, and checked rather than assumed.
 - A third context launched with `reducedMotion: 'reduce'`, asserting that transitions are clamped, that nothing is left mid-reveal, and that the spring-driven tab indicator **jumps** instead of travelling.
   Reduced motion is a separate code path, not a shorter duration: the indicator's spring is stepped by `requestAnimationFrame` normally and skipped entirely when the query matches.
 
-Verified by hand alongside that: full keyboard traversal in DOM order with a visible amber focus ring on all 26 stops, the skip link first, the tablist answering arrow keys plus Home and End with focus following selection, and body text meeting WCAG AA against the worst single background pixel under every full-bleed caption.
+It also sweeps every text node on the page for WCAG AA contrast against the palette, resolving each element's real background rather than the nearest ancestor that declares one - the selected tab is ink on an acid pill painted by an absolutely positioned sibling, and an ancestor walk reports that as ink on ink.
+
+Verified by hand alongside that: full keyboard traversal in DOM order with a visible cyan focus ring, the skip link first, the tablist answering arrow keys plus Home and End with focus following selection, and the hero canvas taking focus so the flow field can be steered with the arrow keys.
 
 ## Deploying
 
@@ -93,13 +95,15 @@ Removing it entirely is a separate decision from unlinking it.
 
 ## Layout notes
 
-The page is set on a three-column spine at 1024 and above: a section index, a sticky label rail, and the content column.
+Six sections, each opening on one line of display type and then handing off to something you can move.
+The rule the page is held to is that prose earns its place by being short: a section that needs three paragraphs to explain a demo should be showing the demo instead.
 
-The rail carries a two-level outline.
-Sections are `00` through `07`; the four projects inside section 02 are `02.1` through `02.4` and carry their own plate and figure numbers.
-Both cells pin from an inner element so the number travels with the name instead of scrolling off above it.
-Section 02 is most of the page, and without those sub-entries the rail ran empty for the whole length of it.
+The two flagship cards open two-up, frame beside title, rather than with a full-bleed band across the top.
+A band cost roughly 250px a card, and cropping saltline's dawn frame down to one would have eaten the corner its status panel lives in - and that panel is the evidence, not decoration.
+`npm run verify` fails the run if the page grows past an 11,000px budget at 1440, because length is the thing that quietly comes back.
 
-Below 1024 the spine collapses completely and each section folds into a single ruled header line.
+The hero is a live RK2-integrated flow field on a canvas, spring-driven from the pointer, touch, scroll velocity and the arrow keys.
+It caps device pixel ratio, pauses when scrolled offscreen or when the tab is hidden, and under reduced motion draws exactly one still frame and stops.
 
-Press <kbd>G</kbd> on the page to see the grid it is set on.
+Three of the Playground demos run inline as React islands rather than as screenshots.
+GrinchJump is the real 2015 three.js build in an iframe, and it boots on a press rather than on sight: it grabs the arrow keys and runs a render loop for as long as it is open.

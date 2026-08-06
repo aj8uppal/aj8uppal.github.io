@@ -45,6 +45,24 @@ Its reduced-motion context is a real `prefers-reduced-motion: reduce` browser co
 Reduced motion here is a separate code path, not a shorter duration.
 The spring-driven tab indicator is stepped by `requestAnimationFrame` normally and jumps in a single assignment when the query matches, so the assertion that proves it is the absence of intermediate positions - never arrival speed, because React runs the effect after paint and even a jump lands a few frames late.
 
+## Page length is a standing budget
+
+`npm run verify` fails if the document grows past `HEIGHT_BUDGET` (11,000px at 1440).
+The budget exists because length regresses by accretion - a paragraph here, a section pad there - and nobody notices until the page is 17,000px again.
+When a change pushes it over, the fix is almost always copy or vertical rhythm, not shrinking someone's work: cut prose, or put the frame beside the title instead of above it.
+
+## Contrast checking sees layers, not ancestors
+
+The WCAG sweep in `scripts/verify.mjs` resolves an element's background by first looking for an absolutely positioned sibling painted underneath it, and only then walking ancestors.
+The selected tab is ink on an acid pill drawn by `.fs__ind`, a sibling; an ancestor walk finds the dark card and reports a false failure at 1.2:1.
+It also measures `-webkit-text-stroke-color` for text with a transparent fill, because the outlined second name line is drawn entirely by its stroke.
+
+## Grid items have a min-content floor
+
+A grid item's automatic minimum size is its min-content unless `min-width: 0` says otherwise.
+`.fs__strip` wraps a `width: max-content` tab list, so at 390 a `1fr` track resolved to 692px and blew the page out horizontally - and only in the switcher with seven tabs, which is what made it look like a content bug rather than a layout one.
+Any grid child that contains something horizontally scrollable needs `min-width: 0`.
+
 ## Maintaining this file
 
 Keep this file for knowledge useful to almost every future agent session in this project.
