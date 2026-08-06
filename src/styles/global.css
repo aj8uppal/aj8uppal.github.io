@@ -1445,6 +1445,35 @@ header[id] {
   font: 650 0.69rem/1.45 var(--mono);
 }
 
+/* Numbered in mono, the same marker the About facts use. A disc would be the
+   only bullet on the page; a two-digit index is already the house idiom. */
+.role__pts {
+  margin: 0.55rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: pt;
+}
+
+.role__pts li {
+  position: relative;
+  max-width: 88ch;
+  margin-top: 0.4rem;
+  padding-left: 2rem;
+  color: var(--on-paper-2);
+  font-size: 0.87rem;
+  line-height: 1.5;
+}
+
+.role__pts li::before {
+  content: counter(pt, decimal-leading-zero);
+  counter-increment: pt;
+  position: absolute;
+  top: 0.1em;
+  left: 0;
+  color: var(--on-paper-3);
+  font: 800 0.72rem/1.5 var(--mono);
+}
+
 .ref a {
   color: var(--on-paper-2);
 }

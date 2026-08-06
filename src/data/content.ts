@@ -1,6 +1,6 @@
 /**
  * Every fact on the page comes from here, and everything here is verified.
- * Nothing is invented: dates and titles are from the 2024 resume, project
+ * Nothing is invented: dates and titles are from the 2026 resume, project
  * detail is from the projects themselves, and the saltline readouts are
  * transcribed off the captures in src/assets.
  */
@@ -397,10 +397,13 @@ export const roles: Role[] = [
     title: 'Software Engineer',
     org: 'Notable Health',
     where: 'San Mateo, CA',
-    body: 'Healthcare AI platform. I work across integrations: architected and deployed the services that move data between the platform and electronic health record systems.',
-    pending: {
-      note: 'A proper write-up of these four years is coming; the line above is just the shape of it.',
-    },
+    body: 'Healthcare AI platform with 100+ enterprise customers. I build the integration layer: FHIR, HL7, Epic, Oracle, and the internal APIs that connect dozens of EHR systems for scheduling and patient workflows.',
+    bullets: [
+      'Led the 0-to-1 platform work for AI voice assistants that now handle 250,000 calls a month in production: agent orchestration, state management, deploy tooling, and the reliability work that took uptime to 99%.',
+      'Own inbound voice authentication end to end - call routing, SIP, transfer logic, and HIPAA-compliant caller verification across 5+ health systems.',
+      'Built the configuration UIs that turned customer-specific engineering into product configuration; new-customer launches went from weeks to days.',
+      'Tech lead on cross-functional projects, and I mentor junior and mid-level engineers.',
+    ],
     stack:
       'Python · TypeScript · Node.js · React · PostgreSQL · BigQuery · GCP · Kubernetes · Terraform',
   },

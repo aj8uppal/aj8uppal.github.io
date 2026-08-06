@@ -493,7 +493,7 @@ const heroLabel =
                     {r.where && <span> &middot; {r.where}</span>}
                   </h3>
                   <p class="stack">
-                    {r.title} &mdash; {r.stack}
+                    {r.title} &middot; {r.stack}
                   </p>
                   {r.body && (
                     <p>
@@ -505,11 +505,12 @@ const heroLabel =
                       )}
                     </p>
                   )}
-                  {r.pending && (
-                    <span class="pending">
-                      <b>Pending &middot; author's note</b>
-                      {r.pending.note}
-                    </span>
+                  {r.bullets && (
+                    <ul class="role__pts">
+                      {r.bullets.map((pt) => (
+                        <li>{pt}</li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               </article>
