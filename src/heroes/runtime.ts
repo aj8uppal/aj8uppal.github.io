@@ -204,8 +204,10 @@ export function installHero(canvas: HTMLCanvasElement): void {
   function resize(): void {
     if (!measure() || !hero) return;
     hero.resize(view);
-    perf.elements = hero.elements;
     if (reduced.matches || !raf) hero.still();
+    // After the still frame, not before: a variant that composes its picture
+    // there is only as big as that picture once it has.
+    perf.elements = hero.elements;
   }
 
   /* ── The variant ───────────────────────────────────────────────────── */
@@ -268,6 +270,10 @@ export function installHero(canvas: HTMLCanvasElement): void {
 
     const ms = performance.now() - t0;
     perf.frames++;
+    // Not every variant has a fixed count: a trail grows and empties, and a
+    // row of type that does not fit at this width is not laid out. Reading it
+    // back each frame is what makes the probe worth reading at all.
+    if (hero) perf.elements = hero.elements;
     perf.totalDrawMs += ms;
     if (ms > perf.maxDrawMs) perf.maxDrawMs = ms;
     perf.avgDrawMs = Math.round((perf.totalDrawMs / perf.frames) * 1000) / 1000;
@@ -397,6 +403,7 @@ export function installHero(canvas: HTMLCanvasElement): void {
     if (!next || next.id === variant.id) return;
     mount(next);
     hero?.still();
+    if (hero) perf.elements = hero.elements;
   });
 
   reduced.addEventListener('change', () => {
