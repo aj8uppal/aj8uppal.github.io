@@ -1845,10 +1845,18 @@ header[id] {
   font: 680 0.68rem/1.35 var(--mono);
 }
 
+.toolbar__group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .toolbar__link {
   min-height: 40px;
   display: inline-flex;
   align-items: center;
+  gap: 0.45rem;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--line-dark);
   border-radius: 999px;
@@ -1856,10 +1864,30 @@ header[id] {
   font-weight: 800;
 }
 
+/* Restart is a button sitting in a row of links, so it has to be told the
+   things a link gets for nothing. */
+button.toolbar__link {
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.toolbar__link kbd {
+  padding: 0.08rem 0.34rem;
+  border: 1px solid var(--line-dark-2);
+  border-radius: 4px;
+  font: inherit;
+  font-size: 0.92em;
+}
+
 .toolbar__link:hover {
   color: var(--ink);
   background: var(--acid);
   border-color: var(--acid);
+}
+
+.toolbar__link:hover kbd {
+  border-color: rgb(11 13 14 / 38%);
 }
 
 /* Earlier work has no demo and no link, so it gets rows rather than cards. */
