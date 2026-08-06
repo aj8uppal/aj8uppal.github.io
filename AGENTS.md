@@ -6,8 +6,8 @@ This file is the project's committed home for project-intrinsic agent knowledge:
 
 ## Third-party dependencies
 
-GitHub Pages serves this site over HTTPS, so any `http://` subresource is blocked as mixed
-content and the page dies silently.
+GitHub Pages serves this site over HTTPS, so browsers block any `http://` subresource as
+mixed content; a demo that requires it can fail before rendering.
 Several standalone demos here were written in 2016 against CDN URLs that have since rotted.
 Vendor third-party code under `libs/` instead of pointing at a CDN, and record its provenance
 in `libs/README.md`.
