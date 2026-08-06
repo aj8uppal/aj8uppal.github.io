@@ -81,7 +81,7 @@ export const sections = [
     n: '04',
     id: 'playground',
     name: 'Playground',
-    desc: 'An archive. About half of it stopped running',
+    desc: 'Twenty-five opened, twelve kept',
     count: '3 playable',
   },
   { n: '05', id: 'skills', name: 'Skills', desc: 'Grouped, unrated', count: '5 groups' },
@@ -98,14 +98,14 @@ export const ticker = [
   'Baked light at 116 fps',
   'A sim core that cannot see the DOM',
   'Two degrees on one clock',
-  'Twenty-five demos, twelve still run',
+  'Twenty-five demos audited, twelve kept',
 ] as const;
 
 export const cover = {
   kicker: ['San Mateo, California', 'Software engineer at Notable Health'],
   lead: 'I studied computer science and astrophysics at the same time because I could not pick one, and I have been building things that run in a browser ever since.',
   second:
-    'A voxel MMORPG with real multiplayer, a sailing game that runs an actual sailing model, a rendering experiment that fakes sunlight by refusing to compute it, and a tower defense whose simulation core cannot see the DOM. Two of them you can play today. Two are not finished, and this page says so.',
+    'A sailing game that runs an actual sailing model, a voxel MMORPG with real multiplayer, a rendering experiment that fakes sunlight by refusing to compute it, and a tower defense whose simulation core cannot see the DOM. Two of them you can play today. Two are not finished, and this page says so.',
   strip: [
     { dt: 'Place', dd: 'San Mateo', sub: 'California' },
     { dt: 'Work', dd: 'Software engineer', sub: 'Notable Health, since Aug 2022' },
@@ -115,7 +115,7 @@ export const cover = {
 } as const;
 
 export const about = {
-  statement: 'Most of what I know, I learned by building the thing badly first.',
+  statement: 'Everything I know well, I know because I built one.',
   prose: [
     'I have wanted to be an astronaut since I was four. That has not happened, but it decided what I studied: two bachelor’s degrees at once, computer science and astrophysics, on a schedule where Algorithms and General Relativity landed in the same week.',
     'Simulating CO2 cooling for a particle detector and simulating an ocean for a sailing game turn out to be the same problem wearing different clothes: pick a model, pick a timestep, and be honest about what you left out.',
@@ -214,7 +214,7 @@ export const ember = {
   status: 'live' as Status,
   sub: 'Browser-based voxel MMORPG. Designed, built, and in production.',
   spread: {
-    n: 'Plate 01 / Ember Wilds',
+    n: 'Plate 02 / Ember Wilds',
     t: 'A voxel MMORPG, shipped',
     s: 'Fallowmere at dusk, level thirty, nine thousand fame in. The world state, the quest chain and the loot all live on a realm service. The browser is only a client.',
   },
@@ -222,7 +222,8 @@ export const ember = {
     'A voxel MMORPG that runs in a browser tab. I designed it, built it, and put it in production on Fly.io, where a web tier and a separate realm service keep one world consistent for everyone in it.',
     'This is the strongest single thing I have built, and the reason is not the rendering. It is that a stranger can open it right now and play it with someone else.',
   ],
-  framesLede: 'Seven regions, one character at level thirty. Tabs, or arrow keys once one has focus.',
+  framesLede:
+    'Seven regions, one character at level thirty. Tabs, or arrow keys once one has focus.',
   proof: {
     t: 'Two clients, one world',
     body: [
@@ -316,7 +317,7 @@ export const saltline = {
   status: 'live' as Status,
   sub: 'Age of sail in a browser, with a real sailing model under it.',
   spread: {
-    n: 'Plate 02 / saltline',
+    n: 'Plate 01 / saltline',
     t: 'Sailing, actually simulated',
     s: '04:36, sea state moderate, wind at forty degrees, seed 4193. Sail full, 14.4 knots, no heel. Every number in that sentence is a readout, not set dressing.',
   },
@@ -378,7 +379,7 @@ export const elderwood = {
   sub: 'Browser-native tower defense. Playable greybox, and an architecture argument.',
   title: 'A sim core that ignores the browser',
   prose: [
-    'A browser-native tower defense, not finished. What is finished is the part I care about: the simulation is held strictly apart from everything that draws it.',
+    'A browser-native tower defense. What is finished is the part I care about: the simulation is held strictly apart from everything that draws it.',
     'The sim cannot touch the DOM, import three.js, read the wall clock or call Math.random. Those are not conventions I try to remember. The boundary holds because crossing it does not compile.',
   ],
   plate: [
@@ -474,10 +475,10 @@ export const errata = [
 /* ── Playground ──────────────────────────────────────────────────────── */
 
 export const playground = {
-  statement: 'An archive. About half of it stopped running.',
+  statement: 'I opened all twenty-five and kept the twelve that still run.',
   prose: [
-    'Twenty-five old demos in this repository. I opened every one. Ten were broken and three more only appear to work, which is the worse failure: a sliding puzzle whose solver silently does nothing, a Connect 4 that locks after one move, a planet viewer that labels Mercury as Earth.',
-    'Twelve still run. Three of them are below, running inline rather than photographed. Move them. They are here because they are true, not because they are good.',
+    'Twenty-five old demos in this repository, audited one at a time against what each one claimed to do.',
+    'Three of them are below, running inline rather than photographed. Move them.',
   ],
   items: [
     {
@@ -504,12 +505,12 @@ export const playground = {
       href: '/grinchjump.html',
       status: 'live' as Status,
       statusLabel: 'Repaired',
-      what: 'Doodle Jump in three dimensions, built while I was learning three.js. It died when the CDN hosting its keyboard library stopped resolving. The library is vendored now, so it cannot die that way again.',
+      what: 'Doodle Jump in three dimensions, built while I was learning three.js. Its keyboard library went down with a CDN; it is vendored now, so it cannot die that way again.',
       k: 'three.js r70 · vendored deps',
     },
   ],
   method:
-    'Three are deleted outright rather than unpublished. The rest are still served at their original URLs, just not linked from here, because a dead demo on a portfolio is worse than no demo. Dates marked c. are the repository’s rather than mine: git is the only record I kept.',
+    'Three are deleted outright rather than unpublished. The rest are still served at their original URLs, just not linked from here, because a dead demo on a portfolio is worse than no demo. Dates marked c. come from the repository rather than from memory.',
 } as const;
 
 export const earlier = [

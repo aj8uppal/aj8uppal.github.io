@@ -515,6 +515,11 @@ header[id] {
   background: var(--paper-2);
 }
 
+.sec--ink {
+  color: var(--on-ink);
+  background: var(--ink);
+}
+
 .sec--ink-3 {
   color: var(--on-ink);
   background: var(--ink-3);
@@ -598,6 +603,7 @@ header[id] {
   opacity: 0.66;
 }
 
+.sec--ink .method,
 .sec--ink-3 .method {
   border-top-color: var(--line-dark);
   color: var(--on-ink-2);
@@ -966,66 +972,47 @@ header[id] {
   color: var(--on-ink);
 }
 
-/* The tile strip. Three across under a lead image, each with a mono caption,
-   is the densest honest way to show a place. */
-.tiles {
+/* The proof panel. One capture that shows the claim in the card is true, set
+   beside the claim rather than stacked under it. */
+.inset {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-block: 1px solid var(--line-dark);
-  background: var(--line-dark);
-}
-
-.tiles li {
-  min-width: 0;
-  background: var(--ink-2);
-}
-
-.tile {
-  position: relative;
-  min-width: 0;
-  margin: 0;
-  overflow: hidden;
-}
-
-.tile img {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  background: #171819;
-  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.tile:hover img {
-  transform: scale(1.04);
-}
-
-.tile figcaption {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 0.15rem 0.7rem;
-  padding: 0.5rem 0.75rem 0.6rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1rem, 2.4vw, 1.7rem);
+  align-items: center;
+  margin-top: clamp(1.3rem, 2.6vw, 2rem);
+  padding-top: clamp(1.2rem, 2.4vw, 1.7rem);
   border-top: 1px solid var(--line-dark);
-  color: var(--on-ink-3);
-  font: 720 0.62rem/1.45 var(--mono);
-  letter-spacing: 0.04em;
+}
+
+.shot--inset {
+  border: 1px solid var(--line-dark);
+  border-radius: var(--r-sm);
+}
+
+.shot--inset img {
+  height: auto;
+}
+
+.inset__body h4 {
+  margin: 0 0 0.5rem;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.1rem, 1.9vw, 1.55rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
   text-transform: uppercase;
 }
 
-.tile figcaption b {
-  color: var(--acid);
-  font-weight: 800;
+.inset__body p {
+  max-width: 56ch;
+  margin: 0 0 0.7rem;
+  color: var(--on-ink-2);
+  font-size: 0.88rem;
+  line-height: 1.55;
 }
 
-.tile figcaption span {
-  color: var(--on-ink-4);
-  letter-spacing: 0;
-  text-transform: none;
+.inset__body p:last-child {
+  margin-bottom: 0;
 }
 
 /* ── 11. FRAME SWITCHER ──────────────────────────────────────────────── */
@@ -1194,6 +1181,105 @@ header[id] {
   line-height: 1.5;
 }
 
+/* A half-width card is too narrow to put a stage and a readout side by side,
+   so Elderwood's switcher stacks and keeps the full width for the capture. */
+.card--half .fs {
+  grid-template-columns: 1fr;
+}
+
+/* ── 11b. THE SALTLINE CLOCK ─────────────────────────────────────────── */
+/* Six captures of one seed, in clock order. Six paragraphs about light is
+   reading; dragging from 04:36 to 18:02 is not. */
+.arc__clock {
+  position: absolute;
+  z-index: 2;
+  right: clamp(0.6rem, 1.6vw, 1rem);
+  top: clamp(0.6rem, 1.6vw, 1rem);
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgb(242 239 230 / 26%);
+  border-radius: var(--r-sm);
+  color: var(--on-ink-2);
+  background: rgb(11 13 14 / 72%);
+  backdrop-filter: blur(10px);
+  font: 700 0.62rem/1.3 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.arc__clock b {
+  color: var(--acid);
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+
+.arc__scrub {
+  grid-column: 1 / -1;
+  order: 2;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.arc__scrub .range {
+  color: var(--on-ink-3);
+}
+
+.arc__ticks {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line-dark);
+  background: var(--line-dark);
+}
+
+.arc__ticks li {
+  min-width: 0;
+}
+
+/* The caption strip idiom from the card system, made into a control. */
+.arc__tick {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  color: var(--on-ink-3);
+  background: var(--ink-2);
+  cursor: pointer;
+}
+
+.arc__tick img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  opacity: 0.55;
+  transition: opacity 0.25s ease;
+}
+
+.arc__tick span {
+  display: block;
+  padding: 0.35rem 0.3rem 0.4rem;
+  border-top: 1px solid var(--line-dark);
+  font: 750 0.6rem/1.2 var(--mono);
+  letter-spacing: 0.02em;
+}
+
+.arc__tick:hover img,
+.arc__tick[aria-pressed='true'] img {
+  opacity: 1;
+}
+
+.arc__tick[aria-pressed='true'] {
+  color: var(--ink);
+  background: var(--acid);
+}
+
 /* ── 12. WORK LOG ────────────────────────────────────────────────────── */
 .log {
   display: grid;
@@ -1219,8 +1305,54 @@ header[id] {
   font-size: 0.98rem;
 }
 
+/* Eight stacks is a wall of mono nobody reads top to bottom. Picking one and
+   watching four jobs light up is the same information as a control. */
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.9rem;
+  margin-bottom: 1.1rem;
+}
+
+.filter__count {
+  flex: 1 0 auto;
+  margin: 0;
+  color: var(--on-paper-3);
+  font: 750 0.65rem/1.4 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.filter__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.filter .choice {
+  min-height: 34px;
+  padding: 0.4rem 0.62rem;
+  border-color: var(--line-light-2);
+  color: var(--on-paper-2);
+  font-size: 0.63rem;
+}
+
+.filter .choice:hover,
+.filter .choice[aria-pressed='true'] {
+  color: var(--paper);
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
 .roles {
   border-top: 1px solid var(--line-light);
+}
+
+/* The filter hides rows with the hidden attribute, and a grid display would
+   otherwise beat it. */
+.role[hidden] {
+  display: none;
 }
 
 .role {
@@ -2017,6 +2149,12 @@ header[id] {
     grid-template-columns: 1fr 1fr;
   }
 
+  /* Three buttons, two columns: the third runs the width rather than sitting
+     alone in a half. */
+  .hero__actions > :nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
   .btn {
     min-height: 46px;
     padding-inline: 0.7rem;
@@ -2085,18 +2223,14 @@ header[id] {
     padding-inline: 1.1rem;
   }
 
-  /* Three tiles at 390 would be 120px wide. A swipeable rail keeps them
-     legible without hiding any of them. */
-  .tiles {
-    grid-template-columns: repeat(3, 74vw);
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    scroll-snap-type: inline mandatory;
-    scrollbar-width: thin;
+  /* Six ticks at 390 would be 60px wide. Three across keeps the thumbnail
+     readable and the slider still reaches all six. */
+  .arc__ticks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .tiles li {
-    scroll-snap-align: start;
+  .inset {
+    grid-template-columns: 1fr;
   }
 
   .specs > div,

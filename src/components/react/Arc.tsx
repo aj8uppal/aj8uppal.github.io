@@ -11,6 +11,8 @@ export interface ArcShot {
   thrust: string;
   vmg: string;
   img: Sources;
+  /** A separately sized crop: the tick rail asks for 88px, not the stage width. */
+  thumb: Sources;
 }
 
 interface Props {
@@ -65,7 +67,12 @@ export default function Arc({ frames, note }: Props) {
     <div className="fs arc">
       <div className="fs__stage" style={stageStyle} ref={stageRef}>
         {frames.map((f, i) => (
-          <div key={f.key} className="fs__slide" data-active={i === index} aria-hidden={i !== index}>
+          <div
+            key={f.key}
+            className="fs__slide"
+            data-active={i === index}
+            aria-hidden={i !== index}
+          >
             <picture>
               <source type="image/avif" srcSet={f.img.avif} sizes={f.img.sizes} />
               <source type="image/webp" srcSet={f.img.webp} sizes={f.img.sizes} />
@@ -126,8 +133,16 @@ export default function Arc({ frames, note }: Props) {
                 onClick={() => setIndex(i)}
               >
                 <picture>
-                  <source type="image/avif" srcSet={f.img.avif} sizes="88px" />
-                  <img src={f.img.src} alt="" loading="lazy" decoding="async" />
+                  <source type="image/avif" srcSet={f.thumb.avif} sizes={f.thumb.sizes} />
+                  <source type="image/webp" srcSet={f.thumb.webp} sizes={f.thumb.sizes} />
+                  <img
+                    src={f.thumb.src}
+                    width={f.thumb.width}
+                    height={f.thumb.height}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </picture>
                 <span>{f.time}</span>
               </button>

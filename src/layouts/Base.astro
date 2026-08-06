@@ -29,8 +29,10 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
 
-    {/* Reveals are hidden by CSS only once this has run, so a page without
-        JavaScript never hides something it then has no way to show. */}
+    {
+      /* Reveals are hidden by CSS only once this has run, so a page without
+        JavaScript never hides something it then has no way to show. */
+    }
     <script is:inline>
       document.documentElement.classList.remove('no-js');
       document.documentElement.classList.add('js');

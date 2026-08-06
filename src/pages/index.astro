@@ -28,7 +28,6 @@ import {
   roles,
   saltline,
   saltlineArc,
-  sections,
   skills,
   ticker,
 } from '../data/content';
@@ -136,11 +135,11 @@ const heroLabel =
       <div class="hero__bottom">
         <p class="hero__intro">{cover.lead}</p>
         <div class="hero__actions">
-          <a class="btn btn--acid" href={ember.href} target="_blank" rel="noopener">
-            Play Ember Wilds<span class="arrow" aria-hidden="true">&#8599;</span>
-          </a>
-          <a class="btn" href={saltline.href} target="_blank" rel="noopener">
+          <a class="btn btn--acid" href={saltline.href} target="_blank" rel="noopener">
             Play saltline<span class="arrow" aria-hidden="true">&#8599;</span>
+          </a>
+          <a class="btn" href={ember.href} target="_blank" rel="noopener">
+            Play Ember Wilds<span class="arrow" aria-hidden="true">&#8599;</span>
           </a>
           <a class="btn" href="#playground">Play the archive</a>
         </div>
@@ -222,6 +221,84 @@ const heroLabel =
     </div>
 
     <div class="grid">
+      {/* saltline */}
+      <article class="card card--full" data-reveal>
+        <div class="shot shot--lead">
+          <Picture
+            src={asset('saltline-spread-night')}
+            alt="saltline at night: a full moon low over dark water, a sloop under full sail trailing a wide luminous teal wake, HUD readouts at the upper right."
+            widths={LEAD_W}
+            sizes={LEAD_S}
+            formats={['avif']}
+            fallbackFormat="webp"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+          <p class="flag">04:36 &middot; 14.4 kn &middot; seed 4193</p>
+        </div>
+
+        <p class="plate-cap"><b>{saltline.spread.t}.</b> {saltline.spread.s}</p>
+
+        <div class="card__copy">
+          <span class="card__index">{saltline.spread.n}</span>
+          <div class="card__badges">
+            <Pill status={saltline.status} label="Live" />
+            <span class="pill">01 &middot; Flagship</span>
+            <span class="pill">Six frames &middot; one seed</span>
+          </div>
+
+          <h3 class="display">
+            <a href={saltline.href} target="_blank" rel="noopener">{saltline.name}</a>
+          </h3>
+          <p class="card__sub">{saltline.sub}</p>
+
+          <div class="card__cols">
+            <div class="card__body">
+              {saltline.prose.map((p) => <p>{p}</p>)}
+            </div>
+            <div class="card__aside">
+              <dl class="specs">
+                {
+                  saltline.plate.map(([k, v]) => (
+                    <div>
+                      <dt>{k}</dt>
+                      <dd>{v}</dd>
+                    </div>
+                  ))
+                }
+                <div>
+                  <dt>Open</dt>
+                  <dd><a href={saltline.href} target="_blank" rel="noopener">saltline.app</a></dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+
+          <p class="card__lede">{saltline.framesLede}</p>
+          <Arc client:visible frames={arcFrames} note={saltline.arcNote} />
+
+          <div class="inset">
+            <div class="shot shot--inset">
+              <Picture
+                src={asset('saltline-proof-panel')}
+                alt="The same 16:46 frame uncropped, with the development panel down the left edge: time of day, sea state, wind angle, crest sharpness and seed. Three raider contacts are marked on the nav chart."
+                widths={INSET_W}
+                sizes={INSET_S}
+                formats={['avif']}
+                fallbackFormat="webp"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="inset__body">
+              <h4>{saltline.proof.t}</h4>
+              {saltline.proof.body.map((p) => <p>{p}</p>)}
+            </div>
+          </div>
+        </div>
+      </article>
+
       {/* Ember Wilds */}
       <article class="card card--full" data-reveal>
         <div class="shot shot--lead">
@@ -232,8 +309,7 @@ const heroLabel =
             sizes={LEAD_S}
             formats={['avif']}
             fallbackFormat="webp"
-            loading="eager"
-            fetchpriority="high"
+            loading="lazy"
             decoding="async"
           />
           <p class="flag">Fallowmere &middot; level 30 &middot; dusk</p>
@@ -245,7 +321,7 @@ const heroLabel =
           <span class="card__index">{ember.spread.n}</span>
           <div class="card__badges">
             <Pill status={ember.status} label="Live multiplayer" />
-            <span class="pill">01 &middot; Flagship</span>
+            <span class="pill">02 &middot; In production</span>
             <span class="pill">Two players &middot; one live realm</span>
           </div>
 
@@ -297,83 +373,6 @@ const heroLabel =
             <div class="inset__body">
               <h4>{ember.proof.t}</h4>
               {ember.proof.body.map((p) => <p>{p}</p>)}
-            </div>
-          </div>
-        </div>
-      </article>
-
-      {/* saltline */}
-      <article class="card card--full" data-reveal>
-        <div class="shot shot--lead">
-          <Picture
-            src={asset('saltline-spread-night')}
-            alt="saltline at night: a full moon low over dark water, a sloop under full sail trailing a wide luminous teal wake, HUD readouts at the upper right."
-            widths={LEAD_W}
-            sizes={LEAD_S}
-            formats={['avif']}
-            fallbackFormat="webp"
-            loading="lazy"
-            decoding="async"
-          />
-          <p class="flag">04:36 &middot; 14.4 kn &middot; seed 4193</p>
-        </div>
-
-        <p class="plate-cap"><b>{saltline.spread.t}.</b> {saltline.spread.s}</p>
-
-        <div class="card__copy">
-          <span class="card__index">{saltline.spread.n}</span>
-          <div class="card__badges">
-            <Pill status={saltline.status} label="Live" />
-            <span class="pill">02 &middot; Simulation</span>
-            <span class="pill">Six frames &middot; one seed</span>
-          </div>
-
-          <h3 class="display">
-            <a href={saltline.href} target="_blank" rel="noopener">{saltline.name}</a>
-          </h3>
-          <p class="card__sub">{saltline.sub}</p>
-
-          <div class="card__cols">
-            <div class="card__body">
-              {saltline.prose.map((p) => <p>{p}</p>)}
-            </div>
-            <div class="card__aside">
-              <dl class="specs">
-                {
-                  saltline.plate.map(([k, v]) => (
-                    <div>
-                      <dt>{k}</dt>
-                      <dd>{v}</dd>
-                    </div>
-                  ))
-                }
-                <div>
-                  <dt>Open</dt>
-                  <dd><a href={saltline.href} target="_blank" rel="noopener">saltline.app</a></dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-
-          <p class="card__lede">{saltline.framesLede}</p>
-          <Arc client:visible frames={arcFrames} note={saltline.arcNote} />
-
-          <div class="inset">
-            <div class="shot shot--inset">
-              <Picture
-                src={asset('saltline-proof-panel')}
-                alt="The same 16:46 frame uncropped, with the development panel down the left edge: time of day, sea state, wind angle, crest sharpness and seed. Three raider contacts are marked on the nav chart."
-                widths={INSET_W}
-                sizes={INSET_S}
-                formats={['avif']}
-                fallbackFormat="webp"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <div class="inset__body">
-              <h4>{saltline.proof.t}</h4>
-              {saltline.proof.body.map((p) => <p>{p}</p>)}
             </div>
           </div>
         </div>
@@ -580,8 +579,9 @@ const heroLabel =
     <div class="labs">
       <article class="lab" data-reveal>
         <div class="lab__head">
-          <span class="lab__date">{playground.items[0]?.yr} &middot; {playground.items[0]
-            ?.statusLabel}</span>
+          <span class="lab__date"
+            >{playground.items[0]?.yr} &middot; {playground.items[0]?.statusLabel}</span
+          >
           <h3>{playground.items[0]?.name}</h3>
           <p>{playground.items[0]?.what}</p>
         </div>
@@ -590,8 +590,9 @@ const heroLabel =
 
       <article class="lab" data-reveal>
         <div class="lab__head">
-          <span class="lab__date">{playground.items[1]?.yr} &middot; {playground.items[1]
-            ?.statusLabel}</span>
+          <span class="lab__date"
+            >{playground.items[1]?.yr} &middot; {playground.items[1]?.statusLabel}</span
+          >
           <h3>{playground.items[1]?.name}</h3>
           <p>{playground.items[1]?.what}</p>
         </div>
@@ -600,8 +601,9 @@ const heroLabel =
 
       <article class="lab lab--wide" data-reveal>
         <div class="lab__head">
-          <span class="lab__date">{playground.items[2]?.yr} &middot; {playground.items[2]
-            ?.statusLabel}</span>
+          <span class="lab__date"
+            >{playground.items[2]?.yr} &middot; {playground.items[2]?.statusLabel}</span
+          >
           <h3>{playground.items[2]?.name}</h3>
           <p>{playground.items[2]?.what}</p>
         </div>
@@ -714,8 +716,8 @@ const heroLabel =
         Every screenshot is a capture of the actual project.
       </p>
       <p>
-        The demos that predate this page are still served from their original URLs, because
-        breaking a working link to tidy up a repository is not tidying up.
+        The demos that predate this page are still served from their original URLs, because breaking
+        a working link to tidy up a repository is not tidying up.
       </p>
       <p>
         Source at <a href={contact.github}>github.com/aj8uppal</a>.
