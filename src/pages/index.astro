@@ -94,17 +94,24 @@ const elderFrames: SwitchFrame[] = await Promise.all(
 const grinchPoster = await sources('legacy-grinchjump', POSTER_W, POSTER_S);
 
 /* Tokens for the work-log filter. Anything a single job used is not a filter,
-   it is a fact, and it stays in that job's stack line. */
+   it is a fact, and it stays in that job's stack line.
+
+   Languages are the exception. "Where have you written TypeScript" is the
+   question people actually arrive with, and answering it with one job is a
+   better answer than not offering the question - so a language named in the
+   skills section gets a chip on the strength of one job, and everything else
+   still has to recur. */
 const tokens = (stack?: string): string[] =>
   (stack ?? '')
     .split('·')
     .map((t) => t.replace(/\s*\(.*\)\s*$/, '').trim())
     .filter(Boolean);
 
+const languages = new Set<string>(skills.find((g) => g.group === 'Languages')?.items ?? []);
 const tally = new Map<string, number>();
 for (const r of roles) for (const t of tokens(r.stack)) tally.set(t, (tally.get(t) ?? 0) + 1);
 const filterTags = [...tally.entries()]
-  .filter(([, n]) => n > 1)
+  .filter(([t, n]) => n > 1 || languages.has(t))
   .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
   .map(([t]) => t);
 
