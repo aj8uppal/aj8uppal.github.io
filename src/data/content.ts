@@ -225,15 +225,16 @@ export const ember = {
   framesLede:
     'Seven regions, one character at level thirty. Tabs, or arrow keys once one has focus.',
   proof: {
-    t: 'Two clients, one world',
+    t: 'One realm, up to 64 players',
     body: [
-      'Two browsers, two accounts, one Hearthvale. Both characters are being simulated by the same realm service, which is the part that was hard.',
+      'This frame is two of us in the same Hearthvale from two browsers, and a realm holds up to 64 at once. Everyone in it is simulated by the same server, which was the hard part.',
       'If I only got to show one frame from four years of side projects, it would be this one.',
     ],
   },
   plate: [
     ['Status', 'Live, no install'],
     ['Shape', 'Web tier plus realm service'],
+    ['Realm cap', '64 players in one realm'],
     ['Host', 'Fly.io'],
     ['World', 'Seven regions, harder as you travel outward'],
     ['Classes', 'Unlocked by beast lore and study, not a skill tree'],
