@@ -15,6 +15,14 @@
  * owns anything worth releasing.
  */
 
+/** A rectangle in canvas CSS pixels. */
+export interface Rect {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
 /** The canvas, in CSS pixels. */
 export interface HeroView {
   w: number;
@@ -23,6 +31,17 @@ export interface HeroView {
       of the screen in portrait as in landscape. */
   unit: number;
   dpr: number;
+  /**
+   * The type-safe zone: the display line's own box, padded.
+   *
+   * A field - drifting light, swell, streamlines - can run under the name,
+   * because it is even and its brightness is capped. A variant that draws
+   * objects cannot: a peg, a word or a chalk line landing on the crossbar of
+   * the A is a defect however quiet its colour. Those variants keep out of
+   * this rectangle, and it is measured off the element rather than guessed so
+   * it tracks the type through every breakpoint.
+   */
+  safe: Rect;
 }
 
 export interface HeroFrame {
@@ -86,6 +105,13 @@ export interface HeroVariant {
 
 export const css = ([r, g, b]: Rgb, a: number): string =>
   `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${a})`;
+
+/** Whether a point is inside the type-safe zone, with an optional margin. */
+export const inSafe = (v: HeroView, x: number, y: number, pad = 0): boolean =>
+  x > v.safe.x - pad &&
+  x < v.safe.x + v.safe.w + pad &&
+  y > v.safe.y - pad &&
+  y < v.safe.y + v.safe.h + pad;
 
 /** Relative luminance, near enough. Only ever used to compare two colours. */
 export const lum = ([r, g, b]: Rgb): number => (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;

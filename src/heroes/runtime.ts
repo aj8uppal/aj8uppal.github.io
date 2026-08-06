@@ -122,7 +122,10 @@ export function installHero(canvas: HTMLCanvasElement): void {
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  const view: HeroView = { w: 0, h: 0, unit: 1, dpr: 1 };
+  const view: HeroView = { w: 0, h: 0, unit: 1, dpr: 1, safe: { x: 0, y: 0, w: 0, h: 0 } };
+  /* The display line, which is the one thing on the page nothing is allowed to
+     draw over. Looked up once; measured on every resize. */
+  const type = (canvas.parentElement ?? document).querySelector('h1');
   let tokens = readTokens();
   let variant: HeroVariant = defaultHero;
   let hero: HeroInstance | null = null;
@@ -140,6 +143,14 @@ export function installHero(canvas: HTMLCanvasElement): void {
     view.unit = Math.sqrt(r.width * r.height);
     canvas.width = Math.round(r.width * view.dpr);
     canvas.height = Math.round(r.height * view.dpr);
+
+    const box = type?.getBoundingClientRect();
+    const pad = view.unit * 0.03;
+    view.safe.x = box ? box.left - r.left - pad : 0;
+    view.safe.y = box ? box.top - r.top - pad : 0;
+    view.safe.w = box ? box.width + pad * 2 : 0;
+    view.safe.h = box ? box.height + pad * 2 : 0;
+
     /* Set once here rather than once a frame: a variant is handed a context
        already working in CSS pixels and never has to think about the ratio. */
     ctx!.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
