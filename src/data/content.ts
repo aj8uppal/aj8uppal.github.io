@@ -62,6 +62,11 @@ export const contact = {
     'The PDF I have is from 2024 and it carries my home address and my phone number, which is fine on an application and not fine on a public page. The button turns on when I have cut that block out and brought the rest up to date. Until then, email me and I will send it.',
 } as const;
 
+/**
+ * Six sections, and the nav is generated from this list. Education is not one of
+ * them: it sits inside the work log, where a degree and a job are the same kind
+ * of fact, and keeps its own `#education` anchor.
+ */
 export const sections = [
   { n: '01', id: 'about', name: 'About', desc: 'Two degrees, one habit', count: '4 notes' },
   {
@@ -80,21 +85,27 @@ export const sections = [
     count: '3 playable',
   },
   { n: '05', id: 'skills', name: 'Skills', desc: 'Grouped, unrated', count: '5 groups' },
-  {
-    n: '06',
-    id: 'education',
-    name: 'Education',
-    desc: 'UMass Amherst, two B.S.',
-    count: '8 courses',
-  },
-  { n: '07', id: 'contact', name: 'Contact', desc: 'Email is the reliable one', count: '4 links' },
+  { n: '06', id: 'contact', name: 'Contact', desc: 'Email is the reliable one', count: '4 links' },
+] as const;
+
+/**
+ * The ticker band. Short enough to read at a glance while it moves, and every
+ * line of it is a fact stated elsewhere on the page at length.
+ */
+export const ticker = [
+  'Voxel MMORPG in production',
+  'A real sailing model',
+  'Baked light at 116 fps',
+  'A sim core that cannot see the DOM',
+  'Two degrees on one clock',
+  'Twenty-five demos, twelve still run',
 ] as const;
 
 export const cover = {
   kicker: ['San Mateo, California', 'Software engineer at Notable Health'],
   lead: 'I studied computer science and astrophysics at the same time because I could not pick one, and I have been building things that run in a browser ever since.',
   second:
-    'Right now that means four projects: a voxel MMORPG with real multiplayer, a sailing game that runs an actual sailing model, a rendering experiment that fakes sunlight by refusing to compute it, and a tower defense whose simulation core cannot see the DOM. Two of them you can play today. Two are not finished, and this page says so.',
+    'A voxel MMORPG with real multiplayer, a sailing game that runs an actual sailing model, a rendering experiment that fakes sunlight by refusing to compute it, and a tower defense whose simulation core cannot see the DOM. Two of them you can play today. Two are not finished, and this page says so.',
   strip: [
     { dt: 'Place', dd: 'San Mateo', sub: 'California' },
     { dt: 'Work', dd: 'Software engineer', sub: 'Notable Health, since Aug 2022' },
@@ -106,8 +117,8 @@ export const cover = {
 export const about = {
   statement: 'Most of what I know, I learned by building the thing badly first.',
   prose: [
-    'I have wanted to be an astronaut since I was four. That has not happened, but it decided what I studied. I took two bachelor’s degrees at UMass Amherst at the same time, computer science and astrophysics, which meant a schedule where Algorithms and General Relativity landed in the same week. The best class I took was an independent study I had to petition for, called Cosmology and Consciousness.',
-    'The two halves never really separated. Simulating CO2 cooling for a particle detector and simulating an ocean for a sailing game turn out to be the same problem wearing different clothes: pick a model, pick a timestep, and be honest about what you left out. I am a maker before I am anything else, and the range is the point. I have written firmware in C for low-cost air pollution monitors and shipped a multiplayer voxel MMORPG to production in the same decade.',
+    'I have wanted to be an astronaut since I was four. That has not happened, but it decided what I studied: two bachelor’s degrees at once, computer science and astrophysics, on a schedule where Algorithms and General Relativity landed in the same week.',
+    'Simulating CO2 cooling for a particle detector and simulating an ocean for a sailing game turn out to be the same problem wearing different clothes: pick a model, pick a timestep, and be honest about what you left out.',
   ],
   notes: [
     ['Off the clock', 'Heirloom tomatoes, bikes, and Pink Floyd, roughly in that order.'],
@@ -208,25 +219,24 @@ export const ember = {
     s: 'Fallowmere at dusk, level thirty, nine thousand fame in. The world state, the quest chain and the loot all live on a realm service. The browser is only a client.',
   },
   prose: [
-    'Ember Wilds is a voxel MMORPG that runs in a browser tab. I designed it, built it, and put it in production on Fly.io, where a web tier and a separate realm service keep one world consistent for everyone in it. There is nothing to install. You open a URL and you are standing in the Hearthvale at level one with no idea what a Web Matron is.',
-    'The world is seven named regions that get harder as you travel outward: the Hearthvale, Fallowmere, the Greenmarch, the Fenmarch, the Ashen Waste, the Greywall Peaks and the Black Plateau. Classes unlock through beast lore and study rather than a skill tree, there is a satchel and a fame economy and tiered gear, and the quest chain ends somewhere I am not going to spoil here.',
+    'A voxel MMORPG that runs in a browser tab. I designed it, built it, and put it in production on Fly.io, where a web tier and a separate realm service keep one world consistent for everyone in it.',
     'This is the strongest single thing I have built, and the reason is not the rendering. It is that a stranger can open it right now and play it with someone else.',
   ],
-  framesLede:
-    'Seven regions, all captured on one character at level thirty. Use the tabs, or arrow keys once a tab has focus.',
+  framesLede: 'Seven regions, one character at level thirty. Tabs, or arrow keys once one has focus.',
   proof: {
     t: 'Two clients, one world',
     body: [
-      'Two browsers, two accounts, one Hearthvale. The speech bubbles are over the players’ heads and the same lines are in the log at bottom left. Both characters are being simulated by the same realm service, which is the part that was hard.',
+      'Two browsers, two accounts, one Hearthvale. Both characters are being simulated by the same realm service, which is the part that was hard.',
       'If I only got to show one frame from four years of side projects, it would be this one.',
     ],
   },
   plate: [
-    ['Status', 'Live'],
-    ['Host', 'Fly.io'],
+    ['Status', 'Live, no install'],
     ['Shape', 'Web tier plus realm service'],
-    ['Client', 'Browser, no install'],
-    ['Regions', 'Seven'],
+    ['Host', 'Fly.io'],
+    ['World', 'Seven regions, harder as you travel outward'],
+    ['Classes', 'Unlocked by beast lore and study, not a skill tree'],
+    ['Economy', 'Fame, satchel, tiered gear'],
   ] as Array<[string, string]>,
 } as const;
 
@@ -311,26 +321,27 @@ export const saltline = {
     s: '04:36, sea state moderate, wind at forty degrees, seed 4193. Sail full, 14.4 knots, no heel. Every number in that sentence is a readout, not set dressing.',
   },
   prose: [
-    'saltline is an age-of-sail game you play in a browser. You captain a sloop, you trade, you get chased by raiders, and none of that is the interesting part. The interesting part is that the boat is not steered like a car.',
-    'It runs a real sailing model. Your point of sail sets thrust, thrust and heading set velocity made good, and if you point too close to the wind you luff and stop. The HUD tells you the truth about all of it: relative wind, heel angle, thrust as a percentage, and VMG in knots with an arrow for whether you are gaining on the mark or losing to it. There is a live nav chart that classifies contacts as merchant, raider, hunter, elite, derelict or flotsam, a nearby-vessels list with ranges, a cargo hold, hull integrity, and an account that remembers all of it.',
-    'The ocean underneath all of that is generated, not painted. The six frames below are one seed at six times of day, which is the fastest way I know to show it: the same water, under light that far apart, does not look like the same water at all.',
+    'An age-of-sail game you play in a browser. You captain a sloop, you trade, you get chased by raiders, and none of that is the interesting part. The interesting part is that the boat is not steered like a car.',
+    'The ocean under it is generated, not painted. Drag the clock: the same water, under light that far apart, does not look like the same water at all.',
   ],
   framesLede:
-    'Sea state moderate, wind at forty degrees, crest sharpness 0.68, seed 4193. Identical in all six, and in clock order. Only the time changed.',
+    'One seed at six times of day. Sea state moderate, wind at forty degrees, crest sharpness 0.68, seed 4193, identical in all six. Only the clock moved.',
   arcNote:
-    'The readouts are worth the same look. The two sunrise frames are twenty-nine minutes apart and sailing almost identically: 145 and 143 degrees off the bow, 84 and 85 percent thrust, 11.0 and 11.1 knots made good. At golden hour and sunset I am faster through the water than in either of them, 15.0 and 15.8 knots on 96 and 97 percent thrust, and making 2.3 and 2.1 knots toward the mark. Speed is not progress, and choosing between the two is the game.',
+    'Speed is not progress. At golden hour the sloop makes 15.0 knots through the water and 2.3 toward the mark; at sunrise, 13.6 and 11.0. Choosing between those is the game.',
   proof: {
     t: 'The panel is in this frame on purpose',
     body: [
-      'That column down the left edge is the development panel, and this is the 16:46 frame again with nothing cropped off it. The panel is gone from the six above because a picture of the ocean should be a picture of the ocean. It is here because it is the argument: time of day, sea state, wind angle, crest sharpness and seed are inputs to a simulation, not a menu of pretty presets. Change the seed and you get a different ocean running the same rules.',
-      'It is also where the clock on each frame above comes from. Everything else here is the game: three raiders closing, a chart classifying them, and a rudder fifteen percent to starboard.',
+      'The 16:46 frame with nothing cropped off it. Time of day, sea state, wind angle, crest sharpness and seed are inputs to a simulation, not a menu of pretty presets. Change the seed and you get a different ocean running the same rules.',
     ],
   },
   plate: [
-    ['Status', 'Live'],
-    ['Accounts', 'Yes, with saved progress'],
-    ['Renderer', 'Babylon.js'],
-    ['Host', 'Fly.io'],
+    ['Status', 'Live, with accounts'],
+    ['Model', 'Point of sail sets thrust; thrust and heading set VMG'],
+    ['Luffing', 'Point too close to the wind and you stop'],
+    ['HUD', 'Relative wind, heel angle, thrust percent, VMG in knots'],
+    ['Nav chart', 'Merchant, raider, hunter, elite, derelict, flotsam'],
+    ['Persists', 'Cargo hold, hull integrity, account progress'],
+    ['Renderer', 'Babylon.js on Fly.io'],
     ['Hardening', "CSP script-src 'self', frame-ancestors 'none', full Permissions-Policy"],
   ] as Array<[string, string]>,
 } as const;
@@ -347,9 +358,8 @@ export const hidamari = {
     s: 'One autumn path at golden hour. Nothing in this frame is being lit in your browser, and that is the entire technique.',
   },
   prose: [
-    'hidamari is a calm ambient app: one autumn canopy path at golden hour, still enough to leave open on a second monitor and alive enough that you keep noticing it move. It holds 116 frames per second on hardware that could not path-trace a single frame of it.',
-    'It gets there by not solving the lighting at all. The plates are rendered offline in Blender Cycles, where a frame is allowed to take as long as it needs, and then reprojected in the browser against a depth pass so the camera can move through them with real parallax. The browser is compositing photographs of a place that does not exist.',
-    'The rest is delivery. Frames ship as AVIF with a PNG fallback, the whole thing installs as a PWA behind a service worker, and the ambience is layered and calibrated to LUFS rather than mixed by ear. It is not public yet. I want the audio right first.',
+    'A calm ambient app: one autumn canopy path at golden hour, still enough to leave open on a second monitor. It holds 116 frames per second on hardware that could not path-trace a single frame of it.',
+    'It gets there by not solving the lighting at all. The plates are rendered offline in Blender Cycles and reprojected against a depth pass, so the camera moves through them with real parallax. The browser is compositing photographs of a place that does not exist. Not public yet: I want the audio right first.',
   ],
   plate: [
     ['Status', 'Not public'],
@@ -368,22 +378,20 @@ export const elderwood = {
   sub: 'Browser-native tower defense. Playable greybox, and an architecture argument.',
   title: 'A sim core that ignores the browser',
   prose: [
-    'Elderwood Vale is a browser-native tower defense and it is not finished. What is finished is the part I actually care about: the simulation is held strictly apart from everything that draws it.',
-    'Strictly apart means what it says. The sim cannot touch the DOM, cannot import three.js, cannot read the wall clock, and cannot call Math.random. Those are not conventions I try to remember. The tsconfig for that module has the DOM library removed, so document does not typecheck, and ESLint has no-restricted-paths and no-restricted-properties pointed at everything else. The boundary holds because crossing it does not compile.',
-    'Inside the boundary it runs fixed ticks of one thirtieth of a second and publishes snapshots. three.js interpolates between them, so the render rate is free of the tick rate. The React HUD subscribes at 10Hz, because a health bar does not need thirty updates a second and React should not be asked for them.',
-    'Today it is a playable greybox: placement, waves, and enough economy to lose. The README still describes it as an architectural foundation, which undersells it, and I have not gotten around to fixing that either.',
+    'A browser-native tower defense, not finished. What is finished is the part I care about: the simulation is held strictly apart from everything that draws it.',
+    'The sim cannot touch the DOM, import three.js, read the wall clock or call Math.random. Those are not conventions I try to remember. The boundary holds because crossing it does not compile.',
   ],
   plate: [
-    ['Status', 'Playable greybox, not public'],
+    ['Status', 'Playable greybox: placement, waves, enough economy to lose'],
     ['Sim', 'Fixed 1/30 s tick, snapshot interpolation'],
-    ['Render', 'three.js, interpolated'],
-    ['HUD', 'React, 10 Hz publication'],
-    ['Boundary', 'tsconfig lib restriction plus ESLint restricted paths'],
+    ['Render', 'three.js, free of the tick rate'],
+    ['HUD', 'React, subscribed at 10 Hz'],
+    ['Boundary', 'DOM lib removed from tsconfig, ESLint restricted paths'],
   ] as Array<[string, string]>,
   figures: [
-    { key: 'default', cap: 'Default board. Greybox geometry, no art pass.' },
-    { key: 'coverage', cap: 'Placement coverage overlay, showing tower reach.' },
-    { key: 'stress', cap: 'Stress burst. The tick rate does not move.' },
+    { key: 'default', tab: 'Default', cap: 'Greybox geometry, no art pass.' },
+    { key: 'coverage', tab: 'Coverage', cap: 'Placement overlay, showing tower reach.' },
+    { key: 'stress', tab: 'Stress', cap: 'Stress burst. The tick rate does not move.' },
   ],
 } as const;
 
@@ -396,9 +404,9 @@ export const roles: Role[] = [
     title: 'Software Engineer',
     org: 'Notable Health',
     where: 'San Mateo, CA',
-    body: 'Healthcare AI platform. I work across integrations, which means controlling how data moves in and out of the system. Architected and deployed services managing data flow between the platform and electronic health record systems, and streamlined the EHR integration process.',
+    body: 'Healthcare AI platform. I work across integrations: architected and deployed the services that move data between the platform and electronic health record systems.',
     pending: {
-      note: 'Four years belongs in more than three lines, and writing it properly is on my list. I would rather leave the slot marked than fill it with something vague about impact.',
+      note: 'Four years belongs in more than three lines. I would rather leave the slot marked than fill it with something vague about impact.',
     },
     stack:
       'Python · TypeScript · Node.js · React · PostgreSQL · BigQuery · GCP · Kubernetes · Terraform',
@@ -468,8 +476,8 @@ export const errata = [
 export const playground = {
   statement: 'An archive. About half of it stopped running.',
   prose: [
-    'There are twenty-five old demos in this repository, written mostly between 2015 and 2019. I opened every one. Ten were broken, and three more only appear to work, which is the worse failure: a sliding puzzle whose solver silently does nothing, a Connect 4 that locks after exactly one move, a planet viewer that labels Mercury as Earth. One more opened an unending chain of prompt dialogs and trapped the tab, and that one is deleted rather than merely unlinked.',
-    'The rest of the breakage is boring in an instructive way: plain-HTTP script tags that an HTTPS page now blocks, EC2 backends I stopped paying for, CDN hosts that stopped resolving. Eleven still ran, and GrinchJump made twelve once I vendored the keyboard library its CDN had stopped serving. Most of the twelve are forty-line toys, so three are below: the two worth keeping and the one that needed the repair. They are here because they are true, not because they are good.',
+    'Twenty-five old demos in this repository. I opened every one. Ten were broken and three more only appear to work, which is the worse failure: a sliding puzzle whose solver silently does nothing, a Connect 4 that locks after one move, a planet viewer that labels Mercury as Earth.',
+    'Twelve still run. Three of them are below, running inline rather than photographed. Move them. They are here because they are true, not because they are good.',
   ],
   items: [
     {
@@ -478,7 +486,7 @@ export const playground = {
       href: '/demos/AutoTyper/index.html',
       status: 'live' as Status,
       statusLabel: 'Runs',
-      what: 'Types a block of text into a field at a rate you choose, character by character. The most genuinely useful thing on this list.',
+      what: 'Types a block of text into a field, character by character, at a rate you choose.',
       k: 'Vanilla JS',
     },
     {
@@ -496,19 +504,19 @@ export const playground = {
       href: '/grinchjump.html',
       status: 'live' as Status,
       statusLabel: 'Repaired',
-      what: 'Doodle Jump in three dimensions, built when I was learning three.js. It died when the CDN hosting its keyboard library stopped resolving; the library is vendored into the repository now, so it cannot die that way again.',
+      what: 'Doodle Jump in three dimensions, built while I was learning three.js. It died when the CDN hosting its keyboard library stopped resolving. The library is vendored now, so it cannot die that way again.',
       k: 'three.js r70 · vendored deps',
     },
   ],
   method:
-    'Three are deleted outright rather than merely unpublished. The rest are still in the repository and still served at their original URLs; they are just not linked from here, because a dead demo on a portfolio is worse than no demo. Dates marked c. are the repository’s rather than mine: git is the only record I kept of when any of this was written.',
+    'Three are deleted outright rather than unpublished. The rest are still served at their original URLs, just not linked from here, because a dead demo on a portfolio is worse than no demo. Dates marked c. are the repository’s rather than mine: git is the only record I kept.',
 } as const;
 
 export const earlier = [
   {
     name: 'PICKLE',
     yr: 'High school',
-    what: 'Designed, built and calibrated low-cost air pollution monitors to make the problem visible. Particle Photon and Electron microcontrollers in C, Python and R for analysis, TempoDB and AT&T M2X for time series, plot.ly for the charts. Hardware, firmware, cloud and data science in one project, in collaboration with Sonoma Technology, BAAQMD and Manylabs.',
+    what: 'Designed, built and calibrated low-cost air pollution monitors to make the problem visible. Hardware, firmware, cloud and data science in one project, with Sonoma Technology, BAAQMD and Manylabs.',
     k: 'C · Python · R · Time-series storage',
   },
   {

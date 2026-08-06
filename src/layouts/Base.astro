@@ -19,80 +19,41 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#0A0C0D" />
+    <meta name="theme-color" content="#0b0d0e" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.ico" sizes="any" />
-
-    <link
-      rel="preload"
-      href="/fonts/newsreader-latin-var.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
+
+    {/* Reveals are hidden by CSS only once this has run, so a page without
+        JavaScript never hides something it then has no way to show. */}
+    <script is:inline>
+      document.documentElement.classList.remove('no-js');
+      document.documentElement.classList.add('js');
+    </script>
   </head>
 
   <body>
     <a class="skip" href="#main">Skip to content</a>
 
-    <header class="bar">
-      <div class="bar__in">
-        <div class="bar__id label">
-          AJ&nbsp;UPPAL <span>/ SWE</span>
-        </div>
-        <nav class="bar__nav" id="nav" aria-label="Sections">
-          {
-            sections.map((s) => (
-              <a href={`#${s.id}`}>
-                <b>{s.n}</b>
-                {s.name}
-              </a>
-            ))
-          }
-        </nav>
-        <div class="bar__read label" id="readout" aria-hidden="true">
-          &sect;&nbsp;<b>00</b>&nbsp;COVER
-        </div>
-      </div>
-      <div class="bar__prog" id="prog"></div>
+    <header class="nav">
+      <a class="nav__brand" href="#top">
+        <span class="nav__mark" aria-hidden="true">AJ</span>
+        <span class="nav__name">UPPAL</span>
+      </a>
+      <nav class="nav__links" id="nav" aria-label="Sections">
+        {sections.map((s) => <a href={`#${s.id}`}>{s.name}</a>)}
+        <a class="nav__cta" href={`mailto:${contact.email}`}>Email</a>
+      </nav>
     </header>
 
     <main id="main">
       <slot />
     </main>
-
-    <footer class="foot">
-      <div class="wrap foot__in">
-        <p class="label">Colophon</p>
-        <div>
-          <p>
-            Astro and TypeScript, built static. Newsreader for display, the system stack for
-            everything else. One React island, on one component. Every screenshot is a capture of
-            the actual project.
-          </p>
-          <p>
-            The demos that predate this page are still served from their original URLs, because
-            breaking a working link to tidy up a repository is not tidying up.
-          </p>
-          <p>
-            Press <kbd>G</kbd> to see the grid this page is set on. Source at
-            <a class="link link--quiet" href={contact.github}>github.com/aj8uppal</a>.
-          </p>
-        </div>
-      </div>
-    </footer>
-
-    <div class="grid-ov" aria-hidden="true">
-      <div class="grid-ov__base"></div>
-      <div class="grid-ov__cols"><i></i><i></i><i></i></div>
-      <div class="grid-ov__tag">8px baseline &middot; spine</div>
-    </div>
 
     <script>
       import '../scripts/motion';

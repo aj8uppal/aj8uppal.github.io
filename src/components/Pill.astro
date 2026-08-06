@@ -15,6 +15,4 @@ const fallback: Record<Status, string> = {
 const { status, label } = Astro.props;
 ---
 
-<span class:list={['chip', `chip--${status}`]}>
-  <i class="dot"></i>{label ?? fallback[status]}
-</span>
+<span class:list={['pill', `pill--${status}`]}>{label ?? fallback[status]}</span>

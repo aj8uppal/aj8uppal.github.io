@@ -3,12 +3,22 @@ interface Props {
   n: string;
   id: string;
   name: string;
-  cover?: boolean;
+  /** Which ground this section stands on. */
+  tone: 'ink' | 'paper' | 'paper-2' | 'ink-3' | 'acid' | 'coral';
+  cls?: string;
 }
 
-const { n, id, name, cover = false } = Astro.props;
+const { n, id, name, tone, cls } = Astro.props;
 ---
 
-<section class:list={['sec', { 'sec--cover': cover }]} id={id} data-sec={n} data-name={name}>
-  <slot />
+<section
+  class:list={['sec', `sec--${tone}`, cls]}
+  id={id}
+  data-sec={n}
+  data-name={name}
+  data-tone={tone}
+>
+  <div class="shell">
+    <slot />
+  </div>
 </section>

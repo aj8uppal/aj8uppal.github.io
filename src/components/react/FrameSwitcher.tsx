@@ -6,7 +6,8 @@ export interface SwitchFrame {
   key: string;
   tab: string;
   alt: string;
-  readout: Array<[string, string]>;
+  /** Omitted where the caption already says everything, as on Elderwood Vale. */
+  readout?: Array<[string, string]>;
   note: string;
   img: Sources;
 }
@@ -18,21 +19,22 @@ interface Props {
 }
 
 /**
- * The page's only interactive component. It carries Ember Wilds' seven regions and
- * earns its hydration by showing seven captures and their readouts in the space of
- * one: seven different places, toured one at a time.
+ * Ember Wilds' seven regions in the space of one. It earns its hydration by
+ * collapsing seven full-width plates into a stage, a readout and a row of pills.
  *
  * saltline deliberately does not use it. Its six frames are one place under six
- * lights, which is a comparison rather than a tour, so they sit in a plate that
- * shows all six at once. See .arc in global.css.
+ * lights, which is a comparison rather than a tour, so they sit in a tile strip
+ * that shows all six at once.
  *
- * The tab indicator is driven by a live spring rather than a CSS transition, so
- * clicking through tabs quickly carries velocity instead of restarting each time.
+ * The selected pill is a single acid element driven by a live spring rather than
+ * a CSS transition, so clicking through tabs quickly carries velocity instead of
+ * restarting each time.
  */
 export default function FrameSwitcher({ label, frames }: Props) {
   const uid = useId();
   const [active, setActive] = useState(0);
   const tabsRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const indRef = useRef<HTMLSpanElement>(null);
   const btnRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const raf = useRef<number>(0);
@@ -40,22 +42,20 @@ export default function FrameSwitcher({ label, frames }: Props) {
 
   const measure = useCallback((index: number) => {
     const btn = btnRefs.current[index];
-    const tabs = tabsRef.current;
-    if (!btn || !tabs) return null;
-    // The tab strip scrolls horizontally on narrow screens, so measure against the
-    // strip's own scroll origin rather than the viewport.
-    return {
-      x: btn.offsetLeft,
-      w: btn.offsetWidth - parseFloat(getComputedStyle(btn).paddingRight),
-    };
+    if (!btn || !tabsRef.current) return null;
+    // The strip scrolls horizontally on narrow screens, so measure against the
+    // strip's own origin rather than the viewport.
+    return { x: btn.offsetLeft, w: btn.offsetWidth };
   }, []);
 
   const draw = useCallback((x: number, w: number) => {
     const el = indRef.current;
-    if (el) el.style.transform = `translate3d(${x}px, 0, 0) scaleX(${Math.max(w, 0)})`;
+    if (!el) return;
+    el.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`;
+    el.style.width = `${Math.max(w, 0).toFixed(2)}px`;
   }, []);
 
-  // Place the indicator before first paint so it never flashes at the origin.
+  // Place the pill before first paint so it never flashes at the origin.
   // Mount only: every later move is animated by the effect below.
   const placed = useRef(false);
   useLayoutEffect(() => {
@@ -111,16 +111,13 @@ export default function FrameSwitcher({ label, frames }: Props) {
   // finds.
   const [edges, setEdges] = useState({ start: false, end: false });
   useEffect(() => {
-    const el = tabsRef.current;
+    const el = scrollRef.current;
     if (!el) return;
     const read = (): void => {
       const max = el.scrollWidth - el.clientWidth;
       setEdges({ start: el.scrollLeft > 1, end: el.scrollLeft < max - 1 });
     };
     read();
-    // The display font can land after hydration and change every tab's width,
-    // so the first read is not necessarily the last word.
-    void document.fonts.ready.then(read);
     el.addEventListener('scroll', read, { passive: true });
     window.addEventListener('resize', read);
     return () => {
@@ -182,43 +179,48 @@ export default function FrameSwitcher({ label, frames }: Props) {
         ))}
       </div>
 
-      <div className="fs__strip" data-of-start={edges.start} data-of-end={edges.end}>
-        <div className="fs__tabs" role="tablist" aria-label={label} ref={tabsRef}>
-          {frames.map((f, i) => (
-            <button
-              key={f.key}
-              ref={(el) => {
-                btnRefs.current[i] = el;
-              }}
-              type="button"
-              className="fs__tab"
-              role="tab"
-              id={`${uid}-tab-${i}`}
-              aria-selected={i === active}
-              aria-controls={`${uid}-panel-${i}`}
-              tabIndex={i === active ? 0 : -1}
-              onClick={() => setActive(i)}
-              onKeyDown={onKeyDown}
-            >
-              {f.tab}
-            </button>
-          ))}
-          <span className="fs__ind" ref={indRef} aria-hidden="true" />
-        </div>
+      <div className="fs__side">
+        {current.readout?.length ? (
+          <dl className="fs__read">
+            {current.readout.map(([k, v]) => (
+              <div key={k}>
+                <dt>{k}</dt>
+                <dd>{v}</dd>
+              </div>
+            ))}
+          </dl>
+        ) : null}
+        <p className="fs__note" aria-live="polite">
+          {current.note}
+        </p>
       </div>
 
-      <dl className="fs__read">
-        {current.readout.map(([k, v]) => (
-          <div key={k}>
-            <dt>{k}</dt>
-            <dd>{v}</dd>
+      <div className="fs__strip" data-of-start={edges.start} data-of-end={edges.end}>
+        <div className="fs__scroll" ref={scrollRef}>
+          <div className="fs__tabs" role="tablist" aria-label={label} ref={tabsRef}>
+            <span className="fs__ind" ref={indRef} aria-hidden="true" />
+            {frames.map((f, i) => (
+              <button
+                key={f.key}
+                ref={(el) => {
+                  btnRefs.current[i] = el;
+                }}
+                type="button"
+                className="fs__tab"
+                role="tab"
+                id={`${uid}-tab-${i}`}
+                aria-selected={i === active}
+                aria-controls={`${uid}-panel-${i}`}
+                tabIndex={i === active ? 0 : -1}
+                onClick={() => setActive(i)}
+                onKeyDown={onKeyDown}
+              >
+                {f.tab}
+              </button>
+            ))}
           </div>
-        ))}
-      </dl>
-
-      <p className="fs__note" aria-live="polite">
-        {current.note}
-      </p>
+        </div>
+      </div>
     </div>
   );
 }
