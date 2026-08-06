@@ -66,6 +66,40 @@ function readTokens(): HeroTokens {
   return out;
 }
 
+/**
+ * The ink of a heading, in client coordinates.
+ *
+ * Not its box: an `h1` is a block and its rect runs the whole column, which
+ * here is a third of the canvas wider than the letters and would hand the
+ * variants a dead band with nothing in it. Ranging over the text nodes gives a
+ * rect per line tight to the glyphs, which is the honest horizontal extent.
+ *
+ * Vertically it is the other way round - those rects are the font's bounding
+ * box, taller than the ink for a heavy display face - so the vertical extent
+ * comes from the element, whose line boxes are what you actually see.
+ */
+function inkBox(el: Element): DOMRect | null {
+  const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const range = document.createRange();
+  let l = Infinity;
+  let r = -Infinity;
+
+  for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+    if (!n.nodeValue?.trim()) continue;
+    range.selectNodeContents(n);
+    for (const q of range.getClientRects()) {
+      if (q.width < 1 || q.height < 1) continue;
+      l = Math.min(l, q.left);
+      r = Math.max(r, q.right);
+    }
+  }
+
+  const box = el.getBoundingClientRect();
+  if (box.width < 1 || box.height < 1) return null;
+  if (l >= r) return box;
+  return new DOMRect(l, box.top, r - l, box.height);
+}
+
 /* ── Interaction state ───────────────────────────────────────────────── */
 
 /* 0.12 stiffness, 0.73 damping, target set by pointer, touch or arrow keys. A
@@ -130,7 +164,17 @@ export function installHero(canvas: HTMLCanvasElement): void {
   let variant: HeroVariant = defaultHero;
   let hero: HeroInstance | null = null;
 
-  const frame: HeroFrame = { t: 0, dt: 16, px: -1, py: 0, vx: 0, vy: 0, boost: 0, offY: 0 };
+  const frame: HeroFrame = {
+    t: 0,
+    dt: 16,
+    hand: false,
+    px: -1,
+    py: 0,
+    vx: 0,
+    vy: 0,
+    boost: 0,
+    offY: 0,
+  };
 
   /* ── Sizing ────────────────────────────────────────────────────────── */
 
@@ -144,7 +188,7 @@ export function installHero(canvas: HTMLCanvasElement): void {
     canvas.width = Math.round(r.width * view.dpr);
     canvas.height = Math.round(r.height * view.dpr);
 
-    const box = type?.getBoundingClientRect();
+    const box = type ? inkBox(type) : null;
     const pad = view.unit * 0.03;
     view.safe.x = box ? box.left - r.left - pad : 0;
     view.safe.y = box ? box.top - r.top - pad : 0;
@@ -210,6 +254,7 @@ export function installHero(canvas: HTMLCanvasElement): void {
 
     frame.t = drift;
     frame.dt = dt;
+    frame.hand = pointer.active;
     frame.px = pointer.x * view.w;
     frame.py = pointer.y * view.h;
     frame.vx = pointer.vx * view.w;
@@ -291,12 +336,15 @@ export function installHero(canvas: HTMLCanvasElement): void {
     const n = NUDGE[e.key];
     if (n) {
       e.preventDefault();
+      // The keyboard is a hand too, and unlike a pointer it never leaves.
+      pointer.active = true;
       pointer.tx = Math.min(1, Math.max(0, pointer.tx + n[0]));
       pointer.ty = Math.min(1, Math.max(0, pointer.ty + n[1]));
       return;
     }
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
+      pointer.active = true;
       pointer.pulse = 1;
     }
   });

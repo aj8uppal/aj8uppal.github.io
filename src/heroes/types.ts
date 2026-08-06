@@ -49,7 +49,13 @@ export interface HeroFrame {
   t: number;
   /** Milliseconds since the last frame, clamped. */
   dt: number;
-  /** Pointer in CSS pixels, or -1 when nobody is pointing at it. */
+  /** Whether a pointer or the arrow keys are currently on the hero. The spring
+      keeps running either way, so a variant that only wants a light position
+      can ignore this; one that combs, hooks or sleeps cannot. */
+  hand: boolean;
+  /** The spring, in CSS pixels. Always a real position: it carries on gliding
+      after the pointer leaves rather than snapping to a rest pose. `still`
+      passes -1 to mean there is no pointer at all. */
   px: number;
   py: number;
   /** Pointer velocity, CSS pixels a frame. */

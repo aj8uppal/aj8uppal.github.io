@@ -230,9 +230,8 @@ export const rig: HeroVariant = {
     return {
       elements: SPANS.length * NODES,
       draw(f: HeroFrame): void {
-        const hand = f.px >= 0;
-        const moved = step(hand ? f.px : -1, f.py, f.boost);
-        if (!hand && moved < SLEEP_EPS) {
+        const moved = step(f.hand ? f.px : -1, f.py, f.boost);
+        if (!f.hand && moved < SLEEP_EPS) {
           /* Settled and unattended. Leaving the canvas exactly as it is costs
              one comparison a frame; the last frame drawn is already correct. */
           asleep = true;

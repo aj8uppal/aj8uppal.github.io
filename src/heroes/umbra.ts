@@ -189,11 +189,13 @@ export const umbra: HeroVariant = {
     return {
       elements: PEGS,
       draw(f: HeroFrame): void {
-        /* No pointer, no hand: the light rests up and to the left, off the
-           canvas, and the field is a single coherent set of shadows falling
-           down and to the right the way a room's would. */
-        const lx = f.px >= 0 ? f.px : v.w * 0.16;
-        const ly = f.px >= 0 ? f.py : -v.h * 0.34;
+        /* Unattended, the light rests up and to the left, off the canvas, and
+           the field is a single coherent set of shadows falling down and to
+           the right the way a room's would. The tips have their own spring, so
+           handing them a light that has jumped back to rest still reads as one
+           swing rather than a cut. */
+        const lx = f.hand ? f.px : v.w * 0.16;
+        const ly = f.hand ? f.py : -v.h * 0.34;
         paint(lx, ly, f.boost, f.offY, false);
       },
       still(): void {
