@@ -102,12 +102,12 @@ export const ticker = [
 ] as const;
 
 export const cover = {
-  kicker: ['San Mateo, California', 'Software engineer at Notable Health'],
+  kicker: ['Bay Area, California', 'Software engineer at Notable Health'],
   lead: 'I studied computer science and astrophysics at the same time because I couldn’t pick one. These days I build things that run in a browser.',
   second:
     'Right now that’s four projects: a sailing game that runs a real sailing model, a voxel MMORPG that holds up to 64 people in a realm, a rendering experiment that fakes sunlight by refusing to compute it, and a tower defense with a deterministic sim core. Two are live today. Two aren’t finished yet.',
   strip: [
-    { dt: 'Place', dd: 'San Mateo', sub: 'California' },
+    { dt: 'Place', dd: 'Bay Area', sub: 'California' },
     { dt: 'Work', dd: 'Software engineer', sub: 'Notable Health, since Aug 2022' },
     { dt: 'Studied', dd: 'B.S. Computer Science', sub: 'B.S. Astrophysics' },
     { dt: 'Building', dd: 'Four things', sub: 'two live, two not yet' },
@@ -339,6 +339,9 @@ export const saltline = {
   },
   plate: [
     ['Status', 'Live, with accounts'],
+    /* Evidence is the HUD's own sail-together flag. No player count: nobody has
+       verified one, and the realm cap on the plate above belongs to Ember Wilds. */
+    ['Multiplayer', 'Live, sail together'],
     ['Model', 'Point of sail sets thrust; thrust and heading set VMG'],
     ['Luffing', 'Point too close to the wind and you stop'],
     ['HUD', 'Relative wind, heel angle, thrust percent, VMG in knots'],
