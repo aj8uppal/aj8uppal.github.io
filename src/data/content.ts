@@ -527,7 +527,19 @@ export const skills = [
   { group: 'Frontend', items: ['React', 'Redux', 'three.js / WebGL', 'HTML / CSS', 'PWAs'] },
   {
     group: 'Backend',
-    items: ['Node.js', 'Flask', 'Express', 'PostgreSQL', 'BigQuery', 'Socket.io', 'Microservices'],
+    items: [
+      'Node.js',
+      'Flask',
+      'Express',
+      'PostgreSQL',
+      'BigQuery',
+      'Socket.io',
+      /* Telephony sits with the other real-time transports rather than with the
+         hosted platforms: what he owns is the call routing, not the account. */
+      'Twilio / SIP',
+      'Temporal',
+      'Microservices',
+    ],
   },
   {
     group: 'Infrastructure',
