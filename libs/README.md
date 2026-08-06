@@ -11,6 +11,6 @@ To upgrade, replace the file wholesale and update its row below.
 
 | Path | Version | Origin | Notes |
 | --- | --- | --- | --- |
-| `three/three.r70.min.js` | r70 | `https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.min.js` | MIT. sha256 `6debaa9e3149db9f8dab77ec13c43a98b266755de9472d9c4bc6656a41f6294d`. Pinned to r70 because the demos use the pre-r71 API. |
+| `three/three.r70.min.js` | r70 | `https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.min.js` | [MIT](three/LICENSE). sha256 `6debaa9e3149db9f8dab77ec13c43a98b266755de9472d9c4bc6656a41f6294d`. Pinned to r70 because the demos use the pre-r71 API. |
 | `threex/THREEx.KeyboardState.js` | - | `http://learningthreejs.com/data/THREEx/THREEx.KeyboardState.js` | MIT, by Jerome Etienne. Origin domain no longer resolves; recovered copy verified against the Internet Archive snapshot. |
 | `font-awesome/` | 4.x | Font Awesome | SIL OFL 1.1 (fonts) / MIT (code). |
