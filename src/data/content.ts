@@ -56,7 +56,10 @@ export const contact = {
   github: 'https://github.com/aj8uppal',
   linkedin: 'https://www.linkedin.com/in/aj-uppal/',
   stackoverflow: 'https://stackoverflow.com/users/3113477/a-j-uppal',
-  resume: '/attachments/resume2024.pdf',
+  /* No resume URL here on purpose. The 2024 PDF has a home address and a phone
+     number on it, so there is nothing safe to point the button at yet. */
+  resumeNote:
+    'The PDF I have is from 2024 and it carries my home address and my phone number, which is fine on an application and not fine on a public page. The button turns on when I have cut that block out and brought the rest up to date. Until then, email me and I will send it.',
 } as const;
 
 export const sections = [
@@ -470,7 +473,7 @@ export const playground = {
   ],
   items: [
     {
-      yr: '2019',
+      yr: 'c. 2019',
       name: 'AutoTyper',
       href: '/demos/AutoTyper/index.html',
       status: 'live' as Status,
@@ -479,7 +482,7 @@ export const playground = {
       k: 'Vanilla JS',
     },
     {
-      yr: '2015',
+      yr: 'c. 2015',
       name: 'deviation.html',
       href: '/deviation.html',
       status: 'live' as Status,
@@ -488,7 +491,7 @@ export const playground = {
       k: 'Vanilla JS · Canvas',
     },
     {
-      yr: '2015',
+      yr: 'c. 2015',
       name: 'GrinchJump',
       href: '/grinchjump.html',
       status: 'live' as Status,
@@ -498,7 +501,7 @@ export const playground = {
     },
   ],
   method:
-    'Three are deleted outright rather than merely unpublished. The rest are still in the repository and still served at their original URLs; they are just not linked from here, because a dead demo on a portfolio is worse than no demo.',
+    'Three are deleted outright rather than merely unpublished. The rest are still in the repository and still served at their original URLs; they are just not linked from here, because a dead demo on a portfolio is worse than no demo. Dates marked c. are the repository’s rather than mine: git is the only record I kept of when any of this was written.',
 } as const;
 
 export const earlier = [
@@ -510,7 +513,7 @@ export const earlier = [
   },
   {
     name: 'Rendezvous',
-    yr: '2020',
+    yr: 'c. 2020',
     what: 'A central place for UMass students to find each other through the classes they were taking. The host is gone, so there is no link.',
     k: 'React · Redux · Flask · PostgreSQL · GCP',
   },

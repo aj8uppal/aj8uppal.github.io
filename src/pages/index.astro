@@ -167,7 +167,13 @@ const EW_SIZES = '(width >= 1240px) 280px, (width >= 560px) 29vw, calc(100vw - 4
       eager
     />
 
-    <Block tight>
+    <Block
+      tight
+      hd={false}
+      n="02.1"
+      name={ember.name}
+      gutter={['Plate 01 · Fig. 1', `${emberFrames.length} regions`]}
+    >
       <article class="proj">
         <div class="proj__hd">
           <h3>
@@ -226,7 +232,13 @@ const EW_SIZES = '(width >= 1240px) 280px, (width >= 560px) 29vw, calc(100vw - 4
       s={saltline.spread.s}
     />
 
-    <Block tight>
+    <Block
+      tight
+      hd={false}
+      n="02.2"
+      name={saltline.name}
+      gutter={['Plate 02 · Fig. 2', `${saltlineArc.length} frames`]}
+    >
       <article class="proj">
         <div class="proj__hd">
           <h3>
@@ -292,7 +304,9 @@ const EW_SIZES = '(width >= 1240px) 280px, (width >= 560px) 29vw, calc(100vw - 4
           }
         </ol>
 
-        <p class="arc__note">{saltline.arcNote}</p>
+        <div class="arc__note">
+          <p>{saltline.arcNote}</p>
+        </div>
 
         <div class="proof">
           <h4 class="proof__hd">{saltline.proof.t}</h4>
@@ -320,7 +334,7 @@ const EW_SIZES = '(width >= 1240px) 280px, (width >= 560px) 29vw, calc(100vw - 4
       pos="50% 100%"
     />
 
-    <Block tight>
+    <Block tight hd={false} n="02.3" name={hidamari.name} gutter={['Plate 03']}>
       <article class="proj">
         <div class="proj__hd">
           <h3>{hidamari.name}</h3>
@@ -346,7 +360,13 @@ const EW_SIZES = '(width >= 1240px) 280px, (width >= 560px) 29vw, calc(100vw - 4
       </article>
     </Block>
 
-    <Block tight>
+    <Block
+      tight
+      hd={false}
+      n="02.4"
+      name={elderwood.name}
+      gutter={[`${elderwood.figures.length} captures`]}
+    >
       <article class="proj">
         <div class="proj__hd">
           <h3>{elderwood.name}</h3>
@@ -615,6 +635,20 @@ const EW_SIZES = '(width >= 1240px) 280px, (width >= 560px) 29vw, calc(100vw - 4
             I read it and I answer it. If you want to talk about a sailing model, a voxel world, or
             why Python is the best language, that is the fastest way in.
           </p>
+
+          {
+            /* Disabled rather than a link to nowhere: the control is real, it is
+              simply not available, and disabled is the one state that says that
+              to a screen reader and to a mouse at the same time. */
+          }
+          <button class="btn btn--off" type="button" disabled>
+            Résumé (PDF)
+            <span class="btn__tag">Not yet</span>
+          </button>
+          <div class="pending">
+            <b class="label">Pending &#183; author's note</b>
+            <p>{contact.resumeNote}</p>
+          </div>
         </div>
 
         <div>

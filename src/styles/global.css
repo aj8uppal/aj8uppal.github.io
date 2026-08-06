@@ -417,10 +417,24 @@ a {
     border-left: 1px solid var(--rule);
   }
 
+  /* The number and the name are two grid cells but one entry, so they stick
+     together or the rail reads as a name with its index scrolled off above it.
+     Both pin from an inner element, so the cell keeps its own block padding. */
+  .sec__idx span,
   .sec__label > div {
     position: sticky;
     top: calc(var(--bar-h) + var(--s-4));
+    display: block;
   }
+}
+
+/* A continuation block carries a sub-entry: 02.1 alongside Ember Wilds. Set one
+   step quieter than a section head so the rail reads as an outline with two
+   levels rather than as eleven sections. Section 02 is most of the page, and
+   without these the rail runs empty for the whole length of it. */
+.sec__grid--tight .sec__label .label {
+  color: var(--tx-lo);
+  font-weight: 400;
 }
 
 /* The gutter carries a real count, not filler. */
@@ -711,6 +725,38 @@ a {
 .btn--primary {
   border-color: var(--amber-dim);
   color: var(--amber);
+}
+
+/* The résumé button. It is drawn as a real control and it does nothing, because
+   the only PDF I have carries a home address. Dotted rather than greyed to near
+   nothing: this is a control waiting on me, not one that failed. */
+.btn--off {
+  border-style: dashed;
+  color: var(--tx-lo);
+  cursor: not-allowed;
+}
+
+.btn--off:hover {
+  border-color: var(--rule-firm);
+  background: transparent;
+  color: var(--tx-lo);
+}
+
+/* Ruled off from the label rather than merely spaced from it: at the same size
+   and weight "Résumé (PDF) Pending" reads as one run-on string. */
+.btn__tag {
+  height: 40px;
+  padding-left: var(--s-2);
+  border-left: 1px dashed var(--rule-firm);
+  margin-left: var(--s-1);
+  margin-right: calc(var(--s-2) * -1);
+  padding-right: var(--s-2);
+  display: inline-flex;
+  align-items: center;
+  color: var(--amber-dim);
+  font-size: var(--t-micro);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .btn__k {
@@ -1896,6 +1942,10 @@ sup.ref a {
 
 .contact__mail:hover {
   color: var(--amber);
+}
+
+.contact .btn {
+  margin-top: var(--s-4);
 }
 
 .foot {

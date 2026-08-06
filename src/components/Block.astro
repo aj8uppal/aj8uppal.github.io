@@ -20,7 +20,7 @@ const { n, name, gutter, tight = false, hd = true } = Astro.props;
 
 <div class="wrap">
   <div class:list={['sec__grid', { 'sec__grid--tight': tight }]}>
-    <div class="sec__idx mono">{n}</div>
+    <div class="sec__idx mono"><span>{n}</span></div>
     <div class="sec__label">
       {
         name && (
