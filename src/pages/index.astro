@@ -225,8 +225,8 @@ const heroLabel =
       <article class="card card--full" data-reveal>
         <div class="shot shot--lead">
           <Picture
-            src={asset('saltline-spread-night')}
-            alt="saltline at night: a full moon low over dark water, a sloop under full sail trailing a wide luminous teal wake, HUD readouts at the upper right."
+            src={asset(saltline.lead.asset)}
+            alt={saltline.lead.alt}
             widths={LEAD_W}
             sizes={LEAD_S}
             formats={['avif']}
@@ -235,7 +235,7 @@ const heroLabel =
             fetchpriority="high"
             decoding="async"
           />
-          <p class="flag">04:36 &middot; 14.4 kn &middot; seed 4193</p>
+          <p class="flag">{saltline.lead.flag}</p>
         </div>
 
         <p class="plate-cap"><b>{saltline.spread.t}.</b> {saltline.spread.s}</p>

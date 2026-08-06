@@ -316,10 +316,15 @@ export const saltline = {
   href: 'https://saltline.app',
   status: 'live' as Status,
   sub: 'Age of sail in a browser, with a real sailing model under it.',
+  lead: {
+    asset: 'saltline-lead-dawn',
+    alt: 'saltline at 06:31: an island silhouetted under a blue dawn sky, three named raiders strung along the horizon, a light path on the water, the sloop under full sail. The Ghostgale status panel and the nav chart sit down the right edge.',
+    flag: '06:31 · 14.0 kn · seed 4193',
+  },
   spread: {
     n: 'Plate 01 / saltline',
     t: 'Sailing, actually simulated',
-    s: '04:36, sea state moderate, wind at forty degrees, seed 4193. Sail full, 14.4 knots, no heel. Every number in that sentence is a readout, not set dressing.',
+    s: '06:31, sea state moderate, wind at forty degrees, seed 4193. Sail full, 14.0 knots, no heel. Every number in that sentence is a readout, not set dressing.',
   },
   prose: [
     'An age-of-sail game you play in a browser. You captain a sloop, you trade, you get chased by raiders, and none of that is the interesting part. The interesting part is that the boat is not steered like a car.',

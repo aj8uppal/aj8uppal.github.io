@@ -28,6 +28,14 @@ const OUT = path.resolve(import.meta.dirname, '../src/assets');
 const EMBER = { left: 0, top: 120, width: 3456, height: 1920 };
 const SALT_CLEAN = { left: 680, top: 75, width: 2776, height: 1562 }; // 16:9, panel removed
 const SALT_FULL = { left: 0, top: 75, width: 3456, height: 2159 }; // panel kept, on purpose
+/**
+ * The card lead slot is a 2.15:1 band. Cropping a 16:9 frame down to it with
+ * object-fit would eat the top of the Ghostgale status panel, which is real
+ * product UI and part of the evidence. So the band is composed here instead:
+ * the developer strip goes, the whole right-hand HUD column stays, and the
+ * height comes off the bottom, where there is nothing but water and chrome.
+ */
+const SALT_LEAD = { left: 680, top: 75, width: 2776, height: 1291 };
 
 /** @type {Array<{in: string, out: string, crop?: object, width: number, quality?: number}>} */
 const JOBS = [
@@ -96,13 +104,14 @@ const JOBS = [
     width: 1600,
   },
 
-  // saltline - full-bleed spread. The night frame, because it is the coldest thing
-  // on the page and it has to sit between Ember's warm dusk and hidamari's gold.
+  // saltline - the flagship lead. Picked frame, not a default: 06:31 dawn, island
+  // silhouette, three raiders named on the horizon, light path on the water.
+  // Swap it by pointing saltline.lead.asset at a different name in content.ts.
   {
-    in: 'saltline-night-moon-wake.png',
-    out: 'saltline-spread-night',
-    crop: SALT_CLEAN,
-    width: 3000,
+    in: 'saltline-dawn-island-blue.png',
+    out: 'saltline-lead-dawn',
+    crop: SALT_LEAD,
+    width: 2800,
   },
   // saltline - the arc: one seed, six times of day, all six shown at once. Read in
   // chronological order, which is the order they are declared in.
