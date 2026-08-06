@@ -59,7 +59,7 @@ export const contact = {
   /* No resume URL here on purpose. The 2024 PDF has a home address and a phone
      number on it, so there is nothing safe to point the button at yet. */
   resumeNote:
-    'The PDF I have is from 2024 and it carries my home address and my phone number, which is fine on an application and not fine on a public page. The button turns on when I have cut that block out and brought the rest up to date. Until then, email me and I will send it.',
+    'The current PDF is from 2024 and has my home address on it, so it’s not going on a public page. Email me and I’ll send you a current one.',
 } as const;
 
 /**
@@ -103,9 +103,9 @@ export const ticker = [
 
 export const cover = {
   kicker: ['San Mateo, California', 'Software engineer at Notable Health'],
-  lead: 'I studied computer science and astrophysics at the same time because I could not pick one, and I have been building things that run in a browser ever since.',
+  lead: 'I studied computer science and astrophysics at the same time because I couldn’t pick one. These days I build things that run in a browser.',
   second:
-    'A sailing game that runs an actual sailing model, a voxel MMORPG with real multiplayer, a rendering experiment that fakes sunlight by refusing to compute it, and a tower defense whose simulation core cannot see the DOM. Two of them you can play today. Two are not finished, and this page says so.',
+    'Right now that’s four projects: a sailing game that runs a real sailing model, a voxel MMORPG that holds up to 64 people in a realm, a rendering experiment that fakes sunlight by refusing to compute it, and a tower defense with a deterministic sim core. Two are live today. Two aren’t finished yet.',
   strip: [
     { dt: 'Place', dd: 'San Mateo', sub: 'California' },
     { dt: 'Work', dd: 'Software engineer', sub: 'Notable Health, since Aug 2022' },
@@ -115,22 +115,19 @@ export const cover = {
 } as const;
 
 export const about = {
-  statement: 'Everything I know well, I know because I built one.',
+  statement: 'I learn things by building them.',
   prose: [
-    'I have wanted to be an astronaut since I was four. That has not happened, but it decided what I studied: two bachelor’s degrees at once, computer science and astrophysics, on a schedule where Algorithms and General Relativity landed in the same week.',
-    'Simulating CO2 cooling for a particle detector and simulating an ocean for a sailing game turn out to be the same problem wearing different clothes: pick a model, pick a timestep, and be honest about what you left out.',
+    'I did two degrees at once, computer science and astrophysics, because I couldn’t choose between them. Some weeks that meant Algorithms and General Relativity in the same problem-set pile.',
+    'In college I simulated CO2 cooling for particle detectors. Now I simulate oceans for a sailing game. It’s more or less the same job: pick a model, pick a timestep, and know what you’re leaving out.',
   ],
   notes: [
     ['Off the clock', 'Heirloom tomatoes, bikes, and Pink Floyd, roughly in that order.'],
     ['Long held', 'Wanted to be an astronaut since I was four. Still would.'],
-    [
-      'Will debate',
-      'Python is the best language. I have heard the counterarguments and I remain unmoved.',
-    ],
+    ['Will debate', 'Python is the best language. I’ve heard the counterarguments.'],
     ['Best class', 'Cosmology and Consciousness. An independent study, and I had to ask for it.'],
   ] as Array<[string, string]>,
   method:
-    'This page is a static Astro build. Every screenshot is a capture of the actual project, at the resolution it actually runs. Where something is unfinished it says so, and where a link would be dead there is no link.',
+    'Every screenshot on this page is a real capture of the project it belongs to. Nothing is mocked up.',
 } as const;
 
 /* ── Ember Wilds ─────────────────────────────────────────────────────── */
@@ -184,7 +181,7 @@ export const emberRegions: Frame[] = [
       ['Region', 'The Ashen Waste'],
       ['Hit', '684'],
     ],
-    note: 'Nova, mid-detonation, 684 damage on the creature it caught. The ring is a real area effect resolved on the realm, not a particle flourish.',
+    note: 'Nova, mid-detonation. The ring is resolved on the server, and it did 684 damage to the creature it caught.',
   },
   {
     key: 'greywall',
@@ -216,19 +213,18 @@ export const ember = {
   spread: {
     n: 'Plate 02 / Ember Wilds',
     t: 'A voxel MMORPG, shipped',
-    s: 'Fallowmere at dusk, level thirty, nine thousand fame in. The world state, the quest chain and the loot all live on a realm service. The browser is only a client.',
+    s: 'Fallowmere at dusk, level 30, nine thousand fame in. World state, quests and loot all live on the realm server - the browser just renders it.',
   },
   prose: [
     'A voxel MMORPG that runs in a browser tab. I designed it, built it, and put it in production on Fly.io, where a web tier and a separate realm service keep one world consistent for everyone in it.',
-    'This is the strongest single thing I have built, and the reason is not the rendering. It is that a stranger can open it right now and play it with someone else.',
+    'It’s the most complete thing I’ve built. A stranger can open a tab right now, make a character, and run into other people.',
   ],
-  framesLede:
-    'Seven regions, one character at level thirty. Tabs, or arrow keys once one has focus.',
+  framesLede: 'Seven regions, one level-30 character. Click the tabs or use the arrow keys.',
   proof: {
     t: 'One realm, up to 64 players',
     body: [
       'This frame is two of us in the same Hearthvale from two browsers, and a realm holds up to 64 at once. Everyone in it is simulated by the same server, which was the hard part.',
-      'If I only got to show one frame from four years of side projects, it would be this one.',
+      'If I could only show one screenshot from four years of side projects, it’d be this one.',
     ],
   },
   plate: [
@@ -325,20 +321,20 @@ export const saltline = {
   spread: {
     n: 'Plate 01 / saltline',
     t: 'Sailing, actually simulated',
-    s: '06:31, sea state moderate, wind at forty degrees, seed 4193. Sail full, 14.0 knots, no heel. Every number in that sentence is a readout, not set dressing.',
+    s: '06:31, sea state moderate, wind at forty degrees, seed 4193. Sail full, 14 knots, no heel - all of it read straight off the HUD.',
   },
   prose: [
-    'An age-of-sail game you play in a browser. You captain a sloop, you trade, you get chased by raiders, and none of that is the interesting part. The interesting part is that the boat is not steered like a car.',
-    'The ocean under it is generated, not painted. Drag the clock: the same water, under light that far apart, does not look like the same water at all.',
+    'An age-of-sail game you play in a browser. You captain a sloop, trade between islands, and get chased by raiders. The part I care about is the sailing itself: the boat isn’t steered like a car.',
+    'The ocean is generated from a seed. Drag the clock below - same seed, same wind, and the water reads completely differently at four in the morning than it does at sunset.',
   ],
   framesLede:
     'One seed at six times of day. Sea state moderate, wind at forty degrees, crest sharpness 0.68, seed 4193, identical in all six. Only the clock moved.',
   arcNote:
-    'Speed is not progress. At golden hour the sloop makes 15.0 knots through the water and 2.3 toward the mark; at sunrise, 13.6 and 11.0. Choosing between those is the game.',
+    'At golden hour the sloop is doing 15 knots through the water but only 2.3 toward the mark; at sunrise it’s 13.6 and 11. Picking the angle is the whole game.',
   proof: {
-    t: 'The panel is in this frame on purpose',
+    t: 'The dev panel, left in on purpose',
     body: [
-      'The 16:46 frame with nothing cropped off it. Time of day, sea state, wind angle, crest sharpness and seed are inputs to a simulation, not a menu of pretty presets. Change the seed and you get a different ocean running the same rules.',
+      'This is the 16:46 frame, uncropped. The panel on the left is the simulation’s actual inputs: time of day, sea state, wind angle, crest sharpness, seed. New seed, new ocean, same rules.',
     ],
   },
   plate: [
@@ -361,12 +357,12 @@ export const hidamari = {
   sub: 'Ambient app. Japanese for a sunny spot, the pool of light you stand in.',
   spread: {
     n: 'Plate 03 / hidamari',
-    t: 'Photoreal by cheating on purpose',
-    s: 'One autumn path at golden hour. Nothing in this frame is being lit in your browser, and that is the entire technique.',
+    t: 'Photoreal, because it cheats',
+    s: 'One autumn path at golden hour. None of it is lit in the browser - that’s the trick.',
   },
   prose: [
     'A calm ambient app: one autumn canopy path at golden hour, still enough to leave open on a second monitor. It holds 116 frames per second on hardware that could not path-trace a single frame of it.',
-    'It gets there by not solving the lighting at all. The plates are rendered offline in Blender Cycles and reprojected against a depth pass, so the camera moves through them with real parallax. The browser is compositing photographs of a place that does not exist. Not public yet: I want the audio right first.',
+    'None of the lighting is computed live. The frames are rendered offline in Blender Cycles and reprojected against a depth pass, so the camera gets real parallax through pre-lit plates - the browser is compositing photographs of a place that doesn’t exist. It’s not public yet; I want the audio right first.',
   ],
   plate: [
     ['Status', 'Not public'],
@@ -385,8 +381,8 @@ export const elderwood = {
   sub: 'Browser-native tower defense. Playable greybox, and an architecture argument.',
   title: 'A sim core that ignores the browser',
   prose: [
-    'A browser-native tower defense. What is finished is the part I care about: the simulation is held strictly apart from everything that draws it.',
-    'The sim cannot touch the DOM, import three.js, read the wall clock or call Math.random. Those are not conventions I try to remember. The boundary holds because crossing it does not compile.',
+    'A browser-native tower defense. The part that’s done is the part I care about: the simulation is fully separated from everything that draws it.',
+    'The sim can’t touch the DOM, import three.js, read the clock, or call Math.random - and that’s enforced by the compiler and the linter, not by me remembering.',
   ],
   plate: [
     ['Status', 'Playable greybox: placement, waves, enough economy to lose'],
@@ -398,7 +394,7 @@ export const elderwood = {
   figures: [
     { key: 'default', tab: 'Default', cap: 'Greybox geometry, no art pass.' },
     { key: 'coverage', tab: 'Coverage', cap: 'Placement overlay, showing tower reach.' },
-    { key: 'stress', tab: 'Stress', cap: 'Stress burst. The tick rate does not move.' },
+    { key: 'stress', tab: 'Stress', cap: 'Stress burst; the tick rate holds.' },
   ],
 } as const;
 
@@ -413,7 +409,7 @@ export const roles: Role[] = [
     where: 'San Mateo, CA',
     body: 'Healthcare AI platform. I work across integrations: architected and deployed the services that move data between the platform and electronic health record systems.',
     pending: {
-      note: 'Four years belongs in more than three lines. I would rather leave the slot marked than fill it with something vague about impact.',
+      note: 'A proper write-up of these four years is coming; the line above is just the shape of it.',
     },
     stack:
       'Python · TypeScript · Node.js · React · PostgreSQL · BigQuery · GCP · Kubernetes · Terraform',
@@ -474,7 +470,7 @@ export const roles: Role[] = [
 export const errata = [
   {
     ref: 'a',
-    text: 'The BAAQMD internship is dated Summer 2017 on my old site and June to August 2019 on my 2024 resume, and the second collides with the Got It.AI internship in the same months. I have not reconciled my own records, so the year is left off rather than guessed.',
+    text: 'My old site dates this internship Summer 2017 and my 2024 resume says June to August 2019, which collides with the Got It internship. Until I dig up the truth, the year stays off.',
   },
 ] as const;
 
@@ -482,7 +478,7 @@ export const errata = [
 
 export const playground = {
   statement: 'I opened all twenty-five and kept the twelve that still run.',
-  prose: ['Three of them are below, running inline rather than photographed. Move them.'],
+  prose: ['Three of them run right here. Go ahead.'],
   items: [
     {
       yr: 'c. 2019',
@@ -508,12 +504,12 @@ export const playground = {
       href: '/grinchjump.html',
       status: 'live' as Status,
       statusLabel: 'Repaired',
-      what: 'Doodle Jump in three dimensions, built while I was learning three.js. Its keyboard library went down with a CDN; it is vendored now, so it cannot die that way again.',
+      what: 'Doodle Jump in three dimensions, built while I was learning three.js. Its keyboard library vanished along with a CDN, so the dependencies now live in the repo.',
       k: 'three.js r70 · vendored deps',
     },
   ],
   method:
-    'Three are deleted outright rather than unpublished. The rest are still served at their original URLs, just not linked from here, because a dead demo on a portfolio is worse than no demo. Dates marked c. come from the repository rather than from memory.',
+    'Three were deleted outright; the rest still live at their old URLs, just not linked here. Dates marked c. are from git, not memory.',
 } as const;
 
 export const earlier = [
@@ -584,7 +580,7 @@ export const education = {
       p: 'Dean’s List. Honors thesis. Research assistant in the Physics Department.',
     },
   ],
-  note: 'Both at once, on one four-year clock. It is the single fact about me that is hardest to fake and easiest to explain.',
+  note: 'Both degrees at once, in four years.',
   method:
-    'This used to be a list of 37 courses, every one of them a link. All 37 links are dead. Eight, unlinked, is more useful than 37 that go nowhere.',
+    'The old version of this page listed 37 courses, every one of them a link, and every link had died. These are the eight that mattered.',
 } as const;
