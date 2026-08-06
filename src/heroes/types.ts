@@ -70,8 +70,9 @@ export interface HeroInstance {
   resize(v: HeroView): void;
   relight(t: HeroTokens): void;
   destroy(): void;
-  /** How many primitives this variant puts on the screen. Reported by the
-      perf probe, so a slow variant can be read against what it is drawing. */
+  /** The count that describes this variant's work - patches, lines, particles,
+      grid cells. Reported by the perf probe, so a slow variant can be read
+      against what it is actually doing rather than against a guess. */
   elements: number;
 }
 

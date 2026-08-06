@@ -7,9 +7,12 @@
  * without the lab.
  */
 
+import { contour } from '../heroes/contour';
 import { dapple } from '../heroes/dapple';
+import { flow } from '../heroes/flow';
+import { swell } from '../heroes/swell';
 import type { HeroVariant } from '../heroes/types';
 
-export const heroes: readonly HeroVariant[] = [dapple];
+export const heroes: readonly HeroVariant[] = [dapple, swell, flow, contour];
 
 export const defaultHero: HeroVariant = heroes[0]!;
