@@ -72,12 +72,14 @@
   /* The canopy. The hero paints these onto a canvas rather than into a box, so
      they are the one set of tokens that has to survive leaving CSS - the hero
      script reads them back out. Sky runs top to bottom; the three light steps
-     are the core of a patch, its shoulder, and the long skirt. */
+     are the core of a patch, its shoulder, and the long skirt; the line is for
+     whatever a variant draws structurally rather than as light. */
   --hero-sky-0: #242331;
   --hero-sky-1: #3d3024;
   --hero-core: #eed484;
   --hero-mid: #ddca7d;
   --hero-skirt: #b88b4a;
+  --hero-line: #a27035;
 
   /* Lines are the text colour at low alpha rather than a colour of their own,
      so a rule on a card is the same family as the words on it. */

@@ -50,10 +50,10 @@ async function run(name, opts, body) {
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
   console.log(`\n── ${name} ──`);
   await page.goto(BASE, { waitUntil: 'networkidle' });
-  /* The dev server carries the palette switcher and the shipped site does not,
-     so it comes out before anything is measured. Auditing review furniture
-     would be auditing the wrong page. */
-  await page.evaluate(() => document.querySelector('[data-palette-switcher]')?.remove());
+  /* The dev server carries the design lab and the shipped site does not, so it
+     comes out before anything is measured. Auditing review furniture would be
+     auditing the wrong page. */
+  await page.evaluate(() => document.querySelector('[data-lab]')?.remove());
   await settle(page);
   await body(page, name);
   note(errors.length === 0, `${name} console clean`, errors.slice(0, 3).join(' | '));
@@ -436,7 +436,7 @@ await run(
       const avg = perf.totalDrawMs / Math.max(perf.frames, 1);
       note(avg < 4, 'hero draw stays inside the frame budget', `avg ${avg.toFixed(3)}ms`);
       console.log(
-        `       hero: ${perf.patches} light patches, first frame in ${perf.setupMs}ms, ` +
+        `       hero: ${perf.variant}, ${perf.elements} elements, first frame in ${perf.setupMs}ms, ` +
           `avg draw ${avg.toFixed(3)}ms, max ${perf.maxDrawMs.toFixed(2)}ms, ${perf.fps} fps`,
       );
     }

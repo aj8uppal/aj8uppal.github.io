@@ -1,0 +1,246 @@
+---
+/**
+ * The design lab. A review tool, not part of the site.
+ *
+ * Two rows: palettes on one, hero variants on the other, both driven off the
+ * same registries the page itself is built from, so a new palette or a new
+ * hero appears here for free.
+ *
+ * It is rendered only on a dev build, or on one made with `npm run build:lab`,
+ * and on the second of those it stays out of the way until the URL asks for it
+ * with `?lab` (`?palettes` still works, from when this was only a palette
+ * switcher). A default production build does not contain this markup, this
+ * script, or these styles at all: the gate is in Base.astro, so nothing here is
+ * ever reached.
+ *
+ * Palettes are pure CSS custom properties, so switching one needs nothing but
+ * `:root`. Canvases cannot inherit a custom property and cannot be swapped by
+ * one either, so the hero runtime listens for `palettechange` and `herochange`.
+ */
+import { palettes, swatch, defaultPalette } from '../data/palettes';
+import { heroes, defaultHero } from '../data/heroes';
+
+interface Props {
+  /** Dev builds show it unasked. A flagged production build waits for ?lab. */
+  alwaysOn: boolean;
+}
+
+const { alwaysOn } = Astro.props;
+---
+
+<aside
+  class="lab"
+  data-lab
+  data-always={alwaysOn ? 'on' : 'off'}
+  data-pal-default={defaultPalette.id}
+  data-hero-default={defaultHero.id}
+  hidden
+  aria-label="Design lab"
+>
+  <p class="lab__t">Design lab · review only</p>
+
+  <p class="lab__h" id="lab-pal">Palette</p>
+  <div class="lab__pal" role="group" aria-labelledby="lab-pal">
+    {
+      palettes.map((p) => (
+        <button
+          class="lab__b"
+          type="button"
+          data-pal={p.id}
+          aria-pressed={p.id === defaultPalette.id}
+          title={`${p.name} · ${p.by}${p.scheme === 'light' ? ' · light' : ''}`}
+        >
+          <span class="lab__sw" aria-hidden="true">
+            {swatch(p).map((c) => (
+              <i style={`background:${c}`} />
+            ))}
+          </span>
+          <span class="lab__id" aria-hidden="true">
+            {p.id}
+          </span>
+          <span class="sr">{p.name}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <p class="lab__h" id="lab-hero">Hero</p>
+  <div class="lab__hero" role="group" aria-labelledby="lab-hero">
+    {
+      heroes.map((v) => (
+        <button
+          class="lab__b lab__b--wide"
+          type="button"
+          data-hero={v.id}
+          aria-pressed={v.id === defaultHero.id}
+          title={v.blurb}
+        >
+          {v.name}
+        </button>
+      ))
+    }
+  </div>
+</aside>
+
+<script>
+  import { palettes, defaultPalette } from '../data/palettes';
+  import { heroes, defaultHero } from '../data/heroes';
+
+  const PAL_KEY = 'p6-palette';
+  const HERO_KEY = 'p6-hero';
+  const box = document.querySelector<HTMLElement>('[data-lab]');
+
+  const asked = (): boolean => {
+    const q = new URLSearchParams(location.search);
+    return q.has('lab') || q.has('palettes');
+  };
+
+  if (box && (box.dataset.always === 'on' || asked())) {
+    box.hidden = false;
+
+    const root = document.documentElement;
+    /* Every property any palette can set, so switching away from one clears
+       what it wrote rather than leaving it under the next. */
+    const owned = new Set(palettes.flatMap((p) => Object.keys(p.vars)));
+
+    const press = (attr: 'pal' | 'hero', id: string): void => {
+      for (const b of box.querySelectorAll<HTMLButtonElement>(`[data-${attr}]`)) {
+        b.setAttribute('aria-pressed', String(b.dataset[attr] === id));
+      }
+    };
+
+    const applyPalette = (id: string): void => {
+      const p = palettes.find((x) => x.id === id) ?? defaultPalette;
+      for (const name of owned) root.style.removeProperty(name);
+      for (const [name, value] of Object.entries(p.vars)) root.style.setProperty(name, value);
+      if (p.isDefault) root.style.removeProperty('color-scheme');
+      else root.style.setProperty('color-scheme', p.scheme);
+      press('pal', p.id);
+      window.dispatchEvent(new Event('palettechange'));
+    };
+
+    const applyHero = (id: string): void => {
+      const v = heroes.find((x) => x.id === id) ?? defaultHero;
+      root.dataset.hero = v.id;
+      press('hero', v.id);
+      window.dispatchEvent(new Event('herochange'));
+    };
+
+    box.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-pal],[data-hero]');
+      if (!b) return;
+      if (b.dataset.pal) {
+        localStorage.setItem(PAL_KEY, b.dataset.pal);
+        applyPalette(b.dataset.pal);
+      } else if (b.dataset.hero) {
+        localStorage.setItem(HERO_KEY, b.dataset.hero);
+        applyHero(b.dataset.hero);
+      }
+    });
+
+    /* Only depart from the default when the stored choice is something else.
+       The runtime has already mounted the default hero and the stylesheet is
+       already the default palette, so agreeing with them costs nothing. */
+    const pal = localStorage.getItem(PAL_KEY);
+    if (pal && pal !== box.dataset.palDefault) applyPalette(pal);
+    const hero = localStorage.getItem(HERO_KEY);
+    if (hero && hero !== box.dataset.heroDefault) applyHero(hero);
+  }
+</script>
+
+<style>
+  .lab {
+    position: fixed;
+    z-index: 90;
+    right: 0.8rem;
+    bottom: 0.8rem;
+    max-width: min(370px, calc(100vw - 1.6rem));
+    padding: 0.6rem 0.7rem 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--on-shade) 22%, transparent);
+    border-radius: 14px;
+    color: var(--on-shade);
+    background: color-mix(in srgb, var(--shade) 88%, transparent);
+    box-shadow: 0 14px 45px rgb(0 0 0 / 30%);
+    backdrop-filter: blur(18px) saturate(125%);
+  }
+
+  .lab[hidden] {
+    display: none;
+  }
+
+  .lab__t {
+    margin: 0 0 0.5rem;
+    color: var(--on-shade-2);
+    font: 800 0.6rem/1 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .lab__h {
+    margin: 0.6rem 0 0.35rem;
+    color: color-mix(in srgb, var(--on-shade) 60%, transparent);
+    font: 800 0.55rem/1 var(--mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .lab__pal {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.35rem;
+  }
+
+  .lab__hero {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.35rem;
+  }
+
+  .lab__b {
+    min-height: 44px;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.3rem;
+    border: 1px solid color-mix(in srgb, var(--on-shade) 20%, transparent);
+    border-radius: 9px;
+    color: inherit;
+    background: transparent;
+    font: 700 0.7rem/1.2 var(--sans);
+    cursor: pointer;
+  }
+
+  .lab__b--wide {
+    font: 800 0.62rem/1 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .lab__b:hover {
+    border-color: color-mix(in srgb, var(--on-shade) 55%, transparent);
+  }
+
+  .lab__b[aria-pressed='true'] {
+    border-color: var(--on-shade);
+    background: color-mix(in srgb, var(--on-shade) 14%, transparent);
+  }
+
+  /* Four bars rather than one swatch: the pair of grounds and the pair of
+     accents are the four decisions a palette actually makes. */
+  .lab__sw {
+    display: flex;
+    width: 100%;
+    height: 12px;
+    overflow: hidden;
+    border-radius: 3px;
+  }
+
+  .lab__sw i {
+    flex: 1;
+  }
+
+  .lab__id {
+    font: 800 0.58rem/1 var(--mono);
+  }
+</style>

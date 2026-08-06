@@ -1,5 +1,5 @@
 import { springKeyframes } from './spring';
-import { installHero } from './hero';
+import { installHero } from '../heroes/runtime';
 
 /**
  * Page-level behaviour. Three things: reveal on first sight, the nav's current

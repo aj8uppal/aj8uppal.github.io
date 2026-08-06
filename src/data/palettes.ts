@@ -171,6 +171,7 @@ function resolve(s: PaletteSeed): Record<string, string> {
     '--hero-core': mix(accent, light, 0.32),
     '--hero-mid': accent,
     '--hero-skirt': accent2,
+    '--hero-line': structure,
   };
 }
 

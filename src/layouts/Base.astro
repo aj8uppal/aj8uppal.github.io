@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import PaletteSwitcher from '../components/PaletteSwitcher.astro';
+import Lab from '../components/Lab.astro';
 import { site, sections, contact } from '../data/content';
 
 interface Props {
@@ -11,12 +11,12 @@ interface Props {
 const { title = `${site.title} · ${site.tagline}`, description = site.description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 
-/* The palette switcher is review furniture. A dev server always has it; a
-   build only has it when the build was asked for it by name, with
-   `npm run build:palettes`, and even then it waits for ?palettes.
-   `npm run build` on its own emits none of it. */
+/* The design lab is review furniture. A dev server always has it; a build only
+   has it when the build was asked for it by name, with `npm run build:lab`,
+   and even then it waits for ?lab. `npm run build` on its own emits none of
+   it. The older `palettes` name is still accepted at both ends. */
 const devTools = import.meta.env.DEV;
-const palettesFlag = import.meta.env.MODE === 'palettes';
+const labFlag = import.meta.env.MODE === 'lab' || import.meta.env.MODE === 'palettes';
 ---
 
 <!doctype html>
@@ -65,7 +65,7 @@ const palettesFlag = import.meta.env.MODE === 'palettes';
       <slot />
     </main>
 
-    {(devTools || palettesFlag) && <PaletteSwitcher alwaysOn={devTools} />}
+    {(devTools || labFlag) && <Lab alwaysOn={devTools} />}
 
     <script>
       import '../scripts/motion';
