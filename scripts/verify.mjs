@@ -50,6 +50,10 @@ async function run(name, opts, body) {
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
   console.log(`\n── ${name} ──`);
   await page.goto(BASE, { waitUntil: 'networkidle' });
+  /* The dev server carries the palette switcher and the shipped site does not,
+     so it comes out before anything is measured. Auditing review furniture
+     would be auditing the wrong page. */
+  await page.evaluate(() => document.querySelector('[data-palette-switcher]')?.remove());
   await settle(page);
   await body(page, name);
   note(errors.length === 0, `${name} console clean`, errors.slice(0, 3).join(' | '));
