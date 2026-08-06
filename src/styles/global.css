@@ -2241,8 +2241,11 @@ header[id] {
     font-size: 0.79rem;
   }
 
+  /* Fixed, not a percentage. A short hero puts 28% straight through the
+     location line in the eyebrow row, so the hint sits in the empty field
+     between the nav and that row instead. */
   .hint {
-    top: 28%;
+    top: 4.9rem;
     right: 1rem;
     padding: 0.45rem 0.55rem;
     font-size: 0.57rem;
