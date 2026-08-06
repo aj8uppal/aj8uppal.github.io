@@ -327,9 +327,9 @@ export const saltline = {
   },
   plate: [
     ['Status', 'Live, with accounts'],
-    /* Evidence is the HUD's own sail-together flag. No player count: nobody has
-       verified one, and the realm cap on the plate above belongs to Ember Wilds. */
-    ['Multiplayer', 'Live, sail together'],
+    /* The 20 is read off the server, not off the HUD: a room holds 40 boats and
+       the NPC fleet is capped at 20, so 20 hulls are left for people. */
+    ['Multiplayer', 'Live, sail together, up to 20 players a sea'],
     ['Model', 'Point of sail sets thrust; thrust and heading set VMG'],
     ['Luffing', 'Point too close to the wind and you stop'],
     ['HUD', 'Relative wind, heel angle, thrust percent, VMG in knots'],
