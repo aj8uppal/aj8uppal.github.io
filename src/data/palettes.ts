@@ -17,7 +17,7 @@
  * not declared: `pick` takes whichever of the two poles has more contrast. That
  * is what makes a light-ground palette work without a second code path.
  *
- * Walnut and gold is the exception, and deliberately so. It is the shipped
+ * Tuscan graphite is the exception, and deliberately so. It is the shipped
  * palette, it lives in global.css, and it is the one that has been measured
  * against composited pixels. Its entry here carries no tokens at all: selecting
  * it removes every override and lets the stylesheet be what it already is. That
@@ -49,7 +49,7 @@ export interface PaletteSeed {
   ink: string;
   /** The lightest tone the palette owns. */
   light: string;
-  /** True for walnut and gold: the stylesheet already is this palette. */
+  /** True for Tuscan graphite: the stylesheet already is this palette. */
   isDefault?: boolean;
 }
 
@@ -141,8 +141,8 @@ function resolve(s: PaletteSeed): Record<string, string> {
   const onAccent2 = onFill(accent2, ink, light);
   const band2 = mix(band, ink, 0.08);
 
-  /* The wash over photographs stays dark in every palette, including the two
-     light ones: a screenshot of a night sea does not get lighter because the
+  /* The wash over photographs stays dark in every palette, light ones
+     included: a screenshot of a night sea does not get lighter because the
      page around it did. */
   const shade = s.scheme === 'light' ? mix(ink, '#000000', 0.15) : ink;
   /* The nav is shade at 78% over the page, so on a light page it composites
@@ -199,10 +199,12 @@ function resolve(s: PaletteSeed): Record<string, string> {
 }
 
 /* ── The palettes ────────────────────────────────────────────────────────
-   Thirteen. C is the shipped one and the default; E and F are firstmate's,
-   drawn from the flagship imagery; the other ten are the captain's second
-   options page, in the order he sent them. The five retired from the first
-   page are in the history, not here.
+   Five, which is what is left after the captain chose. TG is the shipped one
+   and the default. SM is the light scheme the `scheme` lab toggle pairs it
+   with. C is the palette the site wore until this round and the reference
+   anything new is judged against. E and F are firstmate's, drawn from the
+   flagship imagery. The sixteen retired across two options pages are in the
+   history, not here.
 
    Each of the captain's is five hexes, and the token system needs eight, so
    every entry says in its comment which roles were derived and why. Two rules
@@ -212,99 +214,27 @@ function resolve(s: PaletteSeed): Record<string, string> {
    a five-hex set with two mid-tones has to spend one of them on structure. */
 
 export const palettes: readonly Palette[] = [
-  /* The shipped palette. No tokens: selecting it clears the overrides and the
+  /* Given: pale blue-grey, bone, saffron, graphite, slate-black. Two near
+     neighbours at the dark end make the page and the surface, which is what
+     lets the saffron be the only saturated thing on the screen. Structure is
+     the pale blue-grey brought down to where a border wants to live.
+
+     The shipped palette. No tokens: selecting it clears the overrides and the
      stylesheet's own :root is the palette. */
   {
-    id: 'C',
-    name: 'Walnut and gold',
+    id: 'TG',
+    name: 'Tuscan graphite',
     by: 'captain',
     scheme: 'dark',
-    ground: '#242331',
-    surface: '#533e2d',
-    band: '#efe6d4',
-    accent: '#ddca7d',
-    accent2: '#b88b4a',
-    structure: '#a27035',
-    ink: '#242331',
-    light: '#efe6d4',
+    ground: '#242423',
+    surface: '#333533',
+    band: '#e8eddf',
+    accent: '#f5cb5c',
+    accent2: '#cfdbd5',
+    structure: '#8a938d',
+    ink: '#141514',
+    light: '#e8eddf',
     isDefault: true,
-  },
-
-  /* Given: celadon, sage, maroon, red-orange, ochre. The maroon is the only
-     one dark enough to be the page. The red-orange would be the obvious second
-     accent and cannot be: it carries neither pole as small text, and the
-     second accent is a whole section. It goes to structure instead, where it
-     shows up as the hero line and the border washes, and the sage takes the
-     section. */
-  {
-    id: 'CO',
-    name: 'Celadon and ochre',
-    by: 'captain',
-    scheme: 'dark',
-    ground: '#522a27',
-    surface: '#663631',
-    band: '#a6d49f',
-    accent: '#c59849',
-    accent2: '#9cb380',
-    structure: '#c73e1d',
-    ink: '#2a1513',
-    light: '#eef4e9',
-  },
-
-  /* Given: teal, pale sage, butter, peach, orange. Four of the five are pale,
-     so this is a light scheme and the teal is the band - deepened for the job,
-     because as given it holds neither pole. The undeepened teal stays the
-     accent, where it only has to hold one. */
-  {
-    id: 'PC',
-    name: 'Pacific citrus',
-    by: 'captain',
-    scheme: 'light',
-    ground: '#d9e5d6',
-    surface: '#eddea4',
-    band: '#0b7580',
-    accent: '#0fa3b1',
-    accent2: '#f7a072',
-    structure: '#ff9b42',
-    ink: '#052227',
-    light: '#f6fbf5',
-  },
-
-  /* Given: plum, orchid, periwinkle, ice, mint. The plum is the page and the
-     orchid is the structure it is closest to; the ice becomes the band and the
-     mint, the lightest and least expected, becomes the accent. */
-  {
-    id: 'MT',
-    name: 'Mauve twilight',
-    by: 'captain',
-    scheme: 'dark',
-    ground: '#6c464f',
-    surface: '#80545e',
-    band: '#b3cdd1',
-    accent: '#c7f0bd',
-    accent2: '#9fa4c4',
-    structure: '#9e768f',
-    ink: '#2a181d',
-    light: '#f0f6ef',
-  },
-
-  /* Given: oak, taupe, mauve, slate, navy. The navy is the page and the slate
-     lifts the surface off it. The band is the oak lifted rather than the oak
-     itself: a band at the same value as the accent leaves the call to action
-     with nowhere to sit on it. */
-  {
-    id: 'ON',
-    name: 'Oak and navy',
-    by: 'captain',
-    scheme: 'dark',
-    ground: '#0b1d51',
-    surface: '#1e2a5c',
-    band: '#e3dccb',
-    accent: '#d1c6ad',
-    accent2: '#a1869e',
-    structure: '#bbada0',
-    ink: '#050e29',
-    light: '#f2eee4',
   },
 
   /* Given: slate, pine, sage, straw, shell. A light scheme by measurement
@@ -326,92 +256,21 @@ export const palettes: readonly Palette[] = [
     light: '#fdf6ee',
   },
 
-  /* ── The three coasts ──────────────────────────────────────────────────
-     One palette with three lead colours. Ghost white is the page, apricot the
-     surface, blue slate the band and jungle teal the second accent in all
-     three; only `accent` moves. Flipping between them therefore isolates
-     exactly the decision the captain is making, which is what they are for. */
+  /* The palette the page was built in, and the one every measurement in the
+     stylesheet was originally taken against. Kept for comparison. */
   {
-    id: 'OC',
-    name: 'Olive coast',
-    by: 'captain',
-    scheme: 'light',
-    ground: '#f7f7ff',
-    surface: '#f2d0a4',
-    band: '#545e75',
-    accent: '#4f5d2f',
-    accent2: '#3f826d',
-    structure: '#d8a463',
-    ink: '#22283a',
-    light: '#f7f7ff',
-  },
-
-  {
-    id: 'RC',
-    name: 'Rose coast',
-    by: 'captain',
-    scheme: 'light',
-    ground: '#f7f7ff',
-    surface: '#f2d0a4',
-    band: '#545e75',
-    accent: '#db7f8e',
-    accent2: '#3f826d',
-    structure: '#d8a463',
-    ink: '#22283a',
-    light: '#f7f7ff',
-  },
-
-  {
-    id: 'EC',
-    name: 'Ember coast',
-    by: 'captain',
-    scheme: 'light',
-    ground: '#f7f7ff',
-    surface: '#f2d0a4',
-    band: '#545e75',
-    accent: '#c03221',
-    accent2: '#3f826d',
-    structure: '#d8a463',
-    ink: '#22283a',
-    light: '#f7f7ff',
-  },
-
-  /* Given: near-black, coffee, taupe, cream, snow. The widest range of the
-     ten and the only one that is essentially monochrome - the page is almost
-     black, the band is almost white, and the warmth is entirely in the middle.
-     Structure is coffee and taupe met halfway. */
-  {
-    id: 'CS',
-    name: 'Coffee and snow',
+    id: 'C',
+    name: 'Walnut and gold',
     by: 'captain',
     scheme: 'dark',
-    ground: '#000500',
-    surface: '#362417',
-    band: '#fffbff',
-    accent: '#f1dabf',
-    accent2: '#92817a',
-    structure: '#6a564c',
-    ink: '#000500',
-    light: '#fffbff',
-  },
-
-  /* Given: pale blue-grey, bone, saffron, graphite, slate-black. Two near
-     neighbours at the dark end make the page and the surface, which is what
-     lets the saffron be the only saturated thing on the screen. Structure is
-     the pale blue-grey brought down to where a border wants to live. */
-  {
-    id: 'TG',
-    name: 'Tuscan graphite',
-    by: 'captain',
-    scheme: 'dark',
-    ground: '#242423',
-    surface: '#333533',
-    band: '#e8eddf',
-    accent: '#f5cb5c',
-    accent2: '#cfdbd5',
-    structure: '#8a938d',
-    ink: '#141514',
-    light: '#e8eddf',
+    ground: '#242331',
+    surface: '#533e2d',
+    band: '#efe6d4',
+    accent: '#ddca7d',
+    accent2: '#b88b4a',
+    structure: '#a27035',
+    ink: '#242331',
+    light: '#efe6d4',
   },
 
   /* Straight off the saltline dawn frame, so the flagship imagery and the

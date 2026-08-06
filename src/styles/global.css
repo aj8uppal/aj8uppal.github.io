@@ -14,59 +14,61 @@
 :root {
   color-scheme: dark;
 
-  /* Grounds. Every section stands on exactly one of these. Shadow grey is
-     the page, walnut is anything raised off it. */
-  --ink: #242331;
-  --ink-2: #533e2d;
-  --ink-3: #35302f;
-  --paper: #efe6d4;
-  --paper-2: #e3d8c0;
+  /* Grounds. Every section stands on exactly one of these. Carbon black is
+     the page, graphite is anything raised off it. */
+  --ink: #242423;
+  --ink-2: #333533;
+  --ink-3: #2a2b2a;
+  --paper: #e8eddf;
+  --paper-2: #d7dccf;
 
   /* The screen colour. Behind a canvas or a running game, and nowhere else:
      a screen should read as darker than the page it sits on. */
-  --screen: #17161f;
+  --screen: #0d0e0d;
 
   /* Laid over photographs and over the running games, with its own two text
      steps. This pair does not follow the page from dark to light the way the
      grounds do: a screenshot of a night sea needs the same dark wash under a
      caption whatever colour the page around it is. */
-  --shade: #242331;
-  --on-shade: #efe6d4;
-  --on-shade-2: #cfc4b0;
+  --shade: #141514;
+  --on-shade: #e8eddf;
+  --on-shade-2: #c2c6ba;
 
-  /* Text on dark, in four steps. All measured against --ink-2, the walnut,
+  /* Text on dark, in four steps. All measured against --ink-2, the graphite,
      which is the lightest dark ground on the page, so they hold on every
-     one of them. */
-  --on-ink: #efe6d4;
-  --on-ink-2: #cfc4b0;
-  --on-ink-3: #bbb09c;
-  --on-ink-4: #b0a591;
+     one of them: 10.4, 7.3, 5.8, 4.9. */
+  --on-ink: #e8eddf;
+  --on-ink-2: #c5c9bd;
+  --on-ink-3: #afb3a8;
+  --on-ink-4: #a1a59b;
 
-  /* Text on light. Measured against --paper-2, the darker light ground. */
-  --on-paper: #242331;
-  --on-paper-2: #4a4438;
-  --on-paper-3: #5d5646;
+  /* Text on light. Measured against --paper-2, the darker light ground:
+     13.1, 8.5, 6.1. */
+  --on-paper: #141514;
+  --on-paper-2: #363834;
+  --on-paper-3: #4b4d49;
 
-  /* One hue family, three steps. Sand is the primary and carries every
-     interaction the page has, including focus. Camel is the secondary and
-     the hover. Earth is a border and a wash: at 3.6 against the page ground
+  /* The one saturated colour on the page and two neutrals to set it against.
+     Tuscan sun is the primary and carries every interaction, including focus.
+     Alabaster is the secondary and the hover, and the contact section is
+     painted in it. Sage is a border and a wash: at 3.9 against the graphite
      it is not allowed to carry small text anywhere. */
-  --sand: #ddca7d;
-  --camel: #b88b4a;
-  --earth: #a27035;
+  --sand: #f5cb5c;
+  --camel: #cfdbd5;
+  --earth: #8a938d;
 
-  /* Golden earth, deepened until it carries small text on the light grounds.
-     The bright earth is 3.0 on paper-2; this is 5.5. */
-  --earth-ink: #74491a;
+  /* The sun deepened until it carries small text on the light grounds. The
+     bright sun is 1.1 on paper-2, which is nothing at all; this is 4.5. */
+  --earth-ink: #6e5e31;
 
-  /* Text sitting directly on sand, and on camel. Here both are the same ink as
-     on paper, but each is its own role: sand and camel are one hue family in
-     this palette and two unrelated colours in others, and the contact section
-     is painted in camel. */
-  --on-accent: #242331;
-  --on-accent-2: #242331;
+  /* Text sitting directly on sand, and on camel. Both are this palette's own
+     near-black, but each is its own role: two accents are rarely on the same
+     side of the light-or-dark flip, and the contact section is painted in the
+     second one. */
+  --on-accent: #141514;
+  --on-accent-2: #141514;
 
-  /* The accent again, lifted until it reads on the shade. Here the sand
+  /* The accent again, lifted until it reads on the shade. Here the sun
      already does; a palette whose accent is darker than its page needs a
      brighter one for the nav, which floats on shade wherever it is. */
   --accent-shade: var(--sand);
@@ -76,12 +78,12 @@
      script reads them back out. Sky runs top to bottom; the three light steps
      are the core of a patch, its shoulder, and the long skirt; the line is for
      whatever a variant draws structurally rather than as light. */
-  --hero-sky-0: #242331;
-  --hero-sky-1: #3d3024;
-  --hero-core: #eed484;
-  --hero-mid: #ddca7d;
-  --hero-skirt: #b88b4a;
-  --hero-line: #a27035;
+  --hero-sky-0: #242423;
+  --hero-sky-1: #2d2f2d;
+  --hero-core: #f1d686;
+  --hero-mid: #f5cb5c;
+  --hero-skirt: #cfdbd5;
+  --hero-line: #8a938d;
 
   /* Lines are the text colour at low alpha rather than a colour of their own,
      so a rule on a card is the same family as the words on it. */

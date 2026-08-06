@@ -19,15 +19,15 @@
 import { heroes, defaultHero } from '../data/heroes';
 import type { HeroFrame, HeroInstance, HeroTokens, HeroVariant, HeroView, Rgb } from './types';
 
-/* The six canopy colours, with the walnut-and-gold values as the fallback for
+/* The six canopy colours, with the Tuscan graphite values as the fallback for
    the case where the stylesheet has not arrived yet. */
 const HERO_TOKENS = {
-  sky0: ['--hero-sky-0', '#242331'],
-  sky1: ['--hero-sky-1', '#3d3024'],
-  core: ['--hero-core', '#eed484'],
-  mid: ['--hero-mid', '#ddca7d'],
-  skirt: ['--hero-skirt', '#b88b4a'],
-  line: ['--hero-line', '#a27035'],
+  sky0: ['--hero-sky-0', '#242423'],
+  sky1: ['--hero-sky-1', '#2d2f2d'],
+  core: ['--hero-core', '#f1d686'],
+  mid: ['--hero-mid', '#f5cb5c'],
+  skirt: ['--hero-skirt', '#cfdbd5'],
+  line: ['--hero-line', '#8a938d'],
 } as const;
 
 /**
