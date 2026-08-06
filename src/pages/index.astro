@@ -591,10 +591,10 @@ const heroLabel =
     <div class="labs">
       <article class="lab" data-reveal>
         <div class="lab__head">
-          <span class="lab__date"
-            >{playground.items[0]?.yr} &middot; {playground.items[0]?.statusLabel}</span
-          >
-          <h3>{playground.items[0]?.name}</h3>
+          <span class="lab__date">{playground.items[0]?.statusLabel}</span>
+          <h3>
+            {playground.items[0]?.name}<span class="era">{playground.items[0]?.yr}</span>
+          </h3>
           <p>{playground.items[0]?.what}</p>
         </div>
         <AutoTyper client:visible />
@@ -602,10 +602,10 @@ const heroLabel =
 
       <article class="lab" data-reveal>
         <div class="lab__head">
-          <span class="lab__date"
-            >{playground.items[1]?.yr} &middot; {playground.items[1]?.statusLabel}</span
-          >
-          <h3>{playground.items[1]?.name}</h3>
+          <span class="lab__date">{playground.items[1]?.statusLabel}</span>
+          <h3>
+            {playground.items[1]?.name}<span class="era">{playground.items[1]?.yr}</span>
+          </h3>
           <p>{playground.items[1]?.what}</p>
         </div>
         <Deviation client:visible />
@@ -613,10 +613,10 @@ const heroLabel =
 
       <article class="lab lab--wide" data-reveal>
         <div class="lab__head">
-          <span class="lab__date"
-            >{playground.items[2]?.yr} &middot; {playground.items[2]?.statusLabel}</span
-          >
-          <h3>{playground.items[2]?.name}</h3>
+          <span class="lab__date">{playground.items[2]?.statusLabel}</span>
+          <h3>
+            {playground.items[2]?.name}<span class="era">{playground.items[2]?.yr}</span>
+          </h3>
           <p>{playground.items[2]?.what}</p>
         </div>
         <GameFrame
@@ -639,7 +639,7 @@ const heroLabel =
       {
         earlier.map((e) => (
           <li>
-            <span class="when">{e.yr}</span>
+            <span class="era">{e.yr}</span>
             <div>
               <h4>{e.name}</h4>
               <p>{e.what}</p>

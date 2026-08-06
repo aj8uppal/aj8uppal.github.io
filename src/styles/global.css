@@ -1644,6 +1644,27 @@ header[id] {
   text-transform: uppercase;
 }
 
+/* Era chip. These three run a decade behind the flagship work and the cards
+   give no other sign of it, so the year rides the name rather than sitting in
+   a metadata line above it that reads as chrome. */
+.era {
+  display: inline-block;
+  vertical-align: 0.34em;
+  margin-left: 0.5rem;
+  padding: 0.36em 0.62em 0.3em;
+  border: 1px solid var(--line-light-2);
+  border-radius: 999px;
+  font: 750 0.6rem/1 var(--mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.lab .era {
+  border-color: var(--line-dark-2);
+  color: var(--sand);
+}
+
 .lab__head h3 {
   margin: 0;
   font-family: var(--display);
@@ -1946,9 +1967,13 @@ button.toolbar__link {
   font-size: 0.85rem;
 }
 
-.earlier .when {
-  font: 750 0.7rem/1.7 var(--mono);
-  text-transform: uppercase;
+/* The same chip in the column this list already gives the year. It is a grid
+   item here, so it stretches to the row unless both axes are pinned. */
+.earlier .era {
+  justify-self: start;
+  align-self: start;
+  margin: 0.2rem 0 0;
+  vertical-align: baseline;
 }
 
 .earlier .stack {
