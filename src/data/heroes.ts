@@ -10,12 +10,22 @@
 import { contour } from '../heroes/contour';
 import { dapple } from '../heroes/dapple';
 import { flow } from '../heroes/flow';
+import { freewheel } from '../heroes/freewheel';
 import { loose } from '../heroes/loose';
 import { rig } from '../heroes/rig';
 import { swell } from '../heroes/swell';
 import type { HeroVariant } from '../heroes/types';
 import { umbra } from '../heroes/umbra';
 
-export const heroes: readonly HeroVariant[] = [dapple, swell, flow, contour, umbra, rig, loose];
+export const heroes: readonly HeroVariant[] = [
+  dapple,
+  swell,
+  flow,
+  contour,
+  umbra,
+  rig,
+  loose,
+  freewheel,
+];
 
 export const defaultHero: HeroVariant = heroes[0]!;
