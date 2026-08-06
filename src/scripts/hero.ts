@@ -1,68 +1,103 @@
 /**
- * The hero flow field, live.
+ * The hero canopy, live.
  *
- * This is the same field the still plate was generated from: a normalised
- * vector field integrated with midpoint RK2 from 264 seeds. The still version
- * ran once in Python and wrote a PNG. This one runs every frame, so it is split
- * in two:
+ * Light through leaves. Thirty-eight soft patches drift and sway over a
+ * shadow-grey to walnut ground, blended additively so that where two of them
+ * overlap the ground gets brighter rather than muddier. Wherever the pointer
+ * rests the patches lean toward it and burn harder: you bring your own light.
  *
- *   1. A base layer of all 264 streamlines, integrated with the analytic field
- *      and drawn once into an offscreen canvas. Rebuilt only on resize, in
- *      chunks, so no single frame pays for the whole thing. Per frame it costs
- *      one drawImage.
- *   2. A live layer of the fifteen accent streamlines plus drifting particles,
- *      re-integrated every frame through a field that is warped around the
- *      pointer. This is the part that reacts, and it is small on purpose.
+ * A patch is one cached sprite, scaled and alpha-blended, rather than a fresh
+ * radial gradient every frame. Both stops of that gradient clamp at the same
+ * glow, so scaling the sprite by alpha is not an approximation of the
+ * per-frame version, it is the same image for none of the allocation.
  *
- * The live layer reads the field from a lookup grid rather than calling sin and
- * cos four times per sample, and the pointer warp falls off polynomially rather
- * than as a Gaussian. There is no transcendental function in the per-frame path.
+ * The whole thing draws at full resolution straight onto the visible canvas.
+ * The obvious optimisation - paint the light into a small buffer and blow it
+ * up, since light has no edges - measured 5.6ms a frame against 0.018ms for
+ * the direct version: a canvas that large is composited on the GPU, and a
+ * small offscreen one is not. The cheap-looking path was three hundred times
+ * the cost of the expensive-looking one.
  *
- * Reduced motion is a different path, not a slower one: build the base, draw a
- * single still frame, and shut the loop down.
+ * Reduced motion is a different path, not a slower one: place the patches at a
+ * fixed phase chosen because it composes well, draw once, start no loop.
  */
 
-/* ── The field ───────────────────────────────────────────────────────── */
+const PATCHES = 38;
 
-const DOM_X = 4.25;
-const DOM_Y = 2.55;
+/** The phase the still frame freezes at. Picked by looking at it. */
+const STILL_T = 4.1;
 
-/** Analytic field, normalised. Used to build the base layer only. */
-function fieldAt(x: number, y: number, out: [number, number]): void {
-  const u = Math.sin(1.35 * y) + 0.42 * Math.cos(1.8 * x) + 0.11 * y;
-  const v = -Math.sin(1.12 * x) + 0.34 * Math.cos(2.2 * y) - 0.08 * x;
-  const m = Math.hypot(u, v) || 1e-7;
-  out[0] = u / m;
-  out[1] = v / m;
+/** How bright one patch is allowed to get on its own, before stacking. */
+const PEAK = 0.5;
+
+/* The one brightness knob, applied to every patch. The patches stack
+   additively and the hero carries the largest text on the page, so the ceiling
+   here is not taste - it is the 3:1 the display line needs and the 4.5:1 the
+   kicker needs against whatever pool of light drifts under them. Measured
+   against composited pixels, not guessed: see the hero probe in
+   scripts/verify.mjs. */
+const LIGHT = 0.36;
+
+const TAU = Math.PI * 2;
+
+/* Deterministic scatter. The still frame has to be reproducible and so does a
+   screenshot diff, so nothing here calls Math.random. Positions come off the
+   R2 low-discrepancy sequence, which covers evenly without landing on a grid;
+   the rest comes off a seeded mulberry32. */
+const R2_A = 0.7548776662466927;
+const R2_B = 0.569840290998053;
+
+function mulberry32(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
 }
 
-/* Lookup grid, sampled once over a domain wider than the drawn one so the
-   parallax offset never walks off the edge of it. */
-const GW = 176;
-const GH = 108;
-const GX = DOM_X + 0.75;
-const GY = DOM_Y + 0.75;
-const gu = new Float32Array(GW * GH);
-const gv = new Float32Array(GW * GH);
+interface Patch {
+  /** Rest position, as a fraction of the canvas. */
+  nx: number;
+  ny: number;
+  /** Radius, as a fraction of the canvas's geometric mean. */
+  nr: number;
+  /** How far from round. Light through leaves lands in ellipses, not discs. */
+  ar: number;
+  /** Alpha at the centre before the pointer touches it. */
+  a: number;
+  /** Sway rate and phase, so no two patches move together. */
+  sw: number;
+  ph: number;
+}
 
-(function buildGrid(): void {
-  const out: [number, number] = [0, 0];
-  for (let j = 0; j < GH; j++) {
-    const y = -GY + (j / (GH - 1)) * 2 * GY;
-    for (let i = 0; i < GW; i++) {
-      const x = -GX + (i / (GW - 1)) * 2 * GX;
-      fieldAt(x, y, out);
-      gu[j * GW + i] = out[0];
-      gv[j * GW + i] = out[1];
-    }
-  }
+const patches: Patch[] = (() => {
+  const rnd = mulberry32(0x5a17);
+  return Array.from({ length: PATCHES }, (_, i) => {
+    /* Squared, so most patches are small. Dapple is a lot of sharp little
+       pools with dark between them; a handful of big soft ones just fogs the
+       ground. The big ones are dimmed in proportion, which keeps them from
+       stacking into a wash and is what a wide gap in a canopy looks like. */
+    const u = rnd() ** 2;
+    return {
+      nx: (0.5 + (i + 1) * R2_A) % 1,
+      ny: (0.5 + (i + 1) * R2_B) % 1,
+      nr: 0.022 + u * 0.15,
+      ar: 0.62 + rnd() * 0.95,
+      a: 0.36 - u * 0.2,
+      sw: 0.15 + rnd() * 0.5,
+      ph: rnd() * TAU,
+    };
+  });
 })();
 
 /* ── Interaction state ───────────────────────────────────────────────── */
 
-/* Playable's hero spring, unchanged: 0.12 stiffness, 0.73 damping, target set
-   by pointer, touch or arrow keys. A spring carries velocity, so grabbing the
-   pointer mid-flight continues from where it is rather than restarting. */
+/* The hero spring, unchanged from the flow field: 0.12 stiffness, 0.73
+   damping, target set by pointer, touch or arrow keys. A spring carries
+   velocity, so grabbing the pointer mid-flight continues from where the light
+   is rather than restarting it. */
 const pointer = {
   x: 0.62,
   y: 0.42,
@@ -84,8 +119,8 @@ interface HeroPerf {
   maxDrawMs: number;
   avgDrawMs: number;
   fps: number;
-  baseMs: number;
-  lines: number;
+  setupMs: number;
+  patches: number;
 }
 
 const perf: HeroPerf = {
@@ -94,8 +129,8 @@ const perf: HeroPerf = {
   maxDrawMs: 0,
   avgDrawMs: 0,
   fps: 0,
-  baseMs: 0,
-  lines: 0,
+  setupMs: 0,
+  patches: PATCHES,
 };
 
 declare global {
@@ -112,267 +147,80 @@ export function installHero(canvas: HTMLCanvasElement): void {
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* The base layer is drawn larger than the canvas so the parallax translate
-     never exposes an edge. */
-  const OVER = 56;
-
-  const base = document.createElement('canvas');
-  const bctx = base.getContext('2d');
-  if (!bctx) return;
-
   let dpr = 1;
   let w = 0;
   let h = 0;
-  let scale = 1;
+  /* The geometric mean of the canvas. Sizing the patches off this rather than
+     off the height keeps them the same share of the screen in portrait as in
+     landscape, where the height alone would blow them up on a phone. */
+  let unit = 1;
+  let sky: CanvasGradient | null = null;
 
-  /* Seeds, in the generator's order, because the accent picks are index-based
-     and moving the order would move which lines are lit. */
-  const seeds: Array<[number, number]> = [];
-  for (let r = 0; r < 12; r++) {
-    const sy = -2.25 + (r / 11) * 4.5;
-    for (let c = 0; c < 22; c++) {
-      seeds.push([-3.95 + (c / 21) * 7.9, sy]);
-    }
-  }
-  const accents = seeds
-    .map((s, i) => ({ s, i }))
-    .filter(({ i }) => i % 31 === 7 || i % 47 === 3)
-    .map(({ s }) => s);
-  perf.lines = seeds.length;
-
-  /* ── Coordinate mapping ────────────────────────────────────────────── */
-  /* Cover semantics: the field always fills the canvas, and the shorter axis
-     is the one that overflows. */
-  function remap(): void {
-    scale = Math.max((w + OVER * 2) / (DOM_X * 2), (h + OVER * 2) / (DOM_Y * 2));
-  }
-  const sx = (x: number): number => (w + OVER * 2) / 2 + x * scale;
-  const sy = (y: number): number => (h + OVER * 2) / 2 - y * scale;
-
-  /* ── Base layer, built in chunks ───────────────────────────────────── */
-
-  let buildIndex = 0;
-  let buildStart = 0;
-
-  function beginBase(): void {
-    base.width = Math.round((w + OVER * 2) * dpr);
-    base.height = Math.round((h + OVER * 2) * dpr);
-    bctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
-    bctx!.clearRect(0, 0, w + OVER * 2, h + OVER * 2);
-    bctx!.lineCap = 'round';
-    bctx!.lineJoin = 'round';
-    buildIndex = 0;
-    buildStart = performance.now();
+  /* One patch, drawn once: a bright sand core, a camel shoulder that falls off
+     fast, and a long faint skirt. The skirt is what makes two patches read as
+     two rather than as one bright region with a waist. */
+  const SPRITE = 512;
+  const sprite = document.createElement('canvas');
+  sprite.width = SPRITE;
+  sprite.height = SPRITE;
+  {
+    const sc = sprite.getContext('2d');
+    if (!sc) return;
+    const m = SPRITE / 2;
+    const g = sc.createRadialGradient(m, m, 0, m, m, m);
+    g.addColorStop(0, 'rgba(238,212,132,1)');
+    g.addColorStop(0.18, 'rgba(221,202,125,0.82)');
+    g.addColorStop(0.48, 'rgba(184,139,74,0.3)');
+    g.addColorStop(0.78, 'rgba(184,139,74,0.07)');
+    g.addColorStop(1, 'rgba(184,139,74,0)');
+    sc.fillStyle = g;
+    sc.fillRect(0, 0, SPRITE, SPRITE);
   }
 
-  /** Integrates one streamline both ways from a seed and strokes it. */
-  function strokeSeed(index: number): void {
-    const seed = seeds[index];
-    if (!seed) return;
-    const c = bctx!;
-    const accent = index % 31 === 7 || index % 47 === 3;
+  /* ── The frame ─────────────────────────────────────────────────────── */
 
-    c.beginPath();
-    for (const dir of [-1, 1]) {
-      let x = seed[0];
-      let y = seed[1];
-      const dt = 0.018 * dir;
-      const out: [number, number] = [0, 0];
-      let moved = false;
-      for (let s = 0; s < 330; s++) {
-        if (x < -DOM_X || x > DOM_X || y < -DOM_Y || y > DOM_Y) break;
-        // Every third integration step is enough to plot: at this dt the
-        // spacing on screen is around three pixels.
-        if (s % 3 === 0) {
-          if (moved) c.lineTo(sx(x), sy(y));
-          else {
-            c.moveTo(sx(x), sy(y));
-            moved = true;
-          }
-        }
-        fieldAt(x, y, out);
-        const u1 = out[0];
-        const v1 = out[1];
-        fieldAt(x + 0.5 * dt * u1, y + 0.5 * dt * v1, out);
-        x += dt * out[0];
-        y += dt * out[1];
-      }
-    }
-
-    // The accent lines are re-drawn live on top, so the base only lays down
-    // their faint trace and lets the bright pass sit exactly on it.
-    c.strokeStyle = accent
-      ? 'rgba(216, 245, 95, 0.16)'
-      : `rgba(242, 239, 230, ${(0.055 + (index % 4) * 0.014).toFixed(3)})`;
-    c.lineWidth = accent ? 2 : 1;
-    c.stroke();
-  }
-
-  /** Advances the base build by one time-boxed chunk. Returns true when done. */
-  function stepBase(budgetMs = 5): boolean {
-    if (buildIndex >= seeds.length) return true;
-    const until = performance.now() + budgetMs;
-    while (buildIndex < seeds.length && performance.now() < until) {
-      strokeSeed(buildIndex++);
-    }
-    if (buildIndex >= seeds.length) {
-      perf.baseMs = Math.round((performance.now() - buildStart) * 100) / 100;
-      return true;
-    }
-    return false;
-  }
-
-  function finishBase(): void {
-    while (!stepBase(1000));
-  }
-
-  /* ── Live field: grid lookup plus pointer warp ─────────────────────── */
-
-  let warpX = 0;
-  let warpY = 0;
-  let swirl = 0;
-
-  const WARP_R = 1.55;
-  const WARP_R2 = WARP_R * WARP_R;
-
-  function liveField(x: number, y: number, out: [number, number]): void {
-    // Bilinear sample of the precomputed field. No trig in the hot path.
-    let fx = ((x + GX) / (2 * GX)) * (GW - 1);
-    let fy = ((y + GY) / (2 * GY)) * (GH - 1);
-    fx = fx < 0 ? 0 : fx > GW - 1.001 ? GW - 1.001 : fx;
-    fy = fy < 0 ? 0 : fy > GH - 1.001 ? GH - 1.001 : fy;
-    const i = fx | 0;
-    const j = fy | 0;
-    const tx = fx - i;
-    const ty = fy - j;
-    const a = j * GW + i;
-    const b = a + GW;
-    const w00 = (1 - tx) * (1 - ty);
-    const w10 = tx * (1 - ty);
-    const w01 = (1 - tx) * ty;
-    const w11 = tx * ty;
-    let u = gu[a]! * w00 + gu[a + 1]! * w10 + gu[b]! * w01 + gu[b + 1]! * w11;
-    let v = gv[a]! * w00 + gv[a + 1]! * w10 + gv[b]! * w01 + gv[b + 1]! * w11;
-
-    // Polynomial swirl around the pointer, so the streamlines curl into it
-    // instead of the whole field sliding sideways.
-    const dx = x - warpX;
-    const dy = y - warpY;
-    const d2 = dx * dx + dy * dy;
-    if (d2 < WARP_R2) {
-      const f = 1 - d2 / WARP_R2;
-      const k = swirl * f * f;
-      u += -dy * k;
-      v += dx * k;
-    }
-
-    const m = u * u + v * v;
-    if (m > 1e-9) {
-      const inv = 1 / Math.sqrt(m);
-      out[0] = u * inv;
-      out[1] = v * inv;
-    } else {
-      out[0] = 1;
-      out[1] = 0;
-    }
-  }
-
-  /* ── Particles ─────────────────────────────────────────────────────── */
-
-  const PN = 84;
-  const px = new Float32Array(PN);
-  const py = new Float32Array(PN);
-  const plx = new Float32Array(PN);
-  const ply = new Float32Array(PN);
-  const page = new Float32Array(PN);
-
-  function seedParticle(i: number, fresh: boolean): void {
-    // Deterministic scatter: a low-discrepancy pair beats Math.random here
-    // because the distribution is even without needing to be re-rolled.
-    const g = ((i + 1) * 0.618033988749895) % 1;
-    const g2 = ((i + 1) * 0.7548776662466927) % 1;
-    px[i] = (g * 2 - 1) * DOM_X;
-    py[i] = (g2 * 2 - 1) * DOM_Y;
-    plx[i] = px[i]!;
-    ply[i] = py[i]!;
-    page[i] = fresh ? 0 : (i / PN) * 260;
-  }
-  for (let i = 0; i < PN; i++) seedParticle(i, false);
-
-  /* ── Frame ─────────────────────────────────────────────────────────── */
-
-  const out: [number, number] = [0, 0];
-  let offX = 0;
-  let offY = 0;
-
-  function drawFrame(live: boolean): void {
+  /**
+   * Ground, then patches.
+   *
+   * `gx` below zero means no pointer: the reduced-motion frame and the moments
+   * before the first pointer event both take that path, and neither should
+   * show a pool of light sitting in a corner nobody pointed at.
+   */
+  function paint(t: number, gx: number, gy: number, boost: number, offY: number): void {
     const c = ctx!;
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
-    c.fillStyle = '#0b0d0e';
+    c.globalCompositeOperation = 'source-over';
+    c.fillStyle = sky!;
     c.fillRect(0, 0, w, h);
-    c.drawImage(base, -OVER + offX, -OVER + offY, w + OVER * 2, h + OVER * 2);
+    c.globalCompositeOperation = 'lighter';
 
-    // Accent streamlines, re-integrated through the warped field.
-    c.lineCap = 'round';
-    c.lineJoin = 'round';
-    c.strokeStyle = 'rgba(216, 245, 95, 0.5)';
-    c.lineWidth = 2;
-    c.beginPath();
-    for (const seed of accents) {
-      let x = seed[0];
-      let y = seed[1];
-      let moved = false;
-      for (let s = 0; s < 128; s++) {
-        if (x < -DOM_X || x > DOM_X || y < -DOM_Y || y > DOM_Y) break;
-        const ax = sx(x) - OVER + offX;
-        const ay = sy(y) - OVER + offY;
-        if (moved) c.lineTo(ax, ay);
-        else {
-          c.moveTo(ax, ay);
-          moved = true;
-        }
-        liveField(x, y, out);
-        const u1 = out[0];
-        const v1 = out[1];
-        liveField(x + 0.024 * u1, y + 0.024 * v1, out);
-        x += 0.048 * out[0];
-        y += 0.048 * out[1];
+    const swayX = unit * 0.085;
+    const swayY = unit * 0.04;
+    const pullR = unit * (0.42 + boost * 0.1);
+
+    for (const p of patches) {
+      let x = p.nx * w + Math.sin(t * p.sw + p.ph) * swayX;
+      let y = p.ny * h + Math.cos(t * p.sw * 0.7 + p.ph) * swayY + offY;
+      let r = p.nr * unit;
+      let glow = p.a;
+
+      if (gx >= 0) {
+        const dx = gx - x;
+        const dy = gy - y;
+        const pull = Math.max(0, 1 - Math.hypot(dx, dy) / pullR);
+        x += dx * pull * 0.4;
+        y += dy * pull * 0.4;
+        r *= 1 + pull * 0.55;
+        glow *= 1 + pull * (1.15 + boost);
       }
-    }
-    c.stroke();
 
-    if (!live) return;
-
-    // Particles, drawn as the segment they travelled this frame.
-    c.strokeStyle = 'rgba(118, 230, 214, 0.72)';
-    c.lineWidth = 1.5;
-    c.beginPath();
-    for (let i = 0; i < PN; i++) {
-      c.moveTo(sx(plx[i]!) - OVER + offX, sy(ply[i]!) - OVER + offY);
-      c.lineTo(sx(px[i]!) - OVER + offX, sy(py[i]!) - OVER + offY);
+      const rx = r * p.ar;
+      c.globalAlpha = Math.min(glow, PEAK) * LIGHT;
+      c.drawImage(sprite, x - rx, y - r, rx * 2, r * 2);
     }
-    c.stroke();
-  }
 
-  function stepParticles(dt: number): void {
-    const step = 0.006 * Math.min(dt, 34);
-    for (let i = 0; i < PN; i++) {
-      plx[i] = px[i]!;
-      ply[i] = py[i]!;
-      liveField(px[i]!, py[i]!, out);
-      px[i] = px[i]! + step * out[0];
-      py[i] = py[i]! + step * out[1];
-      page[i] = page[i]! + 1;
-      if (
-        page[i]! > 300 ||
-        px[i]! < -DOM_X ||
-        px[i]! > DOM_X ||
-        py[i]! < -DOM_Y ||
-        py[i]! > DOM_Y
-      ) {
-        seedParticle(i, true);
-      }
-    }
+    c.globalAlpha = 1;
+    c.globalCompositeOperation = 'source-over';
   }
 
   /* ── Sizing ────────────────────────────────────────────────────────── */
@@ -385,8 +233,11 @@ export function installHero(canvas: HTMLCanvasElement): void {
     h = r.height;
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
-    remap();
-    beginBase();
+    unit = Math.sqrt(w * h);
+
+    sky = ctx!.createLinearGradient(0, 0, 0, h);
+    sky.addColorStop(0, '#242331');
+    sky.addColorStop(1, '#3d3024');
   }
 
   /* ── Loop ──────────────────────────────────────────────────────────── */
@@ -399,18 +250,8 @@ export function installHero(canvas: HTMLCanvasElement): void {
 
   function loop(now: number): void {
     raf = requestAnimationFrame(loop);
-    const dt = last ? now - last : 16;
+    const dt = last ? Math.min(now - last, 50) : 16;
     last = now;
-
-    if (!stepBase()) {
-      // Still building: show what exists rather than a black hole.
-      const c = ctx!;
-      c.setTransform(dpr, 0, 0, dpr, 0, 0);
-      c.fillStyle = '#0b0d0e';
-      c.fillRect(0, 0, w, h);
-      c.drawImage(base, -OVER, -OVER, w + OVER * 2, h + OVER * 2);
-      return;
-    }
 
     const t0 = performance.now();
 
@@ -422,23 +263,18 @@ export function installHero(canvas: HTMLCanvasElement): void {
     pointer.y += pointer.vy;
     pointer.pulse = Math.max(0, pointer.pulse - dt * 0.0014);
     scrollVel *= 0.86;
-    drift += dt * 0.00028;
+    drift += dt * 0.00075;
 
-    warpX = (pointer.x - 0.5) * 2 * DOM_X;
-    warpY = -(pointer.y - 0.5) * 2 * DOM_Y;
-
+    // A flick of the pointer fans the light out ahead of itself, the way a
+    // gust moves the leaves before it moves the patch.
     const speed = Math.hypot(pointer.vx, pointer.vy);
-    swirl =
-      0.34 +
-      Math.min(1.5, speed * 26) +
-      pointer.pulse * 2.1 +
-      Math.min(0.9, Math.abs(scrollVel) * 0.0022);
+    const boost = Math.min(1.2, speed * 14) + pointer.pulse * 1.4;
 
-    offX = (pointer.x - 0.5) * -26 + Math.sin(drift) * 6;
-    offY = (pointer.y - 0.5) * -18 + Math.max(-34, Math.min(34, scrollVel * 0.06));
+    // Scrolling lifts the canopy, so leaving the hero reads as walking out
+    // from under it rather than sliding a picture off the top of the screen.
+    const offY = Math.max(-26, Math.min(26, scrollVel * 0.09));
 
-    stepParticles(dt);
-    drawFrame(true);
+    paint(drift, pointer.x * w, pointer.y * h, boost, offY);
 
     const ms = performance.now() - t0;
     perf.frames++;
@@ -467,15 +303,9 @@ export function installHero(canvas: HTMLCanvasElement): void {
     raf = 0;
   }
 
-  /** One frame, no loop, no particles. The reduced-motion path. */
+  /** One composed frame, no loop, no pointer. The reduced-motion path. */
   function still(): void {
-    finishBase();
-    warpX = 0;
-    warpY = 0;
-    swirl = 0;
-    offX = 0;
-    offY = 0;
-    drawFrame(false);
+    paint(STILL_T, -1, 0, 0, 0);
   }
 
   /* ── Input ─────────────────────────────────────────────────────────── */
@@ -579,6 +409,13 @@ export function installHero(canvas: HTMLCanvasElement): void {
 
   resize();
   lastScroll = window.scrollY;
-  if (reduced.matches) still();
-  else start();
+
+  // First paint, measured. Everything above this line is thirty-four objects,
+  // a gradient and one sprite, so there is nothing to amortise and nothing to
+  // chunk - the still frame is up before the loop is asked for.
+  const t0 = performance.now();
+  still();
+  perf.setupMs = Math.round((performance.now() - t0) * 100) / 100;
+
+  if (!reduced.matches) start();
 }

@@ -8,6 +8,7 @@
  * and writes full-page captures next to the report.
  */
 import { chromium } from 'playwright';
+import sharp from 'sharp';
 import { mkdir } from 'node:fs/promises';
 
 const BASE = process.argv[2] ?? 'http://127.0.0.1:4321/';
@@ -133,6 +134,120 @@ const CONTRAST = `(() => {
   }
   return out.filter((r) => r.ratio < r.need);
 })()`;
+
+/* The walk above cannot check the hero, and quietly reports it as passing.
+   Every ancestor of the hero's type is transparent down to a canvas, so a
+   computed-style ground is the page colour rather than the drifting light that
+   is actually behind the letters. The only honest ground there is the pixel
+   that shipped: sweep the pointer across the frame - the light gathers where it
+   goes - screenshot each position with the type hidden, and take the brightest
+   pixel inside every text box as that element's worst case. */
+const HERO_TEXT = [
+  '.hero__meta span:first-child',
+  '.hero__meta span:last-child',
+  '.hero h1 span:first-child',
+  '.hero h1 span:last-child',
+  '.hero__intro',
+  '.hint',
+];
+
+const lumOf = (r, g, b) => {
+  const f = (v) => (v / 255 <= 0.03928 ? v / 255 / 12.92 : ((v / 255 + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+};
+const ratioOf = (a, b) => {
+  const [x, y] = [lumOf(...a), lumOf(...b)];
+  return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+};
+
+async function heroContrast(page, width, height) {
+  const hero = await page.evaluate(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    const r = document.querySelector('.hero').getBoundingClientRect();
+    return { y: r.y, w: r.width, h: r.height };
+  });
+  const boxes = (
+    await page.evaluate(
+      (sels) =>
+        sels.map((s) => {
+          const el = document.querySelector(s);
+          if (!el) return null;
+          const r = el.getBoundingClientRect();
+          const cs = getComputedStyle(el);
+          // Same rule as the CSS walk: an unfilled glyph is drawn by its stroke.
+          const col = (cs.color.match(/[\d.]+/g) ?? []).map(Number);
+          const stroked =
+            col.length === 4 && col[3] === 0 && parseFloat(cs.webkitTextStrokeWidth) > 0;
+          return {
+            s,
+            x: r.x,
+            y: r.y,
+            w: r.width,
+            h: r.height,
+            col: (stroked ? cs.webkitTextStrokeColor : cs.color)
+              .match(/[\d.]+/g)
+              .slice(0, 3)
+              .map(Number),
+            own: cs.backgroundColor,
+            px: parseFloat(cs.fontSize),
+            wt: parseInt(cs.fontWeight, 10),
+          };
+        }),
+      HERO_TEXT,
+    )
+  ).filter((b) => b && b.w >= 1);
+
+  const worst = new Map();
+  for (const fx of [0.12, 0.4, 0.65, 0.9])
+    for (const fy of [0.18, 0.45, 0.8]) {
+      await page.mouse.move(hero.w * fx, hero.y + hero.h * fy);
+      await page.waitForTimeout(750);
+      await page.evaluate(() => {
+        for (const e of document.querySelectorAll('.hero__in, .hint'))
+          e.style.visibility = 'hidden';
+      });
+      const shot = await page.screenshot({
+        clip: { x: 0, y: Math.max(0, hero.y), width, height: Math.min(height, hero.h) },
+      });
+      await page.evaluate(() => {
+        for (const e of document.querySelectorAll('.hero__in, .hint')) e.style.visibility = '';
+      });
+      const { data, info } = await sharp(shot).raw().toBuffer({ resolveWithObject: true });
+      const scale = info.width / width;
+      for (const b of boxes) {
+        const x0 = Math.max(0, Math.round(b.x * scale));
+        const y0 = Math.max(0, Math.round((b.y - hero.y) * scale));
+        const x1 = Math.min(info.width, Math.round((b.x + b.w) * scale));
+        const y1 = Math.min(info.height, Math.round((b.y + b.h) * scale));
+        let best = -1;
+        let ground = [0, 0, 0];
+        for (let y = y0; y < y1; y++)
+          for (let x = x0; x < x1; x++) {
+            const i = (y * info.width + x) * info.channels;
+            const l = lumOf(data[i], data[i + 1], data[i + 2]);
+            if (l > best) {
+              best = l;
+              ground = [data[i], data[i + 1], data[i + 2]];
+            }
+          }
+        if (best < 0) continue;
+        // The hint chip carries its own translucent plate over the light.
+        const own = (b.own.match(/[\d.]+/g) ?? []).map(Number);
+        if (own.length === 4)
+          ground = ground.map((v, i) => Math.round(own[i] * own[3] + v * (1 - own[3])));
+        const got = ratioOf(b.col, ground);
+        const prev = worst.get(b.s);
+        if (!prev || got < prev.got) worst.set(b.s, { got, ground, at: `${fx},${fy}` });
+      }
+    }
+  await page.mouse.move(width / 2, hero.y + hero.h * 0.5);
+
+  return boxes.map((b) => {
+    const { got, ground, at } = worst.get(b.s);
+    const need = b.px >= 24 || (b.px >= 18.66 && b.wt >= 700) ? 3 : 4.5;
+    return { sel: b.s, need, got: Math.round(got * 100) / 100, ground: ground.join(','), at };
+  });
+}
 
 await mkdir(OUT, { recursive: true });
 
@@ -312,12 +427,12 @@ await run(
     });
     await page.waitForTimeout(2500);
     const perf = await page.evaluate(() => window.__heroPerf ?? null);
-    note(perf !== null && perf.frames > 30, 'the hero field is live', `${perf?.frames} frames`);
+    note(perf !== null && perf.frames > 30, 'the hero canopy is live', `${perf?.frames} frames`);
     if (perf) {
       const avg = perf.totalDrawMs / Math.max(perf.frames, 1);
       note(avg < 4, 'hero draw stays inside the frame budget', `avg ${avg.toFixed(3)}ms`);
       console.log(
-        `       hero: ${perf.lines} streamlines, base built in ${perf.baseMs}ms, ` +
+        `       hero: ${perf.patches} light patches, first frame in ${perf.setupMs}ms, ` +
           `avg draw ${avg.toFixed(3)}ms, max ${perf.maxDrawMs.toFixed(2)}ms, ${perf.fps} fps`,
       );
     }
@@ -325,8 +440,21 @@ await run(
     const bad = await page.evaluate(CONTRAST);
     note(
       bad.length === 0,
-      'WCAG AA contrast against the acid and coral palette',
+      'WCAG AA contrast against the walnut and gold palette',
       bad.map((b) => `${b.sel} ${b.ratio}:1 (needs ${b.need}) ${b.fg} on ${b.bg}`).join(' | '),
+    );
+
+    const heroRows = await heroContrast(page, 1440, 900);
+    const heroBad = heroRows.filter((r) => r.got < r.need);
+    note(
+      heroBad.length === 0,
+      '1440 hero type clears AA over the brightest light the canopy makes',
+      heroBad.map((r) => `${r.sel} ${r.got}:1 (needs ${r.need}) on rgb(${r.ground})`).join(' | '),
+    );
+    console.log(
+      `       hero worst case: ${heroRows
+        .map((r) => `${r.sel.replace('.hero__', '').replace('.hero ', '')} ${r.got}/${r.need}`)
+        .join(', ')}`,
     );
 
     await settle(page);
@@ -398,6 +526,16 @@ await run(
     );
     note(m.tap.length === 0, '390 every control clears a 34px tap target', m.tap.join(', '));
     console.log(`       page height ${m.height}px at 390`);
+
+    /* The narrow hero stacks the type lower into the frame, past where the
+       desktop scrim has faded out, so this is a different worst case. */
+    const heroRows = await heroContrast(page, 390, 844);
+    const heroBad = heroRows.filter((r) => r.got < r.need);
+    note(
+      heroBad.length === 0,
+      '390 hero type clears AA over the brightest light the canopy makes',
+      heroBad.map((r) => `${r.sel} ${r.got}:1 (needs ${r.need}) on rgb(${r.ground})`).join(' | '),
+    );
 
     await settle(page);
     await page.screenshot({ path: `${OUT}/full-390.png`, fullPage: true });

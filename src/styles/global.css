@@ -364,6 +364,20 @@ header[id] {
   background: var(--ink);
 }
 
+/* The kicker, the display line and the intro all sit straight on the canvas
+   with drifting light underneath them. A vignette at each end holds the ground
+   under the text below the luminance those sizes need, and leaves the middle
+   of the frame - where nothing is written - at full brightness. */
+.hero::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  height: 38%;
+  background: linear-gradient(to bottom, rgb(36 35 49 / 70%), transparent);
+  pointer-events: none;
+}
+
 .hero::after {
   content: '';
   position: absolute;
@@ -401,7 +415,7 @@ header[id] {
   align-items: flex-end;
   gap: 1rem;
   margin-bottom: 1.4rem;
-  color: var(--on-ink-2);
+  color: var(--on-ink);
   font: 700 clamp(0.68rem, 1vw, 0.78rem) / 1.4 var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -468,8 +482,8 @@ header[id] {
   padding: 0.55rem 0.75rem;
   border: 1px solid var(--line-dark);
   border-radius: 999px;
-  color: var(--on-ink-2);
-  background: rgb(36 35 49 / 50%);
+  color: var(--on-ink);
+  background: rgb(36 35 49 / 62%);
   font: 650 0.66rem/1 var(--mono);
   letter-spacing: 0.06em;
   pointer-events: none;
@@ -2217,6 +2231,12 @@ button.toolbar__link {
   .hero__in {
     padding-top: 6.2rem;
     padding-bottom: 1.6rem;
+  }
+
+  /* The narrow layout drops the kicker to about a third of the way down, past
+     where the desktop vignette has faded out. The scrim follows the text. */
+  .hero::before {
+    height: 52%;
   }
 
   .hero__meta {
