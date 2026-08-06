@@ -57,7 +57,7 @@ async function run(name, opts, body) {
 }
 
 /* Relative luminance and the WCAG ratio, so the palette is checked rather than
-   asserted. Acid on ink and coral on ink are not automatically safe. */
+   asserted. Gold on walnut is not automatically safe. */
 const CONTRAST = `(() => {
   const lin = (c) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
   const lum = ([r, g, b]) => 0.2126 * lin(r / 255) + 0.7152 * lin(g / 255) + 0.0722 * lin(b / 255);
@@ -68,7 +68,7 @@ const CONTRAST = `(() => {
   };
   const opaque = (c) => (c.length > 3 ? c[3] > 0.92 : c.length === 3);
   // An ancestor walk cannot see a layer that is not an ancestor. The selected
-  // tab's acid pill is an absolutely positioned sibling painted underneath it,
+  // tab's sand pill is an absolutely positioned sibling painted underneath it,
   // so walking up from the label finds the dark card and reports ink on ink.
   const beneath = (el) => {
     const r = el.getBoundingClientRect();

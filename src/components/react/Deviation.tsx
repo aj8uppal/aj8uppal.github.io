@@ -40,7 +40,7 @@ export default function Deviation() {
       const baseline = h - 34;
       const amplitude = h - 74;
 
-      ctx.strokeStyle = 'rgba(242, 239, 230, 0.08)';
+      ctx.strokeStyle = 'rgba(239, 230, 212, 0.08)';
       ctx.lineWidth = 1;
       for (let i = 0; i <= 8; i++) {
         const x = pad + (inner * i) / 8;
@@ -50,7 +50,7 @@ export default function Deviation() {
         ctx.stroke();
       }
 
-      ctx.strokeStyle = 'rgba(242, 239, 230, 0.28)';
+      ctx.strokeStyle = 'rgba(239, 230, 212, 0.28)';
       ctx.beginPath();
       ctx.moveTo(pad, baseline);
       ctx.lineTo(w - pad, baseline);
@@ -76,13 +76,16 @@ export default function Deviation() {
         ctx.stroke();
       };
 
-      curve(meanA, 'rgba(255, 107, 74, 0.2)', '#ff6b4a');
-      curve(meanB, 'rgba(118, 230, 214, 0.18)', '#76e6d6');
+      /* One hue family, told apart by lightness rather than by hue, so the
+         two curves still separate for a reader who cannot see the difference
+         between a red one and a green one. */
+      curve(meanA, 'rgba(221, 202, 125, 0.2)', '#ddca7d');
+      curve(meanB, 'rgba(184, 139, 74, 0.22)', '#b88b4a');
 
       ctx.font = '700 11px ui-monospace, SFMono-Regular, Consolas, monospace';
-      ctx.fillStyle = '#ff6b4a';
+      ctx.fillStyle = '#ddca7d';
       ctx.fillText('A', pad, 18);
-      ctx.fillStyle = '#76e6d6';
+      ctx.fillStyle = '#b88b4a';
       ctx.fillText('B', pad + 18, 18);
     };
 

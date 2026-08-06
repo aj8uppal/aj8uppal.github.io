@@ -202,8 +202,8 @@ export function installFieldHero(canvas: HTMLCanvasElement): void {
     // The accent lines are re-drawn live on top, so the base only lays down
     // their faint trace and lets the bright pass sit exactly on it.
     c.strokeStyle = accent
-      ? 'rgba(216, 245, 95, 0.16)'
-      : `rgba(242, 239, 230, ${(0.055 + (index % 4) * 0.014).toFixed(3)})`;
+      ? 'rgba(221, 202, 125, 0.16)'
+      : `rgba(239, 230, 212, ${(0.055 + (index % 4) * 0.014).toFixed(3)})`;
     c.lineWidth = accent ? 2 : 1;
     c.stroke();
   }
@@ -308,14 +308,14 @@ export function installFieldHero(canvas: HTMLCanvasElement): void {
   function drawFrame(live: boolean): void {
     const c = ctx!;
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
-    c.fillStyle = '#0b0d0e';
+    c.fillStyle = '#242331';
     c.fillRect(0, 0, w, h);
     c.drawImage(base, -OVER + offX, -OVER + offY, w + OVER * 2, h + OVER * 2);
 
     // Accent streamlines, re-integrated through the warped field.
     c.lineCap = 'round';
     c.lineJoin = 'round';
-    c.strokeStyle = 'rgba(216, 245, 95, 0.5)';
+    c.strokeStyle = 'rgba(221, 202, 125, 0.5)';
     c.lineWidth = 2;
     c.beginPath();
     for (const seed of accents) {
@@ -344,7 +344,7 @@ export function installFieldHero(canvas: HTMLCanvasElement): void {
     if (!live) return;
 
     // Particles, drawn as the segment they travelled this frame.
-    c.strokeStyle = 'rgba(118, 230, 214, 0.72)';
+    c.strokeStyle = 'rgba(184, 139, 74, 0.72)';
     c.lineWidth = 1.5;
     c.beginPath();
     for (let i = 0; i < PN; i++) {
@@ -406,7 +406,7 @@ export function installFieldHero(canvas: HTMLCanvasElement): void {
       // Still building: show what exists rather than a black hole.
       const c = ctx!;
       c.setTransform(dpr, 0, 0, dpr, 0, 0);
-      c.fillStyle = '#0b0d0e';
+      c.fillStyle = '#242331';
       c.fillRect(0, 0, w, h);
       c.drawImage(base, -OVER, -OVER, w + OVER * 2, h + OVER * 2);
       return;
