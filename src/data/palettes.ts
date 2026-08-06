@@ -27,7 +27,8 @@
 export type Scheme = 'dark' | 'light';
 
 export interface PaletteSeed {
-  /** Single letter, as the captain's options page numbers them. */
+  /** Short code, and the switcher's button label. One letter for the three
+      that came off the first options page, two for the captain's second set. */
   id: string;
   name: string;
   by: 'captain' | 'firstmate' | 'codex';
@@ -113,6 +114,20 @@ function deepen(colour: string, pole: string, ground: string, target = 4.5): str
   return out;
 }
 
+/**
+ * Text on a filled accent.
+ *
+ * The pole is chosen by measurement, and then pushed the rest of the way to
+ * black or white if the pole alone does not clear small text. A mid-tone accent
+ * - a jungle teal, say - has no pole that clears 4.5 on its own, and a whole
+ * section is painted in it.
+ */
+function onFill(fill: string, ink: string, light: string): string {
+  const pole = pick(fill, ink, light);
+  const limit = luminance(pole) > luminance(fill) ? '#ffffff' : '#000000';
+  return deepen(pole, limit, fill);
+}
+
 /* ── Derivation ──────────────────────────────────────────────────────── */
 
 function resolve(s: PaletteSeed): Record<string, string> {
@@ -122,7 +137,8 @@ function resolve(s: PaletteSeed): Record<string, string> {
 
   const onGround = pick(ground, ink, light);
   const onBand = pick(band, ink, light);
-  const onAccent = pick(accent, ink, light);
+  const onAccent = onFill(accent, ink, light);
+  const onAccent2 = onFill(accent2, ink, light);
   const band2 = mix(band, ink, 0.08);
 
   /* The wash over photographs stays dark in every palette, including the two
@@ -160,66 +176,42 @@ function resolve(s: PaletteSeed): Record<string, string> {
     '--earth': structure,
     '--earth-ink': deepen(accent, onBand, band2),
     '--on-accent': onAccent,
+    /* One token per accent, because the contact section is painted in the
+       second one and the two are rarely on the same side of the flip. */
+    '--on-accent-2': onAccent2,
     /* Three to one, not four and a half: the current link is marked by
        aria-current as well as by colour, and on a light scheme's pale nav
        anything that clears 4.5 has been bleached to white, which erases the
        accent the colour exists to be. */
     '--accent-shade': deepen(accent, light, onNav, 3),
 
+    /* The canopy. On a light page it has to point the other way: a hero light
+       brighter than its own sky is not visible on it, so the hot end of the
+       ladder is deepened instead of lifted and the variants that add light
+       subtract it instead. The token names do not change; the direction does. */
     '--hero-sky-0': ground,
     '--hero-sky-1': mix(ground, surface, 0.62),
-    '--hero-core': mix(accent, light, 0.32),
+    '--hero-core': mix(accent, s.scheme === 'light' ? ink : light, 0.32),
     '--hero-mid': accent,
     '--hero-skirt': accent2,
-    '--hero-line': structure,
+    '--hero-line': s.scheme === 'light' ? mix(structure, ink, 0.35) : structure,
   };
 }
 
 /* ── The palettes ────────────────────────────────────────────────────────
-   A to D are the captain's, off the options page. E and F are firstmate's,
-   drawn from the flagship imagery. G and H came from the Codex consult.
+   Thirteen. C is the shipped one and the default; E and F are firstmate's,
+   drawn from the flagship imagery; the other ten are the captain's second
+   options page, in the order he sent them. The five retired from the first
+   page are in the history, not here.
 
-   Where a proposal named fewer than eight colours, the missing roles are
-   noted in the comment above it: the token system needs a raised surface and
-   two poles whatever a five-colour swatch offers. */
+   Each of the captain's is five hexes, and the token system needs eight, so
+   every entry says in its comment which roles were derived and why. Two rules
+   decide most of it. A page ground has to carry body text against one of the
+   two poles, which rules out any mid-tone as a ground however handsome it is.
+   And a colour used as a filled section has to carry text as a background, so
+   a five-hex set with two mid-tones has to spend one of them on structure. */
 
 export const palettes: readonly Palette[] = [
-  /* Given: ground, structure, accent, light, deep. The surface is the ground
-     warmed, because the given deep grey is far too light to carry body text
-     as a card ground. */
-  {
-    id: 'A',
-    name: 'Sage and teal',
-    by: 'captain',
-    scheme: 'dark',
-    ground: '#2f2f2f',
-    surface: '#3c3a36',
-    band: '#f3f9d2',
-    accent: '#92b4a7',
-    accent2: '#bdc4a7',
-    structure: '#93827f',
-    ink: '#262626',
-    light: '#f3f9d2',
-  },
-
-  /* Given: ground, structure, accent, warm, light. The clay ground is the
-     lightest page ground of the eight, so the surface has to lift off it
-     rather than sink into it. */
-  {
-    id: 'B',
-    name: 'Clay and sand',
-    by: 'captain',
-    scheme: 'dark',
-    ground: '#654c4f',
-    surface: '#7a5c5f',
-    band: '#c0caad',
-    accent: '#cec075',
-    accent2: '#b26e63',
-    structure: '#9da9a0',
-    ink: '#2e2224',
-    light: '#e9ede0',
-  },
-
   /* The shipped palette. No tokens: selecting it clears the overrides and the
      stylesheet's own :root is the palette. */
   {
@@ -238,24 +230,188 @@ export const palettes: readonly Palette[] = [
     isDefault: true,
   },
 
-  /* Given: ground, structure, accent, deep text, mid. The one light scheme of
-     the captain's four. Both accents have to sit on the same side of the
-     light-or-dark flip, because one --on-accent serves both: the fern is the
-     accent, a deeper fern is the second, and the given mid mint becomes the
-     structural colour it already reads as. */
+  /* Given: celadon, sage, maroon, red-orange, ochre. The maroon is the only
+     one dark enough to be the page. The red-orange would be the obvious second
+     accent and cannot be: it carries neither pole as small text, and the
+     second accent is a whole section. It goes to structure instead, where it
+     shows up as the hero line and the border washes, and the sage takes the
+     section. */
   {
-    id: 'D',
-    name: 'Mint and fern',
+    id: 'CO',
+    name: 'Celadon and ochre',
+    by: 'captain',
+    scheme: 'dark',
+    ground: '#522a27',
+    surface: '#663631',
+    band: '#a6d49f',
+    accent: '#c59849',
+    accent2: '#9cb380',
+    structure: '#c73e1d',
+    ink: '#2a1513',
+    light: '#eef4e9',
+  },
+
+  /* Given: teal, pale sage, butter, peach, orange. Four of the five are pale,
+     so this is a light scheme and the teal is the band - deepened for the job,
+     because as given it holds neither pole. The undeepened teal stays the
+     accent, where it only has to hold one. */
+  {
+    id: 'PC',
+    name: 'Pacific citrus',
     by: 'captain',
     scheme: 'light',
-    ground: '#f1fffa',
-    surface: '#ddf3e4',
-    band: '#ccfccb',
-    accent: '#568259',
-    accent2: '#3f6b4e',
-    structure: '#96e6b3',
-    ink: '#464e47',
-    light: '#f1fffa',
+    ground: '#d9e5d6',
+    surface: '#eddea4',
+    band: '#0b7580',
+    accent: '#0fa3b1',
+    accent2: '#f7a072',
+    structure: '#ff9b42',
+    ink: '#052227',
+    light: '#f6fbf5',
+  },
+
+  /* Given: plum, orchid, periwinkle, ice, mint. The plum is the page and the
+     orchid is the structure it is closest to; the ice becomes the band and the
+     mint, the lightest and least expected, becomes the accent. */
+  {
+    id: 'MT',
+    name: 'Mauve twilight',
+    by: 'captain',
+    scheme: 'dark',
+    ground: '#6c464f',
+    surface: '#80545e',
+    band: '#b3cdd1',
+    accent: '#c7f0bd',
+    accent2: '#9fa4c4',
+    structure: '#9e768f',
+    ink: '#2a181d',
+    light: '#f0f6ef',
+  },
+
+  /* Given: oak, taupe, mauve, slate, navy. The navy is the page and the slate
+     lifts the surface off it. The band is the oak lifted rather than the oak
+     itself: a band at the same value as the accent leaves the call to action
+     with nowhere to sit on it. */
+  {
+    id: 'ON',
+    name: 'Oak and navy',
+    by: 'captain',
+    scheme: 'dark',
+    ground: '#0b1d51',
+    surface: '#1e2a5c',
+    band: '#e3dccb',
+    accent: '#d1c6ad',
+    accent2: '#a1869e',
+    structure: '#bbada0',
+    ink: '#050e29',
+    light: '#f2eee4',
+  },
+
+  /* Given: slate, pine, sage, straw, shell. A light scheme by measurement
+     rather than by taste: the slate is the darkest of the five and still
+     carries neither pole as a page, so it becomes the band and the shell
+     becomes the page. Structure is the straw deepened, the one derived hex. */
+  {
+    id: 'SM',
+    name: 'Slate meadow',
+    by: 'captain',
+    scheme: 'light',
+    ground: '#f0dcca',
+    surface: '#cdc6a5',
+    band: '#696d7d',
+    accent: '#6f9283',
+    accent2: '#8d9f87',
+    structure: '#9a8f6f',
+    ink: '#221f2a',
+    light: '#fdf6ee',
+  },
+
+  /* ── The three coasts ──────────────────────────────────────────────────
+     One palette with three lead colours. Ghost white is the page, apricot the
+     surface, blue slate the band and jungle teal the second accent in all
+     three; only `accent` moves. Flipping between them therefore isolates
+     exactly the decision the captain is making, which is what they are for. */
+  {
+    id: 'OC',
+    name: 'Olive coast',
+    by: 'captain',
+    scheme: 'light',
+    ground: '#f7f7ff',
+    surface: '#f2d0a4',
+    band: '#545e75',
+    accent: '#4f5d2f',
+    accent2: '#3f826d',
+    structure: '#d8a463',
+    ink: '#22283a',
+    light: '#f7f7ff',
+  },
+
+  {
+    id: 'RC',
+    name: 'Rose coast',
+    by: 'captain',
+    scheme: 'light',
+    ground: '#f7f7ff',
+    surface: '#f2d0a4',
+    band: '#545e75',
+    accent: '#db7f8e',
+    accent2: '#3f826d',
+    structure: '#d8a463',
+    ink: '#22283a',
+    light: '#f7f7ff',
+  },
+
+  {
+    id: 'EC',
+    name: 'Ember coast',
+    by: 'captain',
+    scheme: 'light',
+    ground: '#f7f7ff',
+    surface: '#f2d0a4',
+    band: '#545e75',
+    accent: '#c03221',
+    accent2: '#3f826d',
+    structure: '#d8a463',
+    ink: '#22283a',
+    light: '#f7f7ff',
+  },
+
+  /* Given: near-black, coffee, taupe, cream, snow. The widest range of the
+     ten and the only one that is essentially monochrome - the page is almost
+     black, the band is almost white, and the warmth is entirely in the middle.
+     Structure is coffee and taupe met halfway. */
+  {
+    id: 'CS',
+    name: 'Coffee and snow',
+    by: 'captain',
+    scheme: 'dark',
+    ground: '#000500',
+    surface: '#362417',
+    band: '#fffbff',
+    accent: '#f1dabf',
+    accent2: '#92817a',
+    structure: '#6a564c',
+    ink: '#000500',
+    light: '#fffbff',
+  },
+
+  /* Given: pale blue-grey, bone, saffron, graphite, slate-black. Two near
+     neighbours at the dark end make the page and the surface, which is what
+     lets the saffron be the only saturated thing on the screen. Structure is
+     the pale blue-grey brought down to where a border wants to live. */
+  {
+    id: 'TG',
+    name: 'Tuscan graphite',
+    by: 'captain',
+    scheme: 'dark',
+    ground: '#242423',
+    surface: '#333533',
+    band: '#e8eddf',
+    accent: '#f5cb5c',
+    accent2: '#cfdbd5',
+    structure: '#8a938d',
+    ink: '#141514',
+    light: '#e8eddf',
   },
 
   /* Straight off the saltline dawn frame, so the flagship imagery and the
@@ -289,38 +445,6 @@ export const palettes: readonly Palette[] = [
     structure: '#8a6a5c',
     ink: '#1c161d',
     light: '#f0e5d8',
-  },
-
-  {
-    id: 'G',
-    name: 'Blue hour velvet',
-    by: 'codex',
-    scheme: 'dark',
-    ground: '#17141d',
-    surface: '#24202b',
-    band: '#e2dce7',
-    accent: '#7fa8c9',
-    accent2: '#b38aae',
-    structure: '#6c6478',
-    ink: '#100e15',
-    light: '#e8e1e9',
-  },
-
-  /* The second light scheme. Its own surface is the given #e6d9c8, so the band
-     goes a step deeper to stay a band rather than a repeat of the card. */
-  {
-    id: 'H',
-    name: 'Archive at dusk',
-    by: 'codex',
-    scheme: 'light',
-    ground: '#f3ebdd',
-    surface: '#e6d9c8',
-    band: '#dccdba',
-    accent: '#3e5573',
-    accent2: '#7a5977',
-    structure: '#a99274',
-    ink: '#252632',
-    light: '#fbf6ec',
   },
 ].map((seed) => ({ ...seed, vars: resolve(seed as PaletteSeed) }) as Palette);
 

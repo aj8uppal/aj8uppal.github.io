@@ -87,6 +87,18 @@ export interface HeroVariant {
 export const css = ([r, g, b]: Rgb, a: number): string =>
   `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${a})`;
 
+/** Relative luminance, near enough. Only ever used to compare two colours. */
+export const lum = ([r, g, b]: Rgb): number => (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+
+/**
+ * Whether this palette's light is brighter than its sky.
+ *
+ * False on a light scheme, where the hero paints shade rather than light. It is
+ * the one thing a variant has to ask about the palette rather than just read
+ * out of it: additive blending on a near-white sky produces nothing at all.
+ */
+export const additive = (t: HeroTokens): boolean => lum(t.core) > lum(t.sky0);
+
 /** `t` of the way from one colour to another. */
 export const blend = (a: Rgb, b: Rgb, t: number): Rgb => [
   a[0] + (b[0] - a[0]) * t,

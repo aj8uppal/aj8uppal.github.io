@@ -4,7 +4,8 @@
  * Thirty-eight soft patches drift and sway over the sky gradient, blended
  * additively so that where two of them overlap the ground gets brighter rather
  * than muddier. Wherever the pointer rests the patches lean toward it and burn
- * harder: you bring your own light.
+ * harder: you bring your own light. On a light palette the same patches
+ * multiply instead, and it is shade through the canopy rather than light.
  *
  * A patch is one cached sprite, scaled and alpha-blended, rather than a fresh
  * radial gradient every frame. Both stops of that gradient clamp at the same
@@ -20,7 +21,7 @@
  */
 
 import type { HeroFrame, HeroInstance, HeroTokens, HeroVariant, HeroView } from './types';
-import { R2_A, R2_B, TAU, css, mulberry32 } from './types';
+import { R2_A, R2_B, TAU, additive, css, mulberry32 } from './types';
 
 const PATCHES = 38;
 
@@ -85,6 +86,10 @@ export const dapple: HeroVariant = {
     let v = view;
     let t = tokens;
     let sky: CanvasGradient | null = null;
+    /* Add light to a dark sky, take it away from a bright one. Multiply is the
+       same gesture pointed the other way, and it respects the sprite's alpha,
+       so the patch shape carries over unchanged. */
+    let mode: GlobalCompositeOperation = additive(t) ? 'lighter' : 'multiply';
 
     /* One patch, drawn once: a bright core, a shoulder that falls off fast,
        and a long faint skirt. The skirt is what makes two patches read as two
@@ -127,7 +132,7 @@ export const dapple: HeroVariant = {
       ctx.globalCompositeOperation = 'source-over';
       ctx.fillStyle = sky ?? css(t.sky0, 1);
       ctx.fillRect(0, 0, v.w, v.h);
-      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalCompositeOperation = mode;
 
       const swayX = v.unit * 0.085;
       const swayY = v.unit * 0.04;
@@ -175,6 +180,7 @@ export const dapple: HeroVariant = {
       },
       relight(next: HeroTokens): void {
         t = next;
+        mode = additive(t) ? 'lighter' : 'multiply';
         buildSprite();
         buildSky();
       },

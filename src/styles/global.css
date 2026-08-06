@@ -59,10 +59,12 @@
      The bright earth is 3.0 on paper-2; this is 5.5. */
   --earth-ink: #74491a;
 
-  /* Text sitting directly on sand or camel. Here it is the same ink as on
-     paper, but it is its own role: a palette whose accent is darker than its
-     page needs to flip this without flipping anything else. */
+  /* Text sitting directly on sand, and on camel. Here both are the same ink as
+     on paper, but each is its own role: sand and camel are one hue family in
+     this palette and two unrelated colours in others, and the contact section
+     is painted in camel. */
   --on-accent: #242331;
+  --on-accent-2: #242331;
 
   /* The accent again, lifted until it reads on the shade. Here the sand
      already does; a palette whose accent is darker than its page needs a
@@ -274,6 +276,7 @@ header[id] {
 }
 
 .btn--sand:hover {
+  color: var(--on-accent-2);
   background: var(--camel);
   border-color: var(--camel);
 }
@@ -547,7 +550,7 @@ header[id] {
 }
 
 .sec--camel {
-  color: var(--on-accent);
+  color: var(--on-accent-2);
   background: var(--camel);
 }
 
