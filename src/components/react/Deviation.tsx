@@ -13,6 +13,21 @@ import { useEffect, useRef, useState } from 'react';
 
 const SAMPLES = 160;
 
+/** A token off `:root`, since a canvas cannot inherit one. */
+const token = (name: string, fallback: string): string =>
+  getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+
+/**
+ * The same token, at an alpha. Canvas colour parsing is not guaranteed to take
+ * `color-mix()`, so the hex is unpacked here rather than handed over whole.
+ */
+const alpha = (hex: string, a: number): string => {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m?.[1]) return hex;
+  const n = parseInt(m[1], 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+};
+
 export default function Deviation() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [meanA, setMeanA] = useState(-0.9);
@@ -40,7 +55,11 @@ export default function Deviation() {
       const baseline = h - 34;
       const amplitude = h - 74;
 
-      ctx.strokeStyle = 'rgba(239, 230, 212, 0.08)';
+      const rule = token('--on-shade', '#efe6d4');
+      const a = token('--sand', '#ddca7d');
+      const b = token('--camel', '#b88b4a');
+
+      ctx.strokeStyle = alpha(rule, 0.08);
       ctx.lineWidth = 1;
       for (let i = 0; i <= 8; i++) {
         const x = pad + (inner * i) / 8;
@@ -50,7 +69,7 @@ export default function Deviation() {
         ctx.stroke();
       }
 
-      ctx.strokeStyle = 'rgba(239, 230, 212, 0.28)';
+      ctx.strokeStyle = alpha(rule, 0.28);
       ctx.beginPath();
       ctx.moveTo(pad, baseline);
       ctx.lineTo(w - pad, baseline);
@@ -79,20 +98,24 @@ export default function Deviation() {
       /* One hue family, told apart by lightness rather than by hue, so the
          two curves still separate for a reader who cannot see the difference
          between a red one and a green one. */
-      curve(meanA, 'rgba(221, 202, 125, 0.2)', '#ddca7d');
-      curve(meanB, 'rgba(184, 139, 74, 0.22)', '#b88b4a');
+      curve(meanA, alpha(a, 0.2), a);
+      curve(meanB, alpha(b, 0.22), b);
 
       ctx.font = '700 11px ui-monospace, SFMono-Regular, Consolas, monospace';
-      ctx.fillStyle = '#ddca7d';
+      ctx.fillStyle = a;
       ctx.fillText('A', pad, 18);
-      ctx.fillStyle = '#b88b4a';
+      ctx.fillStyle = b;
       ctx.fillText('B', pad + 18, 18);
     };
 
     draw();
     const ro = new ResizeObserver(draw);
     ro.observe(canvas);
-    return () => ro.disconnect();
+    window.addEventListener('palettechange', draw);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('palettechange', draw);
+    };
   }, [meanA, meanB, spread]);
 
   return (

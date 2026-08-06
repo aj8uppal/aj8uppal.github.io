@@ -20,6 +20,10 @@
  *
  * Reduced motion is a different path, not a slower one: place the patches at a
  * fixed phase chosen because it composes well, draw once, start no loop.
+ *
+ * The five colours come from CSS custom properties, not from literals here, so
+ * the canopy follows a palette swap the same way the rest of the page does. A
+ * `palettechange` event rebuilds the sprite and the sky.
  */
 
 const PATCHES = 38;
@@ -39,6 +43,57 @@ const PEAK = 0.5;
 const LIGHT = 0.36;
 
 const TAU = Math.PI * 2;
+
+/* The five canopy colours, with the walnut-and-gold values as the fallback for
+   the case where the stylesheet has not arrived yet. */
+const HERO_TOKENS = {
+  sky0: ['--hero-sky-0', '#242331'],
+  sky1: ['--hero-sky-1', '#3d3024'],
+  core: ['--hero-core', '#eed484'],
+  mid: ['--hero-mid', '#ddca7d'],
+  skirt: ['--hero-skirt', '#b88b4a'],
+} as const;
+
+type HeroColours = Record<keyof typeof HERO_TOKENS, [number, number, number]>;
+
+/**
+ * Read the canopy colours off `:root`.
+ *
+ * A custom property comes back as whatever string was written into it, which
+ * can be any CSS colour, so the parsing is handed to a 2d context: assigning a
+ * colour to `fillStyle` and reading it back normalises it, and an assignment
+ * the browser rejects leaves the previous value in place - which is the
+ * fallback, already loaded.
+ */
+function readColours(): HeroColours {
+  const probe = document.createElement('canvas').getContext('2d');
+  const root = getComputedStyle(document.documentElement);
+  const out = {} as HeroColours;
+
+  for (const key of Object.keys(HERO_TOKENS) as (keyof typeof HERO_TOKENS)[]) {
+    const [prop, fallback] = HERO_TOKENS[key];
+    let value: string = fallback;
+    if (probe) {
+      probe.fillStyle = fallback;
+      probe.fillStyle = root.getPropertyValue(prop).trim() || fallback;
+      value = probe.fillStyle;
+    }
+    const hex = /^#([0-9a-f]{6})$/i.exec(value);
+    if (hex?.[1]) {
+      const n = parseInt(hex[1], 16);
+      out[key] = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+      continue;
+    }
+    const parts = value.match(/[\d.]+/g);
+    out[key] = parts
+      ? [Number(parts[0]) || 0, Number(parts[1]) || 0, Number(parts[2]) || 0]
+      : [0, 0, 0];
+  }
+  return out;
+}
+
+const css = ([r, g, b]: [number, number, number], a: number): string =>
+  `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${a})`;
 
 /* Deterministic scatter. The still frame has to be reproducible and so does a
    screenshot diff, so nothing here calls Math.random. Positions come off the
@@ -155,27 +210,33 @@ export function installHero(canvas: HTMLCanvasElement): void {
      landscape, where the height alone would blow them up on a phone. */
   let unit = 1;
   let sky: CanvasGradient | null = null;
+  let colours = readColours();
 
-  /* One patch, drawn once: a bright sand core, a camel shoulder that falls off
-     fast, and a long faint skirt. The skirt is what makes two patches read as
-     two rather than as one bright region with a waist. */
+  /* One patch, drawn once: a bright core, a shoulder that falls off fast, and a
+     long faint skirt. The skirt is what makes two patches read as two rather
+     than as one bright region with a waist. */
   const SPRITE = 512;
   const sprite = document.createElement('canvas');
   sprite.width = SPRITE;
   sprite.height = SPRITE;
-  {
-    const sc = sprite.getContext('2d');
-    if (!sc) return;
+  const spriteCtx = sprite.getContext('2d');
+  if (!spriteCtx) return;
+
+  function buildSprite(): void {
+    const sc = spriteCtx!;
     const m = SPRITE / 2;
     const g = sc.createRadialGradient(m, m, 0, m, m, m);
-    g.addColorStop(0, 'rgba(238,212,132,1)');
-    g.addColorStop(0.18, 'rgba(221,202,125,0.82)');
-    g.addColorStop(0.48, 'rgba(184,139,74,0.3)');
-    g.addColorStop(0.78, 'rgba(184,139,74,0.07)');
-    g.addColorStop(1, 'rgba(184,139,74,0)');
+    g.addColorStop(0, css(colours.core, 1));
+    g.addColorStop(0.18, css(colours.mid, 0.82));
+    g.addColorStop(0.48, css(colours.skirt, 0.3));
+    g.addColorStop(0.78, css(colours.skirt, 0.07));
+    g.addColorStop(1, css(colours.skirt, 0));
+    sc.clearRect(0, 0, SPRITE, SPRITE);
     sc.fillStyle = g;
     sc.fillRect(0, 0, SPRITE, SPRITE);
   }
+
+  buildSprite();
 
   /* ── The frame ─────────────────────────────────────────────────────── */
 
@@ -236,8 +297,8 @@ export function installHero(canvas: HTMLCanvasElement): void {
     unit = Math.sqrt(w * h);
 
     sky = ctx!.createLinearGradient(0, 0, 0, h);
-    sky.addColorStop(0, '#242331');
-    sky.addColorStop(1, '#3d3024');
+    sky.addColorStop(0, css(colours.sky0, 1));
+    sky.addColorStop(1, css(colours.sky1, 1));
   }
 
   /* ── Loop ──────────────────────────────────────────────────────────── */
@@ -396,6 +457,15 @@ export function installHero(canvas: HTMLCanvasElement): void {
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) stop();
     else start();
+  });
+
+  /* The review-only palette switcher. Nothing dispatches this in the shipped
+     build, so the listener costs a registration and never fires. */
+  window.addEventListener('palettechange', () => {
+    colours = readColours();
+    buildSprite();
+    resize();
+    if (reduced.matches || !raf) still();
   });
 
   reduced.addEventListener('change', () => {

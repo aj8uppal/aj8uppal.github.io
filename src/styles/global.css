@@ -64,6 +64,21 @@
      page needs to flip this without flipping anything else. */
   --on-accent: #242331;
 
+  /* The accent again, lifted until it reads on the shade. Here the sand
+     already does; a palette whose accent is darker than its page needs a
+     brighter one for the nav, which floats on shade wherever it is. */
+  --accent-shade: var(--sand);
+
+  /* The canopy. The hero paints these onto a canvas rather than into a box, so
+     they are the one set of tokens that has to survive leaving CSS - the hero
+     script reads them back out. Sky runs top to bottom; the three light steps
+     are the core of a patch, its shoulder, and the long skirt. */
+  --hero-sky-0: #242331;
+  --hero-sky-1: #3d3024;
+  --hero-core: #eed484;
+  --hero-mid: #ddca7d;
+  --hero-skirt: #b88b4a;
+
   /* Lines are the text colour at low alpha rather than a colour of their own,
      so a rule on a card is the same family as the words on it. */
   --line-dark: color-mix(in srgb, var(--on-ink) 16%, transparent);
@@ -339,7 +354,7 @@ header[id] {
 
 .nav__links a:hover,
 .nav__links a[aria-current='true'] {
-  color: var(--sand);
+  color: var(--accent-shade);
 }
 
 .nav__cta {
@@ -450,7 +465,7 @@ header[id] {
 .hero h1 .out {
   margin-left: clamp(0rem, 13vw, 11.5rem);
   color: transparent;
-  -webkit-text-stroke: clamp(1.4px, 0.15vw, 2.4px) var(--paper);
+  -webkit-text-stroke: clamp(1.4px, 0.15vw, 2.4px) var(--on-ink);
 }
 
 .hero__bottom {
