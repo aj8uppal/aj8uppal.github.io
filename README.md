@@ -37,11 +37,17 @@ Astro copies that directory into `dist/` verbatim, without hashing, rewriting or
 The rebuild moved them from the repository root into `public/` and changed nothing else about them.
 Breaking a working link in order to tidy up a repository is not tidying up.
 
-Three files are gone on purpose rather than merely unlinked:
+That preservation covers demos that still work and that something links to.
+It is not a promise to republish every path that ever existed, and these are gone on purpose:
 
 - `photonmap.html` and `pickle.html` hardcoded a live third-party credential in their source.
   Deleting them removes the credential from the served site but **not** from git history, so the credential itself still needs rotating independently of this repository.
 - `infinite.html` opened an unending chain of `prompt()` dialogs and trapped the tab.
+- `video.html` was an empty Facebook embed whose only real effect was loading the Facebook SDK, so a site that otherwise ships almost no third-party script pulled in tracking on a page with nothing on it.
+- `keyboard.js` at the root was a byte-identical orphan copy of `libs/threex/THREEx.KeyboardState.js`, which is vendored and still served, and `images/pickle.jpg` belonged to a card that no longer exists.
+
+Watch for these coming back.
+A bulk move into `public/` preserves a deleted file as a rename, which republishes it without anyone deciding to.
 
 ## One committed look
 
