@@ -2,9 +2,9 @@
 /**
  * The design lab. A review tool, not part of the site.
  *
- * Two rows: palettes on one, hero variants on the other, both driven off the
- * same registries the page itself is built from, so a new palette or a new
- * hero appears here for free.
+ * A row of palettes and a row of hero variants, both driven off the same
+ * registries the page itself is built from, so a new palette or a new hero
+ * appears here for free, plus a row for the light-scheme pairing.
  *
  * It is rendered only on a dev build, or on one made with `npm run build:lab`,
  * and on the second of those it stays out of the way until the URL asks for it
@@ -64,6 +64,28 @@ const { alwaysOn } = Astro.props;
     }
   </div>
 
+  <p class="lab__h" id="lab-scheme">Scheme</p>
+  <div class="lab__two" role="group" aria-labelledby="lab-scheme">
+    <button
+      class="lab__b lab__b--wide"
+      type="button"
+      data-scheme="tg"
+      aria-pressed="true"
+      title="Tuscan graphite for every client, whatever it prefers. What the site does today."
+    >
+      TG always
+    </button>
+    <button
+      class="lab__b lab__b--wide"
+      type="button"
+      data-scheme="pair"
+      aria-pressed="false"
+      title="Slate meadow for a client that asks for a light scheme, Tuscan graphite for everyone else. Only while the default palette is selected: choosing another one in this panel is an explicit answer and overrides both."
+    >
+      TG dark / SM light
+    </button>
+  </div>
+
   <p class="lab__h" id="lab-hero">Hero</p>
   <div class="lab__hero" role="group" aria-labelledby="lab-hero">
     {
@@ -88,6 +110,7 @@ const { alwaysOn } = Astro.props;
 
   const PAL_KEY = 'p6-palette';
   const HERO_KEY = 'p6-hero';
+  const SCHEME_KEY = 'p6-scheme';
   const box = document.querySelector<HTMLElement>('[data-lab]');
 
   const asked = (): boolean => {
@@ -103,7 +126,7 @@ const { alwaysOn } = Astro.props;
        what it wrote rather than leaving it under the next. */
     const owned = new Set(palettes.flatMap((p) => Object.keys(p.vars)));
 
-    const press = (attr: 'pal' | 'hero', id: string): void => {
+    const press = (attr: 'pal' | 'hero' | 'scheme', id: string): void => {
       for (const b of box.querySelectorAll<HTMLButtonElement>(`[data-${attr}]`)) {
         b.setAttribute('aria-pressed', String(b.dataset[attr] === id));
       }
@@ -126,8 +149,52 @@ const { alwaysOn } = Astro.props;
       window.dispatchEvent(new Event('herochange'));
     };
 
+    /**
+     * Pair the default with a light scheme, or stop pairing it.
+     *
+     * A real `prefers-color-scheme` block rather than another override, because
+     * the question being prototyped is what a client that asks for light should
+     * be handed, and an override answers it for everyone. Which also settles
+     * what happens when a palette is picked here at the same time: the picked
+     * one is written inline, inline beats a stylesheet, and the explicit answer
+     * wins over the conditional one.
+     *
+     * The block is built from Slate meadow's own registry entry, so it cannot
+     * drift from the swatch two rows up.
+     */
+    const lightHalf = palettes.find((p) => p.id === 'SM');
+    let pairing: HTMLStyleElement | null = null;
+
+    const applyScheme = (mode: string): void => {
+      const on = mode === 'pair' && lightHalf !== undefined;
+      if (on && !pairing) {
+        pairing = document.createElement('style');
+        pairing.textContent =
+          '@media (prefers-color-scheme: light){:root{' +
+          Object.entries(lightHalf!.vars)
+            .map(([n, v]) => `${n}:${v};`)
+            .join('') +
+          'color-scheme:light;}}';
+        document.head.append(pairing);
+      } else if (!on && pairing) {
+        pairing.remove();
+        pairing = null;
+      }
+      press('scheme', on ? 'pair' : 'tg');
+      window.dispatchEvent(new Event('palettechange'));
+    };
+
+    /* A canvas cannot see a media query. When the client's own preference flips
+       under a live pairing every token beneath the hero has changed and nothing
+       else on the page would tell it so. */
+    matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+      if (pairing) window.dispatchEvent(new Event('palettechange'));
+    });
+
     box.addEventListener('click', (e) => {
-      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-pal],[data-hero]');
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>(
+        '[data-pal],[data-hero],[data-scheme]',
+      );
       if (!b) return;
       if (b.dataset.pal) {
         localStorage.setItem(PAL_KEY, b.dataset.pal);
@@ -135,6 +202,9 @@ const { alwaysOn } = Astro.props;
       } else if (b.dataset.hero) {
         localStorage.setItem(HERO_KEY, b.dataset.hero);
         applyHero(b.dataset.hero);
+      } else if (b.dataset.scheme) {
+        localStorage.setItem(SCHEME_KEY, b.dataset.scheme);
+        applyScheme(b.dataset.scheme);
       }
     });
 
@@ -145,6 +215,7 @@ const { alwaysOn } = Astro.props;
     if (pal && pal !== box.dataset.palDefault) applyPalette(pal);
     const hero = localStorage.getItem(HERO_KEY);
     if (hero && hero !== box.dataset.heroDefault) applyHero(hero);
+    if (localStorage.getItem(SCHEME_KEY) === 'pair') applyScheme('pair');
   }
 </script>
 
@@ -196,7 +267,8 @@ const { alwaysOn } = Astro.props;
     gap: 0.35rem;
   }
 
-  .lab__hero {
+  .lab__hero,
+  .lab__two {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.35rem;
