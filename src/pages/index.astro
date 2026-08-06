@@ -29,7 +29,6 @@ import {
   saltline,
   saltlineArc,
   skills,
-  ticker,
 } from '../data/content';
 
 /* A full-bleed card lead runs the width of the shell: 1240 at the maximum. */
@@ -155,12 +154,6 @@ const heroLabel =
 
     <p class="hint" aria-hidden="true"><b>&#8646;</b> Bring your own light</p>
   </header>
-
-  <div class="ticker" aria-hidden="true">
-    <div class="ticker__track">
-      {[...ticker, ...ticker].map((t) => <span>{t}</span>)}
-    </div>
-  </div>
 
   {/* ── 01 About ──────────────────────────────────────────────────────── */}
   <Section n="01" id="about" name="About" tone="paper">

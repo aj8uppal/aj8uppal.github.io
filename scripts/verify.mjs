@@ -262,9 +262,8 @@ await run(
         .filter((e) => {
           const r = e.getBoundingClientRect();
           if (!(r.width > 0) || getComputedStyle(e).position === 'fixed') return false;
-          // Both of these are wider than the viewport on purpose, under their
-          // own overflow: the tab strip scrolls, the ticker loops.
-          if (e.closest('.fs__scroll') || e.closest('.ticker')) return false;
+          // Wider than the viewport on purpose, under its own overflow.
+          if (e.closest('.fs__scroll')) return false;
           return r.right > de.clientWidth + 1;
         })
         .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
@@ -278,7 +277,6 @@ await run(
         over: [...new Set(over)].slice(0, 6),
         sections: document.querySelectorAll('.sec[data-sec]').length,
         navLinks: document.querySelectorAll('.nav__links a').length,
-        ticker: document.querySelectorAll('.ticker__track span').length,
         outlined: getComputedStyle(document.querySelector('.hero h1 .out')).webkitTextStrokeWidth,
         cards,
         arcSlides: document.querySelectorAll('.arc .fs__slide').length,
@@ -303,7 +301,6 @@ await run(
     console.log(`       page height ${m.height}px at 1440`);
     note(m.sections === 6, 'six sections', `${m.sections}`);
     note(m.navLinks === 7, 'nav carries six sections plus the email CTA', `${m.navLinks}`);
-    note(m.ticker === 12, 'ticker content is duplicated for the loop', `${m.ticker} spans`);
     note(parseFloat(m.outlined) > 0, 'the second name line is outlined, not filled', m.outlined);
     note(
       m.cards[0]?.startsWith('Plate 01 / saltline'),
@@ -476,9 +473,8 @@ await run(
         .filter((e) => {
           const r = e.getBoundingClientRect();
           if (!(r.width > 0) || getComputedStyle(e).position === 'fixed') return false;
-          // Both of these are wider than the viewport on purpose, under their
-          // own overflow: the tab strip scrolls, the ticker loops.
-          if (e.closest('.fs__scroll') || e.closest('.ticker')) return false;
+          // Wider than the viewport on purpose, under its own overflow.
+          if (e.closest('.fs__scroll')) return false;
           return r.right > de.clientWidth + 1;
         })
         .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
@@ -555,7 +551,6 @@ await run(
       return {
         q,
         btnTransition: getComputedStyle(btn).transitionDuration,
-        tickerTransform: getComputedStyle(document.querySelector('.ticker__track')).transform,
         revealOpacity: rev ? getComputedStyle(rev).opacity : null,
         revealTransform: rev ? getComputedStyle(rev).transform : null,
         caretHidden: getComputedStyle(document.querySelector('.caret')).display === 'none',
@@ -572,11 +567,6 @@ await run(
     });
     note(m.q, 'reduced-motion is actually on', '');
     note(m.btnTransition === '0.001s', 'transitions clamped to 1ms', m.btnTransition);
-    note(
-      m.tickerTransform === 'none' || m.tickerTransform === 'matrix(1, 0, 0, 1, 0, 0)',
-      'the ticker stops being a ticker',
-      m.tickerTransform,
-    );
     note(m.caretHidden, 'the typer caret stops blinking', '');
     note(
       m.revealOpacity === '1',

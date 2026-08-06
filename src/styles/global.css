@@ -7,7 +7,7 @@
    of the height of three frames stacked.
 
    Mono is a label face here, not an annotation layer: kickers, badges,
-   captions, the ticker, and nothing else.
+   captions, and nothing else.
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* ── 1. TOKENS ───────────────────────────────────────────────────────── */
@@ -494,38 +494,7 @@ header[id] {
   font-size: 1rem;
 }
 
-/* ── 7. TICKER ───────────────────────────────────────────────────────── */
-.ticker {
-  overflow: hidden;
-  border-block: 1px solid var(--line-dark);
-  color: var(--ink);
-  background: var(--sand);
-}
-
-.ticker__track {
-  width: max-content;
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  padding: 0.62rem 0;
-  animation: ticker 34s linear infinite;
-  font: 900 0.77rem/1 var(--mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.ticker__track span::after {
-  content: '\2726';
-  margin-left: 1.2rem;
-}
-
-@keyframes ticker {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* ── 8. SECTIONS ─────────────────────────────────────────────────────── */
+/* ── 7. SECTIONS ─────────────────────────────────────────────────────── */
 .sec {
   padding-block: clamp(2.5rem, 3vw, 3.4rem);
 }
@@ -638,7 +607,7 @@ header[id] {
   border-top-color: var(--line-light-2);
 }
 
-/* ── 9. ABOUT ────────────────────────────────────────────────────────── */
+/* ── 8. ABOUT ────────────────────────────────────────────────────────── */
 .vitals {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -735,7 +704,7 @@ header[id] {
   font: 800 0.72rem/1.35 var(--mono);
 }
 
-/* ── 10. PROJECT CARDS ───────────────────────────────────────────────── */
+/* ── 9. PROJECT CARDS ───────────────────────────────────────────────── */
 .work {
   position: relative;
   overflow: hidden;
@@ -1091,7 +1060,7 @@ header[id] {
   margin-bottom: 0;
 }
 
-/* ── 11. FRAME SWITCHER ──────────────────────────────────────────────── */
+/* ── 10. FRAME SWITCHER ──────────────────────────────────────────────── */
 /* Stage and readout side by side, tab row across the bottom of both. Seven
    regions stacked would be seven full-width plates; this is one. */
 .fs {
@@ -1358,7 +1327,7 @@ header[id] {
   background: var(--sand);
 }
 
-/* ── 12. WORK LOG ────────────────────────────────────────────────────── */
+/* ── 11. WORK LOG ────────────────────────────────────────────────────── */
 .log {
   display: grid;
   grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr);
@@ -1584,7 +1553,7 @@ header[id] {
   color: var(--on-paper-3);
 }
 
-/* ── 13. PLAYGROUND ──────────────────────────────────────────────────── */
+/* ── 12. PLAYGROUND ──────────────────────────────────────────────────── */
 .play__note {
   display: flex;
   justify-content: space-between;
@@ -1981,7 +1950,7 @@ button.toolbar__link {
   font: 650 0.69rem/1.55 var(--mono);
 }
 
-/* ── 14. SKILLS ──────────────────────────────────────────────────────── */
+/* ── 13. SKILLS ──────────────────────────────────────────────────────── */
 .skills {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -2018,7 +1987,7 @@ button.toolbar__link {
   font-size: 0.88rem;
 }
 
-/* ── 15. CONTACT ─────────────────────────────────────────────────────── */
+/* ── 14. CONTACT ─────────────────────────────────────────────────────── */
 .contact {
   position: relative;
   overflow: hidden;
@@ -2124,7 +2093,7 @@ button.toolbar__link {
   margin: 0;
 }
 
-/* ── 16. MOTION ──────────────────────────────────────────────────────── */
+/* ── 15. MOTION ──────────────────────────────────────────────────────── */
 /* Only hidden once the reveal script is running, so a page without
    JavaScript never hides something it then cannot show. */
 .js [data-reveal] {
@@ -2139,7 +2108,7 @@ button.toolbar__link {
   will-change: auto;
 }
 
-/* ── 17. BREAKPOINTS ─────────────────────────────────────────────────── */
+/* ── 16. BREAKPOINTS ─────────────────────────────────────────────────── */
 @media (width <= 1000px) {
   .fs,
   .card__cols,
@@ -2453,10 +2422,9 @@ button.toolbar__link {
   }
 }
 
-/* ── 18. REDUCED MOTION ──────────────────────────────────────────────── */
-/* A different path, not a shorter one. The ticker stops being a ticker and
-   becomes a static line, the hero canvas draws one frame and shuts down, the
-   caret stops blinking, and nothing is left mid-reveal. */
+/* ── 17. REDUCED MOTION ──────────────────────────────────────────────── */
+/* A different path, not a shorter one. The hero canvas draws one frame and
+   shuts down, the caret stops blinking, and nothing is left mid-reveal. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -2469,16 +2437,6 @@ button.toolbar__link {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001s !important;
     scroll-behavior: auto !important;
-  }
-
-  .ticker__track {
-    width: 100%;
-    justify-content: center;
-    transform: none !important;
-  }
-
-  .ticker__track span:nth-child(n + 4) {
-    display: none;
   }
 
   .hint,

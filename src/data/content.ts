@@ -88,19 +88,6 @@ export const sections = [
   { n: '06', id: 'contact', name: 'Contact', desc: 'Email is the reliable one', count: '4 links' },
 ] as const;
 
-/**
- * The ticker band. Short enough to read at a glance while it moves, and every
- * line of it is a fact stated elsewhere on the page at length.
- */
-export const ticker = [
-  'Voxel MMORPG in production',
-  'A real sailing model',
-  'Baked light at 116 fps',
-  'A sim core that cannot see the DOM',
-  'Two degrees on one clock',
-  'Twenty-five demos audited, twelve kept',
-] as const;
-
 export const cover = {
   kicker: ['Bay Area, California', 'Software engineer at Notable Health'],
   lead: 'I studied computer science and astrophysics at the same time because I couldn’t pick one. These days I build things that run in a browser.',
