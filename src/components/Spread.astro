@@ -1,0 +1,54 @@
+---
+import { Picture } from 'astro:assets';
+import { asset } from '../lib/images';
+
+/**
+ * A full-bleed plate with type over it. Three on the page, one each for the
+ * three projects that have a photograph worth the width.
+ *
+ * The caption always sits at the bottom, inside a scrim sized for the
+ * brightest frame on the page. Nothing is ever set over the open middle of an
+ * image, because that is where contrast cannot be guaranteed.
+ */
+interface Props {
+  img: string;
+  alt: string;
+  n: string;
+  t: string;
+  s: string;
+  short?: boolean;
+  eager?: boolean;
+  /**
+   * object-position for the crop. Worth setting when the frame has a bright
+   * area that would otherwise land behind the caption: re-framing costs the
+   * photograph nothing, where a heavier scrim costs it a great deal.
+   */
+  pos?: string;
+}
+
+const { img, alt, n, t, s, short = false, eager = false, pos } = Astro.props;
+---
+
+<div
+  class:list={['spread', { 'spread--short': short }]}
+  style={pos ? `--spread-pos:${pos}` : undefined}
+>
+  <Picture
+    src={asset(img)}
+    alt={alt}
+    widths={[720, 1080, 1440, 1920, 2400, 3000]}
+    sizes="100vw"
+    formats={['avif']}
+    fallbackFormat="webp"
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+    decoding={eager ? 'sync' : 'async'}
+  />
+  <div class="spread__cap on-image">
+    <div class="wrap">
+      <span class="n label">{n}</span>
+      <p class="t">{t}</p>
+      <p class="s">{s}</p>
+    </div>
+  </div>
+</div>

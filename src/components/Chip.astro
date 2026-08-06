@@ -1,0 +1,20 @@
+---
+import type { Status } from '../data/content';
+
+interface Props {
+  status: Status;
+  label?: string;
+}
+
+const fallback: Record<Status, string> = {
+  live: 'Live',
+  wip: 'In progress',
+  off: 'Archive',
+};
+
+const { status, label } = Astro.props;
+---
+
+<span class:list={['chip', `chip--${status}`]}>
+  <i class="dot"></i>{label ?? fallback[status]}
+</span>

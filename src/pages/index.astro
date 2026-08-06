@@ -1,0 +1,643 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Block from '../components/Block.astro';
+import Chip from '../components/Chip.astro';
+import Figure from '../components/Figure.astro';
+import Section from '../components/Section.astro';
+import Spread from '../components/Spread.astro';
+import FrameSwitcher from '../components/react/FrameSwitcher';
+import type { SwitchFrame } from '../components/react/FrameSwitcher';
+import { asset, sources } from '../lib/images';
+import {
+  about,
+  contact,
+  courses,
+  cover,
+  education,
+  elderwood,
+  earlier,
+  ember,
+  emberRegions,
+  errata,
+  hidamari,
+  playground,
+  roles,
+  saltline,
+  saltlineArc,
+  sections,
+  skills,
+} from '../data/content';
+
+/* The switcher stage is the full width of the content column: 856px at the
+   page maximum, and the whole column below the point where the spine folds. */
+const FRAME_WIDTHS = [560, 860, 1200, 1720];
+const FRAME_SIZES = '(width >= 1240px) 856px, (width >= 1024px) 62vw, calc(100vw - 40px)';
+
+const emberAsset: Record<string, string> = {
+  hearthvale: 'ember-region-hearthvale',
+  fallowmere: 'ember-region-fallowmere',
+  greenmarch: 'ember-region-greenmarch',
+  fenmarch: 'ember-region-fenmarch',
+  ashen: 'ember-region-ashen-waste',
+  greywall: 'ember-region-greywall-peaks',
+  plateau: 'ember-region-black-plateau',
+};
+
+const emberFrames: SwitchFrame[] = await Promise.all(
+  emberRegions.map(async (f) => ({
+    ...f,
+    img: await sources(emberAsset[f.key] ?? '', FRAME_WIDTHS, FRAME_SIZES),
+  })),
+);
+
+/* The arc is two up in the content column at the page maximum, so a tile is
+   416px and never larger. Three device pixels of that is 1248. */
+const ARC_WIDTHS = [420, 640, 860, 1280];
+const ARC_SIZES =
+  '(width >= 1240px) 416px, (width >= 1024px) 31vw, (width >= 720px) 46vw, calc(100vw - 40px)';
+
+const EW_WIDTHS = [280, 420, 560, 840];
+const EW_SIZES = '(width >= 1240px) 280px, (width >= 560px) 29vw, calc(100vw - 40px)';
+---
+
+<Base>
+  {/* ── 00 Cover ─────────────────────────────────────────────────────── */}
+  <Section n="00" id="cover" name="Cover" cover>
+    <Block n="00" name="Index" gutter={['Rev. 2026-08', '7 sections']} hd={false}>
+      <div class="cover">
+        <div class="cover__kicker">
+          {cover.kicker.map((k) => <span class="label">{k}</span>)}
+        </div>
+
+        <h1 class="disp">AJ Uppal</h1>
+
+        <p class="cover__lead lead">{cover.lead}</p>
+        <p class="cover__second">{cover.second}</p>
+
+        <dl class="strip">
+          {
+            cover.strip.map((c) => (
+              <div>
+                <dt class="label">{c.dt}</dt>
+                <dd>
+                  {c.dd}
+                  <br />
+                  <span class="sub dense">{c.sub}</span>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <div class="actions">
+          <a class="btn btn--primary" href={ember.href} target="_blank" rel="noopener">
+            Play Ember Wilds <span class="btn__k" aria-hidden="true">&#8599;</span>
+          </a>
+          <a class="btn" href={saltline.href} target="_blank" rel="noopener">
+            Play saltline <span class="btn__k" aria-hidden="true">&#8599;</span>
+          </a>
+          <a class="btn" href={`mailto:${contact.email}`}>
+            Email me <span class="btn__k" aria-hidden="true">&#8594;</span>
+          </a>
+        </div>
+
+        <nav class="toc" aria-label="Contents">
+          {
+            sections.map((s) => (
+              <a href={`#${s.id}`}>
+                <span class="t-n label">{s.n}</span>
+                <span class="t-name">{s.name}</span>
+                <span class="t-desc">{s.desc}</span>
+                <span class="t-count label">{s.count}</span>
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </Block>
+  </Section>
+
+  {/* ── 01 About ─────────────────────────────────────────────────────── */}
+  <Section n="01" id="about" name="About">
+    <Block n="01" name="About" gutter={['4 notes']}>
+      <h2 class="sec__statement" data-reveal>{about.statement}</h2>
+
+      <div class="sec__note" data-reveal>
+        {about.prose.map((p) => <p class="prose">{p}</p>)}
+      </div>
+
+      <dl class="facts mt-5" data-reveal>
+        {
+          about.notes.map(([k, v]) => (
+            <div>
+              <dt class="label">{k}</dt>
+              <dd>{v}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <div class="method">
+        <span class="label">Method</span>
+        <p>{about.method}</p>
+      </div>
+    </Block>
+  </Section>
+
+  {/* ── 02 Building ──────────────────────────────────────────────────── */}
+  <Section n="02" id="building" name="Building">
+    <Block n="02" name="Building" gutter={['4 projects', '2 open to anyone']}>
+      <h2 class="sec__statement" data-reveal>
+        Four projects. Two you can open right now, two that are not ready, and this page says which
+        is which.
+      </h2>
+      <p class="sec__note" data-reveal>
+        They are all worlds that run in a browser tab, which is not a coincidence. I like the
+        constraint. No installer, no store, no build to hand anyone: a URL, and you are in it.
+      </p>
+    </Block>
+
+    <Spread
+      img="ember-spread-fallowmere-dusk"
+      alt="Fallowmere in Ember Wilds at dusk: an ember-orange plain of voxel trees, a level thirty character in the centre, quest log and satchel along the edges."
+      n={ember.spread.n}
+      t={ember.spread.t}
+      s={ember.spread.s}
+      eager
+    />
+
+    <Block tight>
+      <article class="proj">
+        <div class="proj__hd">
+          <h3>
+            <a href={ember.href} target="_blank" rel="noopener">{ember.name}</a>
+          </h3>
+          <Chip status={ember.status} />
+        </div>
+        <p class="proj__sub">{ember.sub}</p>
+
+        <div class="proj__cols">
+          <div class="proj__body">
+            {ember.prose.map((p) => <p>{p}</p>)}
+          </div>
+          <dl class="plate">
+            {
+              ember.plate.map(([k, v]) => (
+                <div>
+                  <dt class="label">{k}</dt>
+                  <dd>{v}</dd>
+                </div>
+              ))
+            }
+            <div>
+              <dt class="label">Open</dt>
+              <dd>
+                <a href={ember.href} target="_blank" rel="noopener">emberwilds-web.fly.dev</a>
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <p class="proj__lede">{ember.framesLede}</p>
+        <FrameSwitcher client:visible label="Ember Wilds regions" frames={emberFrames} />
+
+        <div class="proof">
+          <h4 class="proof__hd">{ember.proof.t}</h4>
+          <Figure
+            img="ember-proof-two-players"
+            alt="Two Ember Wilds clients side by side in the Hearthvale. Each character has a speech bubble above it and the same two lines appear in the chat log at bottom left."
+            b="Fig. 1"
+            i="Two accounts, two browsers, one realm"
+            span="Unretouched capture"
+          />
+          <div class="proof__body">
+            {ember.proof.body.map((p) => <p>{p}</p>)}
+          </div>
+        </div>
+      </article>
+    </Block>
+
+    <Spread
+      img="saltline-spread-night"
+      alt="saltline at night: a full moon low over dark water, a sloop under full sail trailing a wide luminous teal wake, HUD readouts at the upper right."
+      n={saltline.spread.n}
+      t={saltline.spread.t}
+      s={saltline.spread.s}
+    />
+
+    <Block tight>
+      <article class="proj">
+        <div class="proj__hd">
+          <h3>
+            <a href={saltline.href} target="_blank" rel="noopener">{saltline.name}</a>
+          </h3>
+          <Chip status={saltline.status} />
+        </div>
+        <p class="proj__sub">{saltline.sub}</p>
+
+        <div class="proj__cols">
+          <div class="proj__body">
+            {saltline.prose.map((p) => <p>{p}</p>)}
+          </div>
+          <dl class="plate">
+            {
+              saltline.plate.map(([k, v]) => (
+                <div>
+                  <dt class="label">{k}</dt>
+                  <dd>{v}</dd>
+                </div>
+              ))
+            }
+            <div>
+              <dt class="label">Open</dt>
+              <dd>
+                <a href={saltline.href} target="_blank" rel="noopener">saltline.app</a>
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <p class="proj__lede">{saltline.framesLede}</p>
+
+        <ol class="arc">
+          {
+            saltlineArc.map((f) => (
+              <li>
+                <figure>
+                  <div class="arc__frame">
+                    <Picture
+                      src={asset(`saltline-arc-${f.key}`)}
+                      alt={f.alt}
+                      widths={ARC_WIDTHS}
+                      sizes={ARC_SIZES}
+                      formats={['avif']}
+                      fallbackFormat="webp"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                  <figcaption>
+                    <b class="arc__t">
+                      <span>{f.time}</span>
+                      {f.light}
+                    </b>
+                    <span class="arc__r">
+                      {f.speed} &middot; rel {f.rel} &middot; thrust {f.thrust} &middot; VMG {f.vmg}
+                    </span>
+                  </figcaption>
+                </figure>
+              </li>
+            ))
+          }
+        </ol>
+
+        <p class="arc__note">{saltline.arcNote}</p>
+
+        <div class="proof">
+          <h4 class="proof__hd">{saltline.proof.t}</h4>
+          <Figure
+            img="saltline-proof-panel"
+            alt="The same 16:46 frame uncropped, with the development panel down the left edge: time of day, sea state, wind angle, crest sharpness and seed. Three raider contacts are marked on the nav chart."
+            b="Fig. 2"
+            i="Development panel left in frame"
+            span="16:46, uncropped"
+          />
+          <div class="proof__body">
+            {saltline.proof.body.map((p) => <p>{p}</p>)}
+          </div>
+        </div>
+      </article>
+    </Block>
+
+    <Spread
+      img="hidamari-spread-canopy"
+      alt="hidamari: an autumn canopy path at golden hour, low sun through orange leaves, the trail running away between the trees."
+      n={hidamari.spread.n}
+      t={hidamari.spread.t}
+      s={hidamari.spread.s}
+      short
+      pos="50% 100%"
+    />
+
+    <Block tight>
+      <article class="proj">
+        <div class="proj__hd">
+          <h3>{hidamari.name}</h3>
+          <Chip status={hidamari.status} label="Not public" />
+        </div>
+        <p class="proj__sub">{hidamari.sub}</p>
+
+        <div class="proj__cols">
+          <div class="proj__body">
+            {hidamari.prose.map((p) => <p>{p}</p>)}
+          </div>
+          <dl class="plate">
+            {
+              hidamari.plate.map(([k, v]) => (
+                <div>
+                  <dt class="label">{k}</dt>
+                  <dd>{v}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+      </article>
+    </Block>
+
+    <Block tight>
+      <article class="proj">
+        <div class="proj__hd">
+          <h3>{elderwood.name}</h3>
+          <Chip status={elderwood.status} label="Greybox" />
+        </div>
+        <p class="proj__sub">{elderwood.sub}</p>
+
+        <div class="proj__cols">
+          <div class="proj__body">
+            {elderwood.prose.map((p) => <p>{p}</p>)}
+          </div>
+          <dl class="plate">
+            {
+              elderwood.plate.map(([k, v]) => (
+                <div>
+                  <dt class="label">{k}</dt>
+                  <dd>{v}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+
+        <div class="fig fig__row">
+          {
+            elderwood.figures.map((f) => (
+              <figure>
+                <div class="fig__frame">
+                  <Picture
+                    src={asset(`elderwood-${f.key}`)}
+                    alt={`Elderwood Vale, ${f.cap.toLowerCase()}`}
+                    widths={EW_WIDTHS}
+                    sizes={EW_SIZES}
+                    formats={['avif']}
+                    fallbackFormat="webp"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <figcaption>{f.cap}</figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </article>
+    </Block>
+  </Section>
+
+  {/* ── 03 Work ──────────────────────────────────────────────────────── */}
+  <Section n="03" id="work" name="Work">
+    <Block n="03" name="Work" gutter={['8 roles', '2018 to now']}>
+      <h2 class="sec__statement" data-reveal>
+        Eight roles in six years, and a habit of turning up as the first engineer.
+      </h2>
+      <p class="sec__note">
+        Scannable on purpose. Dates on the left, what I did in the middle, what I did it with on the
+        right.
+      </p>
+
+      <div class="xp mt-4">
+        {
+          roles.map((r) => (
+            <article class="xp__row">
+              <p class="xp__when meta">
+                {r.when}
+                {r.now && (
+                  <span class="now" aria-label="current role">
+                    {' '}
+                    &#9679;
+                  </span>
+                )}
+              </p>
+              <div class="xp__what">
+                <h3>{r.title}</h3>
+                <p class="xp__org">
+                  {r.org}
+                  {r.where && <span class="loc"> &middot; {r.where}</span>}
+                </p>
+                {r.body && (
+                  <p class="xp__body">
+                    {r.body}
+                    {r.ref && (
+                      <sup class="ref">
+                        <a href={`#note-${r.ref}`}>[{r.ref}]</a>
+                      </sup>
+                    )}
+                  </p>
+                )}
+                {r.pending && (
+                  <div class="pending">
+                    <b class="label">Pending &#183; author's note</b>
+                    <p>{r.pending.note}</p>
+                  </div>
+                )}
+              </div>
+              <p class="xp__stack">{r.stack}</p>
+            </article>
+          ))
+        }
+      </div>
+
+      <dl class="errata">
+        {
+          errata.map((e) => (
+            <div id={`note-${e.ref}`}>
+              <dt class="meta">[{e.ref}]</dt>
+              <dd>{e.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </Block>
+  </Section>
+
+  {/* ── 04 Playground ────────────────────────────────────────────────── */}
+  <Section n="04" id="playground" name="Playground">
+    <Block n="04" name="Playground" gutter={['25 archived', '3 still run']}>
+      <h2 class="sec__statement" data-reveal>{playground.statement}</h2>
+
+      <div class="sec__note">
+        {playground.prose.map((p) => <p class="prose">{p}</p>)}
+      </div>
+
+      <ul class="spec mt-4">
+        {
+          playground.items.map((p) => (
+            <li>
+              <span class="spec__yr">{p.yr}</span>
+              <h3 class="spec__nm">
+                <a href={p.href}>{p.name}</a>
+              </h3>
+              <span class="spec__st">
+                <Chip status={p.status} label={p.statusLabel} />
+              </span>
+              <p class="spec__w">{p.what}</p>
+              <p class="spec__k">{p.k}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <Figure
+        img="legacy-grinchjump"
+        alt="GrinchJump running in a browser: a low-poly figure on a stack of green platforms against a pale sky, score counter in the corner."
+        b="Fig. 3"
+        i="Running again, ten years later"
+        span="three.js r70"
+        widths={[420, 640, 900, 1200]}
+        sizes="(width >= 640px) 520px, calc(100vw - 40px)"
+        cls="fig--small"
+      />
+
+      <div class="method">
+        <span class="label">Method</span>
+        <p>{playground.method}</p>
+      </div>
+
+      <div class="subsec">
+        <p class="label">Earlier</p>
+        <h3 class="subsec__t">Two that mattered, neither of them a demo</h3>
+
+        <ul class="spec mt-3">
+          {
+            earlier.map((e) => (
+              <li>
+                <span class="spec__yr">{e.yr}</span>
+                <h4 class="spec__nm">{e.name}</h4>
+                <span class="spec__st">
+                  <Chip status="off" label="Archive" />
+                </span>
+                <p class="spec__w">{e.what}</p>
+                <p class="spec__k">{e.k}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </Block>
+  </Section>
+
+  {/* ── 05 Skills ────────────────────────────────────────────────────── */}
+  <Section n="05" id="skills" name="Skills">
+    <Block n="05" name="Skills" gutter={['5 groups', 'unrated']}>
+      <h2 class="sec__statement" data-reveal>
+        Grouped by where they live. Not rated, because a skill bar you score yourself is a drawing.
+      </h2>
+
+      <dl class="matrix mt-4">
+        {
+          skills.map((g) => (
+            <div>
+              <dt class="label">{g.group}</dt>
+              <dd>
+                {g.items.map((i) => (
+                  <span>{i}</span>
+                ))}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <div class="method">
+        <span class="label">Method</span>
+        <p>
+          Everything here appears in something on this page or in a job above it. If I have used a
+          tool once and would need the documentation open to use it again, it is not on the list.
+        </p>
+      </div>
+    </Block>
+  </Section>
+
+  {/* ── 06 Education ─────────────────────────────────────────────────── */}
+  <Section n="06" id="education" name="Education">
+    <Block n="06" name="Education" gutter={['2 degrees', '8 of 37 courses']}>
+      <h2 class="sec__statement" data-reveal>
+        {education.school}, {education.when}. Two bachelor's degrees on one four-year clock.
+      </h2>
+
+      <div class="deg mt-4">
+        {
+          education.degrees.map((d) => (
+            <div>
+              <h3>{d.h}</h3>
+              <p>{d.p}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="sec__note">{education.note}</p>
+
+      <div class="courses">
+        <p class="label">Eight of the thirty-seven</p>
+        <ol>
+          {
+            courses.map((c, i) => (
+              <li>
+                <span class="c-i label">{String(i + 1).padStart(2, '0')}</span>
+                <span class="c-d label">{c.d}</span>
+                <span class="c-t">
+                  {c.t}
+                  {c.i && <i> &middot; {c.i}</i>}
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <div class="method">
+        <span class="label">Method</span>
+        <p>{education.method}</p>
+      </div>
+    </Block>
+  </Section>
+
+  {/* ── 07 Contact ───────────────────────────────────────────────────── */}
+  <Section n="07" id="contact" name="Contact">
+    <Block n="07" name="Contact" gutter={['4 links', 'email is best']}>
+      <div class="contact">
+        <div>
+          <p class="label">Write to me</p>
+          <a class="contact__mail" href={`mailto:${contact.email}`}>{contact.email}</a>
+          <p class="sec__note">
+            I read it and I answer it. If you want to talk about a sailing model, a voxel world, or
+            why Python is the best language, that is the fastest way in.
+          </p>
+        </div>
+
+        <div>
+          <dl class="plate" style="--plate-dt:84px">
+            <div>
+              <dt class="label">GitHub</dt>
+              <dd><a href={contact.github} rel="me noopener">aj8uppal</a></dd>
+            </div>
+            <div>
+              <dt class="label">LinkedIn</dt>
+              <dd><a href={contact.linkedin} rel="me noopener">aj-uppal</a></dd>
+            </div>
+            <div>
+              <dt class="label">Stack&nbsp;O.</dt>
+              <dd><a href={contact.stackoverflow} rel="me noopener">A J Uppal</a></dd>
+            </div>
+            <div>
+              <dt class="label">Where</dt>
+              <dd>San Mateo, California</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </Block>
+  </Section>
+</Base>

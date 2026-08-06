@@ -1,0 +1,2061 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   aj8uppal.github.io
+
+   One ground, one accent, an 8px vertical rhythm, and a three-column ruled
+   spine that runs the length of the page. Full-bleed spreads break out of the
+   spine on purpose, and only for the four current projects.
+
+   Committed to a single dark ground rather than shipping a light theme too:
+   every photograph on this page is a dusk, night or golden-hour render, and a
+   scrim only has to be proven legible against one ground. Everything below is
+   a custom property, so a light theme stays a small change rather than a
+   rewrite.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. FONT ─────────────────────────────────────────────────────────── */
+/* One self-hosted face. Newsreader carries the display moments; everything
+   else is the system stack, which costs nothing and renders natively. */
+@font-face {
+  font-family: 'Newsreader';
+  src: url('/fonts/newsreader-latin-var.woff2') format('woff2-variations');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ── 1. TOKENS ───────────────────────────────────────────────────────── */
+:root {
+  color-scheme: dark;
+
+  /* Ground. A cool graphite, never pure black, so the amber reads warm. */
+  --ink-000: #0a0c0d; /* page                                            */
+  --ink-050: #101314; /* hover, raised row                               */
+  --ink-100: #14181a; /* card, plate matte                               */
+  --ink-150: #1a1f21; /* chip                                            */
+
+  /* Rules. Two weights only. */
+  --rule: #1e2427;
+  --rule-firm: #2b3336;
+
+  /* Text. Four steps. Ratios computed first against --ink-000, then against
+     --ink-150, the lightest surface any of them ever sits on. Every step
+     clears WCAG AA (4.5:1) on both. */
+  --tx-hi: #edefef; /* 16.98 / 14.42  headings                           */
+  --tx: #c4cacb; /* 11.82 / 10.03  body                                  */
+  --tx-lo: #939b9d; /*  6.92 /  5.88  metadata                           */
+  --tx-xlo: #7f878a; /*  5.35 /  4.54  captions, indices, stack lines     */
+
+  /* One accent. It earns every appearance. */
+  --amber: #efa33e; /* 9.31 / 7.91                                       */
+  --amber-dim: #a87528; /* 4.89 on --ink-000; small type on dark only    */
+  --amber-wash: rgb(239 163 62 / 10%);
+
+  /* Status. Not a second accent: desaturated signal only. */
+  --sig-live: #7fb88a;
+  --sig-dormant: #7f878a;
+
+  /* Text set over photographs, plus the scrim that guarantees it. One scrim
+     covers all three spreads, sized for the worst of them: hidamari's sunlit
+     path, where a sun flare sits directly behind the caption band.
+
+     These stops are not eyeballed. Every line of spread type was sampled
+     against the rendered pixels behind it, and each one clears AA against the
+     single brightest pixel under it, not merely the average - the tightest is
+     5.0:1 on hidamari's plate label. Going darker than this starts costing the
+     photographs more than it buys, which is why hidamari is also re-framed
+     (see Spread's `pos`) rather than simply buried under more black. */
+  --on-image: #f4f2ee;
+  --on-image-2: rgb(244 242 238 / 84%);
+  --scrim: linear-gradient(
+    to top,
+    rgb(6 8 9 / 95%) 0%,
+    rgb(6 8 9 / 89%) 23%,
+    rgb(6 8 9 / 78%) 48%,
+    rgb(6 8 9 / 52%) 70%,
+    rgb(6 8 9 / 18%) 88%,
+    rgb(6 8 9 / 0%) 100%
+  );
+
+  /* Type. Stepped, not fluid: every value is deliberate. */
+  --sans:
+    ui-sans-serif, -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, 'Helvetica Neue', arial,
+    sans-serif;
+  --mono:
+    ui-monospace, 'SF Mono', sfmono-regular, menlo, 'Cascadia Mono', 'Roboto Mono', consolas,
+    'Liberation Mono', monospace;
+  --serif: 'Newsreader', ui-serif, georgia, 'Times New Roman', serif;
+
+  --t-micro: 11px;
+  --lh-micro: 16px; /* mono labels, indices, chips  */
+  --t-meta: 13px;
+  --lh-meta: 24px; /* mono metadata, dates         */
+  --t-dense: 14px;
+  --lh-dense: 24px; /* sans secondary, table detail */
+  --t-body: 16px;
+  --lh-body: 24px; /* body copy                    */
+  --t-lead: 20px;
+  --lh-lead: 32px; /* lead paragraphs              */
+  --t-h2: 20px;
+  --lh-h2: 32px; /* section statements           */
+  --t-xl: 22px;
+  --lh-xl: 32px; /* project titles               */
+  --t-disp: 38px;
+  --lh-disp: 40px; /* the name                     */
+  --t-spread: 30px;
+  --lh-spread: 34px; /* spread captions              */
+
+  /* Space. Multiples of 8; 4px exists only inside chips. */
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 32px;
+  --s-5: 48px;
+  --s-6: 64px;
+  --s-7: 96px;
+
+  /* Measure and spine. */
+  --page: 1240px;
+  --pad-x: 20px;
+  --measure: 66ch;
+  --col-idx: 0px; /* index column collapses on small screens */
+  --col-label: 0px;
+  --gap: 24px;
+
+  /* Distance from the wrap's content edge to the spine's main column. Type that
+     lives outside the grid - the caption on a full-bleed spread - borrows it so
+     every line on the page starts on the same vertical. */
+  --spine-x: 0px;
+  --sec-pad: 48px;
+  --bar-h: 48px;
+}
+
+@media (width >= 640px) {
+  :root {
+    --pad-x: 32px;
+    --t-h2: 24px;
+    --t-xl: 26px;
+    --t-disp: 56px;
+    --lh-disp: 56px;
+    --t-spread: 40px;
+    --lh-spread: 44px;
+    --sec-pad: 56px;
+  }
+}
+
+@media (width >= 1024px) {
+  :root {
+    --pad-x: 40px;
+    --col-idx: 56px;
+    --col-label: 192px;
+    --spine-x: calc(var(--col-idx) + var(--col-label) + var(--gap) + 1px);
+    --t-xl: 32px;
+    --lh-xl: 40px;
+    --t-disp: 76px;
+    --lh-disp: 80px;
+    --t-spread: 56px;
+    --lh-spread: 60px;
+    --sec-pad: 64px;
+  }
+}
+
+@media (width >= 1280px) {
+  :root {
+    --pad-x: 56px;
+  }
+}
+
+/* ── 2. RESET AND BASE ───────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scrollbar-color: var(--rule-firm) var(--ink-000);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--ink-000);
+  color: var(--tx);
+  font: 400 var(--t-body) / var(--lh-body) var(--sans);
+  font-synthesis-weight: none;
+  text-underline-offset: 3px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+blockquote {
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--amber);
+  color: #0a0c0d;
+  text-shadow: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Over a photograph the amber ring can land on amber pixels. Double it with a
+   dark halo so the ring is visible on any frame. */
+.on-image :focus-visible {
+  outline-color: var(--amber);
+  box-shadow: 0 0 0 5px rgb(6 8 9 / 80%);
+}
+
+.skip {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  padding: var(--s-1) var(--s-2);
+  background: var(--amber);
+  color: #0a0c0d;
+  font: 500 var(--t-meta) / var(--lh-meta) var(--mono);
+  transform: translateY(-110%);
+}
+
+.skip:focus {
+  transform: none;
+}
+
+[id] {
+  scroll-margin-top: calc(var(--bar-h) + var(--s-3));
+}
+
+/* ── 3. TYPOGRAPHIC PRIMITIVES ───────────────────────────────────────── */
+.mono {
+  font-family: var(--mono);
+  font-feature-settings:
+    'tnum' 1,
+    'calt' 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
+  color: var(--tx-lo);
+  font: 500 var(--t-micro) / var(--lh-micro) var(--mono);
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.meta {
+  color: var(--tx-lo);
+  font: 400 var(--t-meta) / var(--lh-meta) var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.dense {
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+}
+
+.lead {
+  color: var(--tx-hi);
+  font-size: var(--t-lead);
+  line-height: var(--lh-lead);
+}
+
+.prose {
+  max-width: var(--measure);
+}
+
+.prose + .prose {
+  margin-top: var(--s-3);
+}
+
+/* Cap-height text set large drifts right of a hairline. Pull it back. */
+.disp {
+  margin-left: -0.03em;
+  color: var(--tx-hi);
+  font: 300 var(--t-disp) / var(--lh-disp) var(--sans);
+  letter-spacing: -0.028em;
+}
+
+/* The one serif. Reserved for the name, the spread captions, and the address
+   in the contact block. Four appearances on the page, total. */
+.display {
+  color: var(--tx-hi);
+  font-family: var(--serif);
+  font-weight: 400;
+  font-optical-sizing: auto;
+  letter-spacing: -0.014em;
+}
+
+.link {
+  background-image: linear-gradient(var(--amber), var(--amber));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  color: var(--tx-hi);
+  text-decoration: none;
+  transition:
+    background-size 0.16s ease,
+    color 0.16s ease;
+}
+
+.link:hover {
+  color: var(--amber);
+}
+
+.link--quiet {
+  background-image: linear-gradient(var(--rule-firm), var(--rule-firm));
+  color: var(--tx);
+}
+
+.link--quiet:hover {
+  background-image: linear-gradient(var(--amber), var(--amber));
+  color: var(--amber);
+}
+
+/* The one concession to utility classes: the gap between a statement and the
+   table under it, which varies by block and belongs in the markup rather than
+   in a rule per component. Steps only, so it stays on the scale. */
+.mt-3 {
+  margin-top: var(--s-3);
+}
+
+.mt-4 {
+  margin-top: var(--s-4);
+}
+
+.mt-5 {
+  margin-top: var(--s-5);
+}
+
+/* ── 4. THE SPINE ────────────────────────────────────────────────────── */
+.wrap {
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--pad-x);
+}
+
+.sec {
+  border-top: 1px solid var(--rule);
+}
+
+.sec__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.sec__idx,
+.sec__label {
+  display: none;
+}
+
+.sec__main {
+  min-width: 0;
+  padding-block: var(--sec-pad);
+}
+
+/* A block that continues a section already introduced above it - typically the
+   one that lands under a full-bleed spread. It sits closer to what precedes it
+   so the spread and its commentary read as one unit. */
+.sec__grid--tight .sec__idx,
+.sec__grid--tight .sec__label,
+.sec__grid--tight .sec__main {
+  padding-block: var(--s-5);
+}
+
+@media (width >= 1024px) {
+  .sec__grid {
+    grid-template-columns: var(--col-idx) var(--col-label) minmax(0, 1fr);
+  }
+
+  .sec__idx,
+  .sec__label {
+    display: block;
+    padding-block: var(--sec-pad);
+  }
+
+  .sec__label,
+  .sec__main {
+    padding-left: var(--gap);
+    border-left: 1px solid var(--rule);
+  }
+
+  .sec__label > div {
+    position: sticky;
+    top: calc(var(--bar-h) + var(--s-4));
+  }
+}
+
+/* The gutter carries a real count, not filler. */
+.sec__gutter {
+  margin-top: var(--s-1);
+  color: var(--tx-xlo);
+}
+
+.sec__gutter span {
+  display: block;
+}
+
+/* Small screens: the index folds into a single ruled line. */
+.sec__hd {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  padding-bottom: var(--s-3);
+}
+
+@media (width >= 1024px) {
+  .sec__hd {
+    display: none;
+  }
+}
+
+.sec__hd .n {
+  color: var(--amber);
+}
+
+.sec__idx {
+  color: var(--tx-xlo);
+  font: 400 var(--t-meta) / var(--lh-meta) var(--mono);
+}
+
+.sec__statement {
+  max-width: 34ch;
+  color: var(--tx-hi);
+  font: 400 var(--t-h2) / var(--lh-h2) var(--sans);
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+.sec__note {
+  max-width: var(--measure);
+  margin-top: var(--s-2);
+}
+
+/* ── 5. TOP BAR ──────────────────────────────────────────────────────── */
+.bar {
+  position: fixed;
+  z-index: 50;
+  inset: 0 0 auto;
+  height: var(--bar-h);
+  border-bottom: 1px solid var(--rule);
+  background: rgb(10 12 13 / 86%);
+  backdrop-filter: saturate(140%) blur(12px);
+  -webkit-backdrop-filter: saturate(140%) blur(12px);
+}
+
+.bar__in {
+  display: flex;
+  height: 100%;
+  max-width: var(--page);
+  align-items: center;
+  justify-content: space-between;
+  margin-inline: auto;
+  gap: var(--s-3);
+  padding-inline: var(--pad-x);
+}
+
+.bar__id {
+  color: var(--tx-hi);
+  white-space: nowrap;
+  letter-spacing: 0.12em;
+}
+
+.bar__id span {
+  color: var(--tx-xlo);
+}
+
+.bar__nav {
+  display: none;
+  gap: 2px;
+}
+
+@media (width >= 900px) {
+  .bar__nav {
+    display: flex;
+  }
+
+  .bar__read {
+    display: none;
+  }
+}
+
+.bar__nav a {
+  display: block;
+  padding: 4px var(--s-1);
+  color: var(--tx-lo);
+  font: 500 var(--t-micro) / var(--lh-micro) var(--mono);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition:
+    color 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.bar__nav a b {
+  margin-right: 6px;
+  color: var(--tx-xlo);
+  font-weight: 500;
+  transition: color 0.16s ease;
+}
+
+.bar__nav a:hover {
+  background: var(--ink-100);
+  color: var(--tx-hi);
+}
+
+.bar__nav a[aria-current='true'],
+.bar__nav a[aria-current='true'] b {
+  color: var(--amber);
+}
+
+.bar__read {
+  color: var(--tx-lo);
+}
+
+.bar__read b {
+  color: var(--amber);
+  font-weight: 400;
+}
+
+.bar__prog {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--amber);
+}
+
+/* ── 6. COVER ────────────────────────────────────────────────────────── */
+.sec--cover {
+  border-top: 0;
+}
+
+.sec--cover .sec__main {
+  padding-top: calc(var(--bar-h) + var(--s-6));
+  padding-bottom: var(--s-6);
+}
+
+@media (width >= 1024px) {
+  .sec--cover .sec__idx,
+  .sec--cover .sec__label,
+  .sec--cover .sec__main {
+    padding-top: calc(var(--bar-h) + var(--s-7));
+  }
+
+  .sec--cover .sec__main {
+    padding-bottom: var(--s-7);
+  }
+}
+
+.cover__kicker {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: var(--s-4);
+  gap: var(--s-1) var(--s-3);
+}
+
+.cover h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-optical-sizing: auto;
+  letter-spacing: -0.026em;
+}
+
+.cover__lead {
+  max-width: 46ch;
+  margin-top: var(--s-4);
+  text-wrap: pretty;
+}
+
+.cover__lead em {
+  color: var(--amber);
+  font-style: normal;
+}
+
+.cover__second {
+  max-width: 56ch;
+  margin-top: var(--s-3);
+  color: var(--tx);
+}
+
+/* The spec strip: four ruled cells, the object's plate. One row at desktop
+   width, two by two on a phone.
+ *
+ * The rules are drawn by pseudo-elements in the gutters rather than as cell
+ * borders, because the column count is auto-fit and so no selector knows which
+ * cell begins a row. Each cell draws a rule to its left and above; the ones
+ * that would start a row draw outside the strip, where overflow:hidden eats
+ * them. That keeps every cell's text on the same left edge in any wrap. */
+.strip {
+  display: grid;
+  overflow: hidden;
+  border-top: 1px solid var(--rule-firm);
+  border-bottom: 1px solid var(--rule);
+  margin-top: var(--s-5);
+  gap: var(--s-2) var(--s-3);
+  /* 156px keeps two cells side by side at 390px once the gutters are paid for,
+     and still resolves to one row of four in the main column at desktop. */
+  grid-template-columns: repeat(auto-fit, minmax(156px, 1fr));
+}
+
+.strip > div {
+  position: relative;
+  padding-block: var(--s-2);
+}
+
+.strip > div::before,
+.strip > div::after {
+  position: absolute;
+  background: var(--rule);
+  content: '';
+}
+
+.strip > div::before {
+  inset: calc(var(--s-2) / -2) auto calc(var(--s-2) / -2) calc(var(--s-3) / -2);
+  width: 1px;
+}
+
+.strip > div::after {
+  inset: calc(var(--s-2) / -2) calc(var(--s-3) / -2) auto calc(var(--s-3) / -2);
+  height: 1px;
+}
+
+.strip dt {
+  margin-bottom: 2px;
+}
+
+.strip dd {
+  color: var(--tx-hi);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+  /* Two cells wide on a phone is narrow enough to strand "2022" on its own
+     line. Pretty spends a little raggedness to avoid that. */
+  text-wrap: pretty;
+}
+
+.strip dd .sub {
+  color: var(--tx-lo);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: var(--s-4);
+  gap: var(--s-1);
+}
+
+.btn {
+  display: inline-flex;
+  height: 40px;
+  align-items: center;
+  gap: var(--s-1);
+  padding-inline: var(--s-2);
+  border: 1px solid var(--rule-firm);
+  background: transparent;
+  color: var(--tx-hi);
+  font: 500 var(--t-meta) / 1 var(--mono);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition:
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.btn:hover {
+  border-color: var(--amber);
+  background: var(--amber-wash);
+  color: var(--amber);
+}
+
+.btn--primary {
+  border-color: var(--amber-dim);
+  color: var(--amber);
+}
+
+.btn__k {
+  color: var(--tx-xlo);
+  transition: color 0.16s ease;
+}
+
+.btn:hover .btn__k {
+  color: var(--amber-dim);
+}
+
+/* Contents. The cover's table of contents and the page's density tell. */
+.toc {
+  margin-top: var(--s-6);
+  border-top: 1px solid var(--rule-firm);
+}
+
+.toc a {
+  display: grid;
+  align-items: baseline;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+  gap: 0 var(--s-2);
+  grid-template-columns: 32px minmax(0, 1fr);
+  text-decoration: none;
+  transition: background-color 0.14s ease;
+}
+
+@media (width >= 720px) {
+  .toc a {
+    padding-block: var(--s-1);
+    grid-template-columns: 40px 156px minmax(0, 1fr) 104px;
+  }
+}
+
+.toc a:hover {
+  background: var(--ink-050);
+}
+
+.toc .t-n {
+  color: var(--tx-xlo);
+  transition: color 0.14s ease;
+}
+
+.toc a:hover .t-n {
+  color: var(--amber);
+}
+
+.toc .t-name {
+  color: var(--tx-hi);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+  letter-spacing: 0.01em;
+}
+
+.toc .t-desc {
+  color: var(--tx-lo);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+  grid-column: 2 / -1;
+}
+
+.toc .t-count {
+  display: none;
+}
+
+@media (width >= 720px) {
+  .toc .t-desc {
+    grid-column: auto;
+  }
+
+  .toc .t-count {
+    display: block;
+    text-align: right;
+  }
+}
+
+/* ── 7. FACT TABLE ───────────────────────────────────────────────────── */
+.facts {
+  border-top: 1px solid var(--rule);
+}
+
+.facts > div {
+  display: grid;
+  padding-block: 12px;
+  border-bottom: 1px solid var(--rule);
+  gap: 0 var(--s-3);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 560px) {
+  .facts > div {
+    grid-template-columns: 156px minmax(0, 1fr);
+  }
+}
+
+.facts dt {
+  padding-top: 4px;
+}
+
+.facts dd {
+  color: var(--tx);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+}
+
+.facts dd b {
+  color: var(--tx-hi);
+  font-weight: 500;
+}
+
+/* ── 8. EXPERIENCE ───────────────────────────────────────────────────── */
+.xp {
+  border-top: 1px solid var(--rule-firm);
+}
+
+.xp__row {
+  display: grid;
+  padding-block: var(--s-3);
+  border-bottom: 1px solid var(--rule);
+  gap: var(--s-1) var(--s-3);
+  grid-template-columns: minmax(0, 1fr);
+  transition: background-color 0.14s ease;
+}
+
+@media (width >= 720px) {
+  .xp__row {
+    grid-template-columns: 168px minmax(0, 1fr);
+  }
+}
+
+@media (width >= 1180px) {
+  .xp__row {
+    grid-template-columns: 168px minmax(0, 1fr) 208px;
+  }
+}
+
+.xp__row:hover {
+  background: var(--ink-050);
+}
+
+.xp__row:hover .xp__when {
+  color: var(--amber);
+}
+
+.xp__when {
+  white-space: nowrap;
+  transition: color 0.14s ease;
+}
+
+.xp__when .now {
+  color: var(--sig-live);
+}
+
+.xp__what h3 {
+  color: var(--tx-hi);
+  font: 500 var(--t-body) / var(--lh-body) var(--sans);
+  letter-spacing: -0.005em;
+}
+
+.xp__org {
+  color: var(--tx-lo);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+}
+
+.xp__org .loc {
+  color: var(--tx-xlo);
+}
+
+.xp__body {
+  max-width: 62ch;
+  margin-top: var(--s-1);
+  color: var(--tx);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+}
+
+.xp__bullets {
+  max-width: 62ch;
+  margin-top: var(--s-1);
+}
+
+.xp__bullets li {
+  position: relative;
+  padding-left: 18px;
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+}
+
+.xp__bullets li::before {
+  position: absolute;
+  top: 11px;
+  left: 0;
+  width: 6px;
+  height: 1px;
+  background: var(--rule-firm);
+  content: '';
+}
+
+.xp__stack {
+  color: var(--tx-xlo);
+  font: 400 var(--t-micro) / var(--lh-micro) var(--mono);
+  letter-spacing: 0.02em;
+}
+
+@media (width >= 1180px) {
+  .xp__stack {
+    padding-top: 4px;
+    text-align: left;
+  }
+}
+
+/* Content the author still owes. Marked, never faked. */
+.pending {
+  max-width: 62ch;
+  margin-top: var(--s-2);
+  padding: 12px var(--s-2);
+  border: 1px dashed var(--rule-firm);
+  background: repeating-linear-gradient(135deg, transparent 0 6px, rgb(239 163 62 / 2.8%) 6px 12px);
+}
+
+.pending b {
+  color: var(--amber);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.pending p {
+  margin-top: 4px;
+  color: var(--tx-lo);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+}
+
+/* Errata. The page admits what it does not know. */
+.errata {
+  display: grid;
+  margin-top: var(--s-4);
+  gap: var(--s-1);
+}
+
+.errata > div {
+  display: grid;
+  max-width: 76ch;
+  gap: var(--s-2);
+  grid-template-columns: 68px minmax(0, 1fr);
+}
+
+.errata dt {
+  color: var(--amber-dim);
+}
+
+.errata dd {
+  color: var(--tx-lo);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+}
+
+sup.ref {
+  margin-left: 3px;
+  color: var(--amber-dim);
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 0;
+  vertical-align: super;
+  letter-spacing: 0.04em;
+}
+
+sup.ref a {
+  text-decoration: none;
+}
+
+/* One annotation under a table. Same two-column shape as .errata. */
+.method {
+  display: grid;
+  max-width: 76ch;
+  margin-top: var(--s-3);
+  color: var(--tx-lo);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+  gap: 4px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.method > .label {
+  color: var(--amber-dim);
+}
+
+@media (width >= 640px) {
+  .method {
+    gap: var(--s-2);
+    grid-template-columns: 68px minmax(0, 1fr);
+  }
+
+  .method > .label {
+    padding-top: 5px;
+  }
+}
+
+/* ── 9. PROJECTS ─────────────────────────────────────────────────────── */
+.proj {
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule-firm);
+}
+
+.proj__hd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-2);
+}
+
+.proj__hd h3 {
+  color: var(--tx-hi);
+  font: 400 var(--t-xl) / var(--lh-xl) var(--sans);
+  letter-spacing: -0.022em;
+}
+
+.proj__hd h3 a {
+  box-shadow: inset 0 -1px 0 0 var(--rule-firm);
+  color: var(--tx-hi);
+  text-decoration: none;
+  transition:
+    color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.proj__hd h3 a:hover {
+  box-shadow: inset 0 -1px 0 0 var(--amber);
+  color: var(--amber);
+}
+
+.proj__sub {
+  margin-top: 4px;
+  color: var(--tx-lo);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+  /* One sentence at phone width strands its last word otherwise. */
+  text-wrap: pretty;
+}
+
+.chip {
+  display: inline-flex;
+  height: 22px;
+  align-items: center;
+  gap: 6px;
+  padding-inline: 8px;
+  border: 1px solid var(--rule-firm);
+  background: var(--ink-150);
+  color: var(--tx-lo);
+  font: 500 var(--t-micro) / 1 var(--mono);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.chip .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--tx-xlo);
+}
+
+.chip--live {
+  border-color: rgb(127 184 138 / 28%);
+  color: var(--sig-live);
+}
+
+.chip--live .dot {
+  background: var(--sig-live);
+}
+
+.chip--wip {
+  border-color: var(--amber-dim);
+  color: var(--amber);
+}
+
+.chip--wip .dot {
+  background: var(--amber);
+}
+
+.chip--off {
+  color: var(--tx-xlo);
+}
+
+.proj__cols {
+  display: grid;
+  margin-top: var(--s-3);
+  gap: var(--s-3);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 900px) {
+  .proj__cols {
+    gap: var(--s-4);
+    grid-template-columns: minmax(0, 1fr) 272px;
+  }
+}
+
+@media (width >= 1180px) {
+  .proj__cols {
+    grid-template-columns: minmax(0, 1fr) 304px;
+  }
+}
+
+.proj__body p {
+  max-width: 58ch;
+}
+
+.proj__body p + p {
+  margin-top: var(--s-2);
+}
+
+/* The line that introduces the frame switcher below a project's body. */
+.proj__lede {
+  max-width: var(--measure);
+  margin-top: var(--s-5);
+  color: var(--tx-lo);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+}
+
+/* One claim, one frame that proves it, one paragraph of why. Used twice. */
+.proof {
+  margin-top: var(--s-6);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--rule);
+}
+
+.proof__hd {
+  max-width: 34ch;
+  color: var(--tx-hi);
+  font: 400 var(--t-h2) / var(--lh-h2) var(--sans);
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+.proof__body {
+  max-width: var(--measure);
+  margin-top: var(--s-3);
+}
+
+.proof__body p + p {
+  margin-top: var(--s-2);
+}
+
+/* A related group inside a section that does not deserve a number of its own. */
+.subsec {
+  margin-top: var(--s-6);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--rule-firm);
+}
+
+.subsec > .label {
+  color: var(--amber-dim);
+}
+
+.subsec__t {
+  max-width: 34ch;
+  margin-top: 4px;
+  color: var(--tx-hi);
+  font: 400 var(--t-h2) / var(--lh-h2) var(--sans);
+  letter-spacing: -0.012em;
+}
+
+.plate {
+  --plate-dt: 92px;
+
+  border-top: 1px solid var(--rule);
+}
+
+.plate > div {
+  display: grid;
+  padding-block: 8px;
+  border-bottom: 1px solid var(--rule);
+  gap: var(--s-2);
+  grid-template-columns: var(--plate-dt) minmax(0, 1fr);
+}
+
+.plate dt {
+  color: var(--tx-xlo);
+}
+
+.plate dd {
+  color: var(--tx);
+  font: 400 var(--t-meta) / var(--lh-meta) var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.plate dd a {
+  border-bottom: 1px solid var(--rule-firm);
+  color: var(--tx-hi);
+  text-decoration: none;
+}
+
+.plate dd a:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+/* ── 10. FIGURES ─────────────────────────────────────────────────────── */
+.fig {
+  --fig-ar: 16 / 9;
+
+  margin-top: var(--s-4);
+}
+
+.fig__frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  background: var(--ink-100);
+}
+
+.fig__frame img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: var(--fig-ar);
+  object-fit: cover;
+}
+
+/* One archive screenshot, deliberately smaller than anything in section 02 so
+   a 2015 demo cannot compete with work from this year. */
+.fig--small {
+  max-width: 520px;
+}
+
+.fig__cap {
+  display: grid;
+  padding-top: var(--s-1);
+  color: var(--tx-xlo);
+  font: 400 var(--t-micro) / var(--lh-micro) var(--mono);
+  gap: 0 var(--s-2);
+  grid-template-columns: auto minmax(0, 1fr);
+  letter-spacing: 0.03em;
+}
+
+.fig__cap b {
+  color: var(--tx-lo);
+  font-weight: 400;
+  white-space: nowrap;
+  grid-area: 1 / 1;
+}
+
+.fig__cap span {
+  white-space: nowrap;
+  text-align: right;
+  grid-area: 1 / 2;
+}
+
+.fig__cap i {
+  font-style: normal;
+  grid-area: 2 / 1 / 3 / 3;
+}
+
+@media (width >= 700px) {
+  .fig__cap {
+    gap: 0 var(--s-3);
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .fig__cap i {
+    grid-area: 1 / 2;
+  }
+
+  .fig__cap span {
+    grid-area: 1 / 3;
+  }
+}
+
+/* Three frames read as one specimen plate. */
+.fig__row {
+  display: grid;
+  gap: var(--s-1);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 560px) {
+  .fig__row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.fig__row figcaption {
+  padding-top: 6px;
+  color: var(--tx-xlo);
+  font: 400 var(--t-micro) / var(--lh-micro) var(--mono);
+  letter-spacing: 0.04em;
+}
+
+/* ── 10b. THE SALTLINE ARC ───────────────────────────────────────────── */
+/* Six captures of one seed at six times of day.
+ *
+ * This is a plate and not a switcher, which is the one place the two featured
+ * projects diverge. Ember Wilds' seven regions are seven different places, so
+ * you tour them one at a time. saltline's six frames are one place under six
+ * lights, and that only reads if you can see them at once: the pair thirty
+ * minutes apart is the whole argument and it evaporates behind a tab.
+ *
+ * Two up rather than three. Three fits the column but lands at 274px a tile,
+ * and the thing being demonstrated is water. */
+.arc {
+  display: grid;
+  margin-top: var(--s-3);
+  gap: var(--s-4) var(--s-3);
+  grid-template-columns: minmax(0, 1fr);
+  list-style: none;
+}
+
+@media (width >= 720px) {
+  .arc {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.arc__frame {
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  background: var(--ink-100);
+}
+
+.arc__frame img {
+  display: block;
+  /* height:auto is load-bearing. Astro emits width and height attributes, which
+     are presentation hints, and a definite height means aspect-ratio is ignored. */
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.arc figcaption {
+  display: grid;
+  padding-top: var(--s-1);
+  gap: 2px;
+}
+
+.arc__t {
+  color: var(--tx-hi);
+  font: 400 var(--t-meta) / var(--lh-meta) var(--mono);
+  letter-spacing: 0.02em;
+}
+
+/* The clock is the variable in this set, so it is the one thing set in amber. */
+.arc__t span {
+  margin-right: var(--s-1);
+  color: var(--amber);
+  font-variant-numeric: tabular-nums;
+}
+
+.arc__r {
+  color: var(--tx-xlo);
+  font: 400 var(--t-micro) / var(--lh-micro) var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.03em;
+}
+
+/* The rule runs the content column, the prose keeps the measure - same shape as
+   .proof below, so the two horizontals in this section agree. */
+.arc__note {
+  margin-top: var(--s-4);
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--rule);
+}
+
+.arc__note p {
+  max-width: var(--measure);
+  color: var(--tx);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+}
+
+/* ── 11. FULL-BLEED SPREADS ──────────────────────────────────────────── */
+/* The only elements that leave the spine. One per current project, except
+   Elderwood Vale, which is an architecture piece and breaks the rhythm on
+   purpose by not getting one.
+
+   A spread is a sibling of the spine blocks rather than a child of one, so it
+   is full width by construction. The alternative - a negative-margin breakout
+   from inside the grid - only lands correctly when its container is centred in
+   the viewport, and the spine's content column is not. */
+.spread {
+  position: relative;
+  overflow: hidden;
+  height: 86svh;
+  min-height: 460px;
+  max-height: 880px;
+  background: var(--ink-100);
+}
+
+.spread--short {
+  height: 64svh;
+  min-height: 380px;
+  max-height: 660px;
+}
+
+.spread img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--spread-pos, 50% 50%);
+}
+
+/* One scrim, sized for the brightest frame on the page. Verified against
+   hidamari's sunlit path, which is the worst case by a wide margin.
+
+   The block is bottom-anchored, so the oversized top padding is pure runway for
+   the gradient: it moves no type, it just means the ramp from transparent to
+   opaque finishes above the first line instead of running through it. */
+.spread__cap {
+  position: absolute;
+  inset: auto 0 0;
+  padding-block: clamp(84px, 15vh, 188px) clamp(28px, 6vh, 72px);
+  background: var(--scrim);
+}
+
+/* The photograph escapes the grid; its caption does not. */
+.spread__cap .wrap {
+  padding-left: calc(var(--pad-x) + var(--spine-x));
+}
+
+@media (width >= 1024px) {
+  /* Once the spine exists, the plate number moves into the gutter and sits on
+     the title's line, exactly where a section index sits. Two things fall out
+     of that: the caption reads as part of the same grid as the rest of the
+     page, and the smallest type on a spread stops sitting over the middle of
+     the frame, which on hidamari is a sun flare no scrim should have to beat. */
+  .spread__cap .wrap {
+    display: grid;
+    padding-left: var(--pad-x);
+    grid-template-columns: var(--spine-x) minmax(0, 1fr);
+  }
+
+  .spread__cap .n {
+    margin-bottom: 0;
+    /* Drops the label onto the title's first baseline. */
+    padding-top: 33px;
+    grid-area: 1 / 1;
+  }
+
+  .spread__cap .t,
+  .spread__cap .s {
+    grid-column: 2;
+  }
+}
+
+.spread__cap .n {
+  display: block;
+  margin-bottom: clamp(8px, 1.3vh, 16px);
+  color: var(--on-image-2);
+  text-shadow: 0 1px 14px rgb(0 0 0 / 75%);
+}
+
+.spread__cap .t {
+  max-width: 22ch;
+  color: var(--on-image);
+  font-family: var(--serif);
+  font-size: var(--t-spread);
+  font-weight: 400;
+  font-optical-sizing: auto;
+  line-height: var(--lh-spread);
+  letter-spacing: -0.018em;
+  text-shadow: 0 2px 36px rgb(0 0 0 / 55%);
+  text-wrap: balance;
+}
+
+.spread__cap .s {
+  max-width: 44ch;
+  margin-top: clamp(8px, 1.2vh, 16px);
+  color: var(--on-image-2);
+  font-size: var(--t-dense);
+  line-height: 22px;
+  text-shadow: 0 1px 18px rgb(0 0 0 / 70%);
+  text-wrap: pretty;
+}
+
+@media (width >= 640px) {
+  .spread__cap .s {
+    font-size: var(--t-body);
+    line-height: 26px;
+  }
+}
+
+/* ── 12. FRAME SWITCHER (React island) ───────────────────────────────── */
+.fs {
+  margin-top: var(--s-4);
+}
+
+/* The stage takes the captures' own ratio, set by the island from the first
+   frame. Every frame in a set is cropped identically upstream, so nothing in
+   any of them - a control hint along the bottom edge, a quest panel at the
+   side - is ever cut off by the frame it sits in. */
+.fs__stage {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--fs-ar, 16 / 9);
+  border: 1px solid var(--rule);
+  background: var(--ink-100);
+}
+
+.fs__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.42s cubic-bezier(0.3, 0.7, 0.25, 1);
+}
+
+.fs__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fs__slide[data-active='true'] {
+  opacity: 1;
+}
+
+/* Seven region tabs fit on one line at desktop width and do not on a phone, so
+   the strip scrolls. A strip that scrolls has to say so: the fade appears on
+   whichever side still has tabs behind it, and disappears when it does not.
+   The rule under the tabs belongs to the wrapper, so it stays solid across the
+   full width while the tabs themselves fade out over it. */
+.fs__strip {
+  position: relative;
+  border-bottom: 1px solid var(--rule);
+}
+
+.fs__strip::before,
+.fs__strip::after {
+  position: absolute;
+  z-index: 1;
+  inset-block: 0;
+  width: 40px;
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+
+.fs__strip::before {
+  left: 0;
+  background: linear-gradient(to right, var(--ink-000) 25%, transparent);
+}
+
+.fs__strip::after {
+  right: 0;
+  background: linear-gradient(to left, var(--ink-000) 25%, transparent);
+}
+
+.fs__strip[data-of-start='true']::before,
+.fs__strip[data-of-end='true']::after {
+  opacity: 1;
+}
+
+.fs__tabs {
+  position: relative;
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.fs__tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.fs__tab {
+  padding: 10px var(--s-2) 10px 0;
+  border: 0;
+  background: none;
+  color: var(--tx-lo);
+  font: 500 var(--t-micro) / var(--lh-micro) var(--mono);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: color 0.16s ease;
+}
+
+.fs__tab:hover {
+  color: var(--tx-hi);
+}
+
+.fs__tab[aria-selected='true'] {
+  color: var(--amber);
+}
+
+/* The indicator is driven by a spring in JS, not by a CSS transition, so an
+   interrupted move continues from where it is rather than snapping. */
+.fs__ind {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  background: var(--amber);
+  transform-origin: left center;
+}
+
+.fs__read {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: var(--s-2);
+  gap: 2px var(--s-3);
+}
+
+.fs__read div {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-1);
+}
+
+.fs__read dt {
+  color: var(--tx-xlo);
+  font: 500 var(--t-micro) / var(--lh-micro) var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.fs__read dd {
+  color: var(--tx-hi);
+  font: 400 var(--t-meta) / var(--lh-meta) var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.fs__note {
+  max-width: 62ch;
+  min-height: 48px;
+  margin-top: 4px;
+  color: var(--tx);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+}
+
+.fs__fallback {
+  display: grid;
+  gap: var(--s-1);
+}
+
+/* ── 13. SKILLS ──────────────────────────────────────────────────────── */
+.matrix {
+  border-top: 1px solid var(--rule-firm);
+}
+
+.matrix > div {
+  display: grid;
+  padding-block: var(--s-2);
+  border-bottom: 1px solid var(--rule);
+  gap: var(--s-1) var(--s-3);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 640px) {
+  .matrix > div {
+    grid-template-columns: 152px minmax(0, 1fr);
+  }
+}
+
+.matrix dt {
+  padding-top: 5px;
+}
+
+.matrix dd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.matrix dd span {
+  display: inline-flex;
+  height: 26px;
+  align-items: center;
+  padding-inline: 10px;
+  border: 1px solid var(--rule);
+  background: var(--ink-050);
+  color: var(--tx);
+  font: 400 var(--t-meta) / 1 var(--mono);
+  transition:
+    border-color 0.14s ease,
+    color 0.14s ease;
+}
+
+.matrix dd span:hover {
+  border-color: var(--rule-firm);
+  color: var(--tx-hi);
+}
+
+/* ── 14. PLAYGROUND SPECIMEN LIST ────────────────────────────────────── */
+.spec {
+  border-top: 1px solid var(--rule-firm);
+}
+
+.spec > li {
+  display: grid;
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--rule);
+  gap: 4px var(--s-3);
+  grid-template-columns: minmax(0, 1fr) auto;
+  list-style: none;
+}
+
+.spec__yr {
+  color: var(--tx-xlo);
+  font: 400 var(--t-micro) / var(--lh-micro) var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+  grid-column: 1 / -1;
+}
+
+.spec__nm {
+  color: var(--tx-hi);
+  font-size: var(--t-body);
+  font-weight: 400;
+  line-height: var(--lh-body);
+  grid-column: 1;
+}
+
+.spec__nm a {
+  border-bottom: 1px solid var(--rule-firm);
+  text-decoration: none;
+}
+
+.spec__nm a:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.spec__st {
+  justify-self: end;
+  grid-column: 2;
+}
+
+.spec__w {
+  max-width: 62ch;
+  color: var(--tx);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+  grid-column: 1 / -1;
+}
+
+.spec__k {
+  padding-top: 2px;
+  color: var(--tx-xlo);
+  font: 400 var(--t-micro) / var(--lh-micro) var(--mono);
+  letter-spacing: 0.04em;
+  grid-column: 1 / -1;
+}
+
+@media (width >= 720px) {
+  .spec > li {
+    grid-template-columns: 72px minmax(0, 1fr) 130px;
+  }
+
+  .spec__yr {
+    padding-top: 5px;
+    grid-area: 1 / 1 / 4 / 2;
+  }
+
+  .spec__nm {
+    grid-area: 1 / 2;
+  }
+
+  .spec__st {
+    grid-area: 1 / 3;
+  }
+
+  .spec__w {
+    grid-area: 2 / 2;
+  }
+
+  .spec__k {
+    grid-area: 3 / 2;
+  }
+}
+
+/* ── 15. EDUCATION ───────────────────────────────────────────────────── */
+.deg {
+  display: grid;
+  gap: var(--s-3);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 720px) {
+  .deg {
+    gap: var(--s-4);
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.deg > div {
+  padding-top: 12px;
+  border-top: 1px solid var(--rule-firm);
+}
+
+.deg h3 {
+  color: var(--tx-hi);
+  font: 500 var(--t-body) / var(--lh-body) var(--sans);
+}
+
+.deg p {
+  color: var(--tx-lo);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+}
+
+.courses {
+  margin-top: var(--s-5);
+}
+
+.courses ol {
+  border-top: 1px solid var(--rule-firm);
+}
+
+.courses li {
+  display: grid;
+  align-items: baseline;
+  padding-block: 10px;
+  border-bottom: 1px solid var(--rule);
+  gap: var(--s-2);
+  grid-template-columns: 24px minmax(0, 1fr);
+}
+
+@media (width >= 560px) {
+  .courses li {
+    grid-template-columns: 24px 68px minmax(0, 1fr);
+  }
+}
+
+.courses .c-i {
+  color: var(--tx-xlo);
+}
+
+.courses .c-d {
+  display: none;
+  color: var(--amber-dim);
+}
+
+@media (width >= 560px) {
+  .courses .c-d {
+    display: block;
+  }
+}
+
+.courses .c-t {
+  color: var(--tx-hi);
+  font-size: var(--t-dense);
+  line-height: var(--lh-dense);
+}
+
+.courses .c-t i {
+  color: var(--tx-lo);
+  font-style: normal;
+}
+
+/* ── 16. CONTACT AND FOOTER ──────────────────────────────────────────── */
+.contact {
+  display: grid;
+  gap: var(--s-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 900px) {
+  .contact {
+    gap: var(--s-6);
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}
+
+.contact__mail {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  color: var(--tx-hi);
+  font-family: var(--serif);
+  font-size: clamp(26px, 4.4vw, 46px);
+  font-weight: 400;
+  font-optical-sizing: auto;
+  line-height: 1.16;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  transition: color 0.16s ease;
+}
+
+.contact__mail:hover {
+  color: var(--amber);
+}
+
+.foot {
+  border-top: 1px solid var(--rule);
+}
+
+.foot__in {
+  display: grid;
+  padding-block: var(--s-5) var(--s-6);
+  gap: var(--s-3);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* The colophon is the last thing on the page and it is still on the grid: the
+   label sits in the index column and the prose starts on the same vertical as
+   every other line of body text. Hence --spine-x and a zero column gap rather
+   than a footer-shaped two-column layout of its own. */
+@media (width >= 1024px) {
+  .foot__in {
+    grid-template-columns: var(--spine-x) minmax(0, 1fr);
+    column-gap: 0;
+  }
+}
+
+.foot p {
+  max-width: 72ch;
+  color: var(--tx-xlo);
+  font: 400 var(--t-meta) / var(--lh-meta) var(--mono);
+}
+
+.foot .label {
+  color: var(--tx-lo);
+}
+
+.foot kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--rule-firm);
+  background: var(--ink-100);
+  font: inherit;
+}
+
+.foot p + p {
+  margin-top: var(--s-1);
+}
+
+.foot a {
+  color: var(--tx-lo);
+}
+
+.foot a:hover {
+  color: var(--amber);
+}
+
+/* ── 17. MOTION ──────────────────────────────────────────────────────── */
+/* State only. Nothing here is decorative. Reveals are driven by a sampled
+   damped spring in JS rather than an easing curve, so an element caught
+   mid-reveal continues rather than restarting. See src/scripts/motion.ts. */
+[data-reveal] {
+  opacity: 0;
+}
+
+[data-reveal].in {
+  opacity: 1;
+}
+
+.no-js [data-reveal] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+  }
+}
+
+/* ── 18. GRID OVERLAY ────────────────────────────────────────────────── */
+/* Press G. The system, made inspectable. */
+.grid-ov {
+  position: fixed;
+  z-index: 90;
+  display: none;
+  inset: 0;
+  pointer-events: none;
+}
+
+[data-grid='on'] .grid-ov {
+  display: block;
+}
+
+.grid-ov__base {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgb(239 163 62 / 16%) 0 1px,
+    transparent 1px 8px
+  );
+  background-position: 0 var(--grid-off, 0);
+}
+
+.grid-ov__cols {
+  display: grid;
+  height: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--pad-x);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 1024px) {
+  .grid-ov__cols {
+    grid-template-columns: var(--col-idx) var(--col-label) minmax(0, 1fr);
+  }
+}
+
+.grid-ov__cols i {
+  display: block;
+  height: 100%;
+  border-left: 1px solid rgb(120 200 255 / 30%);
+}
+
+.grid-ov__cols i:last-child {
+  border-right: 1px solid rgb(120 200 255 / 30%);
+}
+
+.grid-ov__tag {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 4px 8px;
+  border: 1px solid var(--amber-dim);
+  background: rgb(10 12 13 / 90%);
+  color: var(--amber);
+  font: 500 11px/16px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── 19. PRINT ───────────────────────────────────────────────────────── */
+@media print {
+  .bar,
+  .grid-ov,
+  .skip {
+    display: none;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+}

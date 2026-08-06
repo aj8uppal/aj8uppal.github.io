@@ -1,0 +1,65 @@
+# GitHub Pages deploy for the user site aj8uppal.github.io.
+#
+# Deliberately manual. The trigger is workflow_dispatch only, so merging to
+# master does not publish: the site goes out when someone chooses to send it.
+# To make it automatic later, add:
+#
+#   push:
+#     branches: [master]
+#
+# under `on:` below. Nothing else needs to change.
+#
+# Pages must also be switched to "GitHub Actions" as its source in
+# Settings > Pages, once. Until then this workflow will fail at the
+# configure-pages step, which is the intended safe default.
+
+name: Deploy to GitHub Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time. Never cancel one in flight.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint and typecheck
+        run: npm run lint
+
+      # Runs `astro check` first, so a type error fails the deploy.
+      - name: Build
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

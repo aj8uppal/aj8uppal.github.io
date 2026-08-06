@@ -1,0 +1,179 @@
+/**
+ * Turns the raw capture batch into build-ready intermediates under src/assets/.
+ *
+ * The source PNGs are 3-9MB screen captures and live outside the repo. They are not
+ * usable as-is for two reasons: the game frames carry black letterbox bars from the
+ * capture window, and every saltline frame has the developer panel open down the left
+ * edge. This script crops both away, downscales to the largest size any layout slot
+ * actually needs, and writes lossy-but-clean WebP. Astro's sharp pipeline takes it from
+ * there and emits the responsive AVIF/WebP the page ships.
+ *
+ * Idempotent. Re-run with `npm run images` after changing a crop.
+ */
+import { mkdir, readdir, stat } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+import sharp from 'sharp';
+
+const SRC = '/Users/ajuppal/personal/firstmate-aj8uppal/data/portfolio-assets';
+const OUT = path.resolve(import.meta.dirname, '../src/assets');
+
+/**
+ * Measured, not guessed:
+ *   Ember Wilds frames are 3456x2160 with a 120px black bar top and bottom. The real
+ *   viewport is 3456x1920 (1.8:1).
+ *   saltline frames are 3456x2234 with a 75px bar at the top only. The developer panel's
+ *   right edge sits at x=621, so cropping from x=680 clears it with margin.
+ */
+const EMBER = { left: 0, top: 120, width: 3456, height: 1920 };
+const SALT_CLEAN = { left: 680, top: 75, width: 2776, height: 1562 }; // 16:9, panel removed
+const SALT_FULL = { left: 0, top: 75, width: 3456, height: 2159 }; // panel kept, on purpose
+
+/** @type {Array<{in: string, out: string, crop?: object, width: number, quality?: number}>} */
+const JOBS = [
+  // Ember Wilds - full-bleed spread
+  {
+    in: 'emberwilds-biome-fallowmere-dusk.png',
+    out: 'ember-spread-fallowmere-dusk',
+    crop: EMBER,
+    width: 3000,
+  },
+  // Ember Wilds - the multiplayer proof. No bars on this one, so no crop.
+  {
+    in: 'emberwilds-MULTIPLAYER-two-players-chat.png',
+    out: 'ember-proof-two-players',
+    width: 2400,
+  },
+  // Ember Wilds - the seven named regions, shown one at a time by the frame switcher
+  {
+    in: 'emberwilds-hearthvale-water.png',
+    out: 'ember-region-hearthvale',
+    crop: EMBER,
+    width: 2000,
+  },
+  {
+    in: 'emberwilds-biome-fallowmere-wide.png',
+    out: 'ember-region-fallowmere',
+    crop: EMBER,
+    width: 2000,
+  },
+  {
+    in: 'emberwilds-greenmarch-ruin-loot.png',
+    out: 'ember-region-greenmarch',
+    crop: EMBER,
+    width: 2000,
+  },
+  { in: 'emberwilds-biome-fenmarch.png', out: 'ember-region-fenmarch', crop: EMBER, width: 2000 },
+  {
+    in: 'emberwilds-combat-ashen-waste-nova.png',
+    out: 'ember-region-ashen-waste',
+    crop: EMBER,
+    width: 2000,
+  },
+  {
+    in: 'emberwilds-biome-greywall-peaks-combat.png',
+    out: 'ember-region-greywall-peaks',
+    crop: EMBER,
+    width: 2000,
+  },
+  {
+    in: 'emberwilds-biome-black-plateau.png',
+    out: 'ember-region-black-plateau',
+    crop: EMBER,
+    width: 2000,
+  },
+  // Ember Wilds - supporting figures
+  {
+    in: 'emberwilds-npc-quest-dialogue.png',
+    out: 'ember-fig-quest-dialogue',
+    crop: EMBER,
+    width: 1600,
+  },
+  {
+    in: 'emberwilds-creature-befriending.png',
+    out: 'ember-fig-befriending',
+    crop: EMBER,
+    width: 1600,
+  },
+
+  // saltline - full-bleed spread. The night frame, because it is the coldest thing
+  // on the page and it has to sit between Ember's warm dusk and hidamari's gold.
+  {
+    in: 'saltline-night-moon-wake.png',
+    out: 'saltline-spread-night',
+    crop: SALT_CLEAN,
+    width: 3000,
+  },
+  // saltline - the arc: one seed, six times of day, all six shown at once. Read in
+  // chronological order, which is the order they are declared in.
+  { in: 'saltline-night-moon-wake.png', out: 'saltline-arc-night', crop: SALT_CLEAN, width: 1600 },
+  {
+    in: 'saltline-dawn-island-ships.png',
+    out: 'saltline-arc-sunrise',
+    crop: SALT_CLEAN,
+    width: 1600,
+  },
+  { in: 'saltline-dawn-island-blue.png', out: 'saltline-arc-dawn', crop: SALT_CLEAN, width: 1600 },
+  {
+    in: 'saltline-fleet-raiders-daylight.png',
+    out: 'saltline-arc-daylight',
+    crop: SALT_CLEAN,
+    width: 1600,
+  },
+  {
+    in: 'saltline-golden-hour-calm.png',
+    out: 'saltline-arc-golden',
+    crop: SALT_CLEAN,
+    width: 1600,
+  },
+  { in: 'saltline-sunset-dramatic.png', out: 'saltline-arc-sunset', crop: SALT_CLEAN, width: 1600 },
+  // saltline - the panel stays in this one. It is the argument, not an accident.
+  {
+    in: 'saltline-fleet-raiders-daylight.png',
+    out: 'saltline-proof-panel',
+    crop: SALT_FULL,
+    width: 2400,
+  },
+
+  // hidamari - one frame, and it carries the whole section
+  { in: 'hidamari-hero-canopy-3360x1440.png', out: 'hidamari-spread-canopy', width: 3000 },
+
+  // Elderwood Vale - software-rendered captures at 1280x720. Card size only, never full bleed.
+  { in: 'elderwood-vale-default-1280x720.png', out: 'elderwood-default', width: 1280 },
+  { in: 'elderwood-vale-placement-coverage-1280x720.png', out: 'elderwood-coverage', width: 1280 },
+  { in: 'elderwood-vale-stress-burst-1280x720.png', out: 'elderwood-stress', width: 1280 },
+
+  // Playground - the three legacy demos that actually run
+  { in: 'legacy-grinchjump-REVIVED.png', out: 'legacy-grinchjump', width: 1200, quality: 88 },
+];
+
+async function run() {
+  if (!existsSync(SRC)) {
+    console.error(`source batch not found: ${SRC}`);
+    process.exitCode = 1;
+    return;
+  }
+  await mkdir(OUT, { recursive: true });
+
+  let bytes = 0;
+  for (const job of JOBS) {
+    const from = path.join(SRC, job.in);
+    const to = path.join(OUT, `${job.out}.webp`);
+    let pipe = sharp(from);
+    if (job.crop) pipe = pipe.extract(job.crop);
+    await pipe
+      .resize({ width: job.width, withoutEnlargement: true })
+      .webp({ quality: job.quality ?? 90, effort: 6 })
+      .toFile(to);
+    const { size } = await stat(to);
+    bytes += size;
+    console.log(`${job.out.padEnd(30)} ${String(job.width).padStart(5)}w  ${kb(size)}`);
+  }
+
+  const written = (await readdir(OUT)).filter((f) => f.endsWith('.webp'));
+  console.log(`\n${written.length} intermediates, ${kb(bytes)} total in src/assets/`);
+}
+
+const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
+
+await run();

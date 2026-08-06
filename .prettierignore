@@ -1,0 +1,10 @@
+public/
+dist/
+node_modules/
+.astro/
+scss/
+src/assets/
+package-lock.json
+ec2-user@ec2-3-19-227-224.us-east-2.compute.amazonaws.com/
+.claude/
+LICENSE.md

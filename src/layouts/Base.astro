@@ -1,0 +1,101 @@
+---
+import '../styles/global.css';
+import { site, sections, contact } from '../data/content';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = `${site.title} · ${site.tagline}`, description = site.description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+---
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0A0C0D" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+
+    <link
+      rel="preload"
+      href="/fonts/newsreader-latin-var.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="bar">
+      <div class="bar__in">
+        <div class="bar__id label">
+          AJ&nbsp;UPPAL <span>/ SWE</span>
+        </div>
+        <nav class="bar__nav" id="nav" aria-label="Sections">
+          {
+            sections.map((s) => (
+              <a href={`#${s.id}`}>
+                <b>{s.n}</b>
+                {s.name}
+              </a>
+            ))
+          }
+        </nav>
+        <div class="bar__read label" id="readout" aria-hidden="true">
+          &sect;&nbsp;<b>00</b>&nbsp;COVER
+        </div>
+      </div>
+      <div class="bar__prog" id="prog"></div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="foot">
+      <div class="wrap foot__in">
+        <p class="label">Colophon</p>
+        <div>
+          <p>
+            Astro and TypeScript, built static. Newsreader for display, the system stack for
+            everything else. One React island, on one component. Every screenshot is a capture of
+            the actual project.
+          </p>
+          <p>
+            The demos that predate this page are still served from their original URLs, because
+            breaking a working link to tidy up a repository is not tidying up.
+          </p>
+          <p>
+            Press <kbd>G</kbd> to see the grid this page is set on. Source at
+            <a class="link link--quiet" href={contact.github}>github.com/aj8uppal</a>.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <div class="grid-ov" aria-hidden="true">
+      <div class="grid-ov__base"></div>
+      <div class="grid-ov__cols"><i></i><i></i><i></i></div>
+      <div class="grid-ov__tag">8px baseline &middot; spine</div>
+    </div>
+
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>

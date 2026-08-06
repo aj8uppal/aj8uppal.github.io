@@ -1,0 +1,58 @@
+---
+import { Picture } from 'astro:assets';
+import { asset } from '../lib/images';
+
+interface Props {
+  img: string;
+  alt: string;
+  /** Left of the caption rule: what the frame is. */
+  b: string;
+  /** Middle: the observation. */
+  i?: string;
+  /** Right: the source or capture note. */
+  span?: string;
+  widths?: number[];
+  sizes?: string;
+  /** Override the frame ratio. Rarely right: see below. */
+  ar?: string;
+  cls?: string;
+}
+
+const {
+  img,
+  alt,
+  b,
+  i,
+  span,
+  widths = [560, 840, 1120, 1400, 1800],
+  sizes = '(width >= 1180px) 872px, (width >= 900px) 62vw, 92vw',
+  ar,
+  cls,
+} = Astro.props;
+
+const src = asset(img);
+// A screenshot here is evidence, so the frame takes the capture's own ratio
+// rather than a house 16/9. Forcing a ratio crops the edges, and the edges are
+// where the proof lives - the second client's quest panel, the chat log.
+const ratio = ar ?? `${src.width} / ${src.height}`;
+---
+
+<figure class:list={['fig', cls]} style={`--fig-ar:${ratio}`}>
+  <div class="fig__frame">
+    <Picture
+      src={src}
+      alt={alt}
+      widths={widths}
+      sizes={sizes}
+      formats={['avif']}
+      fallbackFormat="webp"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  <figcaption class="fig__cap">
+    <b>{b}</b>
+    {i && <i>{i}</i>}
+    {span && <span>{span}</span>}
+  </figcaption>
+</figure>

@@ -1,0 +1,14 @@
+---
+interface Props {
+  n: string;
+  id: string;
+  name: string;
+  cover?: boolean;
+}
+
+const { n, id, name, cover = false } = Astro.props;
+---
+
+<section class:list={['sec', { 'sec--cover': cover }]} id={id} data-sec={n} data-name={name}>
+  <slot />
+</section>
