@@ -47,7 +47,7 @@ for (const v of heroes) {
 ---
 
 <aside
-  class="lab"
+  class="dlab"
   data-lab
   data-always={alwaysOn ? 'on' : 'off'}
   data-pal-default={defaultPalette.id}
@@ -55,25 +55,25 @@ for (const v of heroes) {
   hidden
   aria-label="Design lab"
 >
-  <p class="lab__t">Design lab · review only</p>
+  <p class="dlab__t">Design lab · review only</p>
 
-  <p class="lab__h" id="lab-pal">Palette</p>
-  <div class="lab__pal" role="group" aria-labelledby="lab-pal">
+  <p class="dlab__h" id="lab-pal">Palette</p>
+  <div class="dlab__pal" role="group" aria-labelledby="lab-pal">
     {
       palettes.map((p) => (
         <button
-          class="lab__b"
+          class="dlab__b"
           type="button"
           data-pal={p.id}
           aria-pressed={p.id === defaultPalette.id}
           title={`${p.name} · ${p.by}${p.scheme === 'light' ? ' · light' : ''}`}
         >
-          <span class="lab__sw" aria-hidden="true">
+          <span class="dlab__sw" aria-hidden="true">
             {swatch(p).map((c) => (
               <i style={`background:${c}`} />
             ))}
           </span>
-          <span class="lab__id" aria-hidden="true">
+          <span class="dlab__id" aria-hidden="true">
             {p.id}
           </span>
           <span class="sr">{p.name}</span>
@@ -82,10 +82,10 @@ for (const v of heroes) {
     }
   </div>
 
-  <p class="lab__h" id="lab-scheme">Scheme</p>
-  <div class="lab__two" role="group" aria-labelledby="lab-scheme">
+  <p class="dlab__h" id="lab-scheme">Scheme</p>
+  <div class="dlab__two" role="group" aria-labelledby="lab-scheme">
     <button
-      class="lab__b lab__b--wide"
+      class="dlab__b dlab__b--wide"
       type="button"
       data-scheme="tg"
       aria-pressed="true"
@@ -94,7 +94,7 @@ for (const v of heroes) {
       TG always
     </button>
     <button
-      class="lab__b lab__b--wide"
+      class="dlab__b dlab__b--wide"
       type="button"
       data-scheme="pair"
       aria-pressed="false"
@@ -104,10 +104,10 @@ for (const v of heroes) {
     </button>
   </div>
 
-  <p class="lab__h" id="lab-par">Parallax</p>
-  <div class="lab__two" role="group" aria-labelledby="lab-par">
+  <p class="dlab__h" id="lab-par">Parallax</p>
+  <div class="dlab__two" role="group" aria-labelledby="lab-par">
     <button
-      class="lab__b lab__b--wide"
+      class="dlab__b dlab__b--wide"
       type="button"
       data-par="off"
       aria-pressed="true"
@@ -116,7 +116,7 @@ for (const v of heroes) {
       Off
     </button>
     <button
-      class="lab__b lab__b--wide"
+      class="dlab__b dlab__b--wide"
       type="button"
       data-par="on"
       aria-pressed="false"
@@ -126,20 +126,20 @@ for (const v of heroes) {
     </button>
   </div>
 
-  <p class="lab__h" id="lab-hero">Hero</p>
+  <p class="dlab__h" id="lab-hero">Hero</p>
   {
     rows.map((row) => (
       <Fragment>
-        {row.family && <p class="lab__fam">{row.family} family</p>}
+        {row.family && <p class="dlab__fam">{row.family} family</p>}
         <div
-          class="lab__hero"
+          class="dlab__hero"
           role="group"
           aria-label={row.family ? `${row.family} family` : undefined}
           aria-labelledby={row.family ? undefined : 'lab-hero'}
         >
           {row.items.map((v) => (
             <button
-              class="lab__b lab__b--wide"
+              class="dlab__b dlab__b--wide"
               type="button"
               data-hero={v.id}
               aria-pressed={v.id === defaultHero.id}
@@ -288,7 +288,11 @@ for (const v of heroes) {
 </script>
 
 <style>
-  .lab {
+  /* `dlab`, not `lab`: the playground cards took `.lab` first, and a panel
+     that exists to review the page must not inherit the page's styling by
+     accident. Scoping alone was not enough - global `.lab` was still handing
+     this one a flex column and a hard-edged card border. */
+  .dlab {
     position: fixed;
     z-index: 90;
     right: 0.8rem;
@@ -309,11 +313,11 @@ for (const v of heroes) {
     backdrop-filter: blur(18px) saturate(125%);
   }
 
-  .lab[hidden] {
+  .dlab[hidden] {
     display: none;
   }
 
-  .lab__t {
+  .dlab__t {
     margin: 0 0 0.5rem;
     color: var(--on-shade-2);
     font: 800 0.6rem/1 var(--mono);
@@ -321,7 +325,7 @@ for (const v of heroes) {
     text-transform: uppercase;
   }
 
-  .lab__h {
+  .dlab__h {
     margin: 0.6rem 0 0.35rem;
     color: color-mix(in srgb, var(--on-shade) 60%, transparent);
     font: 800 0.55rem/1 var(--mono);
@@ -329,14 +333,14 @@ for (const v of heroes) {
     text-transform: uppercase;
   }
 
-  .lab__pal {
+  .dlab__pal {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 0.35rem;
   }
 
-  .lab__hero,
-  .lab__two {
+  .dlab__hero,
+  .dlab__two {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.35rem;
@@ -344,18 +348,27 @@ for (const v of heroes) {
 
   /* Quieter than a section heading and tighter to its row: this labels a run
      inside the hero list rather than opening a new list. */
-  .lab__fam {
+  .dlab__fam {
     margin: 0.5rem 0 0.3rem;
     color: color-mix(in srgb, var(--on-shade) 45%, transparent);
     font: 700 0.55rem/1 var(--mono);
     letter-spacing: 0.1em;
   }
 
-  .lab__hero + .lab__fam {
+  .dlab__hero + .dlab__fam {
     margin-top: 0.45rem;
   }
 
-  .lab__b {
+  /* A run with no family label of its own, straight after one that had a
+     label. Without a rule the family looks like it swallowed everything below
+     it, because the only thing marking the boundary is a grid gap. */
+  .dlab__hero + .dlab__hero {
+    margin-top: 0.55rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid color-mix(in srgb, var(--on-shade) 14%, transparent);
+  }
+
+  .dlab__b {
     min-height: 44px;
     display: grid;
     justify-items: center;
@@ -370,24 +383,24 @@ for (const v of heroes) {
     cursor: pointer;
   }
 
-  .lab__b--wide {
+  .dlab__b--wide {
     font: 800 0.62rem/1 var(--mono);
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
-  .lab__b:hover {
+  .dlab__b:hover {
     border-color: color-mix(in srgb, var(--on-shade) 55%, transparent);
   }
 
-  .lab__b[aria-pressed='true'] {
+  .dlab__b[aria-pressed='true'] {
     border-color: var(--on-shade);
     background: color-mix(in srgb, var(--on-shade) 14%, transparent);
   }
 
   /* Four bars rather than one swatch: the pair of grounds and the pair of
      accents are the four decisions a palette actually makes. */
-  .lab__sw {
+  .dlab__sw {
     display: flex;
     width: 100%;
     height: 12px;
@@ -395,11 +408,11 @@ for (const v of heroes) {
     border-radius: 3px;
   }
 
-  .lab__sw i {
+  .dlab__sw i {
     flex: 1;
   }
 
-  .lab__id {
+  .dlab__id {
     font: 800 0.58rem/1 var(--mono);
   }
 </style>
