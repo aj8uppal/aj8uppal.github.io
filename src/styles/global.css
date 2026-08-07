@@ -982,7 +982,13 @@ header[id] {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* `scale` is here for the parallax prototype's overscale, which is a state
+     rather than a motion and should glide when the lab flips it. The slide
+     itself rides `translate`, which is deliberately not in this list: it
+     changes every frame and has no business easing anywhere. */
+  transition:
+    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
+    scale 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .shot--lead {
@@ -1005,6 +1011,26 @@ header[id] {
 
 .card:hover .shot--lead img {
   transform: scale(1.025);
+}
+
+/* Parallax, the lab prototype. Off unless the lab says otherwise, and off
+   under reduced motion whatever the lab says - hence the whole thing living
+   inside a no-preference query rather than being undone by a later one.
+   `translate` and `scale` are their own properties here, so the slide composes
+   with the hover `transform` above instead of fighting it for the slot. */
+@media (prefers-reduced-motion: no-preference) {
+  /* The overscale is the whole travel budget: the script reads this property
+     and slides the image half of it either way, so the image runs out of
+     scroll before it runs out of itself. It is not larger because every
+     percent of it is a percent of the composition cropped off and a percent
+     of resolution given up. */
+  [data-parallax='on'] .shot--par img {
+    --par-zoom: 1.1;
+
+    scale: var(--par-zoom);
+    translate: 0 var(--par-y, 0px);
+    will-change: translate;
+  }
 }
 
 .flag {

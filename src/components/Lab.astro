@@ -4,7 +4,8 @@
  *
  * A row of palettes and a row of hero variants, both driven off the same
  * registries the page itself is built from, so a new palette or a new hero
- * appears here for free, plus a row for the light-scheme pairing.
+ * appears here for free, plus a row for the light-scheme pairing and a row
+ * for the parallax prototype.
  *
  * It is rendered only on a dev build, or on one made with `npm run build:lab`,
  * and on the second of those it stays out of the way until the URL asks for it
@@ -86,6 +87,28 @@ const { alwaysOn } = Astro.props;
     </button>
   </div>
 
+  <p class="lab__h" id="lab-par">Parallax</p>
+  <div class="lab__two" role="group" aria-labelledby="lab-par">
+    <button
+      class="lab__b lab__b--wide"
+      type="button"
+      data-par="off"
+      aria-pressed="true"
+      title="No depth. What the site does today."
+    >
+      Off
+    </button>
+    <button
+      class="lab__b lab__b--wide"
+      type="button"
+      data-par="on"
+      aria-pressed="false"
+      title="The three full-bleed lead renders slide a few percent inside the frames that clip them, on a spring tracking the scroll. Nothing moves under prefers-reduced-motion, whichever of these is pressed."
+    >
+      On
+    </button>
+  </div>
+
   <p class="lab__h" id="lab-hero">Hero</p>
   <div class="lab__hero" role="group" aria-labelledby="lab-hero">
     {
@@ -111,6 +134,7 @@ const { alwaysOn } = Astro.props;
   const PAL_KEY = 'p6-palette';
   const HERO_KEY = 'p6-hero';
   const SCHEME_KEY = 'p6-scheme';
+  const PAR_KEY = 'p6-parallax';
   const box = document.querySelector<HTMLElement>('[data-lab]');
 
   const asked = (): boolean => {
@@ -126,7 +150,7 @@ const { alwaysOn } = Astro.props;
        what it wrote rather than leaving it under the next. */
     const owned = new Set(palettes.flatMap((p) => Object.keys(p.vars)));
 
-    const press = (attr: 'pal' | 'hero' | 'scheme', id: string): void => {
+    const press = (attr: 'pal' | 'hero' | 'scheme' | 'par', id: string): void => {
       for (const b of box.querySelectorAll<HTMLButtonElement>(`[data-${attr}]`)) {
         b.setAttribute('aria-pressed', String(b.dataset[attr] === id));
       }
@@ -184,6 +208,19 @@ const { alwaysOn } = Astro.props;
       window.dispatchEvent(new Event('palettechange'));
     };
 
+    /**
+     * The parallax prototype. The script lives in the page's own motion module
+     * rather than in here, because a reduced-motion client has to be able to
+     * refuse it whether or not the lab was ever loaded; all this does is state
+     * the answer on the root and say that it changed.
+     */
+    const applyParallax = (mode: string): void => {
+      const on = mode === 'on';
+      root.dataset.parallax = on ? 'on' : 'off';
+      press('par', on ? 'on' : 'off');
+      window.dispatchEvent(new Event('parallaxchange'));
+    };
+
     /* A canvas cannot see a media query. When the client's own preference flips
        under a live pairing every token beneath the hero has changed and nothing
        else on the page would tell it so. */
@@ -193,7 +230,7 @@ const { alwaysOn } = Astro.props;
 
     box.addEventListener('click', (e) => {
       const b = (e.target as HTMLElement).closest<HTMLButtonElement>(
-        '[data-pal],[data-hero],[data-scheme]',
+        '[data-pal],[data-hero],[data-scheme],[data-par]',
       );
       if (!b) return;
       if (b.dataset.pal) {
@@ -205,6 +242,9 @@ const { alwaysOn } = Astro.props;
       } else if (b.dataset.scheme) {
         localStorage.setItem(SCHEME_KEY, b.dataset.scheme);
         applyScheme(b.dataset.scheme);
+      } else if (b.dataset.par) {
+        localStorage.setItem(PAR_KEY, b.dataset.par);
+        applyParallax(b.dataset.par);
       }
     });
 
@@ -216,6 +256,7 @@ const { alwaysOn } = Astro.props;
     const hero = localStorage.getItem(HERO_KEY);
     if (hero && hero !== box.dataset.heroDefault) applyHero(hero);
     if (localStorage.getItem(SCHEME_KEY) === 'pair') applyScheme('pair');
+    if (localStorage.getItem(PAR_KEY) === 'on') applyParallax('on');
   }
 </script>
 

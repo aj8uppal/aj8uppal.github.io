@@ -266,8 +266,9 @@ await run(
         .filter((e) => {
           const r = e.getBoundingClientRect();
           if (!(r.width > 0) || getComputedStyle(e).position === 'fixed') return false;
-          // Wider than the viewport on purpose, under its own overflow.
-          if (e.closest('.fs__scroll')) return false;
+          // Wider than the viewport on purpose, under its own overflow: the
+          // frame switcher, and the 2015 file at a size it will not bend.
+          if (e.closest('.fs__scroll, .devframe')) return false;
           return r.right > de.clientWidth + 1;
         })
         .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
@@ -291,6 +292,14 @@ await run(
         roles: document.querySelectorAll('.role').length,
         resumeHref: document.querySelector('.resume a[data-resume]')?.getAttribute('href') ?? '',
         education: document.getElementById('education') !== null,
+        // The parallax prototype is lab furniture. This page has had the lab
+        // taken out of it, so the three marked frames should be sitting still
+        // and at their own size.
+        parFrames: document.querySelectorAll('.shot--par').length,
+        parParked: [...document.querySelectorAll('.shot--par img')].every((i) => {
+          const cs = getComputedStyle(i);
+          return cs.translate === 'none' && cs.scale === 'none';
+        }),
       };
     });
 
@@ -326,6 +335,11 @@ await run(
     note(m.roles === 8, 'eight roles', `${m.roles}`);
     note(m.education, 'education keeps its own anchor', '');
     note(
+      m.parFrames === 3 && m.parParked,
+      'parallax is off without the lab to turn it on',
+      `${m.parFrames} marked frames`,
+    );
+    note(
       m.resumeHref === '/attachments/resume2026.pdf',
       'the resume button points at the 2026 PDF',
       m.resumeHref || 'no link',
@@ -333,6 +347,13 @@ await run(
 
     /* The three live ports. Screenshots and links were explicitly not the ask. */
     const play = await page.evaluate(async () => {
+      /* These cards boot on sight, and the settle pass has already put the
+         page back at the top. Show them to someone before asking what they
+         did: the deviation frame in particular will not load a document it
+         has never been looked at. */
+      document.querySelector('.labs')?.scrollIntoView({ block: 'center', behavior: 'instant' });
+      await new Promise((r) => setTimeout(r, 400));
+
       const typer = document.querySelector('.stage--typer');
       const chips = [...(typer?.querySelectorAll('.choice') ?? [])];
       const outEl = typer?.querySelector('.term__out');
@@ -492,8 +513,9 @@ await run(
         .filter((e) => {
           const r = e.getBoundingClientRect();
           if (!(r.width > 0) || getComputedStyle(e).position === 'fixed') return false;
-          // Wider than the viewport on purpose, under its own overflow.
-          if (e.closest('.fs__scroll')) return false;
+          // Wider than the viewport on purpose, under its own overflow: the
+          // frame switcher, and the 2015 file at a size it will not bend.
+          if (e.closest('.fs__scroll, .devframe')) return false;
           return r.right > de.clientWidth + 1;
         })
         .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
