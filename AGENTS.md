@@ -45,6 +45,16 @@ Its reduced-motion context is a real `prefers-reduced-motion: reduce` browser co
 Reduced motion here is a separate code path, not a shorter duration.
 The spring-driven tab indicator is stepped by `requestAnimationFrame` normally and jumps in a single assignment when the query matches, so the assertion that proves it is the absence of intermediate positions - never arrival speed, because React runs the effect after paint and even a jump lands a few frames late.
 
+Nothing drives the compositor in that context, so a screenshot taken straight after a style change can come back with the previous frame still on it.
+Await two `requestAnimationFrame`s in the page before capturing, or an element you just hid will still be in the picture.
+
+## Review-only UI has to be gated in three places
+
+The design lab is review furniture and must not reach a visitor.
+`Base.astro` decides whether it renders, the panel waits for `?lab` even in a build made with `npm run build:lab`, and `astro.config.mjs` resolves the component to an empty one for any build that did not ask for it.
+The third one is not redundant: Astro hoists the `<script>` of every `.astro` file in the module graph and writes it into `_astro`, and neither a dead branch nor a dynamic import takes the file out of that graph.
+Its classes are prefixed `dlab`, because the playground cards already own `.lab` and a panel for reviewing the page must not inherit the page.
+
 ## Page length is a standing budget
 
 `npm run verify` fails if the document grows past `HEIGHT_BUDGET` (11,000px at 1440).
