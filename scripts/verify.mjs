@@ -367,21 +367,22 @@ await run(
        sits under the wrong label, and a nav that hides itself the moment it
        is used, because a smooth scroll is a long run of down-frames. */
     const nav = await page.evaluate(async () => {
+      /* Waits for the scroll animation to end, not for it to go quiet. A
+         smooth scroll that stalls on a long task holds one scrollY value for
+         longer than any sampling window you would pick, and this test read
+         that stall as arrival twice in five runs, reporting whichever section
+         the run happened to pause in. `scrollend` fires once the animation is
+         actually over; the timeout is only there so a scroll that never
+         starts cannot hang the suite. */
       const settled = () =>
         new Promise((res) => {
-          let last = -1;
-          let still = 0;
-          const t = setInterval(() => {
-            if (window.scrollY === last) {
-              if (++still > 6) {
-                clearInterval(t);
-                setTimeout(res, 300);
-              }
-            } else {
-              still = 0;
-              last = window.scrollY;
-            }
-          }, 50);
+          const done = () => {
+            clearTimeout(bail);
+            window.removeEventListener('scrollend', done);
+            setTimeout(res, 200);
+          };
+          const bail = setTimeout(done, 4000);
+          window.addEventListener('scrollend', done, { once: true });
         });
 
       document.querySelector('.nav__links a[href="#playground"]').click();
