@@ -489,8 +489,8 @@ export const playground = {
       href: '/deviation.html',
       status: 'live' as Status,
       statusLabel: 'Runs',
-      what: 'Enter a set of points, get the standard deviation plotted. Homework that turned into a small tool and then stayed.',
-      k: 'Vanilla JS · Canvas',
+      what: 'Give it a mean, a spread and a sample size for two distributions and it samples both and overlays the histograms. Homework that turned into a small tool and then stayed.',
+      k: 'Vanilla JS · Chart.js 1.0.2',
     },
     {
       yr: 'c. 2015',

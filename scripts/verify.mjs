@@ -341,29 +341,27 @@ await run(
       await new Promise((r) => setTimeout(r, 900));
       const after = outEl?.textContent ?? '';
 
+      /* The deviation card is the 2015 file itself, so what is checked is the
+         file: that the frame is pointed at it, that its own query string
+         reached its own inputs, and that it drew. Its chart library still
+         comes off a CDN, which is the artifact's business and not ours, but
+         it does mean this one assertion needs the network. */
       const dev = document.querySelector('.stage--dev');
-      const canvas = dev?.querySelector('canvas');
-      const ranges = [...(dev?.querySelectorAll('input[type=range]') ?? [])];
-      // Centre of the plot, not the corner: changing the spread moves the
-      // curves, and the top-left 40px stays blank background whatever happens.
-      const shot = () => {
-        if (!canvas) return '';
-        const x = Math.max(0, Math.round(canvas.width / 2) - 60);
-        const y = Math.max(0, Math.round(canvas.height / 2) - 30);
-        return canvas.getContext('2d').getImageData(x, y, 120, 60).data.join(',');
-      };
-      const pre = shot();
-      const spread = ranges[2];
-      if (spread) {
-        const setter = Object.getOwnPropertyDescriptor(
-          window.HTMLInputElement.prototype,
-          'value',
-        ).set;
-        setter.call(spread, '1.8');
-        spread.dispatchEvent(new Event('input', { bubbles: true }));
+      const box = dev?.querySelector('.devframe');
+      const devFrame = box?.querySelector('iframe');
+      let doc = devFrame?.contentDocument ?? null;
+      for (let i = 0; i < 40 && !doc?.getElementById('myChart'); i++) {
+        await new Promise((r) => setTimeout(r, 150));
+        doc = devFrame?.contentDocument ?? null;
       }
-      await new Promise((r) => setTimeout(r, 400));
-      const post = shot();
+      const chart = doc?.getElementById('myChart') ?? null;
+      const inked = () => {
+        if (!chart) return false;
+        const d = chart.getContext('2d').getImageData(0, 0, chart.width, chart.height).data;
+        for (let i = 3; i < d.length; i += 4) if (d[i] !== 0) return true;
+        return false;
+      };
+      const field = (id) => doc?.getElementById(id)?.value ?? '';
 
       const go = document.querySelector('.playframe__go');
       go?.click();
@@ -372,9 +370,16 @@ await run(
       return {
         chips: chips.map((c) => c.textContent.trim()),
         typed: before !== after && after.length > 0,
-        canvas: Boolean(canvas),
-        ranges: ranges.map((r) => r.getAttribute('aria-label') ?? r.id.replace(/^.*?-/, '')),
-        redrew: Boolean(pre) && pre !== post,
+        devSrc: devFrame?.getAttribute('src') ?? null,
+        devSeeded: [field('mean'), field('stdev'), field('reps')].join('/'),
+        devSeeded2: [field('mean2'), field('stdev2'), field('reps2')].join('/'),
+        devDrew: inked(),
+        // A transform is not a box, so this is the check that the frame really
+        // was sized to what it draws rather than to what it laid out.
+        devFits: Boolean(box) && box.scrollWidth <= box.clientWidth,
+        // The 2015 file focuses its own first field at load. In a frame two
+        // thirds down someone else's page that has to be handed back.
+        devKeptFocus: doc?.activeElement === doc?.body,
         iframe: document.querySelector('.playframe iframe')?.getAttribute('src') ?? null,
         footers: [...document.querySelectorAll('.toolbar')].map((t) =>
           t.firstElementChild.textContent.trim(),
@@ -390,11 +395,18 @@ await run(
     );
     note(play.typed, 'AutoTyper types into a live output panel', '');
     note(
-      play.canvas && play.ranges.length === 3,
-      'deviation has a canvas and three sliders',
-      play.ranges.join(', '),
+      play.devSrc?.startsWith('/deviation.html?') === true,
+      'the deviation card frames the 2015 file itself',
+      String(play.devSrc),
     );
-    note(play.redrew, 'moving a deviation slider redraws the canvas', '');
+    note(
+      play.devSeeded === '-4/2/1000' && play.devSeeded2 === '6/3/1000',
+      'the query string seeds both distributions',
+      `${play.devSeeded} and ${play.devSeeded2}`,
+    );
+    note(play.devDrew, 'the framed file draws its chart', '');
+    note(play.devFits, 'the deviation frame fits what it draws', '');
+    note(play.devKeptFocus, 'the framed file does not keep the caret', '');
     note(
       play.iframe === '/grinchjump.html',
       'GrinchJump boots a real playable frame',
@@ -402,7 +414,7 @@ await run(
     );
     note(
       play.footers.includes('Local offline port, zero dependencies') &&
-        play.footers.includes('Local offline port, canvas'),
+        play.footers.includes('The 2015 file itself, unmodified, seeded from its query string'),
       'each port states what it is',
       play.footers.join(' | '),
     );

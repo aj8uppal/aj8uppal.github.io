@@ -6,7 +6,7 @@ import Section from '../components/Section.astro';
 import Arc from '../components/react/Arc';
 import type { ArcShot } from '../components/react/Arc';
 import AutoTyper from '../components/react/AutoTyper';
-import Deviation from '../components/react/Deviation';
+import DeviationFrame from '../components/react/DeviationFrame';
 import FrameSwitcher from '../components/react/FrameSwitcher';
 import type { SwitchFrame } from '../components/react/FrameSwitcher';
 import GameFrame from '../components/react/GameFrame';
@@ -603,7 +603,13 @@ const heroLabel =
           </h3>
           <p>{playground.items[1]?.what}</p>
         </div>
-        <Deviation client:visible />
+        <DeviationFrame
+          client:visible
+          src="/deviation.html?reps=1000&mean=-4&stdev=2&reps2=1000&mean2=6&stdev2=3"
+          href="/deviation.html"
+          title="deviation.html"
+          note="The 2015 file itself, unmodified, seeded from its query string"
+        />
       </article>
 
       <article class="lab lab--wide" data-reveal>
