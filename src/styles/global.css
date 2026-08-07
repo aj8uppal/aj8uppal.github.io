@@ -260,12 +260,18 @@ summary,
   scroll-margin-top: var(--nav-clear);
 }
 
+/* The one focusable element that cannot know what it is standing on: it is
+   fixed to the top of the window, so the ground behind it is whatever section
+   happens to be scrolled there. So the ring goes inside the button, where the
+   only colour it has to beat is the button's own, and the sand slab arriving
+   out of nowhere does the rest of the announcing. */
 .skip {
   position: fixed;
   z-index: 100;
   top: 0.7rem;
   left: 0.7rem;
   padding: 0.75rem 1rem;
+  border-radius: var(--r-sm);
   color: var(--on-accent);
   background: var(--sand);
   font-weight: 800;
@@ -275,6 +281,12 @@ summary,
 
 .skip:focus {
   transform: translateY(0);
+}
+
+.skip:focus-visible {
+  outline-color: var(--on-accent);
+  outline-offset: -7px;
+  border-radius: var(--r-sm);
 }
 
 .shell {
@@ -400,13 +412,22 @@ summary,
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.45rem 0.55rem 0.45rem 0.85rem;
+  padding: 0.45rem 1rem 0.45rem 0.85rem;
   border: 1px solid color-mix(in srgb, var(--on-shade) 17%, transparent);
   border-radius: var(--r-pill);
   color: var(--on-shade);
   background: color-mix(in srgb, var(--shade) 78%, transparent);
   box-shadow: 0 14px 45px rgb(0 0 0 / 22%);
   backdrop-filter: blur(18px) saturate(125%);
+  transition: translate var(--dur-2) var(--ease);
+}
+
+/* Out of the way on the way down, back on the way up. Only past the hero, and
+   only while the panel is shut - a header that vanishes under a reader who is
+   holding it open is a header that ate their tap. Focus pulls it back too,
+   because tabbing scrolls, and the keyboard must never chase it off screen. */
+.nav[data-hidden='true']:not(:focus-within) {
+  translate: 0 calc(-100% - 1.2rem);
 }
 
 .nav__brand {
@@ -432,6 +453,7 @@ summary,
 }
 
 .nav__links {
+  position: relative;
   display: flex;
   align-items: center;
   gap: clamp(0.35rem, 1.4vw, 1.2rem);
@@ -443,23 +465,170 @@ summary,
   text-decoration: none;
   font-size: 0.78rem;
   font-weight: 750;
+  transition: color var(--dur-1) var(--ease);
 }
 
 .nav__links a:hover,
+.nav__links a:focus-visible {
+  color: var(--on-shade);
+}
+
 .nav__links a[aria-current='true'] {
   color: var(--accent-shade);
 }
 
-.nav__cta {
-  padding: 0.55rem 0.85rem !important;
+/* Where you are, and how far in that is. One bar rather than a bar plus a
+   meter: it names the section by sitting under it, and its position along the
+   row is the same information a progress meter would have drawn separately.
+   Width and offset come from the live link box, so it fits "Playground" and
+   "Skills" differently and needs no second copy of the label widths. */
+.nav__marker {
+  position: absolute;
+  bottom: 0.05rem;
+  left: 0;
+  height: 2px;
+  width: var(--nav-mw, 0);
+  translate: var(--nav-mx, 0) 0;
   border-radius: var(--r-pill);
-  color: var(--shade) !important;
-  background: var(--on-shade);
+  background: var(--accent-shade);
+  opacity: 0;
+  transition:
+    translate var(--dur-2) var(--ease),
+    width var(--dur-2) var(--ease),
+    opacity var(--dur-1) var(--ease);
 }
 
-.nav__cta:hover {
-  color: var(--on-accent) !important;
+.nav__marker[data-on='true'] {
+  opacity: 1;
+}
+
+/* The narrow-screen disclosure, which is not in the layout until it is. */
+.nav__toggle {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--on-shade) 22%, transparent);
+  border-radius: var(--r-pill);
+  color: var(--on-shade);
+  background: none;
+  font: 750 0.72rem/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.nav__toggle[aria-expanded='true'] {
+  color: var(--on-accent);
+  border-color: var(--sand);
   background: var(--sand);
+}
+
+/* Two rules that become an x. Drawn rather than shipped as an icon font, and
+   sized in em so it tracks the label beside it. */
+.nav__bars,
+.nav__bars::before {
+  display: block;
+  width: 1.05em;
+  height: 2px;
+  border-radius: var(--r-pill);
+  background: currentcolor;
+  transition:
+    translate var(--dur-1) var(--ease),
+    rotate var(--dur-1) var(--ease);
+}
+
+.nav__bars {
+  position: relative;
+  translate: 0 -3px;
+}
+
+.nav__bars::before {
+  content: '';
+  position: absolute;
+  translate: 0 6px;
+}
+
+.nav__toggle[aria-expanded='true'] .nav__bars {
+  translate: 0 0;
+  rotate: 45deg;
+}
+
+.nav__toggle[aria-expanded='true'] .nav__bars::before {
+  translate: 0 0;
+  rotate: -90deg;
+}
+
+/* Opaque, where the pill above it is not. The pill is small and permanently
+   over moving content, so it has to admit what is behind it; this is a surface
+   you read six labels off, and at 94% the hero copy ghosted straight through
+   the bottom third of it. */
+.nav__panel {
+  position: fixed;
+  z-index: 49;
+  inset: 4.6rem 0.65rem auto;
+  padding: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--on-shade) 17%, transparent);
+  border-radius: var(--r-md);
+  color: var(--on-shade);
+  background: var(--shade);
+  box-shadow: 0 18px 50px rgb(0 0 0 / 42%);
+}
+
+.nav__panel[hidden] {
+  display: none;
+}
+
+.nav__panel a {
+  display: block;
+  padding: 0.7rem 0.75rem;
+  border-radius: var(--r-sm);
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav__panel a + a {
+  border-top: 1px solid color-mix(in srgb, var(--on-shade) 12%, transparent);
+}
+
+.nav__panel a:hover,
+.nav__panel a:focus-visible {
+  background: color-mix(in srgb, var(--on-shade) 8%, transparent);
+}
+
+.nav__panel a[aria-current='true'] b {
+  color: var(--accent-shade);
+}
+
+.nav__panel b {
+  display: block;
+  font: 800 0.95rem/1.3 var(--sans);
+}
+
+.nav__panel span {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--on-shade-2);
+  font: 650 0.7rem/1.4 var(--mono);
+}
+
+/* Doubled up on the class so the shorthand padding above does not win and
+   leave this one link two pixels short of a comfortable tap. */
+.nav__panel a.nav__panel-mail {
+  margin-top: 0.35rem;
+  padding-block: 0.95rem;
+  border-top: 1px solid color-mix(in srgb, var(--on-shade) 12%, transparent);
+  color: var(--accent-shade);
+  font: 700 0.78rem/1.3 var(--mono);
+}
+
+/* Nothing can open it above the breakpoint, but a window dragged wider while
+   it is open would otherwise leave it hanging there over the full-width row. */
+@media (width > 620px) {
+  .nav__panel {
+    display: none;
+  }
 }
 
 /* ── 6. HERO ─────────────────────────────────────────────────────────── */
@@ -2488,22 +2657,16 @@ button.toolbar__link {
     width: 30px;
   }
 
+  /* Six labels in 358px is 0.63rem type with negative tracking and 40px
+     targets, which is a row you squint at and miss. The disclosure takes its
+     place: one 44px control, and behind it the same six with room to say what
+     each one is. */
   .nav__links {
-    flex: 1;
-    gap: 0.05rem;
-    justify-content: space-between;
-  }
-
-  .nav__links a {
-    padding: 0.45rem 0.2rem;
-    font-size: 0.63rem;
-    letter-spacing: -0.01em;
-  }
-
-  /* The email button goes, not a section. Contact is one tap away in the row
-     next to it, and the hero carries the same mailto. */
-  .nav__cta {
     display: none;
+  }
+
+  .nav__toggle {
+    display: inline-flex;
   }
 
   .hero__in {

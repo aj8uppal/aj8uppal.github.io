@@ -67,17 +67,22 @@ export const contact = {
  * Six sections, and the nav is generated from this list. Education is not one of
  * them: it sits inside the work log, where a degree and a job are the same kind
  * of fact, and keeps its own `#education` anchor.
+ *
+ * `id` and `name` disagree for two of them. The ids are the URLs the page has
+ * always had and they keep working; the names are what a first-time reader
+ * needs, because "Building" next to "Work" reads as two words for the same
+ * thing, and if anything "Work" is the one that sounds like the portfolio.
  */
 export const sections = [
   { n: '01', id: 'about', name: 'About', desc: 'Two degrees, one habit', count: '4 notes' },
   {
     n: '02',
     id: 'building',
-    name: 'Building',
+    name: 'Projects',
     desc: 'Four projects, in various states of done',
     count: '4 entries',
   },
-  { n: '03', id: 'work', name: 'Work', desc: 'Eight jobs, reverse order', count: '8 rows' },
+  { n: '03', id: 'work', name: 'Experience', desc: 'Eight jobs, reverse order', count: '8 rows' },
   {
     n: '04',
     id: 'playground',

@@ -3,8 +3,9 @@ import { installHero } from '../heroes/runtime';
 import { installParallax } from './parallax';
 
 /**
- * Page-level behaviour. Four things: reveal on first sight, the nav's current
- * section, the hero canvas, and the parallax prototype the lab can turn on.
+ * Page-level behaviour. Five things: reveal on first sight, the nav's current
+ * section, the narrow-screen nav disclosure, the hero canvas, and the parallax
+ * prototype the lab can turn on.
  *
  * prefers-reduced-motion is a separate code path, not a shorter duration. Under
  * it nothing translates and nothing fades, the reveal observer is never
@@ -67,12 +68,33 @@ function installReveals(): void {
 /* ── Nav: current section ────────────────────────────────────────────── */
 function installNav(): void {
   const nav = document.getElementById('nav');
+  const header = document.getElementById('site-nav');
+  const panel = document.getElementById('nav-panel');
   const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-sec]'));
-  if (!nav || !sections.length) return;
+  if (!nav || !header || !sections.length) return;
 
   const links = Array.from(nav.querySelectorAll<HTMLAnchorElement>('a'));
+  const panelLinks = panel
+    ? Array.from(panel.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))
+    : [];
+  const marker = nav.querySelector<HTMLElement>('.nav__marker');
   let current = '';
   let ticking = false;
+
+  // The marker is measured, not computed, so it fits whatever the label
+  // actually is. Reading it back is a layout flush, so it happens once per
+  // change of section rather than once per scroll frame. The offsets are
+  // already relative to the link row, which is the marker's offset parent.
+  const moveMarker = (link: HTMLAnchorElement | undefined): void => {
+    if (!marker) return;
+    if (!link) {
+      marker.dataset.on = 'false';
+      return;
+    }
+    marker.style.setProperty('--nav-mw', `${link.offsetWidth}px`);
+    marker.style.setProperty('--nav-mx', `${link.offsetLeft}px`);
+    marker.dataset.on = 'true';
+  };
 
   const paint = (): void => {
     ticking = false;
@@ -85,21 +107,121 @@ function installNav(): void {
     if (active.id === current) return;
     current = active.id;
 
-    for (const link of links) {
-      if (link.getAttribute('href') === `#${current}`) link.setAttribute('aria-current', 'true');
-      else link.removeAttribute('aria-current');
+    let hit: HTMLAnchorElement | undefined;
+    for (const link of [...links, ...panelLinks]) {
+      const on = link.getAttribute('href') === `#${current}`;
+      if (on) {
+        link.setAttribute('aria-current', 'true');
+        if (links.includes(link)) hit = link;
+      } else link.removeAttribute('aria-current');
     }
+    moveMarker(hit);
+  };
+
+  // The header gets out of the way going down and comes back going up, but
+  // only below the fold: hiding it over the hero would be hiding it before
+  // the reader has had a reason to want it.
+  //
+  // A jump is not a scroll. Clicking a nav link scrolls smoothly downward for
+  // most of a second, which is a long run of down-frames and would take the
+  // nav off screen the moment it was used; the same goes for a browser
+  // restoring a hash on load. Both are held open until the page settles.
+  let lastY = window.scrollY;
+  let holding = false;
+  let settle = 0;
+
+  // A jump runs until it stops, and how long that is depends on the distance,
+  // so the hold is released by the page going quiet rather than by a timer
+  // guessed in advance. 160ms of no scroll event is the page having arrived.
+  const hold = (): void => {
+    holding = true;
+    clearTimeout(settle);
+    settle = window.setTimeout(() => {
+      holding = false;
+      lastY = window.scrollY;
+    }, 160);
+  };
+
+  const slide = (): void => {
+    const y = window.scrollY;
+    const dy = y - lastY;
+    if (Math.abs(dy) < 4) return;
+    lastY = y;
+
+    if (holding) {
+      hold();
+      header.dataset.hidden = 'false';
+      return;
+    }
+    const shut = !panel || panel.hidden;
+    header.dataset.hidden = String(shut && dy > 0 && y > window.innerHeight);
   };
 
   const onScroll = (): void => {
+    slide();
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(paint);
   };
 
+  document.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a[href^="#"]')) hold();
+  });
+  window.addEventListener('hashchange', hold);
+  if (location.hash) hold();
+
+  const onResize = (): void => {
+    current = '';
+    onScroll();
+  };
+
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll, { passive: true });
+  window.addEventListener('resize', onResize, { passive: true });
   paint();
+}
+
+/* ── Nav: the narrow-screen disclosure ───────────────────────────────── */
+function installNavPanel(): void {
+  const toggle = document.getElementById('nav-toggle');
+  const panel = document.getElementById('nav-panel');
+  const header = document.getElementById('site-nav');
+  if (!(toggle instanceof HTMLButtonElement) || !panel || !header) return;
+
+  const setOpen = (open: boolean, restoreFocus = true): void => {
+    if (open === !panel.hidden) return;
+    panel.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open) {
+      header.dataset.hidden = 'false';
+      panel.querySelector<HTMLAnchorElement>('a')?.focus();
+    } else if (restoreFocus) toggle.focus();
+  };
+
+  toggle.addEventListener('click', () => setOpen(panel.hidden));
+
+  // Escape from anywhere in the pair, and focus goes back to the control that
+  // opened it rather than to the top of the document.
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !panel.hidden) setOpen(false);
+  });
+
+  // A tap on a link is a tap on a destination: close, and let the anchor do
+  // its own scrolling. A tap outside either half closes without stealing focus.
+  panel.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) setOpen(false, false);
+  });
+
+  document.addEventListener('pointerdown', (e) => {
+    if (panel.hidden) return;
+    const t = e.target as Node;
+    if (!panel.contains(t) && !header.contains(t)) setOpen(false, false);
+  });
+
+  // Dragged wider than the breakpoint the toggle is gone, so anything left
+  // open would be open with no way to shut it.
+  window.matchMedia('(width > 620px)').addEventListener('change', (e) => {
+    if (e.matches) setOpen(false, false);
+  });
 }
 
 /* ── Hero ────────────────────────────────────────────────────────────── */
@@ -110,5 +232,6 @@ function installHeroCanvas(): void {
 
 installReveals();
 installNav();
+installNavPanel();
 installHeroCanvas();
 installParallax();

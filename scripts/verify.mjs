@@ -291,6 +291,8 @@ await run(
         over: [...new Set(over)].slice(0, 6),
         sections: document.querySelectorAll('.sec[data-sec]').length,
         navLinks: document.querySelectorAll('.nav__links a').length,
+        navLabels: [...document.querySelectorAll('.nav__links a')].map((a) => a.textContent),
+        navCta: document.querySelectorAll('.nav__cta').length,
         outlined: getComputedStyle(document.querySelector('.hero h1 .out')).webkitTextStrokeWidth,
         cards,
         arcSlides: document.querySelectorAll('.arc .fs__slide').length,
@@ -321,7 +323,13 @@ await run(
     );
     console.log(`       page height ${m.height}px at 1440`);
     note(m.sections === 6, 'six sections', `${m.sections}`);
-    note(m.navLinks === 7, 'nav carries six sections plus the email CTA', `${m.navLinks}`);
+    note(m.navLinks === 6, 'nav carries the six sections and nothing else', `${m.navLinks}`);
+    note(m.navCta === 0, 'the header has no Contact-and-Email pair left in it', `${m.navCta} CTAs`);
+    note(
+      m.navLabels.includes('Projects') && m.navLabels.includes('Experience'),
+      'the two ambiguous labels read Projects and Experience',
+      m.navLabels.join(' / '),
+    );
     note(parseFloat(m.outlined) > 0, 'the second name line is outlined, not filled', m.outlined);
     note(
       m.cards[0]?.startsWith('Plate 01 / saltline'),
@@ -353,6 +361,73 @@ await run(
       'the resume button points at the 2026 PDF',
       m.resumeHref || 'no link',
     );
+
+    /* Where you are, and that following a link does not take the header away
+       with it. Both are one behaviour with two failure modes: a marker that
+       sits under the wrong label, and a nav that hides itself the moment it
+       is used, because a smooth scroll is a long run of down-frames. */
+    const nav = await page.evaluate(async () => {
+      const settled = () =>
+        new Promise((res) => {
+          let last = -1;
+          let still = 0;
+          const t = setInterval(() => {
+            if (window.scrollY === last) {
+              if (++still > 6) {
+                clearInterval(t);
+                setTimeout(res, 300);
+              }
+            } else {
+              still = 0;
+              last = window.scrollY;
+            }
+          }, 50);
+        });
+
+      document.querySelector('.nav__links a[href="#playground"]').click();
+      await settled();
+      const link = document.querySelector('.nav__links a[aria-current]');
+      const marker = document.querySelector('.nav__marker').getBoundingClientRect();
+      const lr = link.getBoundingClientRect();
+      const jumped = { ...document.getElementById('site-nav').dataset };
+
+      /* Now a scroll the reader actually made. */
+      window.scrollBy(0, 200);
+      await settled();
+      const down = { ...document.getElementById('site-nav').dataset };
+      window.scrollBy(0, -200);
+      await settled();
+      const up = { ...document.getElementById('site-nav').dataset };
+      window.scrollTo(0, 0);
+      await settled();
+
+      return {
+        label: link.textContent,
+        clearance: Math.round(
+          document.getElementById('playground').getBoundingClientRect().top +
+            (window.scrollY - window.scrollY),
+        ),
+        dx: Math.round(marker.x - lr.x),
+        dw: Math.round(marker.width - lr.width),
+        onJump: jumped.hidden,
+        onDown: down.hidden,
+        onUp: up.hidden,
+      };
+    });
+
+    note(nav.label === 'Playground', 'the nav names the section you are standing in', nav.label);
+    note(
+      Math.abs(nav.dx) <= 1 && Math.abs(nav.dw) <= 1,
+      'the progress marker sits exactly under that label',
+      `off by ${nav.dx}px, ${nav.dw}px wide`,
+    );
+    note(
+      nav.onJump !== 'true',
+      'following a nav link does not hide the nav',
+      `hidden=${nav.onJump}`,
+    );
+    note(nav.onDown === 'true', 'the header steps aside on the way down', `hidden=${nav.onDown}`);
+    note(nav.onUp !== 'true', 'and comes back on the way up', `hidden=${nav.onUp}`);
 
     /* The three live ports. Screenshots and links were explicitly not the ask. */
     const play = await page.evaluate(async () => {
@@ -576,16 +651,19 @@ await run(
       // controls: buttons, sliders, and links styled as buttons.
       const tap = [...document.querySelectorAll('button, input[type=range], .btn, .toolbar__link')]
         .filter(vis)
-        .filter((e) => !e.closest('.nav__links') && e.getBoundingClientRect().height < 34)
+        .filter((e) => e.getBoundingClientRect().height < 34)
         .map((e) => `${e.tagName}.${String(e.className).slice(0, 20)}`);
+      const toggle = document.getElementById('nav-toggle');
       return {
         docW: de.scrollWidth,
         clientW: de.clientWidth,
         height: de.scrollHeight,
         over: [...new Set(over)].slice(0, 6),
         shellX: Math.round(document.querySelector('.shell').getBoundingClientRect().left),
-        ctaHidden: !vis(document.querySelector('.nav__cta')),
-        navLinks: [...document.querySelectorAll('.nav__links a')].filter(vis).length,
+        rowHidden: !vis(document.querySelector('.nav__links')),
+        toggleShown: vis(toggle),
+        toggleH: Math.round(toggle.getBoundingClientRect().height),
+        panelLinks: document.querySelectorAll('#nav-panel a[href^="#"]').length,
         labs: cols('.labs'),
         skills: cols('.skills'),
         ticks: cols('.arc__ticks'),
@@ -600,9 +678,54 @@ await run(
     note(m.over.length === 0, '390 nothing past the right edge', m.over.join(', '));
     note(m.shellX === 16, '390 content sits on the 16px margin', `x=${m.shellX}`);
     note(
-      m.ctaHidden && m.navLinks === 6,
-      '390 drops the email CTA, keeps every section',
-      `${m.navLinks} links`,
+      m.rowHidden && m.toggleShown && m.panelLinks === 6,
+      '390 swaps the link row for a disclosure holding every section',
+      `row hidden ${m.rowHidden}, toggle shown ${m.toggleShown}, ${m.panelLinks} links`,
+    );
+    note(m.toggleH >= 44, '390 the nav disclosure is a full tap target', `${m.toggleH}px`);
+
+    /* Open it, read it, shut it, and land back on the control that opened it.
+       A disclosure that strands focus at the top of the document is worse than
+       the squeezed row it replaced. */
+    const panel = await page.evaluate(async () => {
+      const wait = () => new Promise((r) => setTimeout(r, 250));
+      const toggle = document.getElementById('nav-toggle');
+      const el = document.getElementById('nav-panel');
+      toggle.click();
+      await wait();
+      const open = {
+        shown: !el.hidden,
+        expanded: toggle.getAttribute('aria-expanded'),
+        focus: document.activeElement?.getAttribute('href'),
+        short: [...el.querySelectorAll('a')].filter((a) => a.getBoundingClientRect().height < 44)
+          .length,
+        opaque: getComputedStyle(el).backgroundColor.startsWith('rgb('),
+      };
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await wait();
+      return {
+        ...open,
+        shut: el.hidden,
+        collapsed: toggle.getAttribute('aria-expanded'),
+        returned: document.activeElement?.id,
+      };
+    });
+
+    note(
+      panel.shown && panel.expanded === 'true' && panel.focus === '#about',
+      '390 the disclosure opens and moves focus into it',
+      `shown ${panel.shown}, expanded ${panel.expanded}, focus ${panel.focus}`,
+    );
+    note(
+      panel.short === 0,
+      '390 every row in the panel is a full tap target',
+      `${panel.short} short`,
+    );
+    note(panel.opaque, '390 the panel is opaque, not a scrim over the hero copy', '');
+    note(
+      panel.shut && panel.collapsed === 'false' && panel.returned === 'nav-toggle',
+      '390 escape shuts it and hands focus back to the button',
+      `shut ${panel.shut}, focus ${panel.returned}`,
     );
     note(m.labs === 1, '390 playground is one column', `${m.labs}`);
     note(m.skills === 1, '390 skills are one column', `${m.skills}`);

@@ -56,16 +56,53 @@ const Lab = devTools || labFlag ? (await import('../components/Lab.astro')).defa
   <body>
     <a class="skip" href="#main">Skip to content</a>
 
-    <header class="nav">
+    {
+      /* The header is navigation and nothing else. It used to carry a Contact
+        link and an Email button side by side, which is one destination wearing
+        two hats; email is the whole point of the contact section and it is
+        unmistakable there, so the button goes and the section link stays.
+
+        Narrow screens get the same six links behind a disclosure rather than
+        squeezed to 0.63rem. The panel is in the DOM at every width and CSS
+        decides which of the two shapes is showing, so there is one list of
+        links and one place they can go out of date. */
+    }
+    <header class="nav" id="site-nav">
       <a class="nav__brand" href="#top">
         <span class="nav__mark" aria-hidden="true">AJ</span>
         <span class="nav__name">UPPAL</span>
       </a>
+
       <nav class="nav__links" id="nav" aria-label="Sections">
         {sections.map((s) => <a href={`#${s.id}`}>{s.name}</a>)}
-        <a class="nav__cta" href={`mailto:${contact.email}`}>Email</a>
+        <span class="nav__marker" aria-hidden="true"></span>
       </nav>
+
+      <button
+        class="nav__toggle"
+        id="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="nav-panel"
+      >
+        <span class="nav__bars" aria-hidden="true"></span>
+        <span class="nav__toggle-t">Menu</span>
+      </button>
     </header>
+
+    <div class="nav__panel" id="nav-panel" hidden>
+      <nav aria-label="Sections, expanded">
+        {
+          sections.map((s) => (
+            <a href={`#${s.id}`}>
+              <b>{s.name}</b>
+              <span>{s.desc}</span>
+            </a>
+          ))
+        }
+      </nav>
+      <a class="nav__panel-mail" href={`mailto:${contact.email}`}>{contact.email}</a>
+    </div>
 
     <main id="main">
       <slot />
