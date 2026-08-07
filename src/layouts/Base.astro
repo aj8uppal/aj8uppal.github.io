@@ -1,6 +1,5 @@
 ---
 import '../styles/global.css';
-import Lab from '../components/Lab.astro';
 import { site, sections, contact } from '../data/content';
 
 interface Props {
@@ -17,6 +16,13 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
    it. The older `palettes` name is still accepted at both ends. */
 const devTools = import.meta.env.DEV;
 const labFlag = import.meta.env.MODE === 'lab' || import.meta.env.MODE === 'palettes';
+
+/* Imported here rather than at the top, because a static import puts the
+   panel's client script through Astro's build-time hoisting and a plain
+   production build then writes it into _astro as a chunk nothing loads:
+   unreachable from the page, but still a file on the site. Both operands fold
+   to constants at build time, so the branch and the component go with them. */
+const Lab = devTools || labFlag ? (await import('../components/Lab.astro')).default : null;
 ---
 
 <!doctype html>
@@ -65,7 +71,7 @@ const labFlag = import.meta.env.MODE === 'lab' || import.meta.env.MODE === 'pale
       <slot />
     </main>
 
-    {(devTools || labFlag) && <Lab alwaysOn={devTools} />}
+    {Lab && <Lab alwaysOn={devTools} />}
 
     <script>
       import '../scripts/motion';
