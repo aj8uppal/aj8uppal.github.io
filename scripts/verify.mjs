@@ -210,8 +210,14 @@ async function heroContrast(page, width, height, spots = SWEEP) {
   for (const [fx, fy] of spots) {
     await page.mouse.move(hero.w * fx, hero.y + hero.h * fy);
     await page.waitForTimeout(750);
-    await page.evaluate(() => {
+    /* Wait out two frames after hiding the type. Under reduced motion nothing
+       is driving the compositor, so a screenshot taken straight after the
+       style change can come back with the previous frame still on it - the
+       sand dot in the meta line then reads as canopy light and the row fails
+       at 1.3:1 against a ground the canvas never painted. */
+    await page.evaluate(async () => {
       for (const e of document.querySelectorAll('.hero__in, .hint')) e.style.visibility = 'hidden';
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
     });
     const shot = await page.screenshot({
       clip: { x: 0, y: Math.max(0, hero.y), width, height: Math.min(height, hero.h) },
