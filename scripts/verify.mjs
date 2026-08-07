@@ -303,11 +303,9 @@ await run(
         roles: document.querySelectorAll('.role').length,
         resumeHref: document.querySelector('.resume a[data-resume]')?.getAttribute('href') ?? '',
         education: document.getElementById('education') !== null,
-        // The parallax prototype is lab furniture. This page has had the lab
-        // taken out of it, so the three marked frames should be sitting still
-        // and at their own size.
-        parFrames: document.querySelectorAll('.shot--par').length,
-        parParked: [...document.querySelectorAll('.shot--par img')].every((i) => {
+        // Parallax was tried in the lab and rejected. Nothing should be left
+        // sliding or overscaled behind a frame.
+        leadParked: [...document.querySelectorAll('.shot--lead img')].every((i) => {
           const cs = getComputedStyle(i);
           return cs.translate === 'none' && cs.scale === 'none';
         }),
@@ -351,11 +349,7 @@ await run(
     note(m.filterChips > 1, 'the work log has a stack filter', `${m.filterChips} chips`);
     note(m.roles === 8, 'eight roles', `${m.roles}`);
     note(m.education, 'education keeps its own anchor', '');
-    note(
-      m.parFrames === 3 && m.parParked,
-      'parallax is off without the lab to turn it on',
-      `${m.parFrames} marked frames`,
-    );
+    note(m.leadParked, 'no lead render is sliding or overscaled', '');
     note(
       m.resumeHref === '/attachments/resume2026.pdf',
       'the resume button points at the 2026 PDF',

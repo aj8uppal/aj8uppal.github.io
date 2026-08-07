@@ -1,11 +1,9 @@
 import { springKeyframes } from './spring';
 import { installHero } from '../heroes/runtime';
-import { installParallax } from './parallax';
 
 /**
- * Page-level behaviour. Five things: reveal on first sight, the nav's current
- * section, the narrow-screen nav disclosure, the hero canvas, and the parallax
- * prototype the lab can turn on.
+ * Page-level behaviour. Four things: reveal on first sight, the nav's current
+ * section, the narrow-screen nav disclosure, and the hero canvas.
  *
  * prefers-reduced-motion is a separate code path, not a shorter duration. Under
  * it nothing translates and nothing fades, the reveal observer is never
@@ -276,4 +274,3 @@ installReveals();
 installNav();
 installNavPanel();
 installHeroCanvas();
-installParallax();
