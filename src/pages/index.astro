@@ -96,6 +96,10 @@ const elderFrames: SwitchFrame[] = await Promise.all(
 );
 
 const grinchPoster = await sources('legacy-grinchjump', POSTER_W, POSTER_S);
+/* Captured off the running file at the same seed the card mounts, by
+   scripts/capture-deviation.mjs. It stands in for the chart until the chart
+   arrives, and stands in for it permanently where no script runs. */
+const deviationPoster = await sources('legacy-deviation', POSTER_W, POSTER_S);
 
 /* Tokens for the work-log filter. Anything a single job used is not a filter,
    it is a fact, and it stays in that job's stack line.
@@ -615,8 +619,10 @@ const heroLabel =
                       <p>
                         {r.body}
                         {r.ref && (
-                          <sup class="ref">
-                            <a href={`#note-${r.ref}`}>[{r.ref}]</a>
+                          <sup class="ref" id={`ref-${r.ref}`} data-place>
+                            <a href={`#note-${r.ref}`} aria-label={`Note ${r.ref}`}>
+                              [{r.ref}]
+                            </a>
                           </sup>
                         )}
                       </p>
@@ -628,11 +634,22 @@ const heroLabel =
           </ol>
         </div>
 
+        {
+          /* A footnote is a round trip or it is a trapdoor. `data-place` is what
+            gives it the header clearance and the arrival mark the skills index
+            already established, and the marker in the margin is the way back to
+            the sentence that sent you - which is also why the mention upstairs
+            carries an id it otherwise would not need. */
+        }
         <dl class="errata">
           {
             errata.map((e) => (
-              <div id={`note-${e.ref}`}>
-                <dt>[{e.ref}]</dt>
+              <div id={`note-${e.ref}`} data-place>
+                <dt>
+                  <a href={`#ref-${e.ref}`} aria-label={`Back to note ${e.ref} in the text`}>
+                    [{e.ref}]
+                  </a>
+                </dt>
                 <dd>{e.text}</dd>
               </div>
             ))
@@ -716,6 +733,8 @@ const heroLabel =
           src="/deviation.html?reps=1000&mean=-4&stdev=2&reps2=1000&mean2=6&stdev2=3"
           href="/deviation.html"
           title="deviation.html"
+          poster={deviationPoster}
+          posterAlt="The deviation.html chart at this seed: two overlapping bell curves of a thousand samples each, a dark green one centred near -4 and a pale green one centred near 6, over a table holding the six numbers that made them."
           note="The 2015 file itself, unmodified, seeded from its query string"
         />
       </article>

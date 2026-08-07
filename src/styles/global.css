@@ -266,8 +266,9 @@ summary,
   scroll-margin-top: var(--nav-clear);
 }
 
-/* A reference from the skills index has to land somewhere the reader can see
-   it landed. Two selectors because there are two ways of arriving: the page's
+/* A reference has to land somewhere the reader can see it landed - the skills
+   index into a card, a footnote marker into its note, the note back up to the
+   sentence. Two selectors because there are two ways of arriving: the page's
    own anchor handler scrolls to a measured position and pushes the hash, which
    moves the caret but deliberately never fires `:target`, while a page where
    nothing ran gets a real fragment navigation and only fires `:target`.
@@ -284,6 +285,13 @@ summary,
 .earlier li[data-place]:target,
 .earlier li[data-place]:focus {
   outline-offset: 2px;
+}
+
+/* Six points of clearance around a marker set in superscript is a halo three
+   times the size of the thing it is marking. */
+.ref[data-place]:target,
+.ref[data-place]:focus {
+  outline-offset: 0;
 }
 
 /* The one focusable element that cannot know what it is standing on: it is
@@ -1771,6 +1779,21 @@ summary,
   border-color: transparent;
 }
 
+/* The pill is placed by measuring, so until something measures it, it is a
+   zero-width sliver at the left edge and the selected tab is dark ink on a dark
+   card: 1.5 to 1, and the only tab in the strip a reader cannot read. The strip
+   says whether it has been placed, and until it has, the selected tab carries
+   its own fill. This is not a flash to be lived with - the placement runs in a
+   layout effect, before the browser paints - so the only page that ever sees
+   this rule is a page where the island never arrived. */
+.fs__tabs:not([data-placed]) .fs__ind {
+  display: none;
+}
+
+.fs__tabs:not([data-placed]) .fs__tab[aria-selected='true'] {
+  background: var(--sand);
+}
+
 /* An edge that scrolls without saying so is a tab nobody finds. */
 .fs__strip[data-of-end='true']::after,
 .fs__strip[data-of-start='true']::before {
@@ -2282,7 +2305,18 @@ summary,
   font: 800 0.72rem/1.5 var(--mono);
 }
 
+/* A footnote marker set in superscript is a thirteen by fourteen target, which
+   is exempt from the size rule for being inline in a sentence and is still
+   annoying to hit. Padded out to something a thumb can find, with the padding
+   pulled back out of the line box so a note in the middle of a paragraph does
+   not open a gap in the leading above it. */
+.ref {
+  margin: -0.6rem -0.35rem;
+}
+
 .ref a {
+  display: inline-block;
+  padding: 0.6rem 0.35rem;
   color: var(--on-paper-2);
 }
 
@@ -2299,6 +2333,14 @@ summary,
 .errata dt {
   color: var(--on-paper-3);
   font: 750 0.7rem/1.6 var(--mono);
+}
+
+/* Same marker, same size problem, and here it is the way back. */
+.errata dt a {
+  display: inline-block;
+  padding: 0.35rem 0.3rem;
+  margin: -0.35rem -0.3rem;
+  color: inherit;
 }
 
 .errata dd {
@@ -2705,9 +2747,28 @@ summary,
   }
 }
 
+/* The drawn width comes from the component, but the floor is the card. With no
+   script the scale never leaves its minimum, so the box would be 665 inside a
+   715 card and the poster would sit against a 50px gutter. Wherever the
+   component's own number is the larger one - which is every width a live frame
+   is scaled at - this does nothing. */
 .devframe__fit {
+  min-width: 100%;
   height: 100%;
   overflow: hidden;
+}
+
+/* The poster is the same document at the same seed, so it fills the same box
+   the frame will, and scrolls sideways on a phone for the same reason. `contain`
+   rather than `cover`: the axis labels are the smallest thing in the picture and
+   cropping them is how a chart stops being one. It is a still of a page, not a
+   photograph, so it gets no radius of its own - the scroller around it already
+   has the corners. */
+.devframe__fit img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 0 0;
 }
 
 /* The width and height attributes are the size the document wants and the

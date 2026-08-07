@@ -4,8 +4,9 @@
  *
  *   node scripts/verify.mjs [baseUrl] [outDir]
  *
- * Runs three contexts - 1440 motion-on, 390 motion-on, 1440 reduced-motion -
- * and writes full-page captures next to the report.
+ * Runs six contexts - 1440 motion-on, 390 motion-on, 1440 reduced-motion, the
+ * breakpoints in between, the states a reader puts controls into, and the page
+ * with scripting off - and writes full-page captures next to the report.
  */
 import { chromium } from 'playwright';
 import sharp from 'sharp';
@@ -41,6 +42,20 @@ async function settle(page) {
   await page.waitForTimeout(700);
 }
 
+/* A page with scripting off has no timers and no font-loading promise to wait
+   on, and an async evaluate inside it never resolves. The walk down the page is
+   still worth doing - it is what pulls the lazy images in - so it is done from
+   out here, one synchronous step at a time. */
+async function settleStill(page) {
+  const h = await page.evaluate(() => document.documentElement.scrollHeight);
+  for (let y = 0; y < h; y += 600) {
+    await page.evaluate((at) => window.scrollTo({ top: at, behavior: 'instant' }), y);
+    await page.waitForTimeout(40);
+  }
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  await page.waitForTimeout(900);
+}
+
 async function run(name, opts, body) {
   const browser = await chromium.launch();
   const ctx = await browser.newContext(opts);
@@ -54,7 +69,7 @@ async function run(name, opts, body) {
      comes out before anything is measured. Auditing review furniture would be
      auditing the wrong page. */
   await page.evaluate(() => document.querySelector('[data-lab]')?.remove());
-  await settle(page);
+  await (opts.javaScriptEnabled === false ? settleStill(page) : settle(page));
   await body(page, name);
   note(errors.length === 0, `${name} console clean`, errors.slice(0, 3).join(' | '));
   await browser.close();
@@ -421,16 +436,6 @@ await run(
       const lr = link.getBoundingClientRect();
       const jumped = { ...document.getElementById('site-nav').dataset };
 
-      /* Now a scroll the reader actually made. */
-      window.scrollBy(0, 200);
-      await settled();
-      const down = { ...document.getElementById('site-nav').dataset };
-      window.scrollBy(0, -200);
-      await settled();
-      const up = { ...document.getElementById('site-nav').dataset };
-      window.scrollTo(0, 0);
-      await settled();
-
       return {
         label: link.textContent,
         landed: ends[0] ?? -1,
@@ -446,10 +451,26 @@ await run(
         dx: Math.round(marker.x - lr.x),
         dw: Math.round(marker.width - lr.width),
         onJump: jumped.hidden,
-        onDown: down.hidden,
-        onUp: up.hidden,
       };
     });
+
+    /* Now a scroll the reader actually made, and made the way they make it.
+       `window.scrollBy` from inside the page moves the scrollport without any
+       of the input that goes with a scroll, which is a different thing from a
+       wheel and behaves differently: the deviation frame holds the page still
+       for a moment while it boots, and it lets go the instant a real reader
+       touches anything. Testing the header against a synthetic scroll was
+       testing it against a page state no reader is ever in. */
+    const slide = async (dy) => {
+      await page.mouse.move(720, 500);
+      await page.mouse.wheel(0, dy);
+      await page.waitForTimeout(400);
+      return page.evaluate(() => document.getElementById('site-nav').dataset.hidden);
+    };
+    const onDown = await slide(240);
+    const onUp = await slide(-240);
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    await page.waitForTimeout(300);
 
     note(
       nav.label === 'Playground',
@@ -471,8 +492,8 @@ await run(
       'following a nav link does not hide the nav',
       `hidden=${nav.onJump}`,
     );
-    note(nav.onDown === 'true', 'the header steps aside on the way down', `hidden=${nav.onDown}`);
-    note(nav.onUp !== 'true', 'and comes back on the way up', `hidden=${nav.onUp}`);
+    note(onDown === 'true', 'the header steps aside on the way down', `hidden=${onDown}`);
+    note(onUp !== 'true', 'and comes back on the way up', `hidden=${onUp}`);
 
     /* The three live ports. Screenshots and links were explicitly not the ask. */
     const play = await page.evaluate(async () => {
@@ -937,6 +958,276 @@ await run(
     await settle(page);
     await page.screenshot({ path: `${OUT}/full-1440-reduced-motion.png`, fullPage: true });
     console.log(`       wrote ${OUT}/full-1440-reduced-motion.png`);
+  },
+);
+
+/* ── the widths between the two ends ─────────────────────────────────── */
+/* 1440 and 390 are the two ends, and a page can be clean at both and wrong in
+   between: every breakpoint in the stylesheet moves colour onto a different
+   ground. One real load at the tablet break, then the rest of the breakpoints
+   walked in the same context - a resize re-runs the cascade, which is what the
+   contrast walk reads, at one browser's cost instead of five. */
+await run(
+  'middle widths',
+  { viewport: { width: 900, height: 1000 }, deviceScaleFactor: 2 },
+  async (page) => {
+    for (const w of [900, 1260, 1000, 765, 620, 470]) {
+      if (w !== 900) {
+        await page.setViewportSize({ width: w, height: 1000 });
+        await settle(page);
+      }
+      const bad = await page.evaluate(CONTRAST);
+      note(
+        bad.length === 0,
+        `${w} clears AA in every section`,
+        bad.map((b) => `${b.sel} ${b.ratio}:1 (needs ${b.need}) ${b.fg} on ${b.bg}`).join(' | '),
+      );
+      const over = await page.evaluate(() => {
+        const de = document.documentElement;
+        return [...document.querySelectorAll('body *')]
+          .filter((e) => {
+            const r = e.getBoundingClientRect();
+            if (!(r.width > 0) || getComputedStyle(e).position === 'fixed') return false;
+            if (e.closest('.fs__scroll, .devframe')) return false;
+            return r.right > de.clientWidth + 1;
+          })
+          .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
+      });
+      note(
+        over.length === 0,
+        `${w} keeps everything inside the viewport`,
+        over.slice(0, 4).join(' | '),
+      );
+    }
+  },
+);
+
+/* ── the states a reader puts things into ────────────────────────────── */
+await run(
+  'states and loops',
+  { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 },
+  async (page) => {
+    /* Rest is the easy case. A pill that inverts on hover, a chip that fills
+       when it is chosen and a link that changes colour under the caret are all
+       new pairs of colours, and none of them are on the page at rest.
+
+       Forced pseudo states rather than a real pointer: pressing a link with the
+       mouse follows it, and the question is what colour it was, not where it
+       went. */
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send('DOM.enable');
+    await cdp.send('CSS.enable');
+    const { root } = await cdp.send('DOM.getDocument', { depth: -1 });
+
+    const STATEFUL = [
+      '.nav a',
+      '.btn--sand',
+      '.btn',
+      '.hero__mail',
+      '.pill',
+      '.fs__tab',
+      '.arc__tick',
+      '.contact__mail',
+      '.links a',
+      '.toolbar__link',
+      '.skg__set .sk',
+      '.ref a',
+      '.errata dt a',
+    ];
+    const worst = [];
+    for (const sel of STATEFUL) {
+      const el = page.locator(sel).first();
+      if (!(await el.count())) {
+        note(false, `state contrast: ${sel} is on the page`, 'missing');
+        continue;
+      }
+      await el.scrollIntoViewIfNeeded();
+      const { nodeId } = await cdp.send('DOM.querySelector', {
+        nodeId: root.nodeId,
+        selector: sel,
+      });
+      if (!nodeId) continue;
+      for (const state of ['hover', 'focus', 'focus-visible', 'active']) {
+        await cdp.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: [state] });
+        await page.waitForTimeout(60);
+        // The shipped walker, aimed at one subtree instead of the document.
+        const r = await el.evaluate((node, fn) => {
+          const all = document.querySelectorAll;
+          document.querySelectorAll = function (q) {
+            return q === 'body *' ? [node, ...node.querySelectorAll('*')] : all.call(this, q);
+          };
+          try {
+            return eval(fn);
+          } finally {
+            document.querySelectorAll = all;
+          }
+        }, CONTRAST);
+        if (r.length) worst.push(...r.map((x) => `${sel}:${state} ${x.ratio}/${x.need}`));
+      }
+      await cdp.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: [] });
+    }
+    note(worst.length === 0, 'hover, focus and active clear AA too', worst.slice(0, 5).join(' | '));
+
+    /* Nothing draws to an empty room. Three loops on this page and each one is
+       gated differently - the hero on an observer, the framed game by parking
+       the frame's own rAF, the typing line by not scheduling the next letter -
+       so each is asked the same question separately. */
+    const count = async (ms = 800) => {
+      const a = await page.evaluate(() => window.__heroPerf?.frames ?? -1);
+      await page.waitForTimeout(ms);
+      return (await page.evaluate(() => window.__heroPerf?.frames ?? -1)) - a;
+    };
+    /* Wheel first, then jump. The walk above may have booted the deviation
+       frame, which holds the page still for a moment and lets go on the first
+       real input; a bare `scrollTo` is not one, so without this the pass reads
+       a hero that is still parked at the bottom of the page and calls it dead. */
+    const toTop = async () => {
+      await page.mouse.move(720, 500);
+      await page.mouse.wheel(0, -200);
+      await page.waitForTimeout(200);
+      await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+      await page.waitForTimeout(400);
+    };
+    await toTop();
+    const heroOn = await count();
+    note(heroOn > 10, 'the hero draws while it is on screen', `${heroOn} frames`);
+
+    await page.evaluate(() => window.scrollTo({ top: 5000, behavior: 'instant' }));
+    await page.waitForTimeout(700);
+    const heroOff = await count();
+    note(heroOff === 0, 'and stops the moment it is not', `${heroOff} frames offscreen`);
+
+    const go = page.locator('.playframe__go').first();
+    await go.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(400);
+    await go.click();
+    await page.waitForTimeout(2500);
+    const gf = page.frames().find((f) => /grinch/i.test(f.url()));
+    note(!!gf, 'the framed game mounts on a press');
+    if (gf) {
+      const frames = (ms) =>
+        gf.evaluate(
+          (t) =>
+            new Promise((res) => {
+              let n = 0;
+              const tick = () => {
+                n++;
+                requestAnimationFrame(tick);
+              };
+              requestAnimationFrame(tick);
+              setTimeout(() => res(n), t);
+            }),
+          ms,
+        );
+      note((await frames(700)) > 20, 'the framed game animates while it is watched');
+      await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+      await page.waitForTimeout(1000);
+      const off = await frames(900);
+      note(off <= 1, 'and its loop is parked when it is not', `${off} frames offscreen`);
+    }
+
+    const typer = await page.evaluate(async () => {
+      const el = document.querySelector('.term__out');
+      if (!el) return null;
+      el.scrollIntoView({ block: 'center', behavior: 'instant' });
+      await new Promise((r) => setTimeout(r, 800));
+      const a = el.textContent;
+      await new Promise((r) => setTimeout(r, 400));
+      const b = el.textContent;
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      await new Promise((r) => setTimeout(r, 1000));
+      const c = el.textContent;
+      await new Promise((r) => setTimeout(r, 1000));
+      return { moved: a !== b, still: c === el.textContent };
+    });
+    note(typer?.moved === true, 'the typing line types while it is read');
+    note(typer?.still === true, 'and stops when it is scrolled away');
+
+    /* Islands arrive after the HTML does, and an island that sizes itself on
+       arrival moves the paragraph somebody was reading. `buffered` replays the
+       shifts from before this observer existed, which is the whole hydration. */
+    const cls = await page.evaluate(
+      () =>
+        new Promise((res) => {
+          let total = 0;
+          const who = [];
+          new PerformanceObserver((list) => {
+            for (const e of list.getEntries()) {
+              if (e.hadRecentInput) continue;
+              total += e.value;
+              if (e.value > 0.001)
+                who.push(
+                  `${e.value.toFixed(3)} ${[...(e.sources ?? [])]
+                    .map((s) => s.node?.className || s.node?.nodeName)
+                    .join(',')
+                    .slice(0, 40)}`,
+                );
+            }
+          }).observe({ type: 'layout-shift', buffered: true });
+          setTimeout(() => res({ total, who: who.slice(0, 4) }), 400);
+        }),
+    );
+    note(
+      cls.total < 0.02,
+      'nothing moves under the reader as the islands arrive',
+      `CLS ${cls.total.toFixed(4)} ${cls.who.join(' | ')}`,
+    );
+  },
+);
+
+/* ── the page with the scripts switched off ──────────────────────────── */
+/* Not a courtesy to a reader who disabled JavaScript. It is the state the page
+   is in for the first second on a slow connection, and for the whole visit if
+   one bundle fails to arrive, so what is legible here is what the page is
+   actually promising. */
+await run(
+  'no script',
+  { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, javaScriptEnabled: false },
+  async (page) => {
+    const shape = await page.$$eval('section[id]', (ns) =>
+      ns.map((n) => ({
+        id: n.id,
+        words: (n.textContent || '').trim().split(/\s+/).length,
+        h: Math.round(n.getBoundingClientRect().height),
+      })),
+    );
+    note(shape.length >= 6, 'every section is in the HTML', `${shape.length} sections`);
+    const thin = shape.filter((s) => s.words < 25 || s.h < 200);
+    note(
+      thin.length === 0,
+      'and every one of them says something',
+      thin.map((t) => `${t.id} ${t.words}w ${t.h}px`).join(' | '),
+    );
+
+    const navLinks = await page.$$eval('#site-nav a[href^="#"]', (as) => as.length);
+    note(navLinks >= 6, 'and the nav reaches all of them', `${navLinks} links`);
+
+    const bare = await page.$$eval('img', (is) => is.filter((i) => !i.getAttribute('src')).length);
+    note(bare === 0, 'no image waits on script for a source', `${bare} bare`);
+
+    /* Every media slot either shows its media or says what it is holding. An
+       empty box the size of a chart is a promise the page cannot keep. */
+    const hollow = await page.$$eval('.stage, .devframe, .playframe, .fs__stage', (ns) =>
+      ns
+        .filter(
+          (n) =>
+            n.getBoundingClientRect().height > 40 &&
+            !n.textContent.trim() &&
+            !n.querySelector('img, iframe, canvas, svg'),
+        )
+        .map((n) => String(n.className)),
+    );
+    note(hollow.length === 0, 'no media slot is an empty hole', hollow.join(' | '));
+
+    const bad = await page.evaluate(CONTRAST);
+    note(
+      bad.length === 0,
+      'and what is readable here clears AA',
+      bad.map((b) => `${b.sel} ${b.ratio}:1 (needs ${b.need})`).join(' | '),
+    );
+
+    await page.screenshot({ path: `${OUT}/full-1440-no-script.png`, fullPage: true });
+    console.log(`       wrote ${OUT}/full-1440-no-script.png`);
   },
 );
 

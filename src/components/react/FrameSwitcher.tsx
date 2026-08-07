@@ -55,8 +55,15 @@ export default function FrameSwitcher({ label, frames }: Props) {
     el.style.width = `${Math.max(w, 0).toFixed(2)}px`;
   }, []);
 
-  // Place the pill before first paint so it never flashes at the origin.
-  // Mount only: every later move is animated by the effect below.
+  /* Place the pill before first paint so it never flashes at the origin.
+     Mount only: every later move is animated by the effect below.
+
+     The strip is marked placed at the same moment, and that mark is what the
+     stylesheet keys the unplaced fallback off. An unplaced pill is a zero-width
+     sliver at the left edge, which leaves the selected tab as dark ink on a dark
+     card; the fallback fills that tab instead. Setting the flag from here rather
+     than from a state update keeps it inside the same pre-paint pass, so the
+     handover between the two is not something a reader can catch. */
   const placed = useRef(false);
   useLayoutEffect(() => {
     if (placed.current) return;
@@ -65,6 +72,7 @@ export default function FrameSwitcher({ label, frames }: Props) {
     placed.current = true;
     springs.current = { x: new Spring(m.x, 0.14, 0.72), w: new Spring(m.w, 0.14, 0.72) };
     draw(m.x, m.w);
+    tabsRef.current?.setAttribute('data-placed', '');
   }, [active, draw, measure]);
 
   useEffect(() => {

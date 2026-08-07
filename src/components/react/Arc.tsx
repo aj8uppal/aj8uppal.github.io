@@ -107,9 +107,14 @@ export default function Arc({ frames, note }: Props) {
 
       <div className="arc__scrub">
         <label className="range" htmlFor={`${uid}-clock`}>
+          {/* The readout is inside the label, so it is part of the slider's
+              name, and the slider already announces the same value through
+              aria-valuetext - "time of day 04:36 Moon, slider, 04:36 Moon".
+              Hidden from the tree, it goes back to being what it looks like:
+              the value drawn for the people who can see it. */}
           <span>
             Time of day{' '}
-            <output htmlFor={`${uid}-clock`}>
+            <output htmlFor={`${uid}-clock`} aria-hidden="true">
               {current.time} · {current.light}
             </output>
           </span>

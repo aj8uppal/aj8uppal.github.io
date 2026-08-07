@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { Sources } from '../../lib/images';
 
 /**
  * The real deviation.html, running in a frame.
@@ -23,6 +24,9 @@ interface Props {
   /** The bare URL, for the reader who wants to put their own numbers in. */
   href: string;
   title: string;
+  /** The chart photographed at this same seed, held until the real one boots. */
+  poster: Sources;
+  posterAlt: string;
   /** Mono line under the frame, stating what this is. */
   note: string;
 }
@@ -37,13 +41,15 @@ const H = 595;
     card above the 665px that costs, so this only ever bites on a phone. */
 const MIN = 0.5;
 
-export default function DeviationFrame({ src, href, title, note }: Props) {
+export default function DeviationFrame({ src, href, title, poster, posterAlt, note }: Props) {
   const [live, setLive] = useState(false);
   const [scale, setScale] = useState(MIN);
   const box = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLIFrameElement>(null);
   /** Where the caret was when the frame was allowed to boot. */
   const returnTo = useRef<HTMLElement | null>(null);
+  /** Lets the frame's own load end the hold below, from outside this effect. */
+  const unpin = useRef<(() => void) | null>(null);
 
   /* Boot on sight rather than at load. It pulls Chart.js off a CDN and samples
      two thousand deviates to draw itself, and a reader who never gets this far
@@ -62,16 +68,78 @@ export default function DeviationFrame({ src, href, title, note }: Props) {
     let timer = 0;
     let seen = false;
 
-    const done = (): void => {
+    const stop = (): void => {
       window.clearTimeout(timer);
       io.disconnect();
       window.removeEventListener('scroll', arm);
     };
+
+    /* Hold the page still while the frame boots.
+     *
+     * Handing the caret back is not enough. `FocusOnInput()` runs inside the
+     * frame, and a browser bringing a focused field into view scrolls the
+     * parent to do it - a scroll nobody asked for, half a screen, most of a
+     * second after the reader stopped moving. Waiting for quiet only decides
+     * when it happens; it still happens, and following a footnote out of
+     * Experience is enough to trigger it, because the boot only needs the card
+     * in the margin.
+     *
+     * So the position is recorded at boot and put back if the frame moves it,
+     * for as short a time as the yank allows: the reader outranks it, and
+     * wheel, touch or a key releases it for good; the frame's own load releases
+     * it a moment later, because the yank happens during that load and nothing
+     * after it is the frame's doing; and two seconds ends it whatever else
+     * happened.
+     *
+     * This lives inside the boot rather than in an effect keyed off `live`,
+     * and that is the whole point of it being here. An effect runs a render
+     * after the state that triggers it, and in that gap the hold is up with
+     * none of its release listeners attached - so a reader who wheels in those
+     * few milliseconds gets their own scroll undone, which is exactly the jump
+     * this is supposed to prevent. Going up and being releasable have to be the
+     * same instant.
+     *
+     * The releases below are still not enough on their own, because once the
+     * frame is up it covers most of the card: a wheel with the pointer over it
+     * is delivered to the 2015 document, the parent scrolls by chaining, and
+     * nothing out here hears the input at all. So what actually decides is not
+     * who moved the page but what the page was doing when it moved. The yank is
+     * the browser revealing a field inside the frame, which means focus is on
+     * the frame while it happens, and a reader scrolling never has it there.
+     * That is the test; the input listeners just stand the hold down early. */
+    const MINE = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const;
+    let at = 0;
+    let held = false;
+    let letGo = 0;
+    // Instant, not smooth: this is undoing a jump that should not have
+    // happened, and animating it would make it a second jump.
+    const keep = (): void => {
+      if (!held || document.activeElement !== frame.current) return;
+      if (Math.abs(window.scrollY - at) > 1) window.scrollTo({ top: at, behavior: 'instant' });
+    };
+    const release = (): void => {
+      if (!held) return;
+      held = false;
+      unpin.current = null;
+      window.clearTimeout(letGo);
+      window.removeEventListener('scroll', keep);
+      for (const ev of MINE) window.removeEventListener(ev, release);
+    };
+    const hold = (): void => {
+      at = window.scrollY;
+      held = true;
+      unpin.current = release;
+      window.addEventListener('scroll', keep, { passive: true });
+      for (const ev of MINE) window.addEventListener(ev, release, { passive: true, once: true });
+      letGo = window.setTimeout(release, 2000);
+    };
+
     const boot = (): void => {
       returnTo.current =
         document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      hold();
       setLive(true);
-      done();
+      stop();
     };
     const arm = (): void => {
       window.clearTimeout(timer);
@@ -87,7 +155,10 @@ export default function DeviationFrame({ src, href, title, note }: Props) {
 
     io.observe(el);
     window.addEventListener('scroll', arm, { passive: true });
-    return done;
+    return () => {
+      stop();
+      release();
+    };
   }, []);
 
   useEffect(() => {
@@ -114,6 +185,12 @@ export default function DeviationFrame({ src, href, title, note }: Props) {
    * document who has it now returns the frame itself.
    */
   const settleFocus = useCallback(() => {
+    /* One frame past the load, because the browser's scroll-into-view for the
+       focused field lands in the same task as the load and the pin has to still
+       be up for it. After that the frame is done and every scroll belongs to
+       somebody. */
+    window.setTimeout(() => unpin.current?.(), 300);
+
     const el = frame.current;
     (el?.contentDocument?.activeElement as HTMLElement | null)?.blur();
     if (!el || document.activeElement !== el) return;
@@ -139,7 +216,7 @@ export default function DeviationFrame({ src, href, title, note }: Props) {
               stated here, and the only thing that scrolls is what is really
               wider than the card. */}
           <div className="devframe__fit" style={{ width: `${Math.round(W * scale)}px` }}>
-            {live && (
+            {live ? (
               <iframe
                 ref={frame}
                 src={src}
@@ -150,6 +227,23 @@ export default function DeviationFrame({ src, href, title, note }: Props) {
                 onLoad={settleFocus}
                 style={{ transform: `scale(${scale})` }}
               />
+            ) : (
+              /* The chart, photographed at this seed, so the slot is never the
+                 outline of one. It covers the second the CDN takes and it
+                 covers a reader with no script at all, for whom the live frame
+                 is not late, it is not coming. The toolbar below links to the
+                 file either way. */
+              <picture>
+                <source type="image/avif" srcSet={poster.avif} sizes={poster.sizes} />
+                <source type="image/webp" srcSet={poster.webp} sizes={poster.sizes} />
+                <img
+                  src={poster.src}
+                  width={poster.width}
+                  height={poster.height}
+                  alt={posterAlt}
+                  decoding="async"
+                />
+              </picture>
             )}
           </div>
         </div>
