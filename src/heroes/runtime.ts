@@ -212,6 +212,22 @@ export function installHero(canvas: HTMLCanvasElement): void {
 
   /* ── The variant ───────────────────────────────────────────────────── */
 
+  /**
+   * Which variant the page is asking for.
+   *
+   * The attribute is the source of truth and `herochange` is only the update.
+   * It has to be that way round: the lab restores a stored choice by writing
+   * the attribute and firing the event, but its module script is rendered
+   * above this one and module scripts run in document order, so on every load
+   * the event arrives before this file exists to hear it. Mounting the default
+   * and waiting to be told otherwise left the panel reading Flow over a canvas
+   * running Dapple.
+   */
+  function wanted(): HeroVariant {
+    const id = document.documentElement.dataset.hero;
+    return heroes.find((v) => v.id === id) ?? defaultHero;
+  }
+
   function mount(next: HeroVariant): void {
     hero?.destroy();
     variant = next;
@@ -389,6 +405,60 @@ export function installHero(canvas: HTMLCanvasElement): void {
     else start();
   });
 
+  /* A 2d context can be taken away underneath you - the GPU process restarting,
+     a machine waking, memory pressure - and unhandled that is permanent: the
+     canvas blanks, every draw call silently does nothing, and the loop goes on
+     counting frames into it. Asking for it back is one line, and the frame after
+     it returns has to be measured again, because a restored context comes back
+     without the device-pixel transform. */
+  canvas.addEventListener('contextlost', (e) => {
+    e.preventDefault();
+    stop();
+  });
+
+  canvas.addEventListener('contextrestored', () => {
+    if (!measure() || !hero) return;
+    hero.resize(view);
+    hero.still();
+    start();
+  });
+
+  /* The loop is not allowed to be the only thing that knows whether the loop is
+     running. `raf` is a handle, not a heartbeat: if a frame callback is ever
+     dropped without `stop()` having run, the handle stays set, every restart
+     path returns early at `if (raf)`, and the hero is finished for the life of
+     the page with its last frame still on screen. `visible` can strand it the
+     same way, being a cached observer result rather than a fact.
+
+     Nine minutes of soaking across both engines never produced either, so this
+     is not a fix for something measured - it is the difference between a class
+     of freeze that is permanent and one that clears itself within two seconds.
+     Once a second, and it does nothing at all unless the hero ought to be
+     drawing and is not. */
+  let heartbeat = -1;
+
+  const onscreen = (): boolean => {
+    const r = canvas.getBoundingClientRect();
+    return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < window.innerHeight;
+  };
+
+  window.setInterval(() => {
+    if (reduced.matches || document.hidden || !onscreen()) {
+      heartbeat = -1;
+      return;
+    }
+    if (raf && perf.frames !== heartbeat) {
+      heartbeat = perf.frames;
+      return;
+    }
+    heartbeat = -1;
+    // Ground truth over the cached flag, then clear the handle so `start()`
+    // is not refused by the very state that went wrong.
+    visible = true;
+    stop();
+    start();
+  }, 1000);
+
   /* ── Review-only hooks ─────────────────────────────────────────────── */
 
   window.addEventListener('palettechange', () => {
@@ -404,6 +474,9 @@ export function installHero(canvas: HTMLCanvasElement): void {
     mount(next);
     hero?.still();
     if (hero) perf.elements = hero.elements;
+    // Switching variants is also the way out of a stopped loop, and it costs
+    // nothing when the loop is already running or ought to stay stopped.
+    start();
   });
 
   reduced.addEventListener('change', () => {
@@ -421,7 +494,7 @@ export function installHero(canvas: HTMLCanvasElement): void {
   // First paint, measured. Nothing above this line allocates anything worth
   // amortising, so the still frame is up before the loop is asked for.
   const t0 = performance.now();
-  mount(defaultHero);
+  mount(wanted());
   hero!.still();
   perf.setupMs = Math.round((performance.now() - t0) * 100) / 100;
 
