@@ -328,3 +328,53 @@ export const defaultPalette = palettes.find((p) => p.isDefault) ?? palettes[0]!;
 
 /** The four colours the switcher paints on a palette's swatch. */
 export const swatch = (p: Palette): string[] => [p.ground, p.surface, p.accent, p.accent2];
+
+/**
+ * The scheme pairings the review panel offers.
+ *
+ * A pairing is two palettes and one question: what a client that asks for a
+ * light scheme should be handed, and what everyone else gets.
+ *
+ * `dark: null` means the stylesheet's own `:root` is the dark half. That is the
+ * shipped palette, so a pairing built on it writes nothing for it and cannot
+ * drift from it. Naming a palette writes that one instead, which is how a
+ * pairing whose dark half is not what the site ships can still be felt.
+ */
+export interface Pairing {
+  /** Stored in localStorage, so it outlives any rename of the label. */
+  id: string;
+  /** Handed to a client with no light preference. `null` is the stylesheet. */
+  dark: string | null;
+  /** Handed to a client that asks for light, or `null` for no pairing. */
+  light: string | null;
+  /** What this one is for, in the button's title. */
+  note: string;
+}
+
+export const pairings: Pairing[] = [
+  {
+    id: 'tg',
+    dark: null,
+    light: null,
+    note: 'Tuscan graphite for every client, whatever it prefers. What the site does today.',
+  },
+  {
+    id: 'pair',
+    dark: null,
+    light: 'SM',
+    note: 'Slate meadow for a client that asks for a light scheme, Tuscan graphite for everyone else.',
+  },
+  {
+    id: 'c-sm',
+    dark: 'C',
+    light: 'SM',
+    note: 'Slate meadow for a client that asks for a light scheme, Walnut and gold for everyone else. Neither half is the shipped palette, so this one writes both.',
+  },
+];
+
+/** The button's label, read off the two halves so it cannot describe the wrong
+    pairing. */
+export const pairingLabel = (x: Pairing): string => {
+  const dark = x.dark ?? defaultPalette.id;
+  return x.light === null ? `${dark} always` : `${dark} dark / ${x.light} light`;
+};

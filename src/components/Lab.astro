@@ -17,7 +17,7 @@
  * `:root`. Canvases cannot inherit a custom property and cannot be swapped by
  * one either, so the hero runtime listens for `palettechange` and `herochange`.
  */
-import { palettes, swatch, defaultPalette } from '../data/palettes';
+import { palettes, swatch, defaultPalette, pairings, pairingLabel } from '../data/palettes';
 import { heroes, defaultHero } from '../data/heroes';
 import type { HeroVariant } from '../heroes/types';
 
@@ -43,6 +43,13 @@ for (const v of heroes) {
   if (last && last.family === v.family) last.items.push(v);
   else rows.push({ family: v.family, items: [v] });
 }
+
+/** True of every pairing, so it is said once rather than three times. */
+const SCOPE =
+  'Only while no palette is picked above: picking one is an explicit answer and overrides the pairing.';
+
+/** The first entry is the off switch, and the panel opens on it. */
+const noPairing = pairings[0]!;
 ---
 
 <aside
@@ -83,24 +90,19 @@ for (const v of heroes) {
 
   <p class="dlab__h" id="lab-scheme">Scheme</p>
   <div class="dlab__two" role="group" aria-labelledby="lab-scheme">
-    <button
-      class="dlab__b dlab__b--wide"
-      type="button"
-      data-scheme="tg"
-      aria-pressed="true"
-      title="Tuscan graphite for every client, whatever it prefers. What the site does today."
-    >
-      TG always
-    </button>
-    <button
-      class="dlab__b dlab__b--wide"
-      type="button"
-      data-scheme="pair"
-      aria-pressed="false"
-      title="Slate meadow for a client that asks for a light scheme, Tuscan graphite for everyone else. Only while the default palette is selected: choosing another one in this panel is an explicit answer and overrides both."
-    >
-      TG dark / SM light
-    </button>
+    {
+      pairings.map((x) => (
+        <button
+          class="dlab__b dlab__b--wide"
+          type="button"
+          data-scheme={x.id}
+          aria-pressed={x.id === noPairing.id}
+          title={x.light === null ? x.note : `${x.note} ${SCOPE}`}
+        >
+          {pairingLabel(x)}
+        </button>
+      ))
+    }
   </div>
 
   <p class="dlab__h" id="lab-hero">Hero</p>
@@ -132,7 +134,7 @@ for (const v of heroes) {
 </aside>
 
 <script>
-  import { palettes, defaultPalette } from '../data/palettes';
+  import { palettes, defaultPalette, pairings } from '../data/palettes';
   import { heroes, defaultHero } from '../data/heroes';
 
   const PAL_KEY = 'p6-palette';
@@ -177,7 +179,7 @@ for (const v of heroes) {
     };
 
     /**
-     * Pair the default with a light scheme, or stop pairing it.
+     * Hand a client that asks for a light scheme a different palette, or stop.
      *
      * A real `prefers-color-scheme` block rather than another override, because
      * the question being prototyped is what a client that asks for light should
@@ -186,28 +188,42 @@ for (const v of heroes) {
      * one is written inline, inline beats a stylesheet, and the explicit answer
      * wins over the conditional one.
      *
-     * The block is built from Slate meadow's own registry entry, so it cannot
-     * drift from the swatch two rows up.
+     * Both halves are built from their own registry entries, so a pairing
+     * cannot drift from the swatches two rows up.
      */
-    const lightHalf = palettes.find((p) => p.id === 'SM');
     let pairing: HTMLStyleElement | null = null;
 
-    const applyScheme = (mode: string): void => {
-      const on = mode === 'pair' && lightHalf !== undefined;
-      if (on && !pairing) {
-        pairing = document.createElement('style');
-        pairing.textContent =
-          '@media (prefers-color-scheme: light){:root{' +
-          Object.entries(lightHalf!.vars)
-            .map(([n, v]) => `${n}:${v};`)
-            .join('') +
-          'color-scheme:light;}}';
-        document.head.append(pairing);
-      } else if (!on && pairing) {
-        pairing.remove();
+    /* The dark half goes in unwrapped rather than inside a `prefers-color-
+       scheme: dark` block, because a client with no preference at all is one of
+       the clients it is for. Both halves are `:root` and a media query adds no
+       specificity, so what makes light win when light is asked for is that it
+       is written second. */
+    const half = (id: string | null, ask?: 'light'): string => {
+      const p = id === null ? undefined : palettes.find((x) => x.id === id);
+      if (!p) return '';
+      const body =
+        ':root{' +
+        Object.entries(p.vars)
+          .map(([n, v]) => `${n}:${v};`)
+          .join('') +
+        `color-scheme:${p.scheme};}`;
+      return ask ? `@media (prefers-color-scheme: ${ask}){${body}}` : body;
+    };
+
+    const applyScheme = (id: string): void => {
+      const x = pairings.find((p) => p.id === id) ?? pairings[0]!;
+      const css = half(x.dark) + half(x.light, 'light');
+      if (!css) {
+        pairing?.remove();
         pairing = null;
+      } else {
+        if (!pairing) {
+          pairing = document.createElement('style');
+          document.head.append(pairing);
+        }
+        pairing.textContent = css;
       }
-      press('scheme', on ? 'pair' : 'tg');
+      press('scheme', x.id);
       window.dispatchEvent(new Event('palettechange'));
     };
 
@@ -242,7 +258,8 @@ for (const v of heroes) {
     if (pal && pal !== box.dataset.palDefault) applyPalette(pal);
     const hero = localStorage.getItem(HERO_KEY);
     if (hero && hero !== box.dataset.heroDefault) applyHero(hero);
-    if (localStorage.getItem(SCHEME_KEY) === 'pair') applyScheme('pair');
+    const scheme = localStorage.getItem(SCHEME_KEY);
+    if (scheme && scheme !== pairings[0]!.id) applyScheme(scheme);
   }
 </script>
 
@@ -303,6 +320,13 @@ for (const v of heroes) {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.35rem;
+  }
+
+  /* Three pairings do not divide by two, and the one that turns pairing off is
+     not a pairing anyway. It takes the whole row, and the two real ones sit
+     side by side underneath, which is the comparison being asked for. */
+  .dlab__two > :first-child {
+    grid-column: 1 / -1;
   }
 
   /* Quieter than a section heading and tighter to its row: this labels a run
