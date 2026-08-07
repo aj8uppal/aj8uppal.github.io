@@ -164,8 +164,50 @@ function installNav(): void {
     requestAnimationFrame(paint);
   };
 
+  /**
+   * The jump belongs to the nav, not to the fragment.
+   *
+   * A fragment scroll is animated against the element, and Chrome re-resolves
+   * where that element is on every frame of the animation. On a page this tall
+   * the run takes most of a second with a hero drawing through all of it, and
+   * any main-thread stall during the run moves the endpoint: clicking
+   * Playground landed anywhere from 270px above the section to 180px below it,
+   * run to run, on identical layout. Far enough that the scroll-spy named the
+   * neighbouring section, which is how this surfaced.
+   *
+   * Resolving the position once and scrolling to a number instead removes the
+   * only input jank had. The clearance is read off the target's own
+   * scroll-margin so the stylesheet still owns how far under the header a
+   * section may sit.
+   */
   document.addEventListener('click', (e) => {
-    if ((e.target as HTMLElement).closest('a[href^="#"]')) hold();
+    const link = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+    if (!link) return;
+    hold();
+
+    const id = decodeURIComponent(link.hash.slice(1));
+    const to = id ? document.getElementById(id) : null;
+    // Anything the browser would rather do itself: a bare "#", a dead anchor,
+    // a modified click opening a tab, something upstream already handling it.
+    if (!to || e.defaultPrevented || e.button !== 0) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+    e.preventDefault();
+    const clear = parseFloat(getComputedStyle(to).scrollMarginTop) || 0;
+    window.scrollTo({
+      top: Math.max(0, Math.round(to.getBoundingClientRect().top + window.scrollY - clear)),
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    });
+    history.pushState(null, '', `#${id}`);
+
+    /* A fragment moves the caret as well as the view, and preventing the
+       default takes that with it. Sections are not focusable, so one is lent a
+       tabindex for as long as it holds focus - long enough for the next Tab to
+       start from here and for a screen reader to say where here is. */
+    const own = to.hasAttribute('tabindex');
+    if (!own) to.tabIndex = -1;
+    to.focus({ preventScroll: true });
+    if (!own) to.addEventListener('blur', () => to.removeAttribute('tabindex'), { once: true });
   });
   window.addEventListener('hashchange', hold);
   if (location.hash) hold();

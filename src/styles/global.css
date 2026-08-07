@@ -2262,11 +2262,27 @@ summary,
 
 /* A window onto a document that is a fixed size, not a box that document
    responds to. deviation.html hardcodes a 1280px chart canvas, so the frame is
-   laid out at the width the file wants and scaled from the outside; the height
-   here follows the scale, set inline, so the card reserves what is drawn rather
-   than what was laid out. Narrow enough and the scale stops falling and this
-   scrolls sideways instead. */
+   laid out at the width the file wants and scaled from the outside.
+
+   The height is the scale restated, and it is stated here rather than inline
+   because the scale is measured and measuring needs JavaScript. The component
+   cannot know the card's width until it hydrates, so anything it computes
+   arrives late, and a box two thirds down the page that gains 25px after first
+   paint moves every anchor below it - which is what was landing the nav's
+   scroll-spy on the wrong section. The ratio is the document's own 1330x595
+   and the floor is the half-scale clamp the component stops shrinking at, so
+   CSS reaches the same number at first paint and JavaScript changes nothing.
+
+   Two regimes, and each is exact rather than close. While the frame is being
+   shrunk to fit, its height is its width through the document's own 1330x595,
+   which is what `aspect-ratio` says. Once the shrinking stops at half scale and
+   the card scrolls sideways instead, the height stops with it at half of 595,
+   the same number at every width below. Stating the floor as `min-height`
+   instead would be shorter and wrong: a ratio and a minimum height are also a
+   minimum width, and a grid item honours it, so the card demanded 666px on a
+   390 phone. */
 .devframe {
+  aspect-ratio: 1330 / 595;
   overflow-x: auto;
   overflow-y: hidden;
   border: 1px solid color-mix(in srgb, var(--sand) 28%, transparent);
@@ -2278,8 +2294,20 @@ summary,
 /* The scaled size, stated as a box, because a transform does not change the
    one it is on and the scroller above measures boxes. Without this the frame
    claims 1330 of overflow whatever it is drawn at and carries a scrollbar it
-   has no use for. */
+   has no use for. The width is the measured one and has to come from the
+   component; the height is the frame's height by construction. */
+/* Below this the card is narrower than half the document and the component
+   stops shrinking, so the drawn height stops changing too. 765 is where the
+   card crosses 665, measured rather than guessed. */
+@media (width <= 765px) {
+  .devframe {
+    aspect-ratio: auto;
+    height: 298px;
+  }
+}
+
 .devframe__fit {
+  height: 100%;
   overflow: hidden;
 }
 

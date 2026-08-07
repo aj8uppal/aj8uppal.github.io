@@ -385,6 +385,12 @@ await run(
           window.addEventListener('scrollend', done, { once: true });
         });
 
+      /* Where the jump actually put you. It has been wrong by 270px and by
+         180px, both of which read as "the spy named the wrong section" unless
+         the landing is in the failure message too. */
+      const ends = [];
+      window.addEventListener('scrollend', () => ends.push(Math.round(window.scrollY)));
+
       document.querySelector('.nav__links a[href="#playground"]').click();
       await settled();
       const link = document.querySelector('.nav__links a[aria-current]');
@@ -404,6 +410,12 @@ await run(
 
       return {
         label: link.textContent,
+        landed: ends[0] ?? -1,
+        want: Math.round(
+          document.getElementById('playground').offsetTop -
+            parseFloat(getComputedStyle(document.getElementById('playground')).scrollMarginTop),
+        ),
+        ends: ends.join(','),
         clearance: Math.round(
           document.getElementById('playground').getBoundingClientRect().top +
             (window.scrollY - window.scrollY),
@@ -416,7 +428,16 @@ await run(
       };
     });
 
-    note(nav.label === 'Playground', 'the nav names the section you are standing in', nav.label);
+    note(
+      nav.label === 'Playground',
+      'the nav names the section you are standing in',
+      `${nav.label} - landed ${nav.landed} of ${nav.want}, scrollend at [${nav.ends}]`,
+    );
+    note(
+      Math.abs(nav.landed - nav.want) <= 2,
+      'a nav jump lands on the section, clear of the header',
+      `${nav.landed} against ${nav.want}`,
+    );
     note(
       Math.abs(nav.dx) <= 1 && Math.abs(nav.dw) <= 1,
       'the progress marker sits exactly under that label',

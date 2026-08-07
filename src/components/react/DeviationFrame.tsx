@@ -47,22 +47,47 @@ export default function DeviationFrame({ src, href, title, note }: Props) {
 
   /* Boot on sight rather than at load. It pulls Chart.js off a CDN and samples
      two thousand deviates to draw itself, and a reader who never gets this far
-     down the page should pay for neither. */
+     down the page should pay for neither.
+
+     On sight and standing still, though. The 2015 file runs `FocusOnInput()`
+     at load, and focusing a field inside a frame scrolls the frame into view -
+     in the parent, cancelling whatever scroll the parent was in the middle of.
+     Clicking Playground in the nav is a scroll that ends right here, so the
+     frame would boot into the last third of it and stop the reader 270px short
+     of where they asked to go. Waiting for the page to be quiet gives the yank
+     nothing to interrupt. */
   useEffect(() => {
     const el = box.current;
     if (!el) return;
+    let timer = 0;
+    let seen = false;
+
+    const done = (): void => {
+      window.clearTimeout(timer);
+      io.disconnect();
+      window.removeEventListener('scroll', arm);
+    };
+    const boot = (): void => {
+      returnTo.current =
+        document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      setLive(true);
+      done();
+    };
+    const arm = (): void => {
+      window.clearTimeout(timer);
+      if (seen) timer = window.setTimeout(boot, 220);
+    };
     const io = new IntersectionObserver(
       (entries) => {
-        if (!entries.some((e) => e.isIntersecting)) return;
-        returnTo.current =
-          document.activeElement instanceof HTMLElement ? document.activeElement : null;
-        setLive(true);
-        io.disconnect();
+        seen = entries.some((e) => e.isIntersecting);
+        arm();
       },
       { rootMargin: '250px' },
     );
+
     io.observe(el);
-    return () => io.disconnect();
+    window.addEventListener('scroll', arm, { passive: true });
+    return done;
   }, []);
 
   useEffect(() => {
@@ -94,22 +119,26 @@ export default function DeviationFrame({ src, href, title, note }: Props) {
     if (!el || document.activeElement !== el) return;
     const back = returnTo.current;
     if (back?.isConnected && back !== el) back.focus({ preventScroll: true });
-    else el.blur();
+    // Asking is not the same as getting: the caret is usually on the body when
+    // the frame boots, and the body does not take focus. Check rather than
+    // assume, or the next Tab starts from inside someone else's 2015 form.
+    if (document.activeElement === el) el.blur();
   }, []);
 
   return (
     <>
       <div className="stage stage--dev">
         <span className="stage__label">Two distributions</span>
-        <div className="devframe" ref={box} style={{ height: `${Math.round(H * scale)}px` }}>
+        {/* The frame's own height is the stylesheet's, from the same ratio and
+            the same floor this component clamps to. Setting it from here would
+            be the same number arriving one hydration later, and the card would
+            grow under the reader to get to it. */}
+        <div className="devframe" ref={box}>
           {/* A transform does not resize the box it is on, and the scroll area
-              of the frame above is measured off boxes. So the drawn size is
+              of the frame above is measured off boxes. So the drawn width is
               stated here, and the only thing that scrolls is what is really
               wider than the card. */}
-          <div
-            className="devframe__fit"
-            style={{ width: `${Math.round(W * scale)}px`, height: `${Math.round(H * scale)}px` }}
-          >
+          <div className="devframe__fit" style={{ width: `${Math.round(W * scale)}px` }}>
             {live && (
               <iframe
                 ref={frame}
