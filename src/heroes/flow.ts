@@ -29,6 +29,26 @@ import type { Rgb } from './types';
 /** How much of the sky is washed over the last frame. The trail length. */
 const FADE = 0.09;
 
+/**
+ * The pointer's reach, as a fraction of the view's unit, squared.
+ *
+ * It is the denominator of a gaussian, so the radius it describes is its own
+ * square root: 0.0977 puts the falloff at 0.313 of the unit, which on a 1440
+ * hero is around 325px. Widened from 0.0434 - the radius goes as the square
+ * root, so 1.5x the reach is 2.25x this number, not 1.5x it.
+ */
+const REACH = 0.0977;
+
+/**
+ * Stroke weight, in CSS pixels.
+ *
+ * Set rather than inherited. One 2d context is shared by every variant and
+ * three of them (contour, rig, swell) leave a line width behind, so before
+ * this Flow drew at 1.2, 1.1 or 0.6 depending on which hero you happened to
+ * come from, and at 1 on a fresh load.
+ */
+const STROKE = 1.35;
+
 /** Steps composed into the still frame. Long enough to read as streamlines. */
 const STILL_STEPS = 140;
 
@@ -100,7 +120,7 @@ export const flow: HeroVariant = {
       if (px >= 0) {
         const dx = x - px;
         const dy = y - py;
-        const spread = v.unit * v.unit * 0.0434;
+        const spread = v.unit * v.unit * REACH;
         a += Math.exp(-(dx * dx + dy * dy) / spread) * 3.2 * Math.atan2(dy, dx);
       }
       return a;
@@ -113,6 +133,7 @@ export const flow: HeroVariant = {
       ctx.fillStyle = sky ?? css(t.sky0, 1);
       ctx.fillRect(0, 0, v.w, v.h);
       ctx.globalAlpha = 0.55;
+      ctx.lineWidth = STROKE;
 
       const h = v.unit * 0.0024 * (1 + f.boost * 0.35);
       const py = f.py - f.offY;
@@ -148,6 +169,7 @@ export const flow: HeroVariant = {
       ctx.fillStyle = sky ?? css(t.sky0, 1);
       ctx.fillRect(0, 0, v.w, v.h);
       ctx.globalAlpha = 0.5;
+      ctx.lineWidth = STROKE;
 
       const h = v.unit * 0.0024;
       for (const q of pts) {

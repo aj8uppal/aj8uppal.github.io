@@ -230,6 +230,19 @@ export function installHero(canvas: HTMLCanvasElement): void {
 
   function mount(next: HeroVariant): void {
     hero?.destroy();
+
+    /* One context is shared by every variant and several of them set a line
+       width or a composite mode without putting it back, so a variant's first
+       frame depended on which variant you arrived from. Reset to the defaults
+       here rather than asking twelve files to be tidy. Not the transform:
+       `measure()` owns that, and it is the one piece of state a variant is
+       entitled to inherit. */
+    ctx!.globalAlpha = 1;
+    ctx!.globalCompositeOperation = 'source-over';
+    ctx!.lineWidth = 1;
+    ctx!.lineCap = 'butt';
+    ctx!.lineJoin = 'miter';
+
     variant = next;
     hero = next.init(ctx!, view, tokens);
     perf.variant = next.id;
