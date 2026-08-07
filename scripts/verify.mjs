@@ -298,7 +298,24 @@ await run(
         arcSlides: document.querySelectorAll('.arc .fs__slide').length,
         arcTicks: document.querySelectorAll('.arc__tick').length,
         emberTabs: document.querySelectorAll('.card:nth-child(2) .fs__tab').length,
-        skills: cols('.skills'),
+        /* Skills is an index now, so what matters is that it indexes: a
+           reference row behind every chip, and every reference pointing at
+           something that is really on the page. A reference to an id that
+           does not exist is a promise the page cannot keep. */
+        skills: (() => {
+          const chips = [...document.querySelectorAll('.skg__set .sk')];
+          const refs = [...document.querySelectorAll('.sk__ev a')];
+          return {
+            groups: document.querySelectorAll('.skg').length,
+            chips: chips.length,
+            rows: document.querySelectorAll('.sk__ev').length,
+            named: chips.every((c) => document.getElementById(c.htmlFor)?.type === 'radio'),
+            open: [...document.querySelectorAll('.sk__ev')].filter((e) => e.offsetParent).length,
+            dead: refs.filter((a) => !document.getElementById(a.hash.slice(1))).map((a) => a.hash),
+            marked: [...document.querySelectorAll('[data-place]')].length,
+            cols: cols('.skg'),
+          };
+        })(),
         filterChips: document.querySelectorAll('.filter__chips .choice').length,
         roles: document.querySelectorAll('.role').length,
         resumeHref: document.querySelector('.resume a[data-resume]')?.getAttribute('href') ?? '',
@@ -345,7 +362,19 @@ await run(
       `${m.arcSlides} slides, ${m.arcTicks} ticks`,
     );
     note(m.emberTabs === 7, 'Ember Wilds keeps all seven regions', `${m.emberTabs}`);
-    note(m.skills === 5, 'skills are five columns', `${m.skills}`);
+    note(m.skills.groups === 5, 'skills keep their five groups', `${m.skills.groups}`);
+    note(
+      m.skills.rows === m.skills.chips && m.skills.named,
+      'every skill is a labelled control with a reference row behind it',
+      `${m.skills.chips} chips, ${m.skills.rows} rows`,
+    );
+    note(
+      m.skills.dead.length === 0,
+      'every reference in the index points at something on the page',
+      m.skills.dead.join(' ') || `${m.skills.marked} places marked`,
+    );
+    note(m.skills.open === 0, 'the index opens nothing until asked', `${m.skills.open} open`);
+    note(m.skills.cols === 2, 'a group reads label beside chips', `${m.skills.cols}`);
     note(m.filterChips > 1, 'the work log has a stack filter', `${m.filterChips} chips`);
     note(m.roles === 8, 'eight roles', `${m.roles}`);
     note(m.education, 'education keeps its own anchor', '');
@@ -681,7 +710,7 @@ await run(
         toggleH: Math.round(toggle.getBoundingClientRect().height),
         panelLinks: document.querySelectorAll('#nav-panel a[href^="#"]').length,
         labs: cols('.labs'),
-        skills: cols('.skills'),
+        skills: cols('.skg'),
         ticks: cols('.arc__ticks'),
         btns: [...document.querySelectorAll('.hero__btns .btn')].map((b) =>
           Math.round(b.getBoundingClientRect().width),
@@ -750,7 +779,7 @@ await run(
       `shut ${panel.shut}, focus ${panel.returned}`,
     );
     note(m.labs === 1, '390 playground is one column', `${m.labs}`);
-    note(m.skills === 1, '390 skills are one column', `${m.skills}`);
+    note(m.skills === 1, '390 a skill group stacks its label over its chips', `${m.skills}`);
     note(m.ticks === 3, '390 the clock ticks are three across', `${m.ticks}`);
     /* Two buttons to equal halves, and the quiet link sized to its own word.
        A five-letter mailto stretched across the row is a tap target you hit

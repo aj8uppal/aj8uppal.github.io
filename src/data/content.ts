@@ -8,6 +8,8 @@
 export type Status = 'live' | 'wip' | 'off';
 
 export interface Role {
+  /** Key into `places`: the row's anchor, and what the skills index points at. */
+  key: PlaceKey;
   when: string;
   now?: boolean;
   title: string;
@@ -95,6 +97,40 @@ export const sections = [
   { n: '05', id: 'skills', name: 'Skills', desc: 'Grouped, unrated', count: '5 groups' },
   { n: '06', id: 'contact', name: 'Contact', desc: 'Email is the reliable one', count: '4 links' },
 ] as const;
+
+/**
+ * Every place on this page a skill can be shown to turn up, in page order.
+ *
+ * `at` is the element's own id, so the skills index lands the reader on the
+ * card or the row rather than at the top of the section holding it. The two
+ * physics jobs share an employer and a building, so they are told apart by the
+ * work rather than by the name over the door.
+ */
+export const places = {
+  saltline: { name: 'saltline', at: 'p-saltline' },
+  ember: { name: 'Ember Wilds', at: 'p-ember' },
+  hidamari: { name: 'hidamari', at: 'p-hidamari' },
+  elderwood: { name: 'Elderwood Vale', at: 'p-elderwood' },
+  notable: { name: 'Notable Health', at: 'r-notable' },
+  harvest: { name: 'Harvest Fintech', at: 'r-harvest' },
+  umassDev: { name: 'UMass Physics, software', at: 'r-umass-software' },
+  arena: { name: 'The Arena', at: 'r-arena' },
+  umassRes: { name: 'UMass Physics, research', at: 'r-umass-research' },
+  gotit: { name: 'Got It.AI', at: 'r-gotit' },
+  baaqmd: { name: 'Bay Area AQMD', at: 'r-baaqmd' },
+  youweb: { name: 'YouWeb', at: 'r-youweb' },
+  autotyper: { name: 'AutoTyper', at: 'd-autotyper' },
+  deviation: { name: 'deviation.html', at: 'd-deviation' },
+  grinch: { name: 'GrinchJump', at: 'd-grinchjump' },
+  pickle: { name: 'PICKLE', at: 'd-pickle' },
+  rendezvous: { name: 'Rendezvous', at: 'd-rendezvous' },
+  courses: { name: 'Coursework', at: 'education' },
+} as const;
+
+export type PlaceKey = keyof typeof places;
+
+/** Page order, so the index reads down the page however the map was written. */
+export const placeOrder = Object.keys(places) as PlaceKey[];
 
 export const cover = {
   kicker: ['Bay Area, California', 'Software engineer at Notable Health'],
@@ -435,6 +471,7 @@ export const elderwood = {
 
 export const roles: Role[] = [
   {
+    key: 'notable',
     when: 'Aug 2022 - Present',
     now: true,
     title: 'Software Engineer',
@@ -455,6 +492,7 @@ export const roles: Role[] = [
       'Python · TypeScript · Node.js · React · PostgreSQL · BigQuery · SIP · GCP · Kubernetes · Terraform',
   },
   {
+    key: 'harvest',
     when: 'Jul 2021 - Jan 2022',
     title: 'Software Architect and Engineer',
     org: 'Harvest Fintech, Inc.',
@@ -463,6 +501,7 @@ export const roles: Role[] = [
     stack: 'Flask · React Native · PostgreSQL',
   },
   {
+    key: 'umassDev',
     when: 'Jan 2021 - May 2022',
     title: 'Student Software Developer',
     org: 'UMass Amherst, Physics Department',
@@ -470,6 +509,7 @@ export const roles: Role[] = [
     stack: 'Express · React · PostgreSQL',
   },
   {
+    key: 'arena',
     when: 'Apr 2020 - Sep 2020',
     title: 'Software Engineering Intern',
     org: 'The Arena, Inc.',
@@ -477,6 +517,7 @@ export const roles: Role[] = [
     stack: 'React · Google Cloud',
   },
   {
+    key: 'umassRes',
     when: 'Oct 2019 - Oct 2020',
     title: 'Research Assistant',
     org: 'UMass Amherst, Physics Department',
@@ -484,6 +525,7 @@ export const roles: Role[] = [
     stack: 'Python (numpy, scipy, pandas, matplotlib) · MATLAB',
   },
   {
+    key: 'gotit',
     when: 'Jun 2019 - Aug 2019',
     title: 'Software Engineering and AI Intern',
     org: 'Got It.AI',
@@ -491,6 +533,7 @@ export const roles: Role[] = [
     stack: 'Python · JavaScript · Chrome extensions',
   },
   {
+    key: 'baaqmd',
     when: 'Summer',
     title: 'Air Quality Scientist and Data Analytics Intern',
     org: 'Bay Area Air Quality Management District',
@@ -499,6 +542,7 @@ export const roles: Role[] = [
     stack: 'C · Python · Cloud data pipeline',
   },
   {
+    key: 'youweb',
     when: 'Summer 2018',
     title: 'Software Engineering Intern',
     org: 'YouWeb, Inc.',
@@ -554,12 +598,14 @@ export const playground = {
 
 export const earlier = [
   {
+    key: 'pickle',
     name: 'PICKLE',
     yr: 'High school',
     what: 'Designed, built and calibrated low-cost air pollution monitors to make the problem visible. Hardware, firmware, cloud and data science in one project, with Sonoma Technology, BAAQMD and Manylabs.',
     k: 'C · Python · R · Time-series storage',
   },
   {
+    key: 'rendezvous',
     name: 'Rendezvous',
     yr: 'c. 2020',
     what: 'A central place for UMass students to find each other through the classes they were taking. The host is gone, so there is no link.',
@@ -597,6 +643,70 @@ export const skills = [
     items: ['numpy', 'scipy', 'pandas', 'matplotlib', 'MATLAB', 'Machine learning'],
   },
 ] as const;
+
+/**
+ * The evidence index: for each skill, the places on this page that show it.
+ *
+ * One rule decides every entry. A place counts only if the reader can confirm
+ * it without taking my word for anything - a stack line under a job, a row in
+ * a project's technical notes, or a demo that runs a few sections up. Adjacent
+ * is not evidence: Ember Wilds is live multiplayer and names no transport, so
+ * Socket.io does not get to claim it.
+ *
+ * Four skills have nothing that clears that bar. They are on the resume and
+ * they stay in the list, with an empty array, and the page says so rather than
+ * borrowing something that nearly fits. Every skill needs a key here, so a
+ * genuine blank can never be confused with one that was forgotten - the page
+ * fails the build if one goes missing.
+ */
+export const evidence = {
+  Python: ['notable', 'umassRes', 'gotit', 'baaqmd', 'pickle'],
+  /* Elderwood Vale's technical notes name the tsconfig its boundary is cut
+     out of, which is the compiler doing the enforcing the prose describes. */
+  TypeScript: ['notable', 'elderwood'],
+  JavaScript: ['gotit', 'youweb', 'autotyper', 'deviation'],
+  /* Nowhere on the page says "SQL". Four places say PostgreSQL and one says
+     BigQuery, which is the same claim in the vocabulary each of them uses. */
+  SQL: ['notable', 'harvest', 'umassDev', 'rendezvous'],
+  C: ['baaqmd', 'pickle'],
+
+  React: ['elderwood', 'notable', 'harvest', 'umassDev', 'arena', 'rendezvous'],
+  Redux: ['rendezvous'],
+  /* saltline's renderer is Babylon.js, which is WebGL - a fact about the
+     library, not a claim about the work, and the notes name the library. */
+  'three.js / WebGL': ['saltline', 'elderwood', 'grinch'],
+  /* The three demos are hand-written HTML files still served at their own
+     URLs. Every other project is a browser app that never says so. */
+  'HTML / CSS': ['autotyper', 'deviation', 'grinch'],
+  PWAs: ['hidamari'],
+
+  'Node.js': ['notable', 'youweb'],
+  Flask: ['harvest', 'rendezvous'],
+  Express: ['umassDev'],
+  PostgreSQL: ['notable', 'harvest', 'umassDev', 'rendezvous'],
+  BigQuery: ['notable'],
+  'Socket.io': [],
+  'Twilio / SIP': ['notable'],
+  Temporal: [],
+  /* Both of these say the word in their own description of the job. */
+  Microservices: ['harvest', 'gotit'],
+
+  GCP: ['notable', 'arena', 'rendezvous'],
+  Kubernetes: ['notable'],
+  Terraform: ['notable'],
+  'Fly.io': ['saltline', 'ember'],
+  AWS: [],
+  Linux: [],
+  /* "Deploy tooling", in the first bullet of the current role. */
+  'CI/CD': ['notable'],
+
+  numpy: ['umassRes'],
+  scipy: ['umassRes'],
+  pandas: ['umassRes'],
+  matplotlib: ['umassRes'],
+  MATLAB: ['umassRes'],
+  'Machine learning': ['notable', 'gotit', 'courses'],
+} as const satisfies Record<string, readonly PlaceKey[]>;
 
 /* ── Education ───────────────────────────────────────────────────────── */
 

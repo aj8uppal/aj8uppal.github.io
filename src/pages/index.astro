@@ -24,13 +24,17 @@ import {
   ember,
   emberRegions,
   errata,
+  evidence,
   hidamari,
+  placeOrder,
+  places,
   playground,
   roles,
   saltline,
   saltlineArc,
   skills,
 } from '../data/content';
+import type { PlaceKey } from '../data/content';
 
 /* A full-bleed card lead runs the width of the shell: 1240 at the maximum. */
 const LEAD_W = [720, 1080, 1440, 1920, 2480];
@@ -137,6 +141,29 @@ const dots = (...parts: Array<string | undefined>): string =>
 
 /** Job title and stack on one line. */
 const stackLine = (r: (typeof roles)[number]): string => dots(r.title, r.stack);
+
+/* The skills index, resolved once. Every skill needs an entry in `evidence`,
+   even an empty one, because a skill the page cannot back up and a skill
+   somebody forgot to file look identical on the rendered page. This is the
+   only place that can tell them apart, so it does. */
+const skillIndex = skills.map((g) => ({
+  group: g.group,
+  items: g.items.map((name) => {
+    const found = evidence[name as keyof typeof evidence] as readonly PlaceKey[] | undefined;
+    if (!found) throw new Error(`skills: "${name}" has no entry in evidence`);
+    return {
+      name,
+      id: `sk-${name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')}`,
+      at: placeOrder.filter((k) => found.includes(k)).map((k) => places[k]),
+    };
+  }),
+}));
+
+const skillTotal = skillIndex.reduce((n, g) => n + g.items.length, 0);
+const skillShown = skillIndex.reduce((n, g) => n + g.items.filter((i) => i.at.length).length, 0);
 
 const heroLabel =
   'Soft patches of golden light drifting behind the name, as if through a canopy. Move the pointer or press the arrow keys and the light gathers where you point.';
@@ -253,7 +280,7 @@ const heroLabel =
 
     <div class="grid">
       {/* saltline */}
-      <article class="card card--full" data-reveal>
+      <article class="card card--full" id={places.saltline.at} data-place data-reveal>
         <div class="card__hero">
           <div class="card__plate">
             <div class="shot shot--lead">
@@ -345,7 +372,7 @@ const heroLabel =
       </article>
 
       {/* Ember Wilds */}
-      <article class="card card--full" data-reveal>
+      <article class="card card--full" id={places.ember.at} data-place data-reveal>
         <div class="card__hero">
           <div class="card__plate">
             <div class="shot shot--lead">
@@ -437,7 +464,7 @@ const heroLabel =
       </article>
 
       {/* hidamari */}
-      <article class="card card--half" data-reveal>
+      <article class="card card--half" id={places.hidamari.at} data-place data-reveal>
         <div class="shot shot--lead">
           <Picture
             src={asset('hidamari-spread-canopy')}
@@ -485,7 +512,7 @@ const heroLabel =
       </article>
 
       {/* Elderwood Vale */}
-      <article class="card card--half" data-reveal>
+      <article class="card card--half" id={places.elderwood.at} data-place data-reveal>
         <div class="card__copy">
           <span class="card__index">{elderwood.title}</span>
           <div class="card__badges">
@@ -543,7 +570,12 @@ const heroLabel =
         <div class="roles">
           {
             current && (
-              <article class="role role--now" data-stack={stackKey(current.stack)}>
+              <article
+                class="role role--now"
+                id={places[current.key].at}
+                data-place
+                data-stack={stackKey(current.stack)}
+              >
                 {/* No dot after the date: the inked node on the spine and the
                     "Current role" flag already say it, twice over. */}
                 <p class="role__when">{current.when}</p>
@@ -571,7 +603,7 @@ const heroLabel =
           <ol class="tl">
             {
               past.map((r) => (
-                <li class="role" data-stack={stackKey(r.stack)}>
+                <li class="role" id={places[r.key].at} data-place data-stack={stackKey(r.stack)}>
                   <p class="role__when">{r.when}</p>
                   <div>
                     <h3>
@@ -607,7 +639,7 @@ const heroLabel =
           }
         </dl>
 
-        <section class="edu" id="education" data-reveal>
+        <section class="edu" id="education" data-place data-reveal>
           <p class="kicker">Education &middot; {education.when}</p>
           <h3>{education.school}</h3>
           <p class="edu__note">{education.note}</p>
@@ -660,7 +692,7 @@ const heroLabel =
     </div>
 
     <div class="labs">
-      <article class="lab" data-reveal>
+      <article class="lab" id={places.autotyper.at} data-place data-reveal>
         <div class="lab__head">
           <span class="lab__date">{playground.items[0]?.statusLabel}</span>
           <h3>
@@ -671,7 +703,7 @@ const heroLabel =
         <AutoTyper client:visible />
       </article>
 
-      <article class="lab" data-reveal>
+      <article class="lab" id={places.deviation.at} data-place data-reveal>
         <div class="lab__head">
           <span class="lab__date">{playground.items[1]?.statusLabel}</span>
           <h3>
@@ -698,7 +730,7 @@ const heroLabel =
         Its own 2015 colours, not this page's
       </p>
 
-      <article class="lab lab--wide" data-reveal>
+      <article class="lab lab--wide" id={places.grinch.at} data-place data-reveal>
         <div class="lab__head">
           <span class="lab__date">{playground.items[2]?.statusLabel}</span>
           <h3>
@@ -742,7 +774,7 @@ const heroLabel =
     <ul class="earlier" data-reveal>
       {
         earlier.map((e) => (
-          <li>
+          <li id={places[e.key].at} data-place>
             <span class="era">{e.yr}</span>
             <div>
               <p class="earlier__n">{e.name}</p>
@@ -760,27 +792,56 @@ const heroLabel =
     <div class="head" data-reveal>
       <div class="head__k">
         <p class="kicker">05 / Skills</p>
-        <p class="head__count">5 groups, unrated</p>
+        <p class="head__count">{skillShown} of {skillTotal} turn up above</p>
       </div>
       <div>
         <h2 class="display head__t">Grouped, unrated</h2>
         <p class="head__lead">
-          Not scored, because a skill bar you fill in yourself is a drawing. Everything here appears
-          in something on this page or in a job above it.
+          Not scored, because a skill bar you fill in yourself is a drawing. Pick one and the page
+          shows you where it turns up, or admits that it doesn&#8217;t.
         </p>
       </div>
     </div>
 
+    {
+      /* An index, so it is built like one: pick an entry and it gives you the
+        references. Radio buttons rather than script, because a radio group is
+        already one-at-a-time, already arrow-navigable, already announced as a
+        set, and still works on a page where nothing ran. The whole reveal is a
+        single `:checked + label + p` rule.
+
+        The references are element ids, not section ids, so a reference lands
+        on the card that is the evidence. The card marks itself on arrival. */
+    }
     <div class="skills" data-reveal>
       {
-        skills.map((g) => (
-          <section>
+        skillIndex.map((g) => (
+          <section class="skg">
             <h3>{g.group}</h3>
-            <ul>
+            <div class="skg__set">
               {g.items.map((i) => (
-                <li>{i}</li>
+                <>
+                  <input class="sk__r" type="radio" name="sk" id={i.id} />
+                  <label class="sk" for={i.id}>
+                    {i.name}
+                  </label>
+                  <p class="sk__ev">
+                    {i.at.length ? (
+                      <>
+                        <span>Turns up in</span>
+                        {i.at.map((pl) => (
+                          <a href={`#${pl.at}`}>{pl.name}</a>
+                        ))}
+                      </>
+                    ) : (
+                      <span class="sk__ev--none">
+                        On the r&#233;sum&#233;, nowhere on this page.
+                      </span>
+                    )}
+                  </p>
+                </>
               ))}
-            </ul>
+            </div>
           </section>
         ))
       }

@@ -261,8 +261,29 @@ input,
 select,
 textarea,
 summary,
+[data-place],
 [tabindex] {
   scroll-margin-top: var(--nav-clear);
+}
+
+/* A reference from the skills index has to land somewhere the reader can see
+   it landed. Two selectors because there are two ways of arriving: the page's
+   own anchor handler scrolls to a measured position and pushes the hash, which
+   moves the caret but deliberately never fires `:target`, while a page where
+   nothing ran gets a real fragment navigation and only fires `:target`.
+
+   The mark is currentColor, which is that card's own text colour and so
+   already carries against whatever the card is standing on. One accent cannot:
+   sand reads on the dark chapters and disappears on the sand one. */
+[data-place]:target,
+[data-place]:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 6px;
+}
+
+.earlier li[data-place]:target,
+.earlier li[data-place]:focus {
+  outline-offset: 2px;
 }
 
 /* The one focusable element that cannot know what it is standing on: it is
@@ -2964,40 +2985,134 @@ button.toolbar__link {
 }
 
 /* ── 13. SKILLS ──────────────────────────────────────────────────────── */
+/* Five groups as five rows rather than five columns. The old grid gave every
+   group the same width and Backend nine entries to Languages' five, so four
+   columns ran out of content a third of the way down and the row stood as tall
+   as the longest one. Rows spend the width where the entries are, and they
+   leave the full measure free underneath a group for its references. */
 .skills {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1px;
   border: 1px solid var(--line-dark);
   background: var(--line-dark);
 }
 
-.skills > section {
-  min-width: 0;
-  padding: 1.2rem;
+.skg {
+  display: grid;
+  grid-template-columns: 10.5rem minmax(0, 1fr);
+  gap: 0.4rem 1.4rem;
+  padding: 0.85rem 1.2rem;
   background: var(--ink-3);
 }
 
-.skills h3 {
-  min-height: 2.2em;
-  margin: 0 0 1rem;
+.skg h3 {
+  margin: 0;
   color: var(--sand);
-  font: 800 0.7rem/1.25 var(--mono);
+  font: 800 0.7rem/2.1 var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.skills ul {
-  display: grid;
-  gap: 0.55rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+/* Positioned, so the radios park inside their own group: they are absolute to
+   keep the flex gap between chips honest, and a focus scroll has to land here
+   rather than wherever the nearest positioned ancestor happened to be. */
+.skg__set {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
-.skills li {
+/* The control is a radio and the chip is its label, so the whole reveal below
+   is one `:checked + label + p` rule and none of it needs script. Hidden by
+   opacity and size rather than by `display`, which would take it out of the
+   group and off the keyboard. */
+.sk__r {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sk {
+  padding: 0.28rem 0.72rem;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-pill);
   color: var(--on-ink-2);
-  font-size: 0.94rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  cursor: pointer;
+  transition:
+    color var(--dur-1) var(--ease),
+    background-color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease);
+}
+
+.sk:hover {
+  color: var(--on-ink);
+  border-color: var(--on-ink-3);
+}
+
+/* No weight change on selection: the chip would resize and shove the rest of
+   the row sideways every time the reader arrowed through the group. */
+.sk__r:checked + .sk {
+  color: var(--on-accent);
+  border-color: var(--sand);
+  background: var(--sand);
+}
+
+.sk__r:focus-visible + .sk {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Laid out here, revealed by the one rule below: `order` and a full basis put
+   it under its own group's chips however far along the row its chip sits. */
+.sk__ev {
+  display: none;
+  order: 1;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.1rem 0.85rem;
+  margin: 0.35rem 0 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--line-dark-2);
+  font: 700 var(--fs-micro) / 1.6 var(--mono);
+}
+
+.sk__r:checked + .sk + .sk__ev {
+  display: flex;
+}
+
+.sk__ev > span {
+  color: var(--on-ink-3);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.sk__ev a {
+  padding: 0.15rem 0;
+  color: var(--sand);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--sand) 45%, transparent);
+  text-underline-offset: 3px;
+}
+
+.sk__ev a:hover {
+  text-decoration-color: var(--sand);
+}
+
+/* The four entries the page cannot show. Stated once, in the same register as
+   the references it stands in for, and not dressed up as one. */
+.sk__ev .sk__ev--none {
+  color: var(--on-ink-2);
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 /* ── 14. CONTACT ─────────────────────────────────────────────────────── */
@@ -3121,10 +3236,6 @@ button.toolbar__link {
   .card--full .specs {
     grid-template-columns: 1fr;
   }
-
-  .skills {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 @media (width <= 900px) {
@@ -3175,10 +3286,6 @@ button.toolbar__link {
     border-bottom: 1px solid var(--line-dark);
   }
 
-  .skills {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .earlier li {
     grid-template-columns: 1fr;
     gap: 0.25rem;
@@ -3188,6 +3295,17 @@ button.toolbar__link {
 @media (width <= 620px) {
   :root {
     --pad: 1rem;
+  }
+
+  /* The label stops holding a tenth of the row. Below this the chips need the
+     whole measure more than the group name needs to sit beside them. */
+  .skg {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.15rem;
+  }
+
+  .skg h3 {
+    line-height: 1.6;
   }
 
   .nav {
@@ -3429,14 +3547,6 @@ button.toolbar__link {
   .term {
     min-height: 126px;
     padding: 0.9rem;
-  }
-
-  .skills {
-    grid-template-columns: 1fr;
-  }
-
-  .skills h3 {
-    min-height: 0;
   }
 
   .contact h2 {
