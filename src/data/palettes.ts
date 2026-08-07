@@ -105,6 +105,30 @@ function pick(ground: string, ink: string, light: string): string {
   return ratio(ground, light) >= ratio(ground, ink) ? light : ink;
 }
 
+/**
+ * A quieter step of `text`, faded `t` of the way toward `ground` and no
+ * further than the palette can pay for.
+ *
+ * The fractions the ladders ask for were chosen on Tuscan graphite, where the
+ * ground is near black and the pole near white. At fifteen to one, a quarter of
+ * the distance is still a comfortable read. A palette with less room between
+ * its poles spends the same fraction and lands under four and a half, which is
+ * how a caption ends up unreadable while the token it was faded from looks
+ * perfectly fine.
+ *
+ * So the fraction is an ask, not an instruction: it is walked back until every
+ * ground the step can actually land on still carries it. On a palette with room
+ * the ask is granted untouched, which is why this changes nothing that already
+ * passed.
+ */
+function fade(text: string, ground: string, t: number, on: string[] = [ground]): string {
+  for (let i = Math.round(t * 100); i > 0; i--) {
+    const out = mix(text, ground, i / 100);
+    if (on.every((g) => ratio(out, g) >= 4.5)) return out;
+  }
+  return text;
+}
+
 /** Push a colour toward a pole until it carries small text on `ground`. */
 function deepen(colour: string, pole: string, ground: string, target = 4.5): string {
   let out = colour;
@@ -141,6 +165,31 @@ function resolve(s: PaletteSeed): Record<string, string> {
   const onAccent2 = onFill(accent2, ink, light);
   const band2 = mix(band, ink, 0.08);
 
+  /* The accent at reading strength, for areas too large to take it neat.
+     Softened away from its own text rather than toward the band, so the tier
+     can only ever gain contrast against --on-accent: mixing toward the band
+     takes a mid-tone accent the wrong way and costs the section the text
+     colour it is painted to carry. */
+  const accentSoft = mix(accent, pick(accent, ink, light) === light ? ink : light, 0.32);
+
+  /* Every ground an --on-ink step can land on, because the step has to clear
+     all of them and the surface is always the hardest: it is the one sitting
+     between the page and the text.
+
+     The photo wash is deliberately not in this list. It stays dark in every
+     palette, so on a light one the whole --on-ink family is the wrong colour
+     for it rather than the wrong strength, and no amount of backing off the
+     fade would fix that. Capping against it would only collapse all four steps
+     onto the pole and flatten the hierarchy everywhere else for nothing. */
+  const inkDeep = mix(ground, luminance(surface) > luminance(ground) ? '#000000' : '#ffffff', 0.28);
+  const grounds = [
+    ground,
+    surface,
+    mix(ground, surface, 0.42),
+    inkDeep,
+    mix(surface, onGround, 0.03),
+  ];
+
   /* The wash over photographs stays dark in every palette, light ones
      included: a screenshot of a night sea does not get lighter because the
      page around it did. */
@@ -164,15 +213,10 @@ function resolve(s: PaletteSeed): Record<string, string> {
        text. Reading the direction off the palette rather than assuming down
        is what makes them work on a light scheme, where the surface is the
        darker of the two and the floor has to go the other way. */
-    '--ink-deep': mix(ground, luminance(surface) > luminance(ground) ? '#000000' : '#ffffff', 0.28),
+    '--ink-deep': inkDeep,
     '--ink-2-hi': mix(surface, onGround, 0.03),
 
-    /* The accent at reading strength, for areas too large to take it neat.
-       Softened away from its own text rather than toward the band, so the
-       tier can only ever gain contrast against --on-accent: mixing toward the
-       band takes a mid-tone accent the wrong way and costs the section the
-       text colour it is painted to carry. */
-    '--sand-soft': mix(accent, pick(accent, ink, light) === light ? ink : light, 0.32),
+    '--sand-soft': accentSoft,
 
     '--screen': mix(shade, '#000000', 0.35),
     '--shade': shade,
@@ -180,13 +224,21 @@ function resolve(s: PaletteSeed): Record<string, string> {
     '--on-shade-2': mix(light, shade, 0.18),
 
     '--on-ink': onGround,
-    '--on-ink-2': mix(onGround, ground, 0.18),
-    '--on-ink-3': mix(onGround, ground, 0.29),
-    '--on-ink-4': mix(onGround, ground, 0.36),
+    '--on-ink-2': fade(onGround, ground, 0.18, grounds),
+    '--on-ink-3': fade(onGround, ground, 0.29, grounds),
+    '--on-ink-4': fade(onGround, ground, 0.36, grounds),
 
     '--on-paper': onBand,
-    '--on-paper-2': mix(onBand, band, 0.16),
-    '--on-paper-3': mix(onBand, band, 0.26),
+    '--on-paper-2': fade(onBand, band, 0.16, [band, band2]),
+    '--on-paper-3': fade(onBand, band, 0.26, [band, band2]),
+
+    /* The quiet step for the two accent grounds. The band's step used to do
+       this job for both of them, which only ever worked because Tuscan
+       graphite's band and its second accent are both pale: anywhere they are
+       not, the contact section's caption is a colour mixed for a ground it is
+       not standing on. Each ground gets its own, from its own text. */
+    '--on-sand-3': fade(onAccent, accentSoft, 0.26, [accentSoft, accent]),
+    '--on-camel-3': fade(onAccent2, accent2, 0.26),
 
     '--sand': accent,
     '--camel': accent2,

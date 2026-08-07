@@ -60,6 +60,15 @@
   --on-paper-2: #363834;
   --on-paper-3: #4b4d49;
 
+  /* The same quiet step for the two accent grounds, which need one of their
+     own: a caption on the contact section is standing on alabaster, not on
+     bone, and borrowing the step above only works while the two are the same
+     kind of pale. Here they are, so this is that colour - 5.8 on alabaster,
+     5.1 on soft sun. On a palette where they part company these are derived
+     apart and the caption follows the ground it is actually on. */
+  --on-sand-3: #4b4d49;
+  --on-camel-3: #4b4d49;
+
   /* The one saturated colour on the page and two neutrals to set it against.
      Tuscan sun is the primary and carries every interaction, including focus.
      Alabaster is the secondary and the hover, and the contact section is
@@ -905,7 +914,7 @@ summary,
 }
 
 .sec--sand {
-  --muted: var(--on-paper-3);
+  --muted: var(--on-sand-3);
   --focus: var(--on-accent);
 
   color: var(--on-accent);
@@ -913,7 +922,7 @@ summary,
 }
 
 .sec--camel {
-  --muted: var(--on-paper-3);
+  --muted: var(--on-camel-3);
   --focus: var(--on-accent-2);
 
   color: var(--on-accent-2);
