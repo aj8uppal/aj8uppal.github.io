@@ -3154,16 +3154,57 @@ button.toolbar__link {
   letter-spacing: -0.02em;
 }
 
+/* The primary action, built as one. It was display type with an underline,
+   which is a link that happens to be large; a filled pill on a ground that
+   carries nothing else filled is the only thing here a reader can mistake for
+   the point. Sized to the address rather than to the column, because a slab
+   run to the full measure is a banner and this is a target.
+
+   Ink rather than the sun: the sun is 1.1 on camel, so the loudest shape in
+   this section has to be cut from the ground's own dark pole, which is also
+   exactly the ink the heading above it is drawn in. */
 .contact__mail {
-  display: inline-block;
-  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 64px;
+  margin-top: 1.15rem;
+  padding: 0.5rem 1.35rem;
+  border: 1px solid var(--on-accent-2);
+  border-radius: var(--r-pill);
+  color: var(--camel);
+  background: var(--on-accent-2);
+  text-decoration: none;
   font-family: var(--display);
   font-weight: 900;
-  font-size: clamp(1.05rem, 2.2vw, 1.8rem);
-  letter-spacing: -0.05em;
+  font-size: clamp(1.05rem, 2.2vw, 2rem);
+  letter-spacing: -0.045em;
   text-transform: uppercase;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 5px;
+  transition:
+    color var(--dur-1) var(--ease),
+    background-color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease);
+}
+
+.contact__mail:hover {
+  color: var(--on-accent);
+  background: var(--sand);
+  border-color: var(--on-accent-2);
+}
+
+/* The other column, and it says which one it is. Without the label the list
+   sits level with the heading and reads as a second offer of equal weight. */
+.contact__more {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+}
+
+.contact__lbl {
+  margin: 0;
+  color: var(--muted);
+  font: 800 var(--fs-micro) / 1.6 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
 
 .links {
@@ -3176,7 +3217,9 @@ button.toolbar__link {
 .links a {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 1rem;
+  min-height: 48px;
   padding: 0.78rem 0;
   border-bottom: 1px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
   text-decoration: none;
@@ -3193,7 +3236,7 @@ button.toolbar__link {
 }
 
 .resume {
-  margin-top: 1.3rem;
+  margin-top: 0.75rem;
 }
 
 .foot {
@@ -3244,6 +3287,13 @@ button.toolbar__link {
   .log,
   .contact__grid {
     grid-template-columns: 1fr;
+  }
+
+  /* One column means the secondary list gets the whole measure, and at this
+     width that is eight hundred pixels between a name and the handle it
+     belongs to. Capped to something a reader can pair across. */
+  .contact__more {
+    max-width: 34rem;
   }
 
   .hero__actions {

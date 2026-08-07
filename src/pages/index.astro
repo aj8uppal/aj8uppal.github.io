@@ -855,31 +855,43 @@ const heroLabel =
         <p class="kicker">06 / Contact</p>
         <h2 class="display">Write to me</h2>
         <p class="contact__copy">
-          I read it and I answer it. If you want to talk about a sailing model, a voxel world, or
-          why Python is the best language, that is the fastest way in.
+          I read it, and I answer it. Send me a hard systems problem, an overambitious browser idea,
+          or a reason Python isn&#8217;t the best language. Email is the fastest way in.
         </p>
-        <a class="contact__mail" href={`mailto:${contact.email}`}>{contact.email}</a>
 
         {
-          /* A new tab rather than a forced download: a PDF opens in the reader
-            every browser already ships, and saving it from there is one more
-            click that the person who wants the file will happily make. */
+          /* The address, at the size of a thing you press. It is the only
+            filled shape on this ground: the heading is ink drawn as letters
+            and everything else in the section is a hairline, so the one solid
+            slab is not decoration, it is the instruction. The address stays
+            the label rather than the word "Email", because an address is a
+            fact somebody can copy and a verb is not. */
         }
+        <a class="contact__mail" href={`mailto:${contact.email}`}>{contact.email}</a>
+      </div>
+
+      {
+        /* Everything that is not the ask, in one column that says so. A new tab
+          for the PDF rather than a forced download: it opens in the reader every
+          browser already ships, and saving it from there is one more click that
+          the person who wants the file will happily make. */
+      }
+      <div class="contact__more" data-reveal>
+        <p class="contact__lbl">Or read first</p>
+        <div class="links">
+          <a href={contact.github} rel="me noopener"><span>GitHub</span><span>aj8uppal</span></a>
+          <a href={contact.linkedin} rel="me noopener"><span>LinkedIn</span><span>aj-uppal</span></a
+          >
+          <a href={contact.stackoverflow} rel="me noopener">
+            <span>Stack Overflow</span><span>A J Uppal</span>
+          </a>
+        </div>
         <div class="resume">
-          <a class="btn btn--sand" href={contact.resume} target="_blank" rel="noopener" data-resume>
+          <a class="btn" href={contact.resume} target="_blank" rel="noopener" data-resume>
             Résumé (PDF)
             <span class="btn__tag">{contact.resumeYear}</span>
           </a>
         </div>
-      </div>
-
-      <div class="links" data-reveal>
-        <a href={contact.github} rel="me noopener"><span>GitHub</span><span>aj8uppal</span></a>
-        <a href={contact.linkedin} rel="me noopener"><span>LinkedIn</span><span>aj-uppal</span></a>
-        <a href={contact.stackoverflow} rel="me noopener">
-          <span>Stack Overflow</span><span>A J Uppal</span>
-        </a>
-        <a href={`mailto:${contact.email}`}><span>Email</span><span>{contact.email}</span></a>
       </div>
     </div>
 
