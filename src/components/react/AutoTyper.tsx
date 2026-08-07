@@ -108,8 +108,11 @@ export default function AutoTyper() {
       </div>
       <div className="toolbar">
         <span>Local offline port, zero dependencies</span>
+        {/* This panel types at you. The 2019 page is the one you type into: it
+            takes your own text and your own rate and runs the same loop. So the
+            link says what pressing it gets you rather than where it goes. */}
         <a className="toolbar__link" href="/demos/AutoTyper/index.html">
-          Open original <span aria-hidden="true">↗</span>
+          Type into the original <span aria-hidden="true">↗</span>
         </a>
       </div>
     </>

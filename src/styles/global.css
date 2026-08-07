@@ -2360,14 +2360,6 @@ summary,
 }
 
 /* ── 12. PLAYGROUND ──────────────────────────────────────────────────── */
-.play__note {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin: 0 0 1rem;
-  font: 700 0.72rem/1.4 var(--mono);
-}
-
 /* Not two equal halves. The deviation card runs the 2015 file at a scale of
    the 1330px it hardcodes, and every pixel the column gives back is a pixel
    off its axis labels; the typer is a text field and four chips and does not
@@ -2386,6 +2378,29 @@ summary,
   .labs {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+/* The break before the game. Two demos, then a rule, then the one thing on the
+   page still in someone else's colours - so the rule is the section's heaviest
+   and the strip states what changes. It is a grid item, spanning whatever the
+   row currently is rather than a fixed two, for the same reason .lab--wide is. */
+.play__break {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 0.7rem;
+  margin: 0.55rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 2px solid var(--on-accent);
+  color: var(--on-paper-2);
+  font: 680 0.7rem/1.4 var(--mono);
+}
+
+.play__break span {
+  color: var(--on-accent);
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
 
 /* A dark card standing in a light section, which means the two things a
@@ -2413,7 +2428,11 @@ summary,
 .lab--wide {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: minmax(240px, 0.42fr) minmax(0, 1fr);
+  /* 0.6 rather than 0.42: the head was leaving 367px of its column empty
+     while the frame, sized off the other column by ratio, set the card's whole
+     height. Handing the width to the side that has something to put in it
+     costs the game nothing it was using and the page 53px it was not. */
+  grid-template-columns: minmax(260px, 0.6fr) minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
 }
 
@@ -2478,6 +2497,57 @@ summary,
   color: var(--on-ink-3);
   font-size: var(--fs-small);
   line-height: 1.55;
+}
+
+/* What the game answers to, said before it takes the keyboard rather than
+   discovered by pressing things. It lives in the card's own head, which is
+   already the column that describes the artifact, so the instructions cost the
+   page no height and the frame keeps all of its own. */
+.keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.9rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--on-ink-2);
+  font: 700 var(--fs-micro) / 1.7 var(--mono);
+}
+
+.keys li {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.keys kbd {
+  min-width: 1.5em;
+  padding: 0.1rem 0.32rem;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-xs);
+  font: inherit;
+  text-align: center;
+}
+
+/* Only where there is a thumb and no keyboard. Hidden rather than dimmed, so
+   a pointer reader is not told about a control they do not have. Both rules
+   are scoped past `.keys li`, which is a class and a type and outranks a bare
+   class either way it is written. */
+.keys .keys--touch {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .keys .keys--touch {
+    display: flex;
+  }
+}
+
+/* Specific enough to beat `.lab__head p`, which is a class and a type. */
+.lab__head .keys__note {
+  margin-top: 0.5rem;
+  color: var(--on-ink-3);
+  font-size: 0.78rem;
 }
 
 .stage {
@@ -2656,6 +2726,84 @@ summary,
   opacity: 0.4;
 }
 
+/* The game reads the keyboard off its own document, so which element holds the
+   caret is the difference between steering and scrolling the page. That has to
+   be visible, and the frame is the element that has it. */
+.playframe:focus-within {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* Steering by thumb, on a screen with no keyboard behind it. Overlaid on the
+   frame's own bottom corners rather than added below it, because a game's
+   controls belong on the game and because the card has no height to spare. */
+.playframe__thumbs {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  inset: auto 0 0;
+  justify-content: space-between;
+  padding: 0.7rem;
+  pointer-events: none;
+}
+
+@media (pointer: coarse) {
+  .playframe__thumbs {
+    display: flex;
+  }
+}
+
+.playframe__steer {
+  width: 58px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--on-shade) 45%, transparent);
+  border-radius: 50%;
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--shade) 55%, transparent);
+  font: 800 1.2rem/1 var(--mono);
+  cursor: pointer;
+  /* The buttons take the thumb; the rest of the frame keeps scrolling the page
+     under it, which is what stops a game two thirds down a phone being a trap. */
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+.playframe__steer:active {
+  color: var(--on-accent);
+  background: var(--sand);
+  border-color: var(--sand);
+}
+
+/* Stated on the frame, because a frozen game and a broken one look identical
+   and the reader who pressed pause is owed the difference. */
+.playframe__held {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 1rem;
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--shade) 58%, transparent);
+  text-align: center;
+}
+
+.playframe__held b {
+  font: 800 0.8rem/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.playframe__held span {
+  color: var(--on-ink-2);
+  font: 650 0.68rem/1.45 var(--mono);
+}
+
 .playframe__go {
   position: absolute;
   z-index: 2;
@@ -2758,9 +2906,19 @@ button.toolbar__link {
   border-color: color-mix(in srgb, var(--on-accent) 38%, transparent);
 }
 
-/* Earlier work has no demo and no link, so it gets rows rather than cards. */
+/* Earlier work has no demo and no link, so it gets rows rather than cards.
+   It still needs a name of its own: unlabelled, the list arrived after the
+   three cards as five untitled rows, and its own entries were the only thing
+   telling a reader what they had reached. */
+.earlier__h {
+  margin: 1.05rem 0 0;
+  font: 800 var(--fs-label) / 1.4 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
 .earlier {
-  margin: 0;
+  margin: 0.35rem 0 0;
   padding: 0;
   list-style: none;
   border-top: 2px solid var(--ink);
@@ -2770,11 +2928,13 @@ button.toolbar__link {
   display: grid;
   grid-template-columns: 8.5rem minmax(0, 1fr) minmax(0, 0.62fr);
   gap: 1rem;
-  padding: 0.7rem 0;
+  padding: 0.55rem 0;
   border-bottom: 1px solid var(--line-light-2);
 }
 
-.earlier h4 {
+/* Scoped past `.earlier p`, which is a class and a type and would otherwise
+   take the size and the margin straight back out of this rule. */
+.earlier .earlier__n {
   margin: 0;
   font-family: var(--display);
   font-weight: 900;
@@ -3256,15 +3416,6 @@ button.toolbar__link {
   .edu__deg {
     grid-template-columns: 1fr;
     gap: 0.7rem;
-  }
-
-  .play__note {
-    display: block;
-  }
-
-  .play__note span {
-    display: block;
-    margin-top: 0.25rem;
   }
 
   .lab {
