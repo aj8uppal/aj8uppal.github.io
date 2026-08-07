@@ -15,6 +15,8 @@ export interface Role {
   where?: string;
   body?: string;
   bullets?: string[];
+  /** Current role only: what the job is right now, under the record of it. */
+  status?: string;
   stack?: string;
   pending?: { note: string };
   ref?: string;
@@ -438,15 +440,19 @@ export const roles: Role[] = [
     title: 'Software Engineer',
     org: 'Notable Health',
     where: 'San Mateo, CA',
-    body: 'Healthcare AI platform with 100+ enterprise customers. I build the integration layer: FHIR, HL7, Epic, Oracle, and the internal APIs that connect dozens of EHR systems for scheduling and patient workflows.',
+    /* Outcome first. The rest of the log is one line a job; this one earns the
+       room, so it opens with what the thing carries and then how I got it. */
+    body: 'Healthcare AI, 100+ enterprise customers. I own the voice platform end to end: 250,000 patient calls a month at 99% uptime, conversation layer down to carrier-facing telephony.',
     bullets: [
-      'Led the 0-to-1 platform work for AI voice assistants that now handle 250,000 calls a month in production: agent orchestration, state management, deploy tooling, and the reliability work that took uptime to 99%.',
-      'Own inbound voice authentication end to end - call routing, SIP, transfer logic, and HIPAA-compliant caller verification across 5+ health systems.',
-      'Built the configuration UIs that turned customer-specific engineering into product configuration; new-customer launches went from weeks to days.',
-      'Tech lead on cross-functional projects, and I mentor junior and mid-level engineers.',
+      'Built the voice platform from zero: agent orchestration, state management, deploy tooling, and the reliability work that took it to 99%.',
+      "Designed and shipped inbound calling over SIP: calls arrive from a health system's own telephony, not the public network. I wrote the spec their telecom teams build against.",
+      'Designed and built caller identity verification for inbound calls, HIPAA-compliant and live across 5+ health systems: the RFC, the system, the runbook and the dashboards.',
+      'Built the FHIR integration layer and the canonical clinical data mappings, then made new integrations configurable at launch. New-customer launches went from weeks to days.',
     ],
+    status:
+      'Fourth year. I joined on EHR automation and took each layer under it in turn. Tech lead, mentor, and the primary reviewer for a distributed contractor team.',
     stack:
-      'Python · TypeScript · Node.js · React · PostgreSQL · BigQuery · GCP · Kubernetes · Terraform',
+      'Python · TypeScript · Node.js · React · PostgreSQL · BigQuery · SIP · GCP · Kubernetes · Terraform',
   },
   {
     when: 'Jul 2021 - Jan 2022',

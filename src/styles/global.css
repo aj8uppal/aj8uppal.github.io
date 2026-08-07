@@ -2049,8 +2049,12 @@ summary,
   align-self: start;
 }
 
+/* Smaller than the other section headings, because this one is a sentence
+   rather than a label and it has to set "through-line" on one line inside a
+   360px rail. Any bigger and the compound breaks at its own hyphen. */
 .log__intro h2 {
-  font-size: clamp(2.8rem, 5.6vw, 5.2rem);
+  font-size: clamp(2.1rem, 2.9vw, 2.62rem);
+  text-wrap: balance;
 }
 
 .log__intro p {
@@ -2112,21 +2116,89 @@ summary,
 
 .role {
   display: grid;
-  grid-template-columns: 8.5rem minmax(0, 1fr);
-  gap: 1.3rem;
+  /* Wide enough that "Jul 2021 - Jan 2022" sets on one line. A wrapped date
+     next to a one-line job title reads as the wrong thing being important. */
+  grid-template-columns: 8.6rem minmax(0, 1fr);
+  gap: 1.4rem;
   padding: 0.7rem 0 0.8rem;
   border-bottom: 1px solid var(--line-light);
 }
 
-.role__when {
+/* Scoped to .role because `.role p` below is more specific than a bare class
+   and would otherwise take the size out of this shorthand. */
+.role .role__when {
   padding-top: 0.2rem;
   color: var(--on-paper-3);
   font: 750 0.7rem/1.5 var(--mono);
   text-transform: uppercase;
 }
 
-.role__when .now {
-  color: var(--earth-ink);
+/* One spine, eight nodes, drawn in the gutter the two-column row already
+   leaves between the date and the job. The rule that used to separate each
+   row is the line that now connects them, and the node on the current role
+   is the only one inked, so the eye starts at now and reads backwards. */
+.roles {
+  --tl-x: 9.3rem;
+}
+
+.tl {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.role--now,
+.tl .role {
+  position: relative;
+}
+
+.role--now::before,
+.tl .role::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--tl-x) - 3.5px);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--line-light-2);
+}
+
+/* Each row draws the segment down to the next row's node rather than the list
+   drawing one line behind all of them, so the spine ends on the last node
+   instead of running past it. */
+.role--now::after,
+.tl .role:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 1.35rem;
+  bottom: -0.9rem;
+  left: calc(var(--tl-x) - 0.5px);
+  width: 1px;
+  background: var(--line-light);
+}
+
+.tl .role::after {
+  top: 0.9rem;
+}
+
+.role--now::before {
+  top: 1.35rem;
+  background: var(--earth-ink);
+}
+
+.tl .role {
+  padding: 0.46rem 0 0.54rem;
+  border-bottom: 0;
+}
+
+.tl .role::before {
+  top: 0.9rem;
+}
+
+/* Smaller than the current role's, which is the point of the section. */
+.tl .role h3 {
+  font-size: 1.07rem;
 }
 
 .role h3 {
@@ -2151,6 +2223,39 @@ summary,
 .role .stack {
   color: var(--on-paper-3);
   font: 650 0.69rem/1.45 var(--mono);
+}
+
+/* The job I am doing now is the one being asked about, so it gets the room
+   the other seven do not: a summary that leads with the outcome, the four
+   ownership points, and where the role stands today. */
+.role--now {
+  padding-bottom: 0.95rem;
+}
+
+.role--now h3 {
+  font-size: clamp(1.3rem, 2.1vw, 1.66rem);
+}
+
+.role--now .role__flag {
+  margin: 0 0 0.3rem;
+  color: var(--earth-ink);
+  font: 800 0.63rem/1.5 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.role--now .role__lede {
+  max-width: 74ch;
+  color: var(--on-paper);
+  font-size: 0.96rem;
+}
+
+.role--now .role__status {
+  max-width: 74ch;
+  margin-top: 0.95rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--line-light);
+  font-size: 0.85rem;
 }
 
 /* Numbered in mono, the same marker the About facts use. A disc would be the
@@ -3148,8 +3253,26 @@ button.toolbar__link {
     padding-block: 1.05rem;
   }
 
-  .role__when {
+  .role .role__when {
     font-size: 0.65rem;
+  }
+
+  /* One column leaves no gutter to hang the spine in, so the rows go back to
+     being ruled and the timeline reads as the order it is printed in. */
+  .role--now::before,
+  .role--now::after,
+  .tl .role::before,
+  .tl .role::after {
+    display: none;
+  }
+
+  .tl .role {
+    padding-block: 1.05rem;
+    border-bottom: 1px solid var(--line-light);
+  }
+
+  .tl .role:last-child {
+    border-bottom: 0;
   }
 
   .edu {

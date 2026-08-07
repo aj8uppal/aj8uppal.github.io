@@ -120,6 +120,18 @@ const stackKey = (stack?: string): string =>
     .map((t) => t.toLowerCase())
     .join('|')}|`;
 
+/* The current role is rendered on its own, with the room the other seven do
+   not get. Both treatments keep the .role class and the stack key, so the
+   filter still sees all eight. */
+const current = roles.find((r) => r.now);
+const past = roles.filter((r) => !r.now);
+
+/* Job title and stack on one line. The separator is glued to the token before
+   it with a non-breaking space, so a row that wraps never opens a line with a
+   dangling middot. */
+const stackLine = (r: (typeof roles)[number]): string =>
+  [r.title, ...(r.stack ?? '').split('·').map((t) => t.trim())].filter(Boolean).join('\u00a0· ');
+
 const heroLabel =
   'Soft patches of golden light drifting behind the name, as if through a canopy. Move the pointer or press the arrow keys and the light gathers where you point.';
 ---
@@ -511,8 +523,12 @@ const heroLabel =
     <div class="log">
       <div class="log__intro">
         <p class="kicker">03 / Experience</p>
-        <h2 class="display">Eight roles</h2>
-        <p>Eight roles in six years, and a habit of turning up as the first engineer.</p>
+        <h2 class="display">Eight roles, one through-line</h2>
+        <p>
+          Physics research, university software, first-engineer jobs, and production healthcare AI.
+          I keep turning up where the system is new and somebody has to make the first real version
+          work.
+        </p>
       </div>
 
       <div>
@@ -520,46 +536,58 @@ const heroLabel =
 
         <div class="roles">
           {
-            roles.map((r) => (
-              <article class="role" data-stack={stackKey(r.stack)}>
-                <p class="role__when">
-                  {r.when}
-                  {r.now && (
-                    <span class="now" aria-label="current role">
-                      {' '}
-                      &#9679;
-                    </span>
-                  )}
-                </p>
+            current && (
+              <article class="role role--now" data-stack={stackKey(current.stack)}>
+                {/* No dot after the date: the inked node on the spine and the
+                    "Current role" flag already say it, twice over. */}
+                <p class="role__when">{current.when}</p>
                 <div>
+                  <p class="role__flag">Current role</p>
                   <h3>
-                    <b>{r.org}</b>
-                    {r.where && <span> &middot; {r.where}</span>}
+                    <b>{current.org}</b>
+                    {current.where && <span> &middot; {current.where}</span>}
                   </h3>
-                  <p class="stack">
-                    {r.title} &middot; {r.stack}
-                  </p>
-                  {r.body && (
-                    <p>
-                      {r.body}
-                      {r.ref && (
-                        <sup class="ref">
-                          <a href={`#note-${r.ref}`}>[{r.ref}]</a>
-                        </sup>
-                      )}
-                    </p>
-                  )}
-                  {r.bullets && (
+                  <p class="stack">{stackLine(current)}</p>
+                  {current.body && <p class="role__lede">{current.body}</p>}
+                  {current.bullets && (
                     <ul class="role__pts">
-                      {r.bullets.map((pt) => (
+                      {current.bullets.map((pt) => (
                         <li>{pt}</li>
                       ))}
                     </ul>
                   )}
+                  {current.status && <p class="role__status">{current.status}</p>}
                 </div>
               </article>
-            ))
+            )
           }
+
+          <ol class="tl">
+            {
+              past.map((r) => (
+                <li class="role" data-stack={stackKey(r.stack)}>
+                  <p class="role__when">{r.when}</p>
+                  <div>
+                    <h3>
+                      <b>{r.org}</b>
+                      {r.where && <span> &middot; {r.where}</span>}
+                    </h3>
+                    <p class="stack">{stackLine(r)}</p>
+                    {r.body && (
+                      <p>
+                        {r.body}
+                        {r.ref && (
+                          <sup class="ref">
+                            <a href={`#note-${r.ref}`}>[{r.ref}]</a>
+                          </sup>
+                        )}
+                      </p>
+                    )}
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
         </div>
 
         <dl class="errata">
