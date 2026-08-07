@@ -966,19 +966,21 @@ summary,
 }
 
 /* ── 8. ABOUT ────────────────────────────────────────────────────────── */
+/* A masthead strip of four static facts. It was drawn as a filled 1px grid
+   inside an outer box, which is a lot of border for four labels, and the box
+   held the first cell 17px in from the left edge every other line on the page
+   sits on. Two rules and column gaps say the same thing and let it line up. */
 .vitals {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
+  gap: 1.1rem clamp(1.2rem, 3vw, 2.8rem);
   margin: 0 0 clamp(1.8rem, 3.2vw, 2.6rem);
-  border: 1px solid var(--line-light);
-  background: var(--line-light);
+  padding-block: 0.9rem;
+  border-block: 1px solid var(--line-light);
 }
 
 .vitals > div {
   min-width: 0;
-  padding: 0.8rem 1rem;
-  background: var(--paper);
 }
 
 .vitals dt {
@@ -1024,21 +1026,30 @@ summary,
   letter-spacing: -0.012em;
 }
 
+/* Four things that are true about him, wearing a bordered, filled, rounded
+   box each. That is the shape this page uses for something you press, drawn
+   four times in a column beside nothing pressable. A rule separates them just
+   as well, the number still indexes them, and none of it invites a click. */
 .facts {
   display: grid;
-  gap: 0.65rem;
   margin: 0;
+  border-top: 1px solid var(--line-light);
 }
 
 .fact {
   display: grid;
-  grid-template-columns: 2.4rem 1fr;
-  gap: 0.85rem;
-  align-items: start;
-  padding: 0.85rem 1rem;
-  border: 1px solid var(--line-light);
-  border-radius: var(--r-md);
-  background: rgb(255 255 255 / 30%);
+  grid-template-columns: 2rem 1fr;
+  gap: 0 0.85rem;
+  align-items: baseline;
+  padding: 0.75rem 0 0.85rem;
+  border-bottom: 1px solid var(--line-light);
+}
+
+/* The method note draws its own rule a few dozen pixels below this one, and
+   two parallel rules with nothing between them read as a mistake. The list is
+   topped and separated; the note's rule closes it. */
+.fact:last-child {
+  border-bottom: 0;
 }
 
 .fact dt {
@@ -1050,16 +1061,16 @@ summary,
 
 .fact dd {
   grid-area: 2 / 2;
-  margin: 0.15rem 0 0;
+  margin: 0.2rem 0 0;
   color: var(--on-paper-2);
   font-size: 0.85rem;
   line-height: 1.4;
 }
 
 .fact__i {
-  grid-area: 1 / 1 / 3 / 2;
+  grid-area: 1 / 1;
   color: var(--on-paper-3);
-  font: 800 0.72rem/1.35 var(--mono);
+  font: 800 0.72rem/1.25 var(--mono);
 }
 
 /* ── 9. PROJECT CARDS ───────────────────────────────────────────────── */
