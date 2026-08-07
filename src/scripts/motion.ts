@@ -13,6 +13,21 @@ import { installParallax } from './parallax';
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+/**
+ * A duration from the stylesheet's motion scale, in milliseconds.
+ *
+ * The three speeds are tokens so that CSS and script agree on what "a section
+ * arriving" means; reading one back is cheaper than keeping a second copy of
+ * the number here and hoping the two are edited together. The tokens are
+ * authored in `ms` for exactly this reason - `parseFloat` on `0.62s` would
+ * quietly return 0.62 and animate in under a frame.
+ */
+function duration(token: string, fallback: number): number {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(token);
+  const ms = parseFloat(raw);
+  return raw.trim().endsWith('ms') && ms > 0 ? ms : fallback;
+}
+
 /* ── Reveal ──────────────────────────────────────────────────────────── */
 function installReveals(): void {
   const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
@@ -31,6 +46,8 @@ function installReveals(): void {
   }));
   frames.push({ opacity: 1, transform: 'none' });
 
+  const ms = duration('--dur-3', 620);
+
   const io = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
@@ -38,7 +55,7 @@ function installReveals(): void {
         const el = entry.target as HTMLElement;
         io.unobserve(el);
         el.classList.add('in');
-        el.animate(frames, { duration: 760, easing: 'linear', fill: 'none' });
+        el.animate(frames, { duration: ms, easing: 'linear', fill: 'none' });
       }
     },
     { rootMargin: '0px 0px -5% 0px', threshold: 0.08 },

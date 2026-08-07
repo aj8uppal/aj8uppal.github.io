@@ -157,6 +157,23 @@ function resolve(s: PaletteSeed): Record<string, string> {
     '--paper': band,
     '--paper-2': band2,
 
+    /* The floor under the raised things, and the surface answering a pointer.
+       Both are displacements of colours the palette already has, in the one
+       direction each can go: the floor pushes the ground away from whichever
+       side the surface is on, and the hover pushes the surface toward its own
+       text. Reading the direction off the palette rather than assuming down
+       is what makes them work on a light scheme, where the surface is the
+       darker of the two and the floor has to go the other way. */
+    '--ink-deep': mix(ground, luminance(surface) > luminance(ground) ? '#000000' : '#ffffff', 0.28),
+    '--ink-2-hi': mix(surface, onGround, 0.03),
+
+    /* The accent at reading strength, for areas too large to take it neat.
+       Softened away from its own text rather than toward the band, so the
+       tier can only ever gain contrast against --on-accent: mixing toward the
+       band takes a mid-tone accent the wrong way and costs the section the
+       text colour it is painted to carry. */
+    '--sand-soft': mix(accent, pick(accent, ink, light) === light ? ink : light, 0.32),
+
     '--screen': mix(shade, '#000000', 0.35),
     '--shade': shade,
     '--on-shade': light,

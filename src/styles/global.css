@@ -22,6 +22,18 @@
   --paper: #e8eddf;
   --paper-2: #d7dccf;
 
+  /* The floor, one step under the page. Graphite on carbon is 1.26, which is
+     too small a step to read as raised on a screen already mostly dark, and
+     the usual answers - a glow, a wide drop shadow - are either not this
+     page's language or invisible on it. The section carrying the cards drops
+     instead, and the same two card colours are suddenly 1.41 apart. */
+  --ink-deep: #1a1a19;
+
+  /* Graphite answering a pointer. Deliberately small, because the border does
+     the louder half of a hover, and held light enough that all four text
+     steps still clear 4.5 on it: 9.5, 6.7, 5.3, 4.5. */
+  --ink-2-hi: #383b38;
+
   /* The screen colour. Behind a canvas or a running game, and nowhere else:
      a screen should read as darker than the page it sits on. */
   --screen: #0d0e0d;
@@ -56,6 +68,11 @@
   --sand: #f5cb5c;
   --camel: #cfdbd5;
   --earth: #8a938d;
+
+  /* The sun at reading strength, for areas too large to take it neat. A whole
+     section painted in full sand stops being a signal and becomes the wall,
+     and then there is nothing left for the controls standing on it to be. */
+  --sand-soft: #f1d686;
 
   /* The sun deepened until it carries small text on the light grounds. The
      bright sun is 1.1 on paper-2, which is nothing at all; this is 4.5. */
@@ -92,14 +109,68 @@
   --line-light: color-mix(in srgb, var(--on-paper) 18%, transparent);
   --line-light-2: color-mix(in srgb, var(--on-paper) 34%, transparent);
 
+  /* The focus ring, as a token rather than a colour, because the sun cannot
+     be the ring everywhere. It is 10.1 on the page and 1.1 on the paper,
+     the camel and the softened sand - which is not a dim ring, it is no ring
+     at all across four of the six sections. A ground that cannot carry the
+     sun overrides this with its own darkest pole, so focus is always at
+     least 12:1 and the sun keeps hover, selection and active states. */
+  --focus: var(--sand);
+
+  /* The quiet text step for whatever ground is underfoot. Secondary copy used
+     to be muted with `opacity`, which lands wherever the ground happens to
+     be - 4.5 on the darker paper, which is the floor and not a target for a
+     0.68rem uppercase mono. Naming the step instead puts every one of them at
+     6.1 or better and lets a caption ask for "the quiet one" without knowing
+     what it is standing on. */
+  --muted: var(--on-ink-3);
+
   --max: 1240px;
   --pad: clamp(1.1rem, 4vw, 3.5rem);
+
+  /* How far anything scrolled to has to clear the top of the window. The nav
+     floats over the page at 71px, and this is what keeps it from landing on
+     top of whatever you just jumped to. */
+  --nav-clear: 5.5rem;
+
+  /* Spacing, on a 4px base. The top two steps are fluid, so a narrow screen
+     compresses the rhythm rather than scrolling for longer at the same one. */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: clamp(1.6rem, 2.6vw, 2.2rem);
+  --s-7: clamp(2.5rem, 3vw, 3.4rem);
 
   --display: 'Arial Black', 'Arial Narrow Bold', ui-sans-serif, system-ui, sans-serif;
   --sans: ui-sans-serif, -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
   --mono: ui-monospace, 'SFMono-Regular', consolas, monospace;
 
-  --r-sm: 12px;
+  /* Type, for the label and body sizes that repeat. Display sizes stay local
+     to their rule: each one is fitted to its own line length, so a shared
+     step would only be a number two headings happened to agree on. */
+  --fs-micro: 0.63rem;
+  --fs-label: 0.72rem;
+  --fs-small: 0.86rem;
+  --fs-body: 0.98rem;
+  --fs-lead: 1.08rem;
+
+  /* Radii: two steps and a pill. A panel, a frame inside a panel, and the
+     fully round shape - which is reserved for things you can press, so that
+     the shape itself is the affordance and static metadata cannot borrow it. */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-pill: 999px;
+
+  /* Motion, in three speeds: a control answering a press, a surface or an
+     image changing, and a section arriving. A duration that fits none of the
+     three is usually a duration that was guessed. */
+  --dur-1: 120ms;
+  --dur-2: 280ms;
+  --dur-3: 620ms;
+  --ease: cubic-bezier(0.2, 0.75, 0.25, 1);
 }
 
 /* ── 2. BASE ─────────────────────────────────────────────────────────── */
@@ -168,14 +239,25 @@ p {
 }
 
 :focus-visible {
-  outline: 3px solid var(--sand);
+  outline: 3px solid var(--focus);
   outline-offset: 4px;
-  border-radius: 3px;
+  border-radius: var(--r-xs);
 }
 
+/* Anything the page can be scrolled to has to clear the floating header, and
+   a jump from the nav is not the only way that happens: moving focus with the
+   keyboard scrolls too, and a chip near the top of a section would otherwise
+   take its focus ring in behind the nav and out of sight. */
 section[id],
-header[id] {
-  scroll-margin-top: 5.5rem;
+header[id],
+a[href],
+button,
+input,
+select,
+textarea,
+summary,
+[tabindex] {
+  scroll-margin-top: var(--nav-clear);
 }
 
 .skip {
@@ -253,16 +335,16 @@ header[id] {
   min-height: 48px;
   padding: 0.8rem 1.05rem;
   border: 1px solid currentcolor;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   color: inherit;
   background: transparent;
   text-decoration: none;
   font-weight: 800;
   cursor: pointer;
   transition:
-    color 0.2s ease,
-    background-color 0.2s ease,
-    border-color 0.2s ease;
+    color var(--dur-1) var(--ease),
+    background-color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease);
 }
 
 .btn:hover {
@@ -289,13 +371,17 @@ header[id] {
   font-size: 0.85rem;
 }
 
+/* The year the resume is from, which is a fact about the file and not a second
+   thing to press. It was a filled pill sitting inside a pill, which is the one
+   shape this page reserves for controls, used twice in the space of one. Same
+   hairline the static tags use, so it reads as a note on the button. */
 .btn__tag {
-  margin-left: 0.6rem;
-  padding: 0.2rem 0.45rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--on-accent) 12%, transparent);
+  margin-left: 0.7rem;
+  padding-left: 0.7rem;
+  border-left: 1px solid color-mix(in srgb, currentcolor 32%, transparent);
   font: 800 0.62rem/1.4 var(--mono);
   text-transform: uppercase;
+  opacity: 0.75;
 }
 
 .arrow {
@@ -316,7 +402,7 @@ header[id] {
   gap: 1rem;
   padding: 0.45rem 0.55rem 0.45rem 0.85rem;
   border: 1px solid color-mix(in srgb, var(--on-shade) 17%, transparent);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   color: var(--on-shade);
   background: color-mix(in srgb, var(--shade) 78%, transparent);
   box-shadow: 0 14px 45px rgb(0 0 0 / 22%);
@@ -366,7 +452,7 @@ header[id] {
 
 .nav__cta {
   padding: 0.55rem 0.85rem !important;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   color: var(--shade) !important;
   background: var(--on-shade);
 }
@@ -498,6 +584,10 @@ header[id] {
   justify-content: flex-end;
 }
 
+/* An annotation on the canvas, not a control on it. It wore a bordered pill
+   and it is `pointer-events: none`, which is the shape promising something
+   the element cannot do; the control it describes is the canvas itself. So:
+   a mono caption hung off a rule, with no chrome to press. */
 .hint {
   position: absolute;
   z-index: 2;
@@ -506,13 +596,12 @@ header[id] {
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  padding: 0.55rem 0.75rem;
-  border: 1px solid var(--line-dark);
-  border-radius: 999px;
+  padding: 0 0 0 0.75rem;
+  border-left: 2px solid var(--sand);
   color: var(--on-ink);
-  background: color-mix(in srgb, var(--ink) 62%, transparent);
-  font: 650 0.66rem/1 var(--mono);
+  font: 650 0.66rem/1.5 var(--mono);
   letter-spacing: 0.06em;
+  text-shadow: 0 1px 6px var(--ink);
   pointer-events: none;
 }
 
@@ -526,32 +615,59 @@ header[id] {
   padding-block: clamp(2.5rem, 3vw, 3.4rem);
 }
 
+/* Each ground names its own text colour and, where the sun would vanish on
+   it, its own focus ring. The muted step travels with the ground too, so a
+   caption can ask for "the quiet one" without knowing what it is standing on. */
 .sec--paper {
+  --muted: var(--on-paper-3);
+  --focus: var(--on-paper);
+
   color: var(--on-paper);
   background: var(--paper);
 }
 
 .sec--paper-2 {
+  --muted: var(--on-paper-3);
+  --focus: var(--on-paper);
+
   color: var(--on-paper);
   background: var(--paper-2);
 }
 
+/* The floor the project cards stand on. */
+.sec--ink-deep {
+  --muted: var(--on-ink-3);
+
+  color: var(--on-ink);
+  background: var(--ink-deep);
+}
+
 .sec--ink {
+  --muted: var(--on-ink-3);
+
   color: var(--on-ink);
   background: var(--ink);
 }
 
 .sec--ink-3 {
+  --muted: var(--on-ink-3);
+
   color: var(--on-ink);
   background: var(--ink-3);
 }
 
 .sec--sand {
+  --muted: var(--on-paper-3);
+  --focus: var(--on-accent);
+
   color: var(--on-accent);
-  background: var(--sand);
+  background: var(--sand-soft);
 }
 
 .sec--camel {
+  --muted: var(--on-paper-3);
+  --focus: var(--on-accent-2);
+
   color: var(--on-accent-2);
   background: var(--camel);
 }
@@ -571,7 +687,7 @@ header[id] {
 }
 
 .head__count {
-  opacity: 0.62;
+  color: var(--muted);
   font: 680 0.68rem/1.4 var(--mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -621,10 +737,11 @@ header[id] {
 }
 
 .method .kicker {
-  opacity: 0.66;
+  color: var(--muted);
 }
 
 .sec--ink .method,
+.sec--ink-deep .method,
 .sec--ink-3 .method {
   border-top-color: var(--line-dark);
   color: var(--on-ink-2);
@@ -706,7 +823,7 @@ header[id] {
   align-items: start;
   padding: 0.85rem 1rem;
   border: 1px solid var(--line-light);
-  border-radius: 14px;
+  border-radius: var(--r-md);
   background: rgb(255 255 255 / 30%);
 }
 
@@ -760,16 +877,33 @@ header[id] {
   gap: 0.85rem;
 }
 
+/* The raised surface. Three things make it read as lifted and none of them
+   is a glow: the section under it drops to the floor colour, the edge is the
+   stronger of the two line steps rather than the whisper, and the shadow is
+   short and dark enough to survive a dark ground - the old one spread 80px
+   at 18% black over near-black, which composites to nothing. */
 .card {
   position: relative;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid var(--line-dark);
-  border-radius: 22px;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-md);
   color: var(--on-ink);
   background: var(--ink-2);
   transform-style: preserve-3d;
-  box-shadow: 0 28px 80px rgb(0 0 0 / 18%);
+  box-shadow: 0 10px 26px rgb(0 0 0 / 34%);
+  transition:
+    background var(--dur-2) var(--ease),
+    border-color var(--dur-2) var(--ease);
+}
+
+/* Answering a pointer anywhere on the module, not only on the link in it.
+   Whole-card hover is the cue that the card is a place rather than a
+   decoration; the actions inside it are still what you press. */
+.card:hover,
+.card:focus-within {
+  border-color: color-mix(in srgb, var(--on-ink) 40%, transparent);
+  background: var(--ink-2-hi);
 }
 
 .card--full {
@@ -861,8 +995,8 @@ header[id] {
   max-width: 66ch;
   margin: 0 0 0.85rem;
   color: var(--on-ink-2);
-  font-size: 0.92rem;
-  line-height: 1.6;
+  font-size: var(--fs-body);
+  line-height: 1.65;
 }
 
 .card__body p:last-child {
@@ -898,13 +1032,17 @@ header[id] {
   font: 680 0.72rem/1.6 var(--mono);
 }
 
+/* Status, and only status. The fully round shape is the page's promise that
+   a thing is live in the interaction sense - pressable, selected, current -
+   and a project's shipping state is the one piece of static information
+   allowed to borrow it, because "live" is what the shape already says. */
 .pill {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   padding: 0.35rem 0.6rem;
   border: 1px solid var(--line-dark);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   color: var(--on-ink-2);
   font: 800 0.64rem/1 var(--mono);
   letter-spacing: 0.04em;
@@ -937,6 +1075,35 @@ header[id] {
 .sec--sand .pill {
   color: var(--on-accent);
   border-color: var(--line-light-2);
+}
+
+/* Everything else the old pill was carrying: a project's number, its shape,
+   the one fact worth putting beside the name. None of it is pressable, so
+   none of it gets the pressable shape. A hairline separates them instead,
+   which also lets three of them sit in the width one pill used to want. */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  font: 800 0.64rem/1.4 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tag:not(:first-child)::before {
+  content: '';
+  align-self: center;
+  width: 1px;
+  height: 0.85em;
+  margin-inline: 0 0.5rem;
+  background: var(--line-dark-2);
+}
+
+.sec--sand .tag:not(:first-child)::before,
+.sec--paper .tag:not(:first-child)::before,
+.sec--paper-2 .tag:not(:first-child)::before,
+.sec--camel .tag:not(:first-child)::before {
+  background: var(--line-light-2);
 }
 
 /* Project facts as a mono key/value list. A value you can check, next to the
@@ -987,8 +1154,8 @@ header[id] {
      itself rides `translate`, which is deliberately not in this list: it
      changes every frame and has no business easing anywhere. */
   transition:
-    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
-    scale 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform var(--dur-3) var(--ease),
+    scale var(--dur-3) var(--ease);
 }
 
 .shot--lead {
@@ -1033,6 +1200,9 @@ header[id] {
   }
 }
 
+/* A caption on a photograph, which is a fact about the photograph and not a
+   button laid over it. It keeps the wash it needs to stay legible and loses
+   the round ends, which is the only part of it that read as pressable. */
 .flag {
   position: absolute;
   z-index: 2;
@@ -1043,7 +1213,7 @@ header[id] {
   gap: 0.5rem;
   padding: 0.55rem 0.75rem;
   border: 1px solid color-mix(in srgb, var(--on-shade) 30%, transparent);
-  border-radius: 999px;
+  border-radius: var(--r-sm);
   color: var(--on-shade);
   background: color-mix(in srgb, var(--shade) 72%, transparent);
   backdrop-filter: blur(10px);
@@ -1109,8 +1279,8 @@ header[id] {
   max-width: 56ch;
   margin: 0 0 0.7rem;
   color: var(--on-ink-2);
-  font-size: 0.88rem;
-  line-height: 1.55;
+  font-size: 0.94rem;
+  line-height: 1.6;
 }
 
 .inset__body p:last-child {
@@ -1147,7 +1317,7 @@ header[id] {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--dur-2) var(--ease);
 }
 
 .fs__slide[data-active='true'] {
@@ -1196,7 +1366,7 @@ header[id] {
   z-index: 0;
   inset: 1px auto 1px 0;
   width: 0;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--sand);
   transform-origin: left center;
   will-change: transform, width;
@@ -1208,7 +1378,7 @@ header[id] {
   min-height: 34px;
   padding: 0.4rem 0.68rem;
   border: 1px solid var(--line-dark);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   color: var(--on-ink-2);
   background: transparent;
   cursor: pointer;
@@ -1217,8 +1387,8 @@ header[id] {
   letter-spacing: 0.03em;
   text-transform: uppercase;
   transition:
-    color 0.2s ease,
-    border-color 0.2s ease;
+    color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease);
 }
 
 .fs__tab:hover {
@@ -1281,8 +1451,8 @@ header[id] {
 .fs__note {
   margin: 0;
   color: var(--on-ink-2);
-  font-size: 0.85rem;
-  line-height: 1.5;
+  font-size: 0.92rem;
+  line-height: 1.55;
 }
 
 /* A half-width card is too narrow to put a stage and a readout side by side,
@@ -1390,7 +1560,7 @@ header[id] {
   aspect-ratio: 2.3 / 1;
   object-fit: cover;
   opacity: 0.55;
-  transition: opacity 0.25s ease;
+  transition: opacity var(--dur-2) var(--ease);
 }
 
 .arc__tick span {
@@ -1588,7 +1758,7 @@ header[id] {
   margin-top: 1.2rem;
   padding: 1.15rem;
   border: 1px solid var(--line-light);
-  border-radius: 16px;
+  border-radius: var(--r-md);
   background: var(--paper);
 }
 
@@ -1632,11 +1802,18 @@ header[id] {
   list-style: none;
 }
 
+/* Coursework, which is a list of things taken and not a row of filters. It
+   used to be thirteen bordered pills, which is thirteen invitations to click
+   on a course code. A hairline between entries says list, and says it in
+   less space. */
 .courses li {
-  padding: 0.28rem 0.5rem;
-  border: 1px solid var(--line-light);
-  border-radius: 999px;
+  padding: 0.28rem 0;
   font: 680 0.68rem/1.2 var(--mono);
+}
+
+.courses li:not(:first-child) {
+  padding-left: 0.55rem;
+  border-left: 1px solid var(--line-light-2);
 }
 
 .courses li b {
@@ -1678,13 +1855,20 @@ header[id] {
   }
 }
 
+/* A dark card standing in a light section, which means the two things a
+   ground carries - the quiet text step and the focus ring - both have to be
+   handed back. The section's ring is its darkest pole, and a near-black ring
+   on a near-black card is not a ring. */
 .lab {
+  --muted: var(--on-ink-3);
+  --focus: var(--accent-shade);
+
   min-width: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   border: 2px solid var(--ink);
-  border-radius: 20px;
+  border-radius: var(--r-md);
   color: var(--on-ink);
   background: var(--ink);
   box-shadow: 8px 8px 0 color-mix(in srgb, var(--on-accent) 18%, transparent);
@@ -1726,16 +1910,15 @@ header[id] {
   text-transform: uppercase;
 }
 
-/* Era chip. These three run a decade behind the flagship work and the cards
-   give no other sign of it, so the year rides the name rather than sitting in
-   a metadata line above it that reads as chrome. */
+/* The year. These run a decade behind the flagship work and the cards give
+   no other sign of it, so it rides the name rather than sitting in a
+   metadata line above it that reads as chrome. It is a date, so it is set
+   like one: no border, no round ends, just the quieter colour and a space. */
 .era {
   display: inline-block;
   vertical-align: 0.34em;
-  margin-left: 0.5rem;
-  padding: 0.36em 0.62em 0.3em;
-  border: 1px solid var(--line-light-2);
-  border-radius: 999px;
+  margin-left: 0.55rem;
+  color: var(--muted);
   font: 750 0.6rem/1 var(--mono);
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -1743,7 +1926,6 @@ header[id] {
 }
 
 .lab .era {
-  border-color: var(--line-dark-2);
   color: var(--sand);
 }
 
@@ -1761,8 +1943,8 @@ header[id] {
   max-width: 68ch;
   margin: 0.5rem 0 0;
   color: var(--on-ink-3);
-  font-size: 0.8rem;
-  line-height: 1.5;
+  font-size: var(--fs-small);
+  line-height: 1.55;
 }
 
 .stage {
@@ -1794,7 +1976,7 @@ header[id] {
   gap: 0.55rem;
   padding: 1.05rem;
   border: 1px solid color-mix(in srgb, var(--sand) 28%, transparent);
-  border-radius: 13px;
+  border-radius: var(--r-sm);
   color: var(--on-shade);
   background: var(--screen);
   font: 760 clamp(0.96rem, 1.6vw, 1.24rem) / 1.45 var(--mono);
@@ -1833,7 +2015,7 @@ header[id] {
   min-height: 40px;
   padding: 0.55rem 0.7rem;
   border: 1px solid var(--line-dark);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   color: var(--on-ink-2);
   background: transparent;
   cursor: pointer;
@@ -1939,7 +2121,7 @@ header[id] {
   color: var(--on-accent);
   background: var(--sand);
   font-size: 1.35rem;
-  transition: transform 0.25s ease;
+  transition: transform var(--dur-2) var(--ease);
 }
 
 .playframe__go:hover b {
@@ -1984,7 +2166,7 @@ header[id] {
   gap: 0.45rem;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--line-dark);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   text-decoration: none;
   font-weight: 800;
 }
@@ -2000,7 +2182,7 @@ button.toolbar__link {
 .toolbar__link kbd {
   padding: 0.08rem 0.34rem;
   border: 1px solid var(--line-dark-2);
-  border-radius: 4px;
+  border-radius: var(--r-xs);
   font: inherit;
   font-size: 0.92em;
 }
@@ -2094,7 +2276,7 @@ button.toolbar__link {
 
 .skills li {
   color: var(--on-ink-2);
-  font-size: 0.88rem;
+  font-size: 0.94rem;
 }
 
 /* ── 14. CONTACT ─────────────────────────────────────────────────────── */
@@ -2163,7 +2345,7 @@ button.toolbar__link {
   border-bottom: 1px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
   text-decoration: none;
   font-weight: 800;
-  transition: padding-left 0.2s ease;
+  transition: padding-left var(--dur-1) var(--ease);
 }
 
 .links a:hover {
@@ -2424,10 +2606,6 @@ button.toolbar__link {
     gap: 0.8rem;
   }
 
-  .card {
-    border-radius: 15px;
-  }
-
   .card__copy {
     padding: 1.1rem;
   }
@@ -2494,7 +2672,6 @@ button.toolbar__link {
   }
 
   .lab {
-    border-radius: 14px;
     box-shadow: 5px 5px 0 color-mix(in srgb, var(--on-accent) 20%, transparent);
   }
 
