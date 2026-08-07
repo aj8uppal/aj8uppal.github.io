@@ -164,7 +164,12 @@ const ratioOf = (a, b) => {
   return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
 };
 
-async function heroContrast(page, width, height) {
+/* Twelve places to stand the light. Enough to find the corner of a display
+   letter that a gather happens to sit under, and few enough to run five times
+   over without the pass turning into a coffee break. */
+const SWEEP = [0.12, 0.4, 0.65, 0.9].flatMap((fx) => [0.18, 0.45, 0.8].map((fy) => [fx, fy]));
+
+async function heroContrast(page, width, height, spots = SWEEP) {
   const hero = await page.evaluate(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
     const r = document.querySelector('.hero').getBoundingClientRect();
@@ -202,48 +207,46 @@ async function heroContrast(page, width, height) {
   ).filter((b) => b && b.w >= 1);
 
   const worst = new Map();
-  for (const fx of [0.12, 0.4, 0.65, 0.9])
-    for (const fy of [0.18, 0.45, 0.8]) {
-      await page.mouse.move(hero.w * fx, hero.y + hero.h * fy);
-      await page.waitForTimeout(750);
-      await page.evaluate(() => {
-        for (const e of document.querySelectorAll('.hero__in, .hint'))
-          e.style.visibility = 'hidden';
-      });
-      const shot = await page.screenshot({
-        clip: { x: 0, y: Math.max(0, hero.y), width, height: Math.min(height, hero.h) },
-      });
-      await page.evaluate(() => {
-        for (const e of document.querySelectorAll('.hero__in, .hint')) e.style.visibility = '';
-      });
-      const { data, info } = await sharp(shot).raw().toBuffer({ resolveWithObject: true });
-      const scale = info.width / width;
-      for (const b of boxes) {
-        const x0 = Math.max(0, Math.round(b.x * scale));
-        const y0 = Math.max(0, Math.round((b.y - hero.y) * scale));
-        const x1 = Math.min(info.width, Math.round((b.x + b.w) * scale));
-        const y1 = Math.min(info.height, Math.round((b.y + b.h) * scale));
-        let best = -1;
-        let ground = [0, 0, 0];
-        for (let y = y0; y < y1; y++)
-          for (let x = x0; x < x1; x++) {
-            const i = (y * info.width + x) * info.channels;
-            const l = lumOf(data[i], data[i + 1], data[i + 2]);
-            if (l > best) {
-              best = l;
-              ground = [data[i], data[i + 1], data[i + 2]];
-            }
+  for (const [fx, fy] of spots) {
+    await page.mouse.move(hero.w * fx, hero.y + hero.h * fy);
+    await page.waitForTimeout(750);
+    await page.evaluate(() => {
+      for (const e of document.querySelectorAll('.hero__in, .hint')) e.style.visibility = 'hidden';
+    });
+    const shot = await page.screenshot({
+      clip: { x: 0, y: Math.max(0, hero.y), width, height: Math.min(height, hero.h) },
+    });
+    await page.evaluate(() => {
+      for (const e of document.querySelectorAll('.hero__in, .hint')) e.style.visibility = '';
+    });
+    const { data, info } = await sharp(shot).raw().toBuffer({ resolveWithObject: true });
+    const scale = info.width / width;
+    for (const b of boxes) {
+      const x0 = Math.max(0, Math.round(b.x * scale));
+      const y0 = Math.max(0, Math.round((b.y - hero.y) * scale));
+      const x1 = Math.min(info.width, Math.round((b.x + b.w) * scale));
+      const y1 = Math.min(info.height, Math.round((b.y + b.h) * scale));
+      let best = -1;
+      let ground = [0, 0, 0];
+      for (let y = y0; y < y1; y++)
+        for (let x = x0; x < x1; x++) {
+          const i = (y * info.width + x) * info.channels;
+          const l = lumOf(data[i], data[i + 1], data[i + 2]);
+          if (l > best) {
+            best = l;
+            ground = [data[i], data[i + 1], data[i + 2]];
           }
-        if (best < 0) continue;
-        // The hint chip carries its own translucent plate over the light.
-        const own = (b.own.match(/[\d.]+/g) ?? []).map(Number);
-        if (own.length === 4)
-          ground = ground.map((v, i) => Math.round(own[i] * own[3] + v * (1 - own[3])));
-        const got = ratioOf(b.col, ground);
-        const prev = worst.get(b.s);
-        if (!prev || got < prev.got) worst.set(b.s, { got, ground, at: `${fx},${fy}` });
-      }
+        }
+      if (best < 0) continue;
+      // The hint chip carries its own translucent plate over the light.
+      const own = (b.own.match(/[\d.]+/g) ?? []).map(Number);
+      if (own.length === 4)
+        ground = ground.map((v, i) => Math.round(own[i] * own[3] + v * (1 - own[3])));
+      const got = ratioOf(b.col, ground);
+      const prev = worst.get(b.s);
+      if (!prev || got < prev.got) worst.set(b.s, { got, ground, at: `${fx},${fy}` });
     }
+  }
   await page.mouse.move(width / 2, hero.y + hero.h * 0.5);
 
   return boxes.map((b) => {
@@ -494,6 +497,48 @@ await run(
         .join(', ')}`,
     );
 
+    /* The rest of the Dapple family, each swept the same way.
+     *
+     * They share a per-patch alpha cap, and that cap is not an argument that
+     * any of them is safe: it bounds one patch, and every one of these moves
+     * patches somewhere the classic would not. Glades gathers three clearings
+     * and can stack them in one place; Canopies slides a broad near layer
+     * across the name; Handshadow is the only one that can only ever subtract,
+     * and it is still measured. The lab is what the captain reviews from, so
+     * what the lab can show has to hold up.
+     */
+    for (const id of ['canopies', 'handshadow', 'gustfall', 'glades']) {
+      const on = await page.evaluate((h) => {
+        document.documentElement.dataset.hero = h;
+        window.dispatchEvent(new Event('herochange'));
+        return window.__heroPerf?.variant ?? null;
+      }, id);
+      note(on === id, `the lab mounts ${id}`, `got ${on}`);
+      if (on !== id) continue;
+
+      const rows = await heroContrast(page, 1440, 900);
+      const under = rows.filter((r) => r.got < r.need);
+      note(
+        under.length === 0,
+        `1440 hero type clears AA over ${id}`,
+        under.map((r) => `${r.sel} ${r.got}:1 (needs ${r.need}) on rgb(${r.ground})`).join(' | '),
+      );
+      // Counted from the mount, which reset it, so this is the sweep above.
+      const hp = await page.evaluate(() => ({ ...window.__heroPerf }));
+      const avg = hp.totalDrawMs / Math.max(hp.frames, 1);
+      note(avg < 4, `${id} draw stays inside the frame budget`, `avg ${avg.toFixed(3)}ms`);
+      console.log(
+        `       ${id}: ${hp.elements} elements, avg draw ${avg.toFixed(3)}ms, ` +
+          `max ${hp.maxDrawMs.toFixed(2)}ms, worst ratio ${Math.min(...rows.map((r) => r.got))}`,
+      );
+    }
+
+    /* Back to what the page ships, so the capture below is the site. */
+    await page.evaluate(() => {
+      document.documentElement.dataset.hero = 'dapple';
+      window.dispatchEvent(new Event('herochange'));
+    });
+
     await settle(page);
     await page.screenshot({ path: `${OUT}/full-1440.png`, fullPage: true });
     console.log(`       wrote ${OUT}/full-1440.png`);
@@ -632,6 +677,38 @@ await run(
       'the hero draws one still frame and stops',
       `${heroFrames.a} -> ${heroFrames.b}`,
     );
+
+    /* Every Dapple variation composes its own still, and three of the four
+       compose something the live hero would never show unprompted - a shadow
+       nobody is casting, two clearings nobody opened. So the still is measured
+       for what it is: a picture, with structure in it, that the type clears.
+       One pointer position, because under this preference the pointer has no
+       effect at all and twelve of them would measure the same frame twelve
+       times. */
+    for (const id of ['canopies', 'handshadow', 'gustfall', 'glades']) {
+      await page.evaluate((h) => {
+        document.documentElement.dataset.hero = h;
+        window.dispatchEvent(new Event('herochange'));
+      }, id);
+      await page.waitForTimeout(200);
+      const held = await page.evaluate(async () => {
+        const a = window.__heroPerf?.frames ?? -1;
+        await new Promise((r) => setTimeout(r, 500));
+        return a === (window.__heroPerf?.frames ?? -2);
+      });
+      note(held, `${id} draws one still frame and stops`, '');
+      const rows = await heroContrast(page, 1440, 900, [[0.5, 0.5]]);
+      const under = rows.filter((r) => r.got < r.need);
+      note(
+        under.length === 0,
+        `${id} still frame clears AA under the type`,
+        under.map((r) => `${r.sel} ${r.got}:1 (needs ${r.need})`).join(' | '),
+      );
+    }
+    await page.evaluate(() => {
+      document.documentElement.dataset.hero = 'dapple';
+      window.dispatchEvent(new Event('herochange'));
+    });
 
     // The spring-driven tab indicator must jump, not travel. The test for that is
     // the absence of intermediate positions, not how fast it arrives: React runs

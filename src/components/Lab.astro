@@ -20,6 +20,7 @@
  */
 import { palettes, swatch, defaultPalette } from '../data/palettes';
 import { heroes, defaultHero } from '../data/heroes';
+import type { HeroVariant } from '../heroes/types';
 
 interface Props {
   /** Dev builds show it unasked. A flagged production build waits for ?lab. */
@@ -27,6 +28,22 @@ interface Props {
 }
 
 const { alwaysOn } = Astro.props;
+
+/**
+ * Heroes in runs of the same family.
+ *
+ * Four of the twelve variants are one canopy answering the hand four different
+ * ways, and the point of having them is comparing them against each other. A
+ * flat grid of twelve buries that; a labelled run of five says it. The registry
+ * keeps families contiguous, so this is a fold rather than a sort - which also
+ * means the switcher never reorders what the registry declared.
+ */
+const rows: { family?: string; items: HeroVariant[] }[] = [];
+for (const v of heroes) {
+  const last = rows[rows.length - 1];
+  if (last && last.family === v.family) last.items.push(v);
+  else rows.push({ family: v.family, items: [v] });
+}
 ---
 
 <aside
@@ -110,21 +127,31 @@ const { alwaysOn } = Astro.props;
   </div>
 
   <p class="lab__h" id="lab-hero">Hero</p>
-  <div class="lab__hero" role="group" aria-labelledby="lab-hero">
-    {
-      heroes.map((v) => (
-        <button
-          class="lab__b lab__b--wide"
-          type="button"
-          data-hero={v.id}
-          aria-pressed={v.id === defaultHero.id}
-          title={v.blurb}
+  {
+    rows.map((row) => (
+      <Fragment>
+        {row.family && <p class="lab__fam">{row.family} family</p>}
+        <div
+          class="lab__hero"
+          role="group"
+          aria-label={row.family ? `${row.family} family` : undefined}
+          aria-labelledby={row.family ? undefined : 'lab-hero'}
         >
-          {v.name}
-        </button>
-      ))
-    }
-  </div>
+          {row.items.map((v) => (
+            <button
+              class="lab__b lab__b--wide"
+              type="button"
+              data-hero={v.id}
+              aria-pressed={v.id === defaultHero.id}
+              title={v.blurb}
+            >
+              {v.name}
+            </button>
+          ))}
+        </div>
+      </Fragment>
+    ))
+  }
 </aside>
 
 <script>
@@ -313,6 +340,19 @@ const { alwaysOn } = Astro.props;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.35rem;
+  }
+
+  /* Quieter than a section heading and tighter to its row: this labels a run
+     inside the hero list rather than opening a new list. */
+  .lab__fam {
+    margin: 0.5rem 0 0.3rem;
+    color: color-mix(in srgb, var(--on-shade) 45%, transparent);
+    font: 700 0.55rem/1 var(--mono);
+    letter-spacing: 0.1em;
+  }
+
+  .lab__hero + .lab__fam {
+    margin-top: 0.45rem;
   }
 
   .lab__b {

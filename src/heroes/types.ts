@@ -103,6 +103,16 @@ export interface HeroInstance {
 
 export interface HeroVariant {
   id: string;
+  /**
+   * The group this belongs to, if it belongs to one.
+   *
+   * Set when several variants are the same picture answering the hand
+   * differently and should be reviewed against each other rather than against
+   * the whole roster. The switcher gives each family its own labelled row, so
+   * `name` is the name within the family: `Dapple` + `Gustfall`, not `Dapple
+   * Gustfall`.
+   */
+  family?: string;
   name: string;
   /** What it is, in one clause. The switcher shows it on hover. */
   blurb: string;
