@@ -1427,7 +1427,15 @@ summary,
   font: 680 0.71rem/1.6 var(--mono);
 }
 
+/* The Open row is a bare link standing alone in its cell, not a phrase inside a
+   sentence, so nothing excuses it from a 24px target. Mono at this size draws a
+   14px line, and the row already carries the rest of the height as padding: the
+   link takes it over, and gives it back as margin so the row is the same height
+   it was. */
 .specs a {
+  display: inline-block;
+  padding: 0.35rem 0;
+  margin: -0.35rem 0;
   color: var(--sand);
 }
 
