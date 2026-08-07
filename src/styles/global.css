@@ -247,7 +247,12 @@ p {
 /* Anything the page can be scrolled to has to clear the floating header, and
    a jump from the nav is not the only way that happens: moving focus with the
    keyboard scrolls too, and a chip near the top of a section would otherwise
-   take its focus ring in behind the nav and out of sight. */
+   take its focus ring in behind the nav and out of sight.
+
+   Named rather than a bare [id], because scroll-margin applies to every kind
+   of scroll and not only the ones that come from the top of the page: the
+   frame switcher walks its tab row with `block: 'nearest'`, and a blanket
+   88px would push each tab most of a header out of the way to reach it. */
 section[id],
 header[id],
 a[href],
@@ -1159,9 +1164,23 @@ summary,
   border-bottom: 1px solid var(--line-dark);
 }
 
+/* The capture and the line about the capture, as one column. The caption used
+   to sit in the text column between the title and the skim, which put a
+   sentence of HUD readings in front of the three things the skim exists to
+   answer, and made the text column tall enough to set the whole card's
+   height. Beside the picture it describes it costs the card nothing: the
+   image column had the room. */
+.card__plate {
+  min-width: 0;
+}
+
+/* A hairline, and no radius. The card is the object; the plates are printed
+   on it. Rounding a picture inside a rounded card makes it a second card, and
+   the flag chip sitting on the picture would then be a third - a stack of
+   boxes where the section wants one composition. The rule stays because a
+   dark capture on a dark card needs an edge. */
 .card__hero .shot--lead {
   border: 1px solid var(--line-dark);
-  border-radius: var(--r-sm);
 }
 
 .card__hero .card__index {
@@ -1170,13 +1189,6 @@ summary,
 
 .card__hero .card__sub {
   margin-bottom: 0;
-}
-
-.card__hero .plate-cap {
-  margin-top: 0.95rem;
-  padding: 0.85rem 0 0;
-  border-top: 1px solid var(--line-dark);
-  border-bottom: 0;
 }
 
 .card__index {
@@ -1255,6 +1267,33 @@ summary,
   margin: 1rem 0 0.65rem;
   color: var(--on-ink-3);
   font: 680 0.72rem/1.6 var(--mono);
+}
+
+/* What to do with the figure below, in the imperative, once per figure.
+   A caption describes; this instructs, so it takes the accent and the lede
+   above it keeps the grey. Every one of them names the keyboard too: all
+   three figures are operable from it and nothing else on the page says so. */
+.cue {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 0.7rem;
+  color: var(--sand);
+  font: 750 0.65rem/1.5 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.cue::before {
+  content: '';
+  width: 1.1rem;
+  height: 2px;
+  flex: none;
+  background: currentcolor;
+}
+
+.card__lede:has(+ .cue) {
+  margin-bottom: 0.35rem;
 }
 
 /* Status, and only status. The fully round shape is the page's promise that
@@ -1363,6 +1402,118 @@ summary,
   color: var(--sand);
 }
 
+/* The ten-second version, above the long form. Role, hard part, proof, then
+   the one thing to press.
+
+   Same ruled grammar as the spec list and the about facts, and for the same
+   reason: the card is already the container, and a panel inside it would be
+   the third nesting level in one composition. The label column is the spec
+   list's 6.2rem so the two lists in a card line up rather than nearly line up.
+   The values are sans, not mono - these are sentences, and mono at this size
+   reads as data. */
+.skim {
+  margin: 0.95rem 0 0;
+  border-top: 1px solid var(--line-dark);
+}
+
+.skim > div {
+  display: grid;
+  grid-template-columns: 6.2rem minmax(0, 1fr);
+  gap: 0.9rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.skim dt {
+  color: var(--on-ink-3);
+  font: 750 0.63rem/1.75 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.skim dd {
+  margin: 0;
+  color: var(--on-ink-2);
+  font-size: 0.87rem;
+  line-height: 1.45;
+}
+
+.skim + .card__body {
+  margin-top: 1rem;
+}
+
+.acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+}
+
+/* The spec list, folded. Four of these open at once is around four hundred
+   pixels of key-value mono in a section whose job is now to be skimmable, and
+   the skim above already carries the three things a reader is looking for. So
+   the table is one press away rather than gone: still in the document, still
+   found by search, and still the same list when it opens.
+
+   The summary is the secondary action the skim would otherwise have to link
+   to. Making it the control in place beats a jump link that scrolls three
+   hundred pixels inside the same card. */
+.notes {
+  margin-top: 0.35rem;
+}
+
+.notes > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 40px;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-pill);
+  color: var(--on-ink-2);
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  list-style: none;
+  transition:
+    color var(--dur-1) var(--ease),
+    background-color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease);
+}
+
+.notes > summary::-webkit-details-marker {
+  display: none;
+}
+
+.notes > summary:hover {
+  color: var(--on-paper);
+  background: var(--paper);
+  border-color: var(--paper);
+}
+
+/* Two strokes rotated into a chevron, so the state is legible without reading
+   the label twice. It points down when there is more below and up when the
+   list is already showing. */
+.notes > summary::after {
+  content: '';
+  width: 0.42em;
+  height: 0.42em;
+  margin: -0.22em 0 0 0.1em;
+  border-right: 2px solid currentcolor;
+  border-bottom: 2px solid currentcolor;
+  transform: rotate(45deg);
+  transition: transform var(--dur-1) var(--ease);
+}
+
+.notes[open] > summary::after {
+  margin: 0.14em 0 0 0.1em;
+  transform: rotate(-135deg);
+}
+
+.notes[open] > .specs {
+  margin-top: 0.85rem;
+}
+
 .shot {
   position: relative;
   min-width: 0;
@@ -1456,10 +1607,11 @@ summary,
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--sand) 13%, transparent);
 }
 
+/* The line about the capture, under the capture. */
 .plate-cap {
-  margin: 0;
-  padding: 0.7rem clamp(1.2rem, 2.4vw, 2rem);
-  border-bottom: 1px solid var(--line-dark);
+  margin: 0.85rem 0 0;
+  padding: 0.85rem 0 0;
+  border-top: 1px solid var(--line-dark);
   color: var(--on-ink-2);
   font-size: 0.87rem;
   line-height: 1.5;
@@ -1483,7 +1635,6 @@ summary,
 
 .shot--inset {
   border: 1px solid var(--line-dark);
-  border-radius: var(--r-sm);
 }
 
 .shot--inset img {
@@ -1534,7 +1685,6 @@ summary,
   aspect-ratio: var(--fs-ar, 16 / 9);
   overflow: hidden;
   border: 1px solid var(--line-dark);
-  border-radius: var(--r-sm);
   background: var(--screen);
 }
 
@@ -1741,11 +1891,90 @@ summary,
   color: var(--sand);
 }
 
+/* Drawn rather than native. `accent-color` gave a 14px handle on a 4px line,
+   which is a control you have to aim at - and on the two touch platforms the
+   whole thing was under the 44px the rest of the page keeps to. The input's
+   own box stays 36px so the hit area is the full strip and not the handle.
+
+   The track carries how far through the day you are as well as where the
+   handle is, so the filled half is drawn from the value. WebKit has no
+   ::-moz-range-progress, so both engines take the same gradient and the value
+   arrives as --at from the component. */
 .range input {
   width: 100%;
   height: 36px;
-  accent-color: var(--sand);
+  margin: 0;
+  background: transparent;
   cursor: pointer;
+  appearance: none;
+}
+
+.range input::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: linear-gradient(
+    to right,
+    var(--sand) 0 var(--at, 0%),
+    var(--line-dark-2) var(--at, 0%) 100%
+  );
+}
+
+.range input::-moz-range-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: linear-gradient(
+    to right,
+    var(--sand) 0 var(--at, 0%),
+    var(--line-dark-2) var(--at, 0%) 100%
+  );
+}
+
+/* The ring is the card's own ground, so the handle reads as sitting on the
+   track rather than being threaded onto it. */
+.range input::-webkit-slider-thumb {
+  width: 22px;
+  height: 22px;
+  margin-top: -8px;
+  border: 3px solid var(--ink-2);
+  border-radius: 50%;
+  background: var(--sand);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 45%);
+  appearance: none;
+  transition: transform var(--dur-1) var(--ease);
+}
+
+.range input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--ink-2);
+  border-radius: 50%;
+  background: var(--sand);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 45%);
+  transition: transform var(--dur-1) var(--ease);
+}
+
+.range input:hover::-webkit-slider-thumb,
+.range input:active::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
+.range input:hover::-moz-range-thumb,
+.range input:active::-moz-range-thumb {
+  transform: scale(1.12);
+}
+
+/* The focus ring goes on the handle, not on the 36px strip: the strip is
+   mostly empty and a rectangle around it does not say what has focus. */
+.range input:focus-visible {
+  outline: 0;
+}
+
+.range input:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--sand-soft);
+}
+
+.range input:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px var(--sand-soft);
 }
 
 .arc__scrub .range {
@@ -2881,10 +3110,6 @@ button.toolbar__link {
     aspect-ratio: 1.5 / 1;
   }
 
-  .plate-cap {
-    padding-inline: 1.1rem;
-  }
-
   /* Six ticks at 390 would be 60px wide. Three across keeps the thumbnail
      readable and the slider still reaches all six. */
   .arc__ticks {
@@ -2898,6 +3123,18 @@ button.toolbar__link {
 
   .card__hero {
     padding: 1.1rem;
+  }
+
+  /* Stacked, the plate column would put a sentence about the capture between
+     the capture and the project's own name. The caption stays with the
+     picture in the reading order that has room for it, and steps behind the
+     title in the one that does not. */
+  .card__plate {
+    display: contents;
+  }
+
+  .card__hero .plate-cap {
+    order: 1;
   }
 
   .specs > div,
@@ -2956,6 +3193,20 @@ button.toolbar__link {
 
   .contact h2 {
     font-size: 20vw;
+  }
+}
+
+/* Phones only, and one rule. Everywhere wider, the skim's label column leaves
+   the sentence beside it four hundred pixels or more and the alignment down
+   the column is worth having. On a 390 handset it leaves two hundred and
+   forty, which is four words a line, so the label steps above the sentence
+   and both take the full width - the same shape the about-page facts use for
+   the same reason. Costs about 130px of page and buys back a readable
+   measure, which on the one device that is all measure is the better trade. */
+@media (width <= 470px) {
+  .skim > div {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
   }
 }
 

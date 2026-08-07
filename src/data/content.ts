@@ -211,6 +211,11 @@ export const ember = {
   href: 'https://emberwilds-web.fly.dev',
   status: 'live' as Status,
   sub: 'Browser-based voxel MMORPG. Designed, built, and in production.',
+  skim: {
+    role: 'Designed it, built it, put it in production.',
+    hard: 'One world staying consistent for everyone in it. The realm server simulates every player.',
+    proof: 'Open a tab, make a character, run into somebody. Sixty-four to a realm.',
+  },
   spread: {
     n: 'Plate 02 / Ember Wilds',
     t: 'A voxel MMORPG, shipped',
@@ -220,7 +225,8 @@ export const ember = {
     'A voxel MMORPG that runs in a browser tab. I designed it, built it, and put it in production on Fly.io, where a web tier and a separate realm service keep one world consistent for everyone in it.',
     'It’s the most complete thing I’ve built. A stranger can open a tab right now, make a character, and run into other people.',
   ],
-  framesLede: 'Seven regions, one level-30 character. Click the tabs or use the arrow keys.',
+  framesLede: 'Seven regions, one level-30 character.',
+  framesCue: 'Choose a region, or use the arrow keys',
   proof: {
     t: 'One realm, up to 64 players',
     body: [
@@ -314,6 +320,11 @@ export const saltline = {
   href: 'https://saltline.app',
   status: 'live' as Status,
   sub: 'Age of sail in a browser, with a real sailing model under it.',
+  skim: {
+    role: 'The sailing model, the renderer, the multiplayer, the accounts.',
+    hard: 'Thrust comes off the point of sail, so aim too close to the wind and you stop.',
+    proof: 'Live at saltline.app with accounts, up to twenty people to a sea.',
+  },
   lead: {
     asset: 'saltline-lead-dawn',
     alt: 'saltline at 06:31: an island silhouetted under a blue dawn sky, three named raiders strung along the horizon, a light path on the water, the sloop under full sail. The Ghostgale status panel and the nav chart sit down the right edge.',
@@ -330,6 +341,10 @@ export const saltline = {
   ],
   framesLede:
     'One seed at six times of day. Sea state moderate, wind at forty degrees, crest sharpness 0.68, seed 4193, identical in all six. Only the clock moved.',
+  /* The cue is what turns a figure into a control. Short, imperative, and it
+     names the keyboard as well, because the arrow keys work and nothing on the
+     page would otherwise say so. */
+  framesCue: 'Drag the clock, or use the arrow keys',
   arcNote:
     'At golden hour the sloop is doing 15 knots through the water but only 2.3 toward the mark; at sunrise it’s 13.6 and 11. Picking the angle is the whole game.',
   proof: {
@@ -359,6 +374,11 @@ export const hidamari = {
   name: 'hidamari',
   status: 'wip' as Status,
   sub: 'Ambient app. Japanese for a sunny spot, the pool of light you stand in.',
+  skim: {
+    role: 'The offline bake, the runtime reprojection, the delivery.',
+    hard: 'Photoreal light on hardware that cannot path-trace a frame of it. Cycles bakes offline, the browser reprojects.',
+    proof: '116 frames per second live. Not public yet: the audio is not right.',
+  },
   spread: {
     n: 'Plate 03 / hidamari',
     t: 'Photoreal, because it cheats',
@@ -383,7 +403,14 @@ export const elderwood = {
   name: 'Elderwood Vale',
   status: 'wip' as Status,
   sub: 'Browser-native tower defense. Playable greybox, and an architecture argument.',
+  skim: {
+    role: 'The sim core, the renderer, the HUD, and the boundary between them.',
+    hard: 'Keeping the simulation away from everything that draws it, with the compiler enforcing that rather than me.',
+    proof: 'Playable greybox: placement, waves, enough economy to lose.',
+  },
   title: 'A sim core that ignores the browser',
+  framesLede: 'Three captures of the same board.',
+  framesCue: 'Click a tab, or use the arrow keys',
   prose: [
     'A browser-native tower defense. The part that’s done is the part I care about: the simulation is fully separated from everything that draws it.',
     'The sim can’t touch the DOM, import three.js, read the clock, or call Math.random - and that’s enforced by the compiler and the linter, not by me remembering.',

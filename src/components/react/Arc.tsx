@@ -113,6 +113,9 @@ export default function Arc({ frames, note }: Props) {
               {current.time} · {current.light}
             </output>
           </span>
+          {/* The filled part of the track is drawn, not native: WebKit has no
+              equivalent of ::-moz-range-progress, and how far along the day is
+              carries as much as the handle's position does. */}
           <input
             id={`${uid}-clock`}
             type="range"
@@ -120,6 +123,10 @@ export default function Arc({ frames, note }: Props) {
             max={frames.length - 1}
             step={1}
             value={index}
+            style={{ '--at': `${(index / (frames.length - 1)) * 100}%` } as React.CSSProperties}
+            /* Six positions with no units. Announcing "3 of 6" tells a screen
+               reader where the handle is and nothing about where the boat is. */
+            aria-valuetext={`${current.time}, ${current.light}`}
             onChange={(e) => setIndex(Number(e.target.value))}
           />
         </label>
