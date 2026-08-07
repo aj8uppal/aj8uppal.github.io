@@ -730,9 +730,12 @@ summary,
   -webkit-text-stroke: clamp(1.4px, 0.15vw, 2.4px) var(--on-ink);
 }
 
+/* The action column's floor is the unwrapped button row. At a 250px floor the
+   two buttons wrapped somewhere around 1100px and stacked ragged-right at two
+   different widths, which reads as two leftovers rather than a pair. */
 .hero__bottom {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(250px, 0.75fr);
+  grid-template-columns: minmax(0, 1.25fr) minmax(max-content, 0.75fr);
   gap: clamp(1.5rem, 5vw, 5rem);
   align-items: end;
   margin-top: clamp(1.5rem, 3vw, 2.8rem);
@@ -746,25 +749,65 @@ summary,
   letter-spacing: -0.03em;
 }
 
+/* The second line, which says where the first one comes from. Held to two
+   thirds the size of the positioning line and a longer measure, so the two
+   read as a statement and its footnote rather than two competing headlines. */
+.hero__support {
+  max-width: 62ch;
+  margin: 0.85rem 0 0;
+  color: var(--on-ink-2);
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+
+/* A column so the quiet link gets its own line, and so it can shrink to the
+   width of the word. Spanning the row would have given a five-letter link a
+   700px hit box, and a tap nowhere near it would open a mail client. */
 .hero__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 0.2rem;
+}
+
+.hero__btns {
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem;
   justify-content: flex-end;
 }
 
+/* The quiet one. It is a text link on purpose: two buttons and a link is a
+   hierarchy a reader can see without being told, and three buttons is not. */
+.hero__mail {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 0.15rem;
+  color: var(--on-ink-2);
+  font: 700 0.82rem/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-underline-offset: 5px;
+  transition: color var(--dur-1) var(--ease);
+}
+
+.hero__mail:hover,
+.hero__mail:focus-visible {
+  color: var(--sand);
+}
+
 /* An annotation on the canvas, not a control on it. It wore a bordered pill
    and it is `pointer-events: none`, which is the shape promising something
    the element cannot do; the control it describes is the canvas itself. So:
-   a mono caption hung off a rule, with no chrome to press. */
+   a mono caption hung off a rule, with no chrome to press, and now saying
+   what the two ways of working it are rather than only that it exists. */
 .hint {
   position: absolute;
   z-index: 2;
   top: 50%;
   right: var(--pad);
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
   padding: 0 0 0 0.75rem;
   border-left: 2px solid var(--sand);
   color: var(--on-ink);
@@ -774,9 +817,11 @@ summary,
   pointer-events: none;
 }
 
-.hint b {
-  color: var(--sand);
-  font-size: 1rem;
+.hint span {
+  display: block;
+  color: var(--on-ink-3);
+  font-weight: 500;
+  text-transform: none;
 }
 
 /* ── 7. SECTIONS ─────────────────────────────────────────────────────── */
@@ -2584,6 +2629,10 @@ button.toolbar__link {
   }
 
   .hero__actions {
+    align-items: flex-start;
+  }
+
+  .hero__btns {
     justify-content: flex-start;
   }
 
@@ -2680,14 +2729,21 @@ button.toolbar__link {
     height: 52%;
   }
 
+  /* Two items pushed to opposite edges need room between them to read as two
+     items. At 390 there is none, so both wrapped, and the role line's second
+     word landed under the dot rather than under its own first word. Stacked,
+     each gets the full measure and neither wraps at all. */
   .hero__meta {
+    flex-direction: column;
     align-items: flex-start;
+    gap: 0.3rem;
     font-size: 0.59rem;
   }
 
+  /* Indented past the dot so the two lines share a left edge and the dot
+     hangs, rather than the second line starting half a character early. */
   .hero__meta span:last-child {
-    max-width: 145px;
-    text-align: right;
+    padding-left: 1rem;
   }
 
   .hero h1 {
@@ -2707,15 +2763,12 @@ button.toolbar__link {
     font-size: 1.16rem;
   }
 
-  .hero__actions {
+  /* Both buttons to equal halves rather than to their label lengths, so the
+     primary is not the smaller of the two just because its word is shorter. */
+  .hero__btns {
     display: grid;
     grid-template-columns: 1fr 1fr;
-  }
-
-  /* Three buttons, two columns: the third runs the width rather than sitting
-     alone in a half. */
-  .hero__actions > :nth-child(3) {
-    grid-column: 1 / -1;
+    width: 100%;
   }
 
   .btn {
@@ -2730,8 +2783,15 @@ button.toolbar__link {
   .hint {
     top: 4.9rem;
     right: 1rem;
-    padding: 0.45rem 0.55rem;
+    padding-left: 0.55rem;
     font-size: 0.57rem;
+  }
+
+  /* The second line names a pointer and the arrow keys, and a phone has
+     neither. Touch moves the light too, but a caption on a canvas is not
+     where you teach someone to touch a screen. */
+  .hint span {
+    display: none;
   }
 
   .sec {

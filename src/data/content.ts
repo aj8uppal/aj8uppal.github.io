@@ -96,7 +96,15 @@ export const sections = [
 
 export const cover = {
   kicker: ['Bay Area, California', 'Software engineer at Notable Health'],
-  lead: 'I studied computer science and astrophysics at the same time because I couldn’t pick one. These days I build things that run in a browser.',
+  /* The hero used to open on the two degrees, which is the same story About
+     opens on, told slightly worse. It says what he does now instead, and the
+     degrees keep their one telling in `about.prose[0]`. Both lines are drawn
+     from what the page already publishes: the Notable role names the voice
+     platform and its production numbers, and the four projects below are the
+     worlds, the renderer and the sailing model. */
+  lead: 'I build production AI systems, and improbable things that run in a browser.',
+  support:
+    'At Notable I work on voice infrastructure. Outside work it’s multiplayer worlds, renderers, sailing models, and small things you can open and play with.',
   second:
     'Right now that’s four projects: a sailing game that runs a real sailing model, a voxel MMORPG that holds up to 64 people in a realm, a rendering experiment that fakes sunlight by refusing to compute it, and a tower defense with a deterministic sim core. Two are live today. Two aren’t finished yet.',
   strip: [

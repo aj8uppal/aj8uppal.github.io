@@ -667,9 +667,15 @@ await run(
         labs: cols('.labs'),
         skills: cols('.skills'),
         ticks: cols('.arc__ticks'),
-        actions: [...document.querySelectorAll('.hero__actions .btn')].map((b) =>
+        btns: [...document.querySelectorAll('.hero__btns .btn')].map((b) =>
           Math.round(b.getBoundingClientRect().width),
         ),
+        mail: (() => {
+          const a = document.querySelector('.hero__mail');
+          const r = a.getBoundingClientRect();
+          const row = a.parentElement.getBoundingClientRect();
+          return { w: Math.round(r.width), rowW: Math.round(row.width), href: a.href };
+        })(),
         tap: [...new Set(tap)].slice(0, 6),
       };
     });
@@ -730,10 +736,18 @@ await run(
     note(m.labs === 1, '390 playground is one column', `${m.labs}`);
     note(m.skills === 1, '390 skills are one column', `${m.skills}`);
     note(m.ticks === 3, '390 the clock ticks are three across', `${m.ticks}`);
+    /* Two buttons to equal halves, and the quiet link sized to its own word.
+       A five-letter mailto stretched across the row is a tap target you hit
+       by accident from an inch away. */
     note(
-      m.actions[2] > m.actions[0] * 1.6,
-      '390 the third hero action runs the full width',
-      m.actions.join(' / '),
+      m.btns.length === 2 && m.btns[0] === m.btns[1],
+      '390 the two hero buttons share the row evenly',
+      m.btns.join(' / '),
+    );
+    note(
+      m.mail.href.startsWith('mailto:') && m.mail.w < m.mail.rowW * 0.4,
+      '390 the quiet hero link is sized to its text, not to the row',
+      `${m.mail.w} of ${m.mail.rowW}`,
     );
     note(m.tap.length === 0, '390 every control clears a 34px tap target', m.tap.join(', '));
     console.log(`       page height ${m.height}px at 390`);
