@@ -325,6 +325,51 @@ function installThemeColor(): void {
   paint();
 }
 
+/* ── The long tab ────────────────────────────────────────────────────── */
+/**
+ * Twenty minutes of actually being looked at, and the build note says so.
+ *
+ * hidamari is an ambient app - a window you leave open rather than a thing you
+ * finish - and a portfolio claiming that is in no position to notice when
+ * somebody does it to the portfolio. This is the noticing, and it is one
+ * sentence at the bottom of the page: no toast, no sound, nothing stored,
+ * nothing sent, and gone on the next reload.
+ *
+ * Visible time, not wall time. A tab left in the background for an hour was
+ * not left open in the sense the line is about, so the clock stops on hide and
+ * keeps the remainder rather than restarting - twelve minutes now and eight
+ * after lunch still counts, and it should.
+ */
+function installLongTab(): void {
+  const line = document.querySelector<HTMLElement>('[data-ambient]');
+  const said = line?.dataset.ambient;
+  if (!line || !said) return;
+
+  let left = 20 * 60 * 1000;
+  let mark = 0;
+  let timer = 0;
+
+  const start = (): void => {
+    mark = performance.now();
+    timer = window.setTimeout(() => {
+      line.textContent = said;
+    }, left);
+  };
+
+  const pause = (): void => {
+    clearTimeout(timer);
+    left -= performance.now() - mark;
+  };
+
+  // A hidden tab throttles timers rather than stopping them, so the timer is
+  // cleared outright and the remainder carried by hand.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) pause();
+    else start();
+  });
+  if (!document.hidden) start();
+}
+
 /* ── Hero ────────────────────────────────────────────────────────────── */
 function installHeroCanvas(): void {
   const canvas = document.getElementById('hero-canvas');
@@ -335,4 +380,5 @@ installReveals();
 installNav();
 installNavPanel();
 installThemeColor();
+installLongTab();
 installHeroCanvas();

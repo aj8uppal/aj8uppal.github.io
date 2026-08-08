@@ -946,7 +946,14 @@ const heroLabel =
     </div>
 
     <footer class="foot">
-      <p>
+      {
+        /* The one line on the page that notices how long you have been here.
+          After twenty minutes of the tab actually being looked at, the build
+          note becomes the line in the attribute and nothing else moves: no
+          toast, no sound, nothing written down, gone on reload. The copy sits
+          here rather than in the script because it is copy. */
+      }
+      <p data-ambient="You have now left this open like an ambient app. hidamari would approve.">
         Astro and TypeScript, built static. Seven React islands, all of them something you can move.
         Every screenshot is a capture of the actual project.
       </p>
