@@ -1334,49 +1334,47 @@ summary,
   margin-bottom: 0.35rem;
 }
 
-/* Status, and only status. The fully round shape is the page's promise that
-   a thing is live in the interaction sense - pressable, selected, current -
-   and a project's shipping state is the one piece of static information
-   allowed to borrow it, because "live" is what the shape already says. */
-.pill {
+/* The shipping state. It used to be a fully round pill, and that was the last
+   place static information wore the shape this page uses for things that can
+   be pressed: a tab, a filter, a skill chip, a call to action. Four labels are
+   not four controls, and lending them the silhouette is what turns one
+   interaction language into general decoration.
+
+   So it joins the metadata row below in plain mono, and keeps exactly two
+   things: the dot, which is what a reader skimming four cards actually reads,
+   and sand on the one state that means you can open it now. Sand is the press
+   colour everywhere else on the page, and live is the only static fact on a
+   card that is genuinely an invitation to act. */
+.state {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.35rem 0.6rem;
-  border: 1px solid var(--line-dark);
-  border-radius: var(--r-pill);
   color: var(--on-ink-2);
-  font: 800 0.64rem/1 var(--mono);
+  font: 800 0.64rem/1.4 var(--mono);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.pill--live {
-  color: var(--on-accent);
-  background: var(--sand);
-  border-color: var(--sand);
-}
-
-.pill--live::before {
+/* Filled means open to you, hollow means not yet. The word says it too; this
+   is for the reader who is scanning rather than reading. */
+.state::before {
   content: '';
   width: 0.45rem;
   height: 0.45rem;
+  border: 1px solid currentcolor;
   border-radius: 50%;
-  background: var(--ink);
 }
 
-.pill--wip {
+.state--live {
   color: var(--sand);
-  border-color: color-mix(in srgb, var(--sand) 40%, transparent);
 }
 
-.pill--off {
+.state--live::before {
+  background: currentcolor;
+}
+
+.state--off {
   color: var(--on-ink-3);
-}
-
-.sec--sand .pill {
-  color: var(--on-accent);
-  border-color: var(--line-light-2);
 }
 
 /* Everything else the old pill was carrying: a project's number, its shape,

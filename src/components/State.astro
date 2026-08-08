@@ -1,0 +1,29 @@
+---
+/**
+ * A project's shipping state.
+ *
+ * Not a pill any more, and the rename is the point. On this page a fully round
+ * outline is what a thing that can be pressed looks like - a tab, a filter, a
+ * skill chip, a call to action - and four static labels were wearing it, which
+ * is how one interaction language turns into general decoration.
+ *
+ * What survives the shape is the colour and the dot, because the state itself
+ * is load-bearing: live means you can open it right now.
+ */
+import type { Status } from '../data/content';
+
+interface Props {
+  status: Status;
+  label?: string;
+}
+
+const fallback: Record<Status, string> = {
+  live: 'Live',
+  wip: 'In progress',
+  off: 'Archive',
+};
+
+const { status, label } = Astro.props;
+---
+
+<span class:list={['state', `state--${status}`]}>{label ?? fallback[status]}</span>

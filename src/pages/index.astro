@@ -1,7 +1,7 @@
 ---
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import Pill from '../components/Pill.astro';
+import State from '../components/State.astro';
 import Section from '../components/Section.astro';
 import Skim from '../components/Skim.astro';
 import Arc from '../components/react/Arc';
@@ -308,9 +308,14 @@ const heroLabel =
           <div class="card__intro">
             <span class="card__index">{saltline.spread.n}</span>
             <div class="card__badges">
-              <Pill status={saltline.status} label="Live" />
+              <State status={saltline.status} label="Live" />
               <span class="tag">01 &middot; Flagship</span>
-              <span class="tag">Live multiplayer</span>
+              {
+                /* Was "Live multiplayer". The state to its left now reads LIVE in
+                  the same mono at the same size, and two of those in one row is
+                  a stutter the pill shape used to hide. */
+              }
+              <span class="tag">Multiplayer</span>
               <span class="tag">Six frames &middot; one seed</span>
             </div>
 
@@ -399,7 +404,7 @@ const heroLabel =
           <div class="card__intro">
             <span class="card__index">{ember.spread.n}</span>
             <div class="card__badges">
-              <Pill status={ember.status} label="Live MMORPG" />
+              <State status={ember.status} label="Live MMORPG" />
               <span class="tag">02 &middot; In production</span>
               <span class="tag">64-player realm</span>
             </div>
@@ -487,7 +492,7 @@ const heroLabel =
         <div class="card__copy">
           <span class="card__index">{hidamari.spread.n}</span>
           <div class="card__badges">
-            <Pill status={hidamari.status} label="Not public" />
+            <State status={hidamari.status} label="Not public" />
             <span class="tag">03 &middot; Rendering</span>
           </div>
 
@@ -521,7 +526,7 @@ const heroLabel =
         <div class="card__copy">
           <span class="card__index">{elderwood.title}</span>
           <div class="card__badges">
-            <Pill status={elderwood.status} label="Greybox" />
+            <State status={elderwood.status} label="Greybox" />
             <span class="tag">04 &middot; Architecture</span>
           </div>
 
