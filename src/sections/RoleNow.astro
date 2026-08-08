@@ -1,8 +1,13 @@
 ---
 /**
  * The current role, rendered on its own with the room the other seven do not
- * get. It keeps the .role class and the stack key, so the work-log filter still
- * counts it as one of eight wherever on the page it ends up standing.
+ * get. It keeps the .role class and the stack key, so the work-log filter
+ * counts it as one of eight.
+ *
+ * It opens on the four points of ownership rather than on a summary, because
+ * the summary is the compact block up by About and printing it twice would
+ * spend the strongest sentence on the page on being read again. This is the
+ * record; that is the answer.
  */
 import Claim from '../components/Claim.astro';
 import { callTrace, places } from '../data/content';
@@ -27,11 +32,6 @@ import { current, stackKey, stackLine } from '../lib/roles';
           {current.where && <span> &middot; {current.where}</span>}
         </h3>
         <p class="stack">{stackLine(current)}</p>
-        {current.body && (
-          <p class="role__lede">
-            {current.ev ? <Claim of={current.ev}>{current.body}</Claim> : current.body}
-          </p>
-        )}
         {current.bullets && (
           <ul class="role__pts">
             {current.bullets.map((pt) => (

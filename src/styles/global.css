@@ -1139,6 +1139,74 @@ summary,
   text-decoration-color: currentcolor;
 }
 
+/* ── 8b. THE CURRENT ROLE, HIGH ──────────────────────────────────────── */
+/* Shallower than a section, because it is a paragraph and not a chapter. A
+   full section's air around four lines would have it announcing more than it
+   says, and the point of the band is only that the sentence gets its own
+   ground on the way past. */
+.now {
+  padding-block: clamp(1.5rem, 2.2vw, 2.1rem);
+}
+
+/* The same two columns the work log's rows use, so the flag hangs in the
+   gutter the dates hang in and the two treatments of this job line up down
+   the page even though they are three sections apart. */
+.now__grid {
+  display: grid;
+  grid-template-columns: 8.6rem minmax(0, 1fr);
+  gap: 1.4rem;
+}
+
+.now__flag {
+  margin: 0;
+  padding-top: 0.32rem;
+  color: var(--earth-ink);
+  font: 800 0.63rem/1.5 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.now__h {
+  margin: 0 0 0.1rem;
+  font-size: clamp(1.3rem, 2.1vw, 1.66rem);
+  line-height: 1.2;
+  letter-spacing: -0.028em;
+}
+
+.now__h b {
+  font-weight: 900;
+}
+
+.now__stack {
+  margin: 0;
+  color: var(--on-paper-3);
+  font: 650 0.69rem/1.45 var(--mono);
+}
+
+.now__lede {
+  max-width: 74ch;
+  margin: 0.55rem 0 0;
+  color: var(--on-paper);
+  font-size: 0.96rem;
+  line-height: 1.5;
+}
+
+.now__more {
+  display: inline-block;
+  margin-top: 0.8rem;
+  color: var(--on-paper-2);
+  font: 750 0.66rem/1.5 var(--mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration-color: color-mix(in srgb, currentcolor 35%, transparent);
+  text-underline-offset: 4px;
+}
+
+.now__more:hover {
+  color: var(--on-paper);
+  text-decoration-color: currentcolor;
+}
+
 /* ── 9. PROJECT CARDS ───────────────────────────────────────────────── */
 .work {
   position: relative;
@@ -2485,12 +2553,6 @@ summary,
   font: 800 0.63rem/1.5 var(--mono);
   letter-spacing: 0.09em;
   text-transform: uppercase;
-}
-
-.role--now .role__lede {
-  max-width: 74ch;
-  color: var(--on-paper);
-  font-size: 0.96rem;
 }
 
 .role--now .role__status {
@@ -4364,6 +4426,12 @@ span.buoy__p {
     padding-block: 3.2rem;
   }
 
+  /* Still the shallow one. A chapter's worth of air on four lines reads as a
+     section that forgot to say anything. */
+  .now {
+    padding-block: 2rem;
+  }
+
   .head {
     grid-template-columns: 1fr;
     gap: 0.8rem;
@@ -4440,10 +4508,21 @@ span.buoy__p {
     grid-template-columns: 5.6rem minmax(0, 1fr);
   }
 
-  .role {
+  .role,
+  .now__grid {
     grid-template-columns: 1fr;
     gap: 0.4rem;
     padding-block: 1.05rem;
+  }
+
+  /* The grid's padding is the row rhythm inside the log; the band already has
+     its own and does not want a second helping. */
+  .now__grid {
+    padding-block: 0;
+  }
+
+  .now__flag {
+    padding-top: 0;
   }
 
   .role .role__when {

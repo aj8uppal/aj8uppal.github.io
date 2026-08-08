@@ -1541,6 +1541,24 @@ await run(
         nowLast:
           document.querySelector('.roles > *:last-child')?.classList.contains('role--now') ?? false,
         fwd: !!document.querySelector('.roles--fwd'),
+        /* The compact summary that stands in front of the projects. It is one
+           sentence and a link, and the whole point of splitting it off the
+           record is that the sentence is not also in the record. */
+        now: (() => {
+          const n = document.querySelector('.now');
+          if (!n) return null;
+          const said = n.querySelector('.now__lede')?.textContent.trim() ?? '';
+          const to = n.querySelector('.now__more')?.getAttribute('href') ?? null;
+          return {
+            after: n.previousElementSibling?.id ?? null,
+            sec: n.hasAttribute('data-sec'),
+            rows: n.querySelectorAll('.role, [data-stack]').length,
+            to,
+            lands: to ? !!document.querySelector(to) : false,
+            said: said.slice(0, 60),
+            times: said ? document.body.textContent.split(said.slice(0, 60)).length - 1 : 0,
+          };
+        })(),
       }));
 
     const b = await read();
@@ -1580,6 +1598,27 @@ await run(
       b.fwd && b.nowLast,
       'with the current role at the foot of the spine',
       `fwd ${b.fwd}, last ${b.nowLast}`,
+    );
+
+    note(
+      a.now?.after === 'about' && b.now?.after === 'about',
+      'and the current role is answered right after About on both sides',
+      `A after ${a.now?.after}, B after ${b.now?.after}`,
+    );
+    note(
+      a.now && !a.now.sec && a.now.rows === 0,
+      'the summary is a band, not a seventh section and not a row in the log',
+      `data-sec ${a.now?.sec}, rows ${a.now?.rows}`,
+    );
+    note(
+      a.now?.times === 1 && b.now?.times === 1,
+      'and it says its sentence once, with the record holding the rest',
+      `A ${a.now?.times}, B ${b.now?.times}`,
+    );
+    note(
+      a.now?.to === '#r-notable' && a.now.lands && b.now?.lands,
+      'and points at the full record, which is there',
+      `${a.now?.to} lands A ${a.now?.lands} B ${b.now?.lands}`,
     );
 
     const missing = a.ids.filter((id) => !b.ids.includes(id));

@@ -16,6 +16,7 @@
 import Base from '../layouts/Base.astro';
 import Hero from '../sections/Hero.astro';
 import About from '../sections/About.astro';
+import Now from '../sections/Now.astro';
 import Projects from '../sections/Projects.astro';
 import Experience from '../sections/Experience.astro';
 import Playground from '../sections/Playground.astro';
@@ -36,6 +37,7 @@ import { sideB as s } from '../lib/route';
   <Experience n={s.n('work')} tone="paper-2" order="oldest" />
   <Projects n={s.n('building')} tone="ink-deep" />
   <About n={s.n('about')} tone="paper" />
+  <Now />
   <Skills n={s.n('skills')} tone="ink-3" />
   <Contact n={s.n('contact')} tone="camel" side="b" />
 </Base>
