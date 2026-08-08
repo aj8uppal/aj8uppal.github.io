@@ -44,6 +44,8 @@ const MIN = 0.5;
 export default function DeviationFrame({ src, href, title, poster, posterAlt, note }: Props) {
   const [live, setLive] = useState(false);
   const [scale, setScale] = useState(MIN);
+  /** Which edges have more chart behind them, so only those are faded. */
+  const [pan, setPan] = useState({ l: false, r: false });
   const box = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLIFrameElement>(null);
   /** Where the caret was when the frame was allowed to boot. */
@@ -174,6 +176,33 @@ export default function DeviationFrame({ src, href, title, poster, posterAlt, no
     return () => ro.disconnect();
   }, []);
 
+  /* Which way there is more to see. A fade on an edge that is already the end
+     of the chart would be covering the y-axis labels to advertise nothing, so
+     each side is drawn from the real scroll position rather than from the fact
+     that the box scrolls at all.
+
+     Keyed on `scale` because the drawn width changes without the box changing:
+     a ResizeObserver on the scroller never fires for it, and the scroll extent
+     is only correct after the render that applied it. */
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const read = (): void => {
+      const over = el.scrollWidth - el.clientWidth;
+      // A pixel of slack either end: fractional scroll positions are normal at
+      // a fractional scale, and an edge that is one subpixel short is the end.
+      setPan({ l: el.scrollLeft > 1, r: over > 1 && el.scrollLeft < over - 1 });
+    };
+    read();
+    el.addEventListener('scroll', read, { passive: true });
+    const ro = new ResizeObserver(read);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener('scroll', read);
+      ro.disconnect();
+    };
+  }, [scale]);
+
   /**
    * The 2015 page runs `FocusOnInput()` at load and puts the caret in its
    * first field. In a frame two thirds of the way down someone else's page
@@ -210,43 +239,53 @@ export default function DeviationFrame({ src, href, title, poster, posterAlt, no
             the same floor this component clamps to. Setting it from here would
             be the same number arriving one hydration later, and the card would
             grow under the reader to get to it. */}
-        <div className="devframe" ref={box}>
-          {/* A transform does not resize the box it is on, and the scroll area
+        {/* The wrapper exists to hang the edge fades on. They cannot go on the
+            scroller itself: a box positioned inside one travels with the
+            content, and a fade that scrolls away is not an edge. */}
+        <div className="devpan" data-l={pan.l || undefined} data-r={pan.r || undefined}>
+          <div className="devframe" ref={box}>
+            {/* A transform does not resize the box it is on, and the scroll area
               of the frame above is measured off boxes. So the drawn width is
               stated here, and the only thing that scrolls is what is really
               wider than the card. */}
-          <div className="devframe__fit" style={{ width: `${Math.round(W * scale)}px` }}>
-            {live ? (
-              <iframe
-                ref={frame}
-                src={src}
-                title={title}
-                width={W}
-                height={H}
-                loading="lazy"
-                onLoad={settleFocus}
-                style={{ transform: `scale(${scale})` }}
-              />
-            ) : (
-              /* The chart, photographed at this seed, so the slot is never the
+            <div className="devframe__fit" style={{ width: `${Math.round(W * scale)}px` }}>
+              {live ? (
+                <iframe
+                  ref={frame}
+                  src={src}
+                  title={title}
+                  width={W}
+                  height={H}
+                  loading="lazy"
+                  onLoad={settleFocus}
+                  style={{ transform: `scale(${scale})` }}
+                />
+              ) : (
+                /* The chart, photographed at this seed, so the slot is never the
                  outline of one. It covers the second the CDN takes and it
                  covers a reader with no script at all, for whom the live frame
                  is not late, it is not coming. The toolbar below links to the
                  file either way. */
-              <picture>
-                <source type="image/avif" srcSet={poster.avif} sizes={poster.sizes} />
-                <source type="image/webp" srcSet={poster.webp} sizes={poster.sizes} />
-                <img
-                  src={poster.src}
-                  width={poster.width}
-                  height={poster.height}
-                  alt={posterAlt}
-                  decoding="async"
-                />
-              </picture>
-            )}
+                <picture>
+                  <source type="image/avif" srcSet={poster.avif} sizes={poster.sizes} />
+                  <source type="image/webp" srcSet={poster.webp} sizes={poster.sizes} />
+                  <img
+                    src={poster.src}
+                    width={poster.width}
+                    height={poster.height}
+                    alt={posterAlt}
+                    decoding="async"
+                  />
+                </picture>
+              )}
+            </div>
           </div>
         </div>
+        {/* Only true where the frame actually pans, which the stylesheet knows
+            as the same 765px the drawn height stops changing at. It is in the
+            markup at every width rather than rendered on measurement, so a
+            reader with no script gets the instruction too. */}
+        <p className="devpan__cue">Swipe sideways for the second distribution</p>
       </div>
       <div className="toolbar">
         <span>{note}</span>

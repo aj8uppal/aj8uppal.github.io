@@ -2850,6 +2850,69 @@ summary,
   gap: 0.95rem;
 }
 
+/* ── The pan window ──────────────────────────────────────────────────────
+   Below 765 the frame stops shrinking and scrolls sideways instead, and until
+   now nothing said so: the reader got half a chart and a hairline scrollbar to
+   infer the rest from. Two things fix that, and neither touches the 2015 file.
+
+   The fades are drawn on this wrapper rather than on the scroller, because a
+   box positioned inside a scroller travels with the content and an edge that
+   scrolls away is not an edge. Each side appears only when there is really
+   more chart behind it, which the component reads off the scroll position: at
+   rest the left edge is the chart's own left edge and keeps its axis labels,
+   which are the smallest thing in the picture and the first thing a decorative
+   fade would eat. `overflow: hidden` is here so they take the frame's corners
+   instead of squaring them off. */
+.devpan {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-sm);
+}
+
+.devpan::before,
+.devpan::after {
+  content: '';
+  position: absolute;
+  inset-block: 1px;
+  width: 2.75rem;
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease);
+  pointer-events: none;
+}
+
+.devpan::before {
+  left: 1px;
+  background: linear-gradient(to right, var(--screen), transparent);
+}
+
+.devpan::after {
+  right: 1px;
+  background: linear-gradient(to left, var(--screen), transparent);
+}
+
+.devpan[data-l]::before,
+.devpan[data-r]::after {
+  opacity: 1;
+}
+
+/* The instruction, and it names the payoff rather than the gesture, because
+   what a reader needs to know is not that the box moves but that a second
+   distribution is the reason to move it. Hidden wherever the whole chart is
+   already on screen: at those widths it would be telling the reader to swipe
+   at something that does not go anywhere.
+
+   It stands on the stage's own dark screen rather than the section's sand, so
+   it takes the ink family the label above it takes. `--muted` here would be
+   the sand ground's quiet step, which is a dark grey on a dark box. */
+.devpan__cue {
+  display: none;
+  margin: 0;
+  color: var(--on-ink-3);
+  font: 750 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 /* A window onto a document that is a fixed size, not a box that document
    responds to. deviation.html hardcodes a 1280px chart canvas, so the frame is
    laid out at the width the file wants and scaled from the outside.
@@ -2893,6 +2956,13 @@ summary,
   .devframe {
     aspect-ratio: auto;
     height: 298px;
+  }
+
+  /* The same crossing, said once. This is exactly where the shrinking stops
+     and the sideways scroll starts, so it is exactly where the instruction
+     becomes true. */
+  .devpan__cue {
+    display: block;
   }
 }
 
