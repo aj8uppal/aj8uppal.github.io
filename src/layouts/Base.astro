@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
-import { site, sections, contact } from '../data/content';
+import { site, contact } from '../data/content';
+import { sideA } from '../lib/route';
+import type { NavItem } from '../lib/route';
 
 interface Props {
   title?: string;
@@ -14,12 +16,23 @@ interface Props {
    * a real navigation - which is also why the interceptor stops matching it.
    */
   elsewhere?: boolean;
+  /** The six, in the order this route runs them. */
+  nav?: NavItem[];
+  /**
+   * Side B is the same six sections as the index, so it is a duplicate of the
+   * home page to a crawler and a deliberate second reading to a person. It
+   * asks not to be indexed and keeps its links followed, which is the honest
+   * description of what it is.
+   */
+  index?: boolean;
 }
 
 const {
   title = `${site.title} · ${site.tagline}`,
   description = site.description,
   elsewhere = false,
+  nav = sideA.nav,
+  index = true,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 
@@ -50,6 +63,7 @@ const Lab = devTools || labFlag ? (await import('../components/Lab.astro')).defa
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#242423" />
     <link rel="canonical" href={canonical} />
+    {!index && <meta name="robots" content="noindex, follow" />}
     <link rel="icon" href="/favicon.ico" sizes="any" />
 
     <meta property="og:type" content="website" />
@@ -94,7 +108,7 @@ const Lab = devTools || labFlag ? (await import('../components/Lab.astro')).defa
       </a>
 
       <nav class="nav__links" id="nav" aria-label="Sections">
-        {sections.map((s) => <a href={to(s.id)}>{s.name}</a>)}
+        {nav.map((s) => <a href={to(s.id)}>{s.name}</a>)}
         <span class="nav__marker" aria-hidden="true"></span>
       </nav>
 
@@ -113,7 +127,7 @@ const Lab = devTools || labFlag ? (await import('../components/Lab.astro')).defa
     <div class="nav__panel" id="nav-panel" hidden>
       <nav aria-label="Sections, expanded">
         {
-          sections.map((s) => (
+          nav.map((s) => (
             <a href={to(s.id)}>
               <b>{s.name}</b>
               <span>{s.desc}</span>

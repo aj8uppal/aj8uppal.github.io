@@ -7,9 +7,11 @@ interface Props {
   /** Its number on this route. The sides run the same sections in two orders. */
   n: string;
   tone: Tone;
+  /** Which side this is, so the footer offers the other one. */
+  side?: 'a' | 'b';
 }
 
-const { n, tone } = Astro.props;
+const { n, tone, side = 'a' } = Astro.props;
 ---
 
 <Section n={n} id="contact" name="Contact" tone={tone} cls="contact">
@@ -75,6 +77,27 @@ const { n, tone } = Astro.props;
     </p>
     <p>
       Source at <a href={contact.github}>github.com/aj8uppal</a>.
+    </p>
+
+    {
+      /* The other side. Down here on purpose: a second running order is a
+        thing to find at the end rather than a choice to make at the start,
+        and a reader who has got this far has already read one of them. The
+        content is the same either way, so nothing is behind the link that
+        is not also above it. */
+    }
+    <p class="foot__flip">
+      {
+        side === 'a' ? (
+          <>
+            <a href="/side-b/">Side B</a> runs the same page from the other end, oldest work first.
+          </>
+        ) : (
+          <>
+            <a href="/">Side A</a> runs it the usual way round, current work first.
+          </>
+        )
+      }
     </p>
   </footer>
 </Section>

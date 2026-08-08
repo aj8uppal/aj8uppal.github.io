@@ -56,7 +56,7 @@ async function settleStill(page) {
   await page.waitForTimeout(900);
 }
 
-async function run(name, opts, body) {
+async function run(name, opts, body, url = BASE) {
   const browser = await chromium.launch();
   const ctx = await browser.newContext(opts);
   const page = await ctx.newPage();
@@ -64,7 +64,7 @@ async function run(name, opts, body) {
   page.on('pageerror', (e) => errors.push(String(e)));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
   console.log(`\n── ${name} ──`);
-  await page.goto(BASE, { waitUntil: 'networkidle' });
+  await page.goto(url, { waitUntil: 'networkidle' });
   /* The dev server carries the design lab and the shipped site does not, so it
      comes out before anything is measured. Auditing review furniture would be
      auditing the wrong page. */
@@ -505,12 +505,36 @@ await run(
       await new Promise((r) => setTimeout(r, 400));
 
       const typer = document.querySelector('.stage--typer');
-      const chips = [...(typer?.querySelectorAll('.choice') ?? [])];
+      const chips = [...(typer?.querySelectorAll('.choices .choice') ?? [])];
       const outEl = typer?.querySelector('.term__out');
       const before = outEl?.textContent ?? '';
       chips[2]?.click();
       await new Promise((r) => setTimeout(r, 900));
       const after = outEl?.textContent ?? '';
+
+      /* The card's caption promises a block of text at a rate you choose, and
+         B1 was the work of making that true, so the two controls it names are
+         asserted rather than assumed. The rate goes to its floor first, since
+         a run at the default would still be typing when this returns. */
+      const rate = typer?.querySelector('.typer__rate input');
+      const line = typer?.querySelector('.typer__in');
+      const set = (el, v) => {
+        const proto = Object.getPrototypeOf(el);
+        Object.getOwnPropertyDescriptor(proto, 'value').set.call(el, v);
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+      };
+      const mine = 'a line of my own';
+      let typedMine = false;
+      if (rate && line) {
+        set(rate, rate.min);
+        rate.dispatchEvent(new Event('change', { bubbles: true }));
+        set(line, mine);
+        typer.querySelector('.choice--go')?.click();
+        for (let i = 0; i < 40 && outEl?.textContent !== mine; i++) {
+          await new Promise((r) => setTimeout(r, 50));
+        }
+        typedMine = outEl?.textContent === mine;
+      }
 
       /* The deviation card is the 2015 file itself, so what is checked is the
          file: that the frame is pointed at it, that its own query string
@@ -541,6 +565,8 @@ await run(
       return {
         chips: chips.map((c) => c.textContent.trim()),
         typed: before !== after && after.length > 0,
+        typerControls: Boolean(rate && line),
+        typedMine,
         devSrc: devFrame?.getAttribute('src') ?? null,
         devSeeded: [field('mean'), field('stdev'), field('reps')].join('/'),
         devSeeded2: [field('mean2'), field('stdev2'), field('reps2')].join('/'),
@@ -565,6 +591,8 @@ await run(
       play.chips.join('/'),
     );
     note(play.typed, 'AutoTyper types into a live output panel', '');
+    note(play.typerControls, 'and offers the two controls its caption promises', '');
+    note(play.typedMine, "and types the visitor's own line at the rate they set", '');
     note(
       play.devSrc?.startsWith('/deviation.html?') === true,
       'the deviation card frames the 2015 file itself',
@@ -1024,7 +1052,11 @@ await run(
       '.btn--sand',
       '.btn',
       '.hero__mail',
-      '.pill',
+      /* A5 took the round outline off the four static state labels and left it
+         to the things you can actually press, so the pill that used to be here
+         is now the filter chip and the preset. The label it left behind has no
+         states to check. */
+      '.choice',
       '.fs__tab',
       '.arc__tick',
       '.contact__mail',
@@ -1229,6 +1261,90 @@ await run(
     await page.screenshot({ path: `${OUT}/full-1440-no-script.png`, fullPage: true });
     console.log(`       wrote ${OUT}/full-1440-no-script.png`);
   },
+);
+
+/* ── the other side ──────────────────────────────────────────────────── */
+/* Side B is the same six sections in another order, which is only true for as
+   long as nobody adds a seventh to one page and forgets the other. So the two
+   routes are compared rather than described: every id on one is on the other,
+   the work log is the exact reverse, and the numbering follows the order the
+   page is actually in. */
+await run(
+  'side B',
+  { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, reducedMotion: 'reduce' },
+  async (page) => {
+    const read = () =>
+      page.evaluate(() => ({
+        secs: [...document.querySelectorAll('[data-sec]')].map((s) => `${s.dataset.sec} ${s.id}`),
+        nav: [...document.querySelectorAll('.nav__links a')].map((a) => a.getAttribute('href')),
+        roles: [...document.querySelectorAll('.role')].map((r) => r.id),
+        ids: [...document.querySelectorAll('[id]')].map((n) => n.id).sort(),
+        flip: document.querySelector('.foot__flip a')?.getAttribute('href') ?? null,
+        robots: document.querySelector('meta[name="robots"]')?.content ?? null,
+        nowLast:
+          document.querySelector('.roles > *:last-child')?.classList.contains('role--now') ?? false,
+        fwd: !!document.querySelector('.roles--fwd'),
+      }));
+
+    const b = await read();
+    await page.goto(BASE, { waitUntil: 'networkidle' });
+    await page.evaluate(() => document.querySelector('[data-lab]')?.remove());
+    await settle(page);
+    const a = await read();
+
+    note(b.secs.length === 6, 'side B runs six sections', b.secs.join(' | '));
+    note(
+      b.secs.map((s) => s.split(' ')[0]).join() === '01,02,03,04,05,06',
+      'and numbers them in the order they appear',
+      b.secs.join(' | '),
+    );
+    note(
+      b.nav.join() === b.secs.map((s) => `#${s.split(' ')[1]}`).join(),
+      'and the nav is in that order too',
+      `${b.nav.join(' ')} vs ${b.secs.join(' ')}`,
+    );
+    note(
+      b.secs.map((s) => s.split(' ')[1]).join() !== a.secs.map((s) => s.split(' ')[1]).join(),
+      'in an order that is not side A',
+      b.secs.join(' | '),
+    );
+
+    note(
+      b.roles.length === 8 && a.roles.length === 8,
+      'both sides carry eight roles',
+      `A ${a.roles.length}, B ${b.roles.length}`,
+    );
+    note(
+      b.roles.join() === [...a.roles].reverse().join(),
+      'and side B is the exact reverse of side A',
+      b.roles.join(' '),
+    );
+    note(
+      b.fwd && b.nowLast,
+      'with the current role at the foot of the spine',
+      `fwd ${b.fwd}, last ${b.nowLast}`,
+    );
+
+    const missing = a.ids.filter((id) => !b.ids.includes(id));
+    const extra = b.ids.filter((id) => !a.ids.includes(id));
+    note(
+      missing.length === 0 && extra.length === 0,
+      'the two sides hold exactly the same content',
+      `only on A: ${missing.join(' ') || 'none'} | only on B: ${extra.join(' ') || 'none'}`,
+    );
+
+    note(
+      b.flip === '/' && a.flip === '/side-b/',
+      'and each footer offers the other',
+      `A -> ${a.flip}, B -> ${b.flip}`,
+    );
+    note(
+      b.robots === 'noindex, follow' && a.robots === null,
+      'side B asks not to be indexed and side A does not',
+      `A ${a.robots}, B ${b.robots}`,
+    );
+  },
+  new URL('side-b/', BASE).href,
 );
 
 console.log(

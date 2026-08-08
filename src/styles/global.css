@@ -2380,6 +2380,34 @@ summary,
   border-bottom: 0;
 }
 
+/* Side B stands the log the other way up: seven compact rows oldest first, the
+   current role at the foot. The spine follows, because every rule above draws
+   a segment pointing at the row below it. The last of the seven now has a row
+   to point at, so it grows one; the current role has nothing below it, so it
+   loses one. And the rule that divides the big block from the compact list
+   goes over the top of it rather than under.
+
+   The reach is 1.35rem rather than 0.9rem because the current role's node sits
+   lower in its row than a compact one does in its. */
+.roles--fwd .tl .role:last-child::after {
+  content: '';
+  position: absolute;
+  top: 0.9rem;
+  bottom: -1.35rem;
+  left: calc(var(--tl-x) - 0.5px);
+  width: 1px;
+  background: var(--line-light);
+}
+
+.roles--fwd .role--now {
+  border-top: 1px solid var(--line-light);
+  border-bottom: 0;
+}
+
+.roles--fwd .role--now::after {
+  content: none;
+}
+
 .tl .role::before {
   top: 0.9rem;
 }
@@ -3635,6 +3663,31 @@ button.toolbar__link {
 .foot p {
   max-width: 60ch;
   margin: 0;
+}
+
+/* The other running order. It takes its own row at the foot rather than a slot
+   in the flex run, because it is the only line down here that goes anywhere
+   and it should not be mistaken for another colophon note. The row break is
+   the whole separation: a second hairline inside the footer would only reach
+   as far as the 60ch the paragraphs are held to, and a rule that stops in the
+   middle of the page reads as a mistake. Muted, and the two words that are the
+   link are the only ink in the footer. */
+.foot__flip {
+  flex-basis: 100%;
+  margin-top: 0.5rem;
+  color: var(--on-camel-3);
+}
+
+.foot__flip a {
+  color: var(--on-paper);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.foot__flip a:hover {
+  text-decoration-thickness: 2px;
 }
 
 /* ── 14b. THE 404 ────────────────────────────────────────────────────── */
