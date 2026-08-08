@@ -1,0 +1,95 @@
+---
+/**
+ * What is under an artifact, for a reader who asks with `?seed=4193`.
+ *
+ * Every screenshot on this page claims to be a real capture of the thing it
+ * belongs to, and most of them have been cropped. A crop is an edit, and an
+ * edit that will not say what it removed is a claim rather than evidence. This
+ * prints the edit: the source file and its true size, how many pixels came off
+ * each edge, what those pixels held, and what renders the result.
+ *
+ * Nothing is written here. The numbers come off src/data/captures.json, which
+ * the image script writes by measuring the two files it just handled, so an
+ * entry that disagrees with the pixels cannot survive a re-run. Where a fact is
+ * not on record the row is absent - there is no "unknown", because a row that
+ * says nothing is a row that looks like it might.
+ *
+ * The whole block is display:none until the document carries `.inspect`, and
+ * it never overlaps the artifact: it opens underneath and pushes the page
+ * down, because a panel over the thing it describes is the same mistake the
+ * lab panel had to be talked out of.
+ */
+import { capture } from '../data/captures';
+
+interface Props {
+  /** What renders the artifact. A file name, so it can be found. */
+  by: string;
+  /** The src/assets intermediates it draws, in the order it draws them. */
+  assets?: string | string[];
+}
+
+const { by, assets } = Astro.props;
+const names = assets === undefined ? [] : Array.isArray(assets) ? assets : [assets];
+const rows = names.map((n) => ({ name: n, cap: capture(n) }));
+
+const kb = (n: number): string => `${Math.round(n / 1024)} kB`;
+const px = (n: number): string => n.toLocaleString('en-GB');
+---
+
+<div class="ins">
+  <p class="ins__by">
+    <span>Rendered by</span>
+    <b>{by}</b>
+  </p>
+
+  {
+    rows.map(({ name, cap }) => (
+      <div class="ins__a">
+        <p class="ins__n">{name}.webp</p>
+        {cap ? (
+          <dl class="ins__d">
+            <div>
+              <dt>Shipped from</dt>
+              <dd>
+                {px(cap.asset.w)} &times; {px(cap.asset.h)} &middot; {kb(cap.asset.bytes)}
+              </dd>
+            </div>
+            <div>
+              <dt>Capture</dt>
+              <dd>
+                {cap.from} &middot; {px(cap.src.w)} &times; {px(cap.src.h)}
+              </dd>
+            </div>
+            <div>
+              <dt>File dated</dt>
+              <dd>{cap.dated}</dd>
+            </div>
+            <div>
+              <dt>Cut away</dt>
+              <dd>
+                {cap.trim ? (
+                  <>
+                    {px(cap.trim.left)} left &middot; {px(cap.trim.top)} top &middot;{' '}
+                    {px(cap.trim.right)} right &middot; {px(cap.trim.bottom)} bottom
+                  </>
+                ) : (
+                  'Nothing. The frame is whole.'
+                )}
+              </dd>
+            </div>
+            {cap.omits && (
+              <div>
+                <dt>Which held</dt>
+                <dd>{cap.omits}</dd>
+              </div>
+            )}
+          </dl>
+        ) : (
+          /* In src/assets but not made by the image recipe, so there is no
+             record of a source or a crop and this will not guess at one. */
+          <p class="ins__none">Not made by the image recipe. No crop is on record for it.</p>
+        )}
+      </div>
+    ))
+  }
+</div>

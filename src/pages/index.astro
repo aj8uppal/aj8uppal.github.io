@@ -1,6 +1,7 @@
 ---
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import Inspect from '../components/Inspect.astro';
 import State from '../components/State.astro';
 import Section from '../components/Section.astro';
 import Skim from '../components/Skim.astro';
@@ -319,6 +320,7 @@ const heroLabel =
               <p class="flag">{saltline.lead.flag}</p>
             </div>
             <p class="plate-cap"><b>{saltline.spread.t}.</b> {saltline.spread.s}</p>
+            <Inspect by="astro:assets Picture" assets={saltline.lead.asset} />
           </div>
 
           <div class="card__intro">
@@ -375,6 +377,7 @@ const heroLabel =
           <p class="card__lede">{saltline.framesLede}</p>
           <p class="cue">{saltline.framesCue}</p>
           <Arc client:visible frames={arcFrames} note={saltline.arcNote} />
+          <Inspect by="Arc.tsx" assets={arcFrames.map((f) => `saltline-arc-${f.key}`)} />
 
           <div class="inset">
             <div class="shot shot--inset">
@@ -389,6 +392,7 @@ const heroLabel =
                 decoding="async"
               />
             </div>
+            <Inspect by="astro:assets Picture" assets="saltline-proof-panel" />
             <div class="inset__body">
               <h4>{saltline.proof.t}</h4>
               {saltline.proof.body.map((p) => <p>{p}</p>)}
@@ -415,6 +419,7 @@ const heroLabel =
               <p class="flag">Fallowmere &middot; level 30 &middot; dusk</p>
             </div>
             <p class="plate-cap"><b>{ember.spread.t}.</b> {ember.spread.s}</p>
+            <Inspect by="astro:assets Picture" assets="ember-spread-fallowmere-dusk" />
           </div>
 
           <div class="card__intro">
@@ -467,6 +472,10 @@ const heroLabel =
           <p class="card__lede">{ember.framesLede}</p>
           <p class="cue">{ember.framesCue}</p>
           <FrameSwitcher client:visible label="Ember Wilds regions" frames={emberFrames} />
+          <Inspect
+            by="FrameSwitcher.tsx"
+            assets={emberFrames.map((f) => emberAsset[f.key] ?? '')}
+          />
 
           <div class="inset">
             <div class="shot shot--inset">
@@ -481,6 +490,7 @@ const heroLabel =
                 decoding="async"
               />
             </div>
+            <Inspect by="astro:assets Picture" assets="ember-proof-two-players" />
             <div class="inset__body">
               <h4>{ember.proof.t}</h4>
               {ember.proof.body.map((p) => <p>{p}</p>)}
@@ -506,6 +516,7 @@ const heroLabel =
         </div>
 
         <div class="card__copy">
+          <Inspect by="astro:assets Picture" assets="hidamari-spread-canopy" />
           <span class="card__index">{hidamari.spread.n}</span>
           <div class="card__badges">
             <State status={hidamari.status} label="Not public" />
@@ -572,6 +583,7 @@ const heroLabel =
           <p class="card__lede">{elderwood.framesLede}</p>
           <p class="cue">{elderwood.framesCue}</p>
           <FrameSwitcher client:visible label="Elderwood Vale captures" frames={elderFrames} />
+          <Inspect by="FrameSwitcher.tsx" assets={elderFrames.map((f) => `elderwood-${f.key}`)} />
         </div>
       </article>
     </div>
@@ -592,6 +604,7 @@ const heroLabel =
 
       <div>
         <StackFilter client:visible tags={filterTags} total={roles.length} />
+        <Inspect by="StackFilter.tsx" />
 
         <div class="roles">
           {
@@ -763,6 +776,7 @@ const heroLabel =
             {playground.items[0]?.name}<span class="era">{playground.items[0]?.yr}</span>
           </h3>
           <p>{playground.items[0]?.what}</p>
+          <Inspect by="AutoTyper.tsx" />
         </div>
         <AutoTyper client:visible />
       </article>
@@ -774,6 +788,7 @@ const heroLabel =
             {playground.items[1]?.name}<span class="era">{playground.items[1]?.yr}</span>
           </h3>
           <p>{playground.items[1]?.what}</p>
+          <Inspect by="DeviationFrame.tsx" assets="legacy-deviation" />
         </div>
         <DeviationFrame
           client:visible
@@ -813,6 +828,7 @@ const heroLabel =
           <p class="keys__note">
             The jump is not a control: landing on a platform is what throws him.
           </p>
+          <Inspect by="GameFrame.tsx" assets="legacy-grinchjump" />
         </div>
         <GameFrame
           client:visible

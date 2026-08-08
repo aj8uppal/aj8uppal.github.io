@@ -65,6 +65,11 @@ const Lab = devTools || labFlag ? (await import('../components/Lab.astro')).defa
     <script is:inline>
       document.documentElement.classList.remove('no-js');
       document.documentElement.classList.add('js');
+      /* Inspection mode, here rather than in motion.ts because adding the
+         class after the first paint would open twenty label blocks under a
+         reader who is already looking at the page. */
+      if (new URLSearchParams(location.search).get('seed') === '4193')
+        document.documentElement.classList.add('inspect');
     </script>
   </head>
 
@@ -122,6 +127,11 @@ const Lab = devTools || labFlag ? (await import('../components/Lab.astro')).defa
     <main id="main">
       <slot />
     </main>
+
+    <p class="inspect-bar">
+      Inspection mode &middot; <code>?seed=4193</code>
+      <a href={Astro.url.pathname}>Leave</a>
+    </p>
 
     {Lab && <Lab alwaysOn={devTools} />}
 

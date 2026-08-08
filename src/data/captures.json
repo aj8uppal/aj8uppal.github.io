@@ -1,0 +1,572 @@
+[
+  {
+    "out": "ember-spread-fallowmere-dusk",
+    "from": "emberwilds-biome-fallowmere-dusk.png",
+    "src": {
+      "w": 3456,
+      "h": 2160
+    },
+    "asset": {
+      "w": 3000,
+      "h": 1667,
+      "bytes": 275204
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 0,
+      "top": 120,
+      "width": 3456,
+      "height": 1920
+    },
+    "trim": {
+      "left": 0,
+      "top": 120,
+      "right": 0,
+      "bottom": 120
+    },
+    "omits": "the black letterbox bars the capture window puts on the top and bottom"
+  },
+  {
+    "out": "ember-proof-two-players",
+    "from": "emberwilds-MULTIPLAYER-two-players-chat.png",
+    "src": {
+      "w": 3456,
+      "h": 1814
+    },
+    "asset": {
+      "w": 2400,
+      "h": 1260,
+      "bytes": 164330
+    },
+    "dated": "2026-08-06"
+  },
+  {
+    "out": "ember-region-hearthvale",
+    "from": "emberwilds-hearthvale-water.png",
+    "src": {
+      "w": 3456,
+      "h": 2160
+    },
+    "asset": {
+      "w": 2000,
+      "h": 1111,
+      "bytes": 137366
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 0,
+      "top": 120,
+      "width": 3456,
+      "height": 1920
+    },
+    "trim": {
+      "left": 0,
+      "top": 120,
+      "right": 0,
+      "bottom": 120
+    },
+    "omits": "the black letterbox bars the capture window puts on the top and bottom"
+  },
+  {
+    "out": "ember-region-fallowmere",
+    "from": "emberwilds-biome-fallowmere-wide.png",
+    "src": {
+      "w": 3456,
+      "h": 2160
+    },
+    "asset": {
+      "w": 2000,
+      "h": 1111,
+      "bytes": 135824
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 0,
+      "top": 120,
+      "width": 3456,
+      "height": 1920
+    },
+    "trim": {
+      "left": 0,
+      "top": 120,
+      "right": 0,
+      "bottom": 120
+    },
+    "omits": "the black letterbox bars the capture window puts on the top and bottom"
+  },
+  {
+    "out": "ember-region-greenmarch",
+    "from": "emberwilds-greenmarch-ruin-loot.png",
+    "src": {
+      "w": 3456,
+      "h": 2160
+    },
+    "asset": {
+      "w": 2000,
+      "h": 1111,
+      "bytes": 109818
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 0,
+      "top": 120,
+      "width": 3456,
+      "height": 1920
+    },
+    "trim": {
+      "left": 0,
+      "top": 120,
+      "right": 0,
+      "bottom": 120
+    },
+    "omits": "the black letterbox bars the capture window puts on the top and bottom"
+  },
+  {
+    "out": "ember-region-fenmarch",
+    "from": "emberwilds-biome-fenmarch.png",
+    "src": {
+      "w": 3456,
+      "h": 2160
+    },
+    "asset": {
+      "w": 2000,
+      "h": 1111,
+      "bytes": 93202
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 0,
+      "top": 120,
+      "width": 3456,
+      "height": 1920
+    },
+    "trim": {
+      "left": 0,
+      "top": 120,
+      "right": 0,
+      "bottom": 120
+    },
+    "omits": "the black letterbox bars the capture window puts on the top and bottom"
+  },
+  {
+    "out": "ember-region-ashen-waste",
+    "from": "emberwilds-combat-ashen-waste-nova.png",
+    "src": {
+      "w": 3456,
+      "h": 2160
+    },
+    "asset": {
+      "w": 2000,
+      "h": 1111,
+      "bytes": 149452
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 0,
+      "top": 120,
+      "width": 3456,
+      "height": 1920
+    },
+    "trim": {
+      "left": 0,
+      "top": 120,
+      "right": 0,
+      "bottom": 120
+    },
+    "omits": "the black letterbox bars the capture window puts on the top and bottom"
+  },
+  {
+    "out": "ember-region-greywall-peaks",
+    "from": "emberwilds-biome-greywall-peaks-combat.png",
+    "src": {
+      "w": 3456,
+      "h": 2160
+    },
+    "asset": {
+      "w": 2000,
+      "h": 1111,
+      "bytes": 130376
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 0,
+      "top": 120,
+      "width": 3456,
+      "height": 1920
+    },
+    "trim": {
+      "left": 0,
+      "top": 120,
+      "right": 0,
+      "bottom": 120
+    },
+    "omits": "the black letterbox bars the capture window puts on the top and bottom"
+  },
+  {
+    "out": "ember-region-black-plateau",
+    "from": "emberwilds-biome-black-plateau.png",
+    "src": {
+      "w": 3456,
+      "h": 2160
+    },
+    "asset": {
+      "w": 2000,
+      "h": 1111,
+      "bytes": 153982
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 0,
+      "top": 120,
+      "width": 3456,
+      "height": 1920
+    },
+    "trim": {
+      "left": 0,
+      "top": 120,
+      "right": 0,
+      "bottom": 120
+    },
+    "omits": "the black letterbox bars the capture window puts on the top and bottom"
+  },
+  {
+    "out": "ember-fig-quest-dialogue",
+    "from": "emberwilds-npc-quest-dialogue.png",
+    "src": {
+      "w": 3456,
+      "h": 2160
+    },
+    "asset": {
+      "w": 1600,
+      "h": 889,
+      "bytes": 72432
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 0,
+      "top": 120,
+      "width": 3456,
+      "height": 1920
+    },
+    "trim": {
+      "left": 0,
+      "top": 120,
+      "right": 0,
+      "bottom": 120
+    },
+    "omits": "the black letterbox bars the capture window puts on the top and bottom"
+  },
+  {
+    "out": "ember-fig-befriending",
+    "from": "emberwilds-creature-befriending.png",
+    "src": {
+      "w": 3456,
+      "h": 2160
+    },
+    "asset": {
+      "w": 1600,
+      "h": 889,
+      "bytes": 118008
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 0,
+      "top": 120,
+      "width": 3456,
+      "height": 1920
+    },
+    "trim": {
+      "left": 0,
+      "top": 120,
+      "right": 0,
+      "bottom": 120
+    },
+    "omits": "the black letterbox bars the capture window puts on the top and bottom"
+  },
+  {
+    "out": "saltline-lead-dawn",
+    "from": "saltline-dawn-island-blue.png",
+    "src": {
+      "w": 3456,
+      "h": 2234
+    },
+    "asset": {
+      "w": 2776,
+      "h": 1291,
+      "bytes": 396032
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 680,
+      "top": 75,
+      "width": 2776,
+      "height": 1291
+    },
+    "trim": {
+      "left": 680,
+      "top": 75,
+      "right": 0,
+      "bottom": 868
+    },
+    "omits": "the developer panel down the left edge, the top bar, and open water below the hull"
+  },
+  {
+    "out": "saltline-arc-night",
+    "from": "saltline-night-moon-wake.png",
+    "src": {
+      "w": 3456,
+      "h": 2234
+    },
+    "asset": {
+      "w": 1600,
+      "h": 900,
+      "bytes": 50320
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 680,
+      "top": 75,
+      "width": 2776,
+      "height": 1562
+    },
+    "trim": {
+      "left": 680,
+      "top": 75,
+      "right": 0,
+      "bottom": 597
+    },
+    "omits": "the developer panel down the left edge, and the bar above the viewport"
+  },
+  {
+    "out": "saltline-arc-sunrise",
+    "from": "saltline-dawn-island-ships.png",
+    "src": {
+      "w": 3456,
+      "h": 2234
+    },
+    "asset": {
+      "w": 1600,
+      "h": 900,
+      "bytes": 143582
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 680,
+      "top": 75,
+      "width": 2776,
+      "height": 1562
+    },
+    "trim": {
+      "left": 680,
+      "top": 75,
+      "right": 0,
+      "bottom": 597
+    },
+    "omits": "the developer panel down the left edge, and the bar above the viewport"
+  },
+  {
+    "out": "saltline-arc-dawn",
+    "from": "saltline-dawn-island-blue.png",
+    "src": {
+      "w": 3456,
+      "h": 2234
+    },
+    "asset": {
+      "w": 1600,
+      "h": 900,
+      "bytes": 175736
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 680,
+      "top": 75,
+      "width": 2776,
+      "height": 1562
+    },
+    "trim": {
+      "left": 680,
+      "top": 75,
+      "right": 0,
+      "bottom": 597
+    },
+    "omits": "the developer panel down the left edge, and the bar above the viewport"
+  },
+  {
+    "out": "saltline-arc-daylight",
+    "from": "saltline-fleet-raiders-daylight.png",
+    "src": {
+      "w": 3456,
+      "h": 2234
+    },
+    "asset": {
+      "w": 1600,
+      "h": 900,
+      "bytes": 179324
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 680,
+      "top": 75,
+      "width": 2776,
+      "height": 1562
+    },
+    "trim": {
+      "left": 680,
+      "top": 75,
+      "right": 0,
+      "bottom": 597
+    },
+    "omits": "the developer panel down the left edge, and the bar above the viewport"
+  },
+  {
+    "out": "saltline-arc-golden",
+    "from": "saltline-golden-hour-calm.png",
+    "src": {
+      "w": 3456,
+      "h": 2234
+    },
+    "asset": {
+      "w": 1600,
+      "h": 900,
+      "bytes": 172122
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 680,
+      "top": 75,
+      "width": 2776,
+      "height": 1562
+    },
+    "trim": {
+      "left": 680,
+      "top": 75,
+      "right": 0,
+      "bottom": 597
+    },
+    "omits": "the developer panel down the left edge, and the bar above the viewport"
+  },
+  {
+    "out": "saltline-arc-sunset",
+    "from": "saltline-sunset-dramatic.png",
+    "src": {
+      "w": 3456,
+      "h": 2234
+    },
+    "asset": {
+      "w": 1600,
+      "h": 900,
+      "bytes": 142498
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 680,
+      "top": 75,
+      "width": 2776,
+      "height": 1562
+    },
+    "trim": {
+      "left": 680,
+      "top": 75,
+      "right": 0,
+      "bottom": 597
+    },
+    "omits": "the developer panel down the left edge, and the bar above the viewport"
+  },
+  {
+    "out": "saltline-proof-panel",
+    "from": "saltline-fleet-raiders-daylight.png",
+    "src": {
+      "w": 3456,
+      "h": 2234
+    },
+    "asset": {
+      "w": 2400,
+      "h": 1499,
+      "bytes": 372816
+    },
+    "dated": "2026-08-06",
+    "crop": {
+      "left": 0,
+      "top": 75,
+      "width": 3456,
+      "height": 2159
+    },
+    "trim": {
+      "left": 0,
+      "top": 75,
+      "right": 0,
+      "bottom": 0
+    },
+    "omits": "the bar above the viewport; the developer panel is kept, on purpose"
+  },
+  {
+    "out": "hidamari-spread-canopy",
+    "from": "hidamari-hero-canopy-3360x1440.png",
+    "src": {
+      "w": 3360,
+      "h": 1440
+    },
+    "asset": {
+      "w": 3000,
+      "h": 1286,
+      "bytes": 1196836
+    },
+    "dated": "2026-08-06"
+  },
+  {
+    "out": "elderwood-default",
+    "from": "elderwood-vale-default-1280x720.png",
+    "src": {
+      "w": 1280,
+      "h": 720
+    },
+    "asset": {
+      "w": 1280,
+      "h": 720,
+      "bytes": 36352
+    },
+    "dated": "2026-08-06"
+  },
+  {
+    "out": "elderwood-coverage",
+    "from": "elderwood-vale-placement-coverage-1280x720.png",
+    "src": {
+      "w": 1280,
+      "h": 720
+    },
+    "asset": {
+      "w": 1280,
+      "h": 720,
+      "bytes": 52304
+    },
+    "dated": "2026-08-06"
+  },
+  {
+    "out": "elderwood-stress",
+    "from": "elderwood-vale-stress-burst-1280x720.png",
+    "src": {
+      "w": 1280,
+      "h": 720
+    },
+    "asset": {
+      "w": 1280,
+      "h": 720,
+      "bytes": 92132
+    },
+    "dated": "2026-08-06"
+  },
+  {
+    "out": "legacy-grinchjump",
+    "from": "legacy-grinchjump-REVIVED.png",
+    "src": {
+      "w": 2560,
+      "h": 1514
+    },
+    "asset": {
+      "w": 1200,
+      "h": 710,
+      "bytes": 5066
+    },
+    "dated": "2026-08-06"
+  }
+]

@@ -3706,6 +3706,141 @@ span.buoy__p {
   text-transform: uppercase;
 }
 
+/* ── 14c. INSPECTION MODE ────────────────────────────────────────────── */
+/* `?seed=4193`. Off by default and off in the markup's own layout: the blocks
+   are display:none, so nothing on the page moves by a pixel for a reader who
+   did not ask. Asked for, they open underneath the artifact and push the page
+   down rather than lying over it.
+
+   Mono at the micro size, because this is instrumentation reading rather than
+   page copy and should not be mistaken for it.
+
+   Both rules are struck off `currentcolor` rather than the `--line-*` pair.
+   These blocks hang under artifacts on six grounds, and two of them are dark
+   cards standing on a light section - a ground-named line would be picked from
+   the section and come out invisible on the card. The text colour is already
+   right everywhere, so the line follows it. */
+.ins {
+  display: none;
+}
+
+.inspect .ins {
+  display: block;
+  margin-top: 0.7rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px dashed color-mix(in srgb, currentcolor 30%, transparent);
+  border-radius: var(--r-sm);
+  font: 600 var(--fs-micro) / 1.6 var(--mono);
+}
+
+/* The proof panels sit in a two-column grid beside their prose. The block
+   belongs under the whole pair, not in the picture's column. */
+.inset .ins {
+  grid-column: 1 / -1;
+}
+
+.ins__by {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.6rem;
+  margin: 0;
+}
+
+.ins__by span {
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ins__by b {
+  font-weight: 800;
+}
+
+.ins__a {
+  margin-top: 0.7rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid color-mix(in srgb, currentcolor 16%, transparent);
+}
+
+.ins__n {
+  margin: 0 0 0.3rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.ins__d {
+  display: grid;
+  gap: 0.1rem 1rem;
+  margin: 0;
+}
+
+/* The label column is exactly as wide as its longest label and no wider, so
+   the numbers line up and the block stays as narrow as it reads. */
+.ins__d > div {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 0 1rem;
+}
+
+.ins__d dt {
+  color: var(--muted);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.ins__d dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.ins__none {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Says which mode you are in and how to leave it, because a page that has
+   grown twenty label blocks owes you both. */
+.inspect-bar {
+  display: none;
+}
+
+.inspect .inspect-bar {
+  position: fixed;
+  z-index: 40;
+  bottom: 0.8rem;
+  left: var(--pad);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--on-shade) 17%, transparent);
+  border-radius: var(--r-pill);
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--shade) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(125%);
+  font: 750 var(--fs-micro) / 1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.inspect-bar a {
+  color: var(--sand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (width <= 620px) {
+  .ins__d > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .ins__d dd {
+    margin-bottom: 0.35rem;
+  }
+}
+
 /* ── 15. MOTION ──────────────────────────────────────────────────────── */
 /* Only hidden once the reveal script is running, so a page without
    JavaScript never hides something it then cannot show. */

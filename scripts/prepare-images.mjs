@@ -10,13 +10,16 @@
  *
  * Idempotent. Re-run with `npm run images` after changing a crop.
  */
-import { mkdir, readdir, stat } from 'node:fs/promises';
+import { mkdir, readdir, stat, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 
 const SRC = '/Users/ajuppal/personal/firstmate-aj8uppal/data/portfolio-assets';
 const OUT = path.resolve(import.meta.dirname, '../src/assets');
+/* Written by this script and only by this script. The page reads it to answer
+   "what was cut off this" without a second copy of the recipe to keep in step. */
+const MANIFEST = path.resolve(import.meta.dirname, '../src/data/captures.json');
 
 /**
  * Measured, not guessed:
@@ -36,6 +39,21 @@ const SALT_FULL = { left: 0, top: 75, width: 3456, height: 2159 }; // panel kept
  * height comes off the bottom, where there is nothing but water and chrome.
  */
 const SALT_LEAD = { left: 680, top: 75, width: 2776, height: 1291 };
+
+/**
+ * What each crop takes out, in the words the comments above already use.
+ *
+ * Keyed by the box itself so a crop cannot acquire a description that belongs
+ * to a different crop. This is the only part of the recipe the page shows, and
+ * it is the part a reader is entitled to: an edited capture that will not say
+ * what was edited off it is a claim, not evidence.
+ */
+const OMITS = new Map([
+  [EMBER, 'the black letterbox bars the capture window puts on the top and bottom'],
+  [SALT_CLEAN, 'the developer panel down the left edge, and the bar above the viewport'],
+  [SALT_LEAD, 'the developer panel down the left edge, the top bar, and open water below the hull'],
+  [SALT_FULL, 'the bar above the viewport; the developer panel is kept, on purpose'],
+]);
 
 /** @type {Array<{in: string, out: string, crop?: object, width: number, quality?: number}>} */
 const JOBS = [
@@ -165,6 +183,9 @@ async function run() {
   await mkdir(OUT, { recursive: true });
 
   let bytes = 0;
+  /** @type {object[]} */
+  const manifest = [];
+
   for (const job of JOBS) {
     const from = path.join(SRC, job.in);
     const to = path.join(OUT, `${job.out}.webp`);
@@ -177,10 +198,45 @@ async function run() {
     const { size } = await stat(to);
     bytes += size;
     console.log(`${job.out.padEnd(30)} ${String(job.width).padStart(5)}w  ${kb(size)}`);
+
+    /* Everything about the edit, read back off the two files rather than
+       restated from the recipe above. The page's inspection mode prints this
+       verbatim, so a number here that disagreed with the pixels would be the
+       site vouching for the wrong thing. */
+    const src = await sharp(from).metadata();
+    const out = await sharp(to).metadata();
+    const { mtime } = await stat(from);
+    manifest.push({
+      out: job.out,
+      from: job.in,
+      src: { w: src.width, h: src.height },
+      asset: { w: out.width, h: out.height, bytes: size },
+      dated: mtime.toISOString().slice(0, 10),
+      ...(job.crop
+        ? {
+            crop: job.crop,
+            trim: {
+              left: job.crop.left,
+              top: job.crop.top,
+              right: src.width - job.crop.left - job.crop.width,
+              bottom: src.height - job.crop.top - job.crop.height,
+            },
+            omits: OMITS.get(job.crop) ?? null,
+          }
+        : {}),
+    });
   }
 
+  await writeFile(MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
+
   const written = (await readdir(OUT)).filter((f) => f.endsWith('.webp'));
+  const loose = written.filter((f) => !JOBS.some((j) => `${j.out}.webp` === f));
   console.log(`\n${written.length} intermediates, ${kb(bytes)} total in src/assets/`);
+  console.log(`${manifest.length} recorded in ${path.relative(process.cwd(), MANIFEST)}`);
+  // Anything in src/assets this recipe does not make. Written by another
+  // script or left behind by an older one; either way the page's inspection
+  // mode has nothing to say about it and should be told so out loud.
+  if (loose.length) console.log(`not from this recipe: ${loose.join(', ')}`);
 }
 
 const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
