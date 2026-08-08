@@ -1,4 +1,5 @@
 import { installAssembly } from './assembly';
+import { installTunnel } from './tunnel';
 import { springKeyframes } from './spring';
 import { installHero } from '../heroes/runtime';
 
@@ -432,3 +433,4 @@ installLongTab();
 installReceipts();
 installHeroCanvas();
 installAssembly();
+installTunnel();

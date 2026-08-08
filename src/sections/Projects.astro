@@ -10,6 +10,7 @@ import type { Tone } from '../components/Section.astro';
 import Skim from '../components/Skim.astro';
 import State from '../components/State.astro';
 import Arc from '../components/react/Arc';
+import WindTunnel from '../components/WindTunnel.astro';
 import type { ArcShot } from '../components/react/Arc';
 import FrameSwitcher from '../components/react/FrameSwitcher';
 import type { SwitchFrame } from '../components/react/FrameSwitcher';
@@ -161,6 +162,7 @@ const elderFrames: SwitchFrame[] = await Promise.all(
             {saltline.prose.map((p) => <p>{p}</p>)}
           </div>
           <div class="card__aside">
+            <WindTunnel />
             <details class="notes">
               <summary>Technical notes</summary>
               <dl class="specs">

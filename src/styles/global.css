@@ -1942,9 +1942,10 @@ summary,
   margin: 1.4rem 0 0;
 }
 
-/* Not a disclosure and not small print. The plates are a schematic and the
-   page has to say so at the same size it says everything else. */
-.asm__pending {
+/* Not a disclosure and not small print. Where a figure is standing in for an
+   export that has not arrived, the page says so above the figure, in the size
+   it says everything else in. Shared by the two figures waiting on one. */
+.pending {
   margin: 0 0 0.9rem;
   padding: 0.62rem 0.75rem;
   border-left: 2px solid var(--sand);
@@ -1955,7 +1956,7 @@ summary,
   line-height: 1.55;
 }
 
-.asm__pending b {
+.pending b {
   margin-right: 0.3rem;
   color: var(--sand);
   font: 800 var(--fs-micro) / 1.5 var(--mono);
@@ -2632,6 +2633,231 @@ summary,
 .arc__tick[aria-pressed='true'] {
   color: var(--on-accent);
   background: var(--sand);
+}
+
+/* ── 11c. THE WIND TUNNEL ────────────────────────────────────────────── */
+/* An instrument, not an illustration: mono everywhere, one accent, and the
+   only thing that moves is the thing the reader is holding. */
+.wt {
+  margin: 0;
+}
+
+/* Wrapping flex, not a grid with a breakpoint: this figure lives in a card
+   aside whose width has nothing to do with the viewport's, so the only honest
+   trigger for stacking is whether the two halves still fit side by side. */
+.wt__body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem 1.4rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.1rem;
+}
+
+/* 15rem is the viewBox at 1:1. Past that the strokes thin out and it stops
+   looking like an instrument. */
+.wt__dial {
+  flex: 1 1 10rem;
+  max-width: 15rem;
+}
+
+/* touch-action, or the first drag on a phone scrolls the page instead of
+   turning the boat and the figure reads as broken. */
+.wt__dial {
+  touch-action: none;
+  cursor: grab;
+}
+
+.wt__read {
+  flex: 1 1 13rem;
+}
+
+.wt__dial:active {
+  cursor: grabbing;
+}
+
+.wt__dial svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.wt__ring {
+  fill: color-mix(in srgb, var(--on-ink) 3%, transparent);
+  stroke: var(--line-dark-2);
+}
+
+/* The wedge the sails do not work in. Dashed edge and the faintest wash the
+   accent will hold: it is an absence of thrust, and anything solid enough to
+   read as a shape reads as a thing that is there. */
+.wt__nogo {
+  fill: color-mix(in srgb, var(--sand) 11%, transparent);
+  stroke: color-mix(in srgb, var(--sand) 40%, transparent);
+  stroke-dasharray: 3 3;
+}
+
+.wt__tick {
+  stroke: var(--line-dark-2);
+  stroke-width: 1;
+}
+
+.wt__wind line {
+  stroke: var(--on-ink-3);
+  stroke-width: 1.6;
+}
+
+.wt__wind path {
+  fill: var(--on-ink-3);
+}
+
+/* Made good along the wind axis. Thin and behind everything: it is a reading,
+   not a part of the boat. */
+.wt__vmg line {
+  stroke: var(--camel);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+
+.wt__hull {
+  fill: var(--on-ink-4);
+  stroke: var(--ink-deep);
+  stroke-width: 1.2;
+}
+
+.wt__mast {
+  fill: var(--ink-deep);
+}
+
+.wt__boom {
+  stroke: var(--ink-deep);
+  stroke-width: 1.4;
+}
+
+.wt__sail {
+  fill: var(--on-ink);
+  stroke: var(--ink-deep);
+  stroke-width: 1;
+}
+
+/* Flogging. A sail with no wind in it holds no shape, so it loses its belly
+   and goes to an outline, which is the state the readout is naming. */
+.wt__sail[data-wt-luff] {
+  fill: none;
+  stroke: var(--on-ink-4);
+  stroke-dasharray: 3 2.5;
+}
+
+.wt__thrust line {
+  stroke: var(--sand);
+  stroke-width: 2.4;
+}
+
+.wt__thrust path {
+  fill: var(--sand);
+}
+
+.wt__thrust[data-wt-dead] {
+  display: none;
+}
+
+.wt__read {
+  display: grid;
+  gap: 0.42rem;
+  margin: 0;
+  align-content: center;
+}
+
+.wt__read > div {
+  display: grid;
+  grid-template-columns: minmax(0, 8.5ch) minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: baseline;
+  padding-bottom: 0.36rem;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.wt__read dt {
+  color: var(--on-ink-4);
+  font: 700 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Tabular figures, or the numbers jitter sideways under the reader's own drag
+   and the whole thing stops reading as an instrument. */
+.wt__read dd {
+  margin: 0;
+  color: var(--sand);
+  font: 700 0.86rem/1.4 var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.wt__table {
+  margin-top: 1rem;
+}
+
+.wt__table summary {
+  color: var(--on-ink-3);
+  font: 700 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.wt__table summary:hover {
+  color: var(--sand);
+}
+
+.wt__table table {
+  width: 100%;
+  margin-top: 0.7rem;
+  border-collapse: collapse;
+  font: 400 0.74rem/1.5 var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.wt__table th {
+  padding: 0 0.6rem 0.4rem 0;
+  color: var(--on-ink-4);
+  font: 700 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.wt__table td {
+  padding: 0.26rem 0.6rem 0.26rem 0;
+  border-top: 1px solid var(--line-dark);
+  color: var(--on-ink-3);
+}
+
+/* The six rows that are real, marked in the accent the rest of the page uses
+   for real things. The word in the last column says it too, for anyone who
+   cannot use the colour. */
+.wt__table tr[data-from='capture'] td {
+  color: var(--on-ink-2);
+}
+
+.wt__table tr[data-from='capture'] td:first-child {
+  box-shadow: inset 2px 0 0 var(--sand);
+  padding-left: 0.55rem;
+}
+
+.wt__table p {
+  max-width: 62ch;
+  margin: 0.8rem 0 0;
+  color: var(--on-ink-3);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.wt__cap {
+  max-width: 62ch;
+  margin: 0.8rem 0 0;
+  color: var(--on-ink-3);
+  font-size: 0.8rem;
+  line-height: 1.6;
 }
 
 /* ── 11. WORK LOG ────────────────────────────────────────────────────── */
