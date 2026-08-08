@@ -17,7 +17,9 @@ const OUT = process.argv[3] ?? '/tmp/p6shots';
 
 /* The captain's stated reason for preferring this direction was less to
    scroll through. It is a number, so it gets asserted like one. */
-const HEIGHT_BUDGET = 11000;
+/* Raised from 11000: the model cards, the wind tunnel, the hidamari assembly
+   and the Notable band are 2,052px he decided to keep. */
+const HEIGHT_BUDGET = 13500;
 
 const fail = [];
 const note = (ok, label, detail) => {
