@@ -61,76 +61,87 @@ const noPairing = pairings[0]!;
   hidden
   aria-label="Design lab"
 >
-  <p class="dlab__t">Design lab · review only</p>
-
-  <p class="dlab__h" id="lab-pal">Palette</p>
-  <div class="dlab__pal" role="group" aria-labelledby="lab-pal">
-    {
-      palettes.map((p) => (
-        <button
-          class="dlab__b"
-          type="button"
-          data-pal={p.id}
-          aria-pressed={p.id === defaultPalette.id}
-          title={`${p.name} · ${p.by}${p.scheme === 'light' ? ' · light' : ''}`}
-        >
-          <span class="dlab__sw" aria-hidden="true">
-            {swatch(p).map((c) => (
-              <i style={`background:${c}`} />
-            ))}
-          </span>
-          <span class="dlab__id" aria-hidden="true">
-            {p.id}
-          </span>
-          <span class="sr">{p.name}</span>
-        </button>
-      ))
-    }
-  </div>
-
-  <p class="dlab__h" id="lab-scheme">Scheme</p>
-  <div class="dlab__two" role="group" aria-labelledby="lab-scheme">
-    {
-      pairings.map((x) => (
-        <button
-          class="dlab__b dlab__b--wide"
-          type="button"
-          data-scheme={x.id}
-          aria-pressed={x.id === noPairing.id}
-          title={x.light === null ? x.note : `${x.note} ${SCOPE}`}
-        >
-          {pairingLabel(x)}
-        </button>
-      ))
-    }
-  </div>
-
-  <p class="dlab__h" id="lab-hero">Hero</p>
   {
-    rows.map((row) => (
-      <Fragment>
-        {row.family && <p class="dlab__fam">{row.family} family</p>}
-        <div
-          class="dlab__hero"
-          role="group"
-          aria-label={row.family ? `${row.family} family` : undefined}
-          aria-labelledby={row.family ? undefined : 'lab-hero'}
-        >
-          {row.items.map((v) => (
+    /* A disclosure rather than a button and a state class. A summary is already
+      focusable, already toggles on Enter and Space, and already reports
+      expanded to a screen reader, and none of that is worth reimplementing on
+      a review tool. Rendered closed: the panel is hidden until the script
+      decides it belongs here at all, so the width rule below is applied before
+      anything is painted and there is nothing to flash. */
+  }
+  <details class="dlab__d">
+    <summary class="dlab__t">Design lab · review only</summary>
+    <div class="dlab__body">
+      <p class="dlab__h" id="lab-pal">Palette</p>
+      <div class="dlab__pal" role="group" aria-labelledby="lab-pal">
+        {
+          palettes.map((p) => (
+            <button
+              class="dlab__b"
+              type="button"
+              data-pal={p.id}
+              aria-pressed={p.id === defaultPalette.id}
+              title={`${p.name} · ${p.by}${p.scheme === 'light' ? ' · light' : ''}`}
+            >
+              <span class="dlab__sw" aria-hidden="true">
+                {swatch(p).map((c) => (
+                  <i style={`background:${c}`} />
+                ))}
+              </span>
+              <span class="dlab__id" aria-hidden="true">
+                {p.id}
+              </span>
+              <span class="sr">{p.name}</span>
+            </button>
+          ))
+        }
+      </div>
+
+      <p class="dlab__h" id="lab-scheme">Scheme</p>
+      <div class="dlab__two" role="group" aria-labelledby="lab-scheme">
+        {
+          pairings.map((x) => (
             <button
               class="dlab__b dlab__b--wide"
               type="button"
-              data-hero={v.id}
-              aria-pressed={v.id === defaultHero.id}
-              title={v.blurb}
+              data-scheme={x.id}
+              aria-pressed={x.id === noPairing.id}
+              title={x.light === null ? x.note : `${x.note} ${SCOPE}`}
             >
-              {v.name}
+              {pairingLabel(x)}
             </button>
-          ))}
-        </div>
-      </Fragment>
-    ))
-  }
+          ))
+        }
+      </div>
+
+      <p class="dlab__h" id="lab-hero">Hero</p>
+      {
+        rows.map((row) => (
+          <Fragment>
+            {row.family && <p class="dlab__fam">{row.family} family</p>}
+            <div
+              class="dlab__hero"
+              role="group"
+              aria-label={row.family ? `${row.family} family` : undefined}
+              aria-labelledby={row.family ? undefined : 'lab-hero'}
+            >
+              {row.items.map((v) => (
+                <button
+                  class="dlab__b dlab__b--wide"
+                  type="button"
+                  data-hero={v.id}
+                  aria-pressed={v.id === defaultHero.id}
+                  title={v.blurb}
+                >
+                  {v.name}
+                </button>
+              ))}
+            </div>
+          </Fragment>
+        ))
+      }
+    </div>
+  </details>
 </aside>
 
 <script>
@@ -140,6 +151,10 @@ const noPairing = pairings[0]!;
   const PAL_KEY = 'p6-palette';
   const HERO_KEY = 'p6-hero';
   const SCHEME_KEY = 'p6-scheme';
+  const OPEN_KEY = 'p6-lab-open';
+  /** Above this the panel has margin to sit in; at or below it is on top of the
+      page. 1260 is where the page's own layout starts narrowing. */
+  const WIDE = 1260;
   const box = document.querySelector<HTMLElement>('[data-lab]');
 
   const asked = (): boolean => {
@@ -148,6 +163,28 @@ const noPairing = pairings[0]!;
   };
 
   if (box && (box.dataset.always === 'on' || asked())) {
+    const panel = box.querySelector('details');
+    if (panel) {
+      const head = panel.querySelector('summary');
+      const fits = (): boolean => window.innerWidth > WIDE;
+      const stored = localStorage.getItem(OPEN_KEY);
+      panel.open = stored === null ? fits() : stored === 'y';
+      /* Written as a click on the summary rather than the toggle event, because
+         setting `open` above fires toggle too and storing that would freeze a
+         default nobody chose. Activating a summary from the keyboard dispatches
+         a click as well, so this misses nothing a reader really did; the
+         default action has not run yet, so the state being stored is the
+         opposite of the one being read. */
+      head?.addEventListener('click', () => {
+        localStorage.setItem(OPEN_KEY, panel.open ? 'n' : 'y');
+      });
+      /* Until the reader says otherwise the width keeps deciding, so narrowing
+         the window to check the page at 390 puts the panel away instead of
+         leaving it over the thing being checked. */
+      window.addEventListener('resize', () => {
+        if (localStorage.getItem(OPEN_KEY) === null) panel.open = fits();
+      });
+    }
     box.hidden = false;
 
     const root = document.documentElement;
@@ -278,8 +315,12 @@ const noPairing = pairings[0]!;
        panel losing its last row off the bottom of the screen is worse than the
        panel scrolling. */
     max-height: calc(100vh - 1.6rem);
-    overflow: auto;
-    overscroll-behavior: contain;
+    /* Flex, and hidden rather than auto, so the scrolling happens one level in.
+       The thing that must never scroll away is the control that puts the panel
+       away: on a short screen the old panel took its own title out of reach and
+       there was nothing to press. */
+    display: flex;
+    overflow: hidden;
     padding: 0.6rem 0.7rem 0.7rem;
     border: 1px solid color-mix(in srgb, var(--on-shade) 22%, transparent);
     border-radius: 14px;
@@ -293,12 +334,63 @@ const noPairing = pairings[0]!;
     display: none;
   }
 
+  .dlab__d {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* A flex item will not shrink below its content without this, which would
+       hand the max-height back to the panel and undo the line above. */
+    min-height: 0;
+  }
+
+  .dlab__body {
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* The tab. Collapsed, this is the whole panel: a mono line and a chevron in
+     the corner, which is small enough to leave the artifact it judges alone and
+     legible enough to still say what it is. */
   .dlab__t {
-    margin: 0 0 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    /* `list-item` is the display a summary needs for the default marker, so
+       taking the marker off means saying what it is instead. */
+    list-style: none;
     color: var(--on-shade-2);
     font: 800 0.6rem/1 var(--mono);
     letter-spacing: 0.12em;
     text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .dlab__t::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Points right when closed and down when open, which is the one thing a
+     collapsed panel has to communicate: that there is more behind it. */
+  .dlab__t::after {
+    content: '';
+    width: 0.4rem;
+    height: 0.4rem;
+    /* Half a step of the rotation, so the arrowhead reads as centred on the
+       line at both ends of the turn rather than sitting low when it is down. */
+    margin-bottom: 0.14rem;
+    border-right: 2px solid currentcolor;
+    border-bottom: 2px solid currentcolor;
+    transform: rotate(-45deg);
+    transition: transform var(--dur-1) var(--ease);
+  }
+
+  /* No margin under the tab. Open, the first heading's own 0.6rem top margin is
+     the gap - the same one it used to collapse into. Closed, the body is not
+     rendered, so the tab ends where its text ends. */
+  .dlab__d[open] .dlab__t::after {
+    transform: rotate(45deg);
   }
 
   .dlab__h {
