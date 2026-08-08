@@ -117,17 +117,19 @@ const shots = assembly.real
          once the stack has landed, because there is nothing to inspect until
          there is a finished frame to inspect. */
       !assembly.real && (
-        <div
-          class="asm__mark"
-          style={`--mw: ${(100 / assembly.edge.zoom).toFixed(2)}%; --mx: ${(assembly.edge.x * 100 - 50 / assembly.edge.zoom).toFixed(2)}%; --my: ${(assembly.edge.y * 100 - 50 / assembly.edge.zoom).toFixed(2)}%`}
-          aria-hidden="true"
-        />
-        <div class="asm__loupe" aria-hidden="true">
-          <div class="asm__loupe-in">
-            <AsmPlate kind="runtime" uid={`${uid}-loupe`} view={crop} />
+        <Fragment>
+          <div
+            class="asm__mark"
+            style={`--mw: ${(100 / assembly.edge.zoom).toFixed(2)}%; --mx: ${(assembly.edge.x * 100 - 50 / assembly.edge.zoom).toFixed(2)}%; --my: ${(assembly.edge.y * 100 - 50 / assembly.edge.zoom).toFixed(2)}%`}
+            aria-hidden="true"
+          />
+          <div class="asm__loupe" aria-hidden="true">
+            <div class="asm__loupe-in">
+              <AsmPlate kind="runtime" uid={`${uid}-loupe`} view={crop} />
+            </div>
+            <p class="asm__loupe-t">Edge error, {assembly.edge.zoom}&times;</p>
           </div>
-          <p class="asm__loupe-t">Edge error, {assembly.edge.zoom}&times;</p>
-        </div>
+        </Fragment>
       )
     }
   </div>
