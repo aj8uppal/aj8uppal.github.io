@@ -85,16 +85,6 @@ const rows: Array<[string, string]> = [
           <path d={`M${C - 4} 19 L${C} 27 L${C + 4} 19 Z`}></path>
         </g>
 
-        {
-          (
-            /* Made good along the wind axis: how much of the boat's speed is
-             going the way the wind is not. Up is to windward. */
-            <g class="wt__vmg" data-wt-vmg>
-              <line x1={C} y1={C} x2={C} y2={+(C - (now.vmg / best) * (R - 14)).toFixed(2)} />
-            </g>
-          )
-        }
-
         <g class="wt__boat" data-wt-boat transform={`rotate(${OPEN} ${C} ${C})`}>
           {
             /* Thrust, off the bow, as long as the polar says it is. At nothing
@@ -120,6 +110,21 @@ const rows: Array<[string, string]> = [
           </g>
           <circle class="wt__mast" cx={C} cy="100" r="2.4"></circle>
         </g>
+
+        {
+          (
+            /* Made good along the wind axis: how much of the boat's speed is
+             going the way the wind is not. Up is to windward.
+
+             Over the boat rather than under it. It is a reading rather than a
+             part of the hull, which argued for putting it behind, but on a
+             beam reach the hull lies across the axis and a reading you cannot
+             see is not one. It carries its own dark edge instead. */
+            <g class="wt__vmg" data-wt-vmg>
+              <line x1={C} y1={C} x2={C} y2={+(C - (now.vmg / best) * (R - 14)).toFixed(2)} />
+            </g>
+          )
+        }
       </svg>
     </div>
 

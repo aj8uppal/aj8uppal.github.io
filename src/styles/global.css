@@ -2734,7 +2734,8 @@ summary,
   stroke: var(--camel);
   stroke-width: 2.4;
   stroke-linecap: round;
-  opacity: 0.75;
+  paint-order: stroke;
+  filter: drop-shadow(0 0 1.4px rgb(0 0 0 / 85%));
 }
 
 .wt__hull {
@@ -2788,7 +2789,9 @@ summary,
 
 .wt__read > div {
   display: grid;
-  grid-template-columns: minmax(0, 8.5ch) minmax(0, 1fr);
+  /* Thirteen characters is POINT OF SAIL, the longest of the five. Any less
+     and two of the labels wrap and the column stops reading as a column. */
+  grid-template-columns: minmax(0, 13ch) minmax(0, 1fr);
   gap: 0.7rem;
   align-items: baseline;
   padding-bottom: 0.36rem;
