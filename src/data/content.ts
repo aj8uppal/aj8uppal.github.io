@@ -223,9 +223,15 @@ export const emberRegions: Frame[] = [
     alt: 'The Greenmarch in Ember Wilds: pale flats under a bleached sky with a white ruin and a chest, lore lines stacked at bottom left.',
     readout: [
       ['Region', 'The Greenmarch'],
-      ['Drop', 'Grave-Iron Blade'],
+      /* Lower-case i, which is how the drop line in the frame spells it. */
+      ['Drop', 'Grave-iron Blade'],
     ],
-    note: 'A fallen colonnade of Emberhold, garlanded in herb and briar. Something in the Ashen Waste’s livery haunts it now, and it left a blade behind.',
+    /* The audit flagged "garlanded in herb and briar" as the page going purple.
+       It is not the page: it is the lore panel in this frame, word for word,
+       and the caption now says so the way the Black Plateau one does. Quoting
+       a game's own writing is transcription; passing it off as mine was the
+       problem. */
+    note: 'The lore panel’s own words: a fallen colonnade of Emberhold, garlanded in herb and briar, haunted by something in the Ashen Waste’s livery. It left a blade behind.',
   },
   {
     key: 'fenmarch',
@@ -513,8 +519,11 @@ export const roles: Role[] = [
       'Designed and built caller identity verification for inbound calls, HIPAA-compliant and live across 5+ health systems: the RFC, the system, the runbook and the dashboards.',
       'Built the FHIR integration layer and the canonical clinical data mappings, then made new integrations configurable at launch. New-customer launches went from weeks to days.',
     ],
+    /* Opens on where the role stands, not on how long it took to get there.
+       The audit's read was that "Fourth year." spends the first beat on tenure
+       and buries the title behind two clauses. Same three facts, reversed. */
     status:
-      'Fourth year. I joined on EHR automation and took each layer under it in turn. Tech lead, mentor, and the primary reviewer for a distributed contractor team.',
+      'Tech lead, mentor, and the primary reviewer for a distributed contractor team. Fourth year: I joined on EHR automation and took each layer under it in turn.',
     stack:
       'Python · TypeScript · Node.js · React · PostgreSQL · BigQuery · SIP · GCP · Kubernetes · Terraform',
   },
