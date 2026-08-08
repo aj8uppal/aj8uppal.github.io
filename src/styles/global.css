@@ -3534,6 +3534,155 @@ button.toolbar__link {
   margin: 0;
 }
 
+/* ── 14b. THE 404 ────────────────────────────────────────────────────── */
+/* A maintenance buoy, not a joke. Somebody arrived here by following a link
+   that used to work, and the only useful thing to hand them is the address
+   they asked for, whether anything on the site is near it, and one place to
+   go. Everything below the fold is the audited manifest behind a disclosure,
+   because it answers the second question and not the first.
+
+   Plain fragments in the nav would point at nothing from here, so this page
+   asks the layout for `elsewhere` and the six links grow a path. */
+.buoy {
+  display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding-block: calc(0.8rem + 58px + clamp(1.6rem, 5vw, 3rem)) clamp(2.5rem, 6vw, 4rem);
+}
+
+.buoy__label {
+  color: var(--sand);
+}
+
+/* Mono and large, because it is a machine's answer to a machine-shaped
+   question and the reader's own eye needs to find the typo in it. Any address
+   at all can land here, so it wraps mid-token rather than pushing the page
+   sideways. */
+.buoy__path {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--on-ink);
+  font: 800 clamp(1.5rem, 5.5vw, 2.8rem) / 1.15 var(--mono);
+  letter-spacing: -0.02em;
+}
+
+.buoy__say {
+  max-width: 54ch;
+  margin: 1.1rem 0 0;
+  color: var(--on-ink-2);
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+.buoy__go {
+  margin: 1.5rem 0 0;
+}
+
+.buoy__notes {
+  margin-top: 2.2rem;
+}
+
+.buoy__list {
+  margin-top: 1.2rem;
+  max-width: 74ch;
+}
+
+.buoy__how {
+  margin: 0 0 1.6rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.buoy__grp + .buoy__grp {
+  margin-top: 1.9rem;
+}
+
+/* The count is the group's own, read off the manifest at build time, so the
+   heading cannot promise eight and list seven. */
+.buoy__gt {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font: 800 0.72rem/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.buoy__gt span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.buoy__gn {
+  max-width: 62ch;
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.buoy__rows {
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Address, name, reason. The address leads because it is what was typed, and
+   the reason is the quiet one because it only matters once the name has been
+   recognised. */
+.buoy__rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  gap: 0.2rem 1.4rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--line-dark);
+}
+
+/* Closed at the bottom as well as the top, so a group of eight reads as a
+   bounded set rather than a list that ran out. */
+.buoy__rows li:last-child {
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.buoy__rows b {
+  font-size: 0.92rem;
+}
+
+.buoy__p {
+  overflow-wrap: anywhere;
+  color: var(--on-ink-2);
+  font: 700 0.8rem/1.5 var(--mono);
+}
+
+a.buoy__p {
+  color: var(--sand);
+  text-decoration-color: color-mix(in srgb, currentcolor 40%, transparent);
+  text-underline-offset: 3px;
+}
+
+/* Stopped rows are printed, not linked, so the address needs to read as text
+   that happens to be an address. */
+span.buoy__p {
+  color: var(--on-ink-4);
+}
+
+.buoy__w {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.buoy__close {
+  margin: 2.4rem 0 0;
+  color: var(--muted);
+  font: 750 0.72rem/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 /* ── 15. MOTION ──────────────────────────────────────────────────────── */
 /* Only hidden once the reveal script is running, so a page without
    JavaScript never hides something it then cannot show. */
@@ -3630,6 +3779,18 @@ button.toolbar__link {
   .skg {
     grid-template-columns: minmax(0, 1fr);
     gap: 0.15rem;
+  }
+
+  /* /socket-canvas/public/index.html is thirty-two characters, and next to it
+     a name gets three. The address takes the row and everything else stacks
+     under it. */
+  .buoy__rows li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.28rem;
+  }
+
+  .buoy__w {
+    grid-column: 1;
   }
 
   /* The state name is nine characters of mono at its longest, and beside it a

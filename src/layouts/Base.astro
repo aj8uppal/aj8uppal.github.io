@@ -5,10 +5,25 @@ import { site, sections, contact } from '../data/content';
 interface Props {
   title?: string;
   description?: string;
+  /**
+   * True on any page that is not the index.
+   *
+   * The six section links are bare fragments, which is what lets motion.ts
+   * intercept them and scroll to a measured position. On a page that has no
+   * sections a bare fragment points at nothing, so it grows a path and becomes
+   * a real navigation - which is also why the interceptor stops matching it.
+   */
+  elsewhere?: boolean;
 }
 
-const { title = `${site.title} · ${site.tagline}`, description = site.description } = Astro.props;
+const {
+  title = `${site.title} · ${site.tagline}`,
+  description = site.description,
+  elsewhere = false,
+} = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
+
+const to = (id: string): string => (elsewhere ? `/#${id}` : `#${id}`);
 
 /* The design lab is review furniture. A dev server always has it; a build only
    has it when the build was asked for it by name, with `npm run build:lab`,
@@ -68,13 +83,13 @@ const Lab = devTools || labFlag ? (await import('../components/Lab.astro')).defa
         links and one place they can go out of date. */
     }
     <header class="nav" id="site-nav">
-      <a class="nav__brand" href="#top">
+      <a class="nav__brand" href={to('top')}>
         <span class="nav__mark" aria-hidden="true">AJ</span>
         <span class="nav__name">UPPAL</span>
       </a>
 
       <nav class="nav__links" id="nav" aria-label="Sections">
-        {sections.map((s) => <a href={`#${s.id}`}>{s.name}</a>)}
+        {sections.map((s) => <a href={to(s.id)}>{s.name}</a>)}
         <span class="nav__marker" aria-hidden="true"></span>
       </nav>
 
@@ -94,7 +109,7 @@ const Lab = devTools || labFlag ? (await import('../components/Lab.astro')).defa
       <nav aria-label="Sections, expanded">
         {
           sections.map((s) => (
-            <a href={`#${s.id}`}>
+            <a href={to(s.id)}>
               <b>{s.name}</b>
               <span>{s.desc}</span>
             </a>

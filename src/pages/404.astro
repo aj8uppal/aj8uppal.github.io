@@ -1,0 +1,212 @@
+---
+import Base from '../layouts/Base.astro';
+import { legacy, buoy } from '../data/legacy';
+import { site } from '../data/content';
+
+/* Grouped rather than listed flat, because the states are the whole point: a
+   reader who followed a dead link wants the eight that need nothing before
+   they want the alphabet. The counts come off the data so the copy cannot
+   drift from the manifest. */
+const groups = [
+  {
+    state: 'runs' as const,
+    title: 'Self-contained',
+    note: 'Needs nothing off this domain. Open it and it does what it did.',
+  },
+  {
+    state: 'opens' as const,
+    title: 'Partly elsewhere',
+    note: 'Still served and still draws, but something it loaded lived on another host, and that host has closed.',
+  },
+  {
+    state: 'stopped' as const,
+    title: 'Stopped',
+    note: 'Served, and nothing happens. Left up because the URL is still the URL, not because it works.',
+  },
+].map((g) => ({ ...g, rows: legacy.filter((l) => l.state === g.state) }));
+---
+
+<Base
+  title={`Not found · ${site.title}`}
+  description="No page at this address. What this site still serves, and which of it still works."
+  elsewhere
+>
+  <section class="sec sec--ink buoy">
+    <div class="shell">
+      <p class="eyebrow buoy__label">404 &middot; nothing at this address</p>
+
+      {
+        /* Filled from location.pathname, and hidden until it is. Without
+          JavaScript the page cannot know which address was asked for, and
+          printing a guess would be worse than printing nothing. */
+      }
+      <p class="buoy__path" data-buoy-path hidden></p>
+
+      {
+        /* The static line is the one that is true whatever was typed. The
+          script replaces it with the specific one. */
+      }
+      <p class="buoy__say" data-buoy-say>
+        This site does not serve that address. Everything it does serve from before the 2026 rebuild
+        is listed below, with what still works.
+      </p>
+
+      <p class="buoy__go">
+        <a class="btn btn--sand" href={buoy.path} data-buoy-go>Go to {buoy.name}</a>
+      </p>
+
+      <details class="notes buoy__notes">
+        <summary>Everything still served from the old site</summary>
+        <div class="buoy__list">
+          <p class="buoy__how">
+            Twenty-five addresses, opened one at a time in a headless browser on 7 August 2026 and
+            sorted by what actually happened: what each page fetched from other hosts, what it threw
+            on the way up, and whether anything was drawn two seconds later.
+          </p>
+          {
+            groups.map((g) => (
+              <section class="buoy__grp">
+                <h2 class="buoy__gt">
+                  {g.title}
+                  <span>{g.rows.length}</span>
+                </h2>
+                <p class="buoy__gn">{g.note}</p>
+                <ul class="buoy__rows">
+                  {g.rows.map((l) => (
+                    <li data-path={l.path} data-state={l.state}>
+                      {/* A stopped page is not a destination, so it is not a
+                          link. The address is still printed, because the
+                          address is the thing being promised. */}
+                      {l.state === 'stopped' ? (
+                        <span class="buoy__p">{l.path}</span>
+                      ) : (
+                        <a class="buoy__p" href={l.path}>
+                          {l.path}
+                        </a>
+                      )}
+                      <b>{l.name}</b>
+                      {l.why && <span class="buoy__w">{l.why}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))
+          }
+        </div>
+      </details>
+
+      <p class="buoy__close">Not every wreck is republished.</p>
+    </div>
+  </section>
+</Base>
+
+<script>
+  /**
+   * Name the address, and say whether anything on the site is close to it.
+   *
+   * The manifest is read back out of the list this page already rendered
+   * rather than imported a second time. One copy ships, and the sentence at
+   * the top cannot claim a state the rows below contradict.
+   */
+  const echo = document.querySelector<HTMLElement>('[data-buoy-path]');
+  const say = document.querySelector<HTMLElement>('[data-buoy-say]');
+  const go = document.querySelector<HTMLAnchorElement>('[data-buoy-go]');
+  const rows = Array.from(document.querySelectorAll<HTMLElement>('.buoy__rows li'));
+
+  if (echo && say && go && rows.length) {
+    const here = location.pathname;
+    echo.textContent = here;
+    echo.hidden = false;
+
+    /* Everything that separates two spellings of the same page: a capital, a
+       trailing slash, the .html a reader dropped, the index.html a directory
+       link implies. Comparing on the far side of all four is what lets
+       /Universe and /universe/ find the same row. */
+    const norm = (p: string): string =>
+      p
+        .toLowerCase()
+        .replace(/\/index\.html$/, '/')
+        .replace(/\.html$/, '')
+        .replace(/\/+$/, '') || '/';
+
+    /* The segment that is actually the name of the thing. Six of these live at
+       <app>/public/index.html, which is a 2016 deployment habit rather than
+       anything a reader typed, so the last segment on its own would have five
+       different pages all called "public". */
+    const dull = new Set(['public', 'demos', 'index', '']);
+    const tail = (p: string): string => {
+      const parts = norm(p).split('/');
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const seg = parts[i] ?? '';
+        if (!dull.has(seg)) return seg;
+      }
+      return parts[parts.length - 1] ?? '';
+    };
+
+    /* The old site's names and its URLs often disagree - Snake is at
+       /game1.html and CubeRunner is at /bar.html - so a reader who remembers
+       the name gets matched on the name too. */
+    const slug = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    /* Plain Levenshtein over two short strings. The names are one word each,
+       so the cost of the full matrix is nothing and the payoff is that
+       /grinchjmp still finds GrinchJump. */
+    const dist = (a: string, b: string): number => {
+      let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+      for (let i = 1; i <= a.length; i++) {
+        const next = [i];
+        for (let j = 1; j <= b.length; j++) {
+          next[j] = Math.min(
+            (prev[j] ?? 0) + 1,
+            (next[j - 1] ?? 0) + 1,
+            (prev[j - 1] ?? 0) + (a[i - 1] === b[j - 1] ? 0 : 1),
+          );
+        }
+        prev = next;
+      }
+      return prev[b.length] ?? 0;
+    };
+
+    const want = norm(here);
+    const wantTail = tail(here);
+
+    /* Best first, and only good enough counts. A typo is worth at most a
+       third of the word, so /circl finds Circle and /invoices finds nothing
+       rather than being talked into the nearest six-letter page. */
+    let best: { el: HTMLElement; score: number } | null = null;
+    for (const el of rows) {
+      const path = el.dataset.path ?? '';
+      let score = norm(path) === want ? 0 : Infinity;
+      for (const t of [tail(path), slug(el.querySelector('b')?.textContent ?? '')]) {
+        if (!t) continue;
+        if (wantTail.length >= 3 && (t.includes(wantTail) || wantTail.includes(t)))
+          score = Math.min(score, 0.5);
+        const d = dist(wantTail, t);
+        if (d <= Math.min(3, Math.max(1, Math.floor(t.length / 3)))) score = Math.min(score, d);
+      }
+      if (score < (best?.score ?? Infinity)) best = { el, score };
+    }
+
+    if (best) {
+      const el = best.el;
+      const name = el.querySelector('b')?.textContent ?? '';
+      const why = el.querySelector('.buoy__w')?.textContent ?? '';
+      const path = el.dataset.path ?? '';
+      if (el.dataset.state === 'runs') {
+        /* One of the eight has a caveat anyway, and swallowing it here to keep
+           the sentence tidy would be the row below calling this line a liar. */
+        const caveat = why ? ` ${why[0]?.toUpperCase()}${why.slice(1)}.` : '';
+        say.textContent = `Close to ${name}, which is still here and still runs on its own.${caveat}`;
+        go.href = path;
+        go.textContent = `Open ${name}`;
+      } else {
+        /* Named, because knowing what you nearly reached is the answer to the
+           question. Not offered, because the offer has to be something that
+           works, and this one is short a host. */
+        say.textContent = `Close to ${name}, at ${path}. It is still served, but ${why}.`;
+      }
+    } else {
+      say.textContent = 'Nothing on this site is close to that address.';
+    }
+  }
+</script>
