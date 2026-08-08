@@ -532,7 +532,10 @@ export const roles: Role[] = [
     when: 'Jan 2021 - May 2022',
     title: 'Student Software Developer',
     org: 'UMass Amherst, Physics Department',
-    body: 'Built and maintained the software professors used to acquire and share demonstrations across more than 100 classes. Ported a legacy WordPress site with a JSON backend to an Express, React and PostgreSQL application deployed on site.',
+    /* "More than 100 classes" came off the old site and no record I can find
+       backs it. The 2026 resume says 20+ courses and 1000+ students, so that
+       is what this says: a smaller number with something behind it. */
+    body: 'Built and maintained the software professors used to acquire and share demonstrations across 20+ courses and 1000+ students. Ported a legacy WordPress site with a JSON backend to an Express, React and PostgreSQL application deployed on site.',
     ev: 'umass.reach',
     stack: 'Express · React · PostgreSQL',
   },
