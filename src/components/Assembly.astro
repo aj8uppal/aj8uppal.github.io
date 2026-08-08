@@ -1,0 +1,150 @@
+---
+/**
+ * Three passes, landing on each other as the page scrolls past.
+ *
+ * The one place on this site where scroll drives motion, and it earns it by
+ * being what the app does: hidamari composites a still bake into a moving
+ * frame, so watching the bake, the depth pass and the runtime frame converge
+ * into one image is the technique performing itself rather than a decoration
+ * that happens to be near the paragraph about it.
+ *
+ * It does not hijack anything. The page scrolls at the speed the reader
+ * scrolls it; a listener reads where the stage has got to and writes one
+ * number. Scrolling past at full tilt costs nothing but a stack that has
+ * already landed.
+ *
+ * Three drivers, one number. Scroll is the default. The scrub takes over the
+ * moment it is touched and says so, with a control to hand it back, because a
+ * slider that silently loses an argument with the next scroll event is a
+ * broken slider. Under reduced motion there is no scroll listener at all: the
+ * stack starts assembled and stays there, and the scrub is the only way it
+ * comes apart, which is a reader asking for movement rather than being handed
+ * it.
+ */
+import AsmPlate from './AsmPlate.astro';
+import { sources } from '../lib/images';
+import { assembly } from '../data/assembly';
+
+/* Fixed, not generated. One of these per page, and a random id would make two
+   builds of the same source differ, which costs the build comparison in
+   verify its whole point. */
+const uid = 'asm';
+
+/* Where each sheet sits while the stack is apart, in percent of the stage. The
+   runtime frame is the one you are left looking at, so it fans towards the
+   reader. Paired with the scale in .asm__plate these land the outer two flush
+   inside the stage: fan any wider and the back sheet loses its edge to the
+   overflow, any narrower and it disappears behind the front one. */
+const FAN: Record<string, { x: number; y: number }> = {
+  beauty: { x: -18, y: -13 },
+  depth: { x: 0, y: 0 },
+  runtime: { x: 18, y: 13 },
+};
+
+const shots = assembly.real
+  ? await Promise.all(
+      assembly.plates.map(async (p) =>
+        p.asset
+          ? await sources(p.asset, [420, 640, 900, 1240], '(min-width: 1000px) 560px, 90vw')
+          : null,
+      ),
+    )
+  : [];
+---
+
+<figure class="asm" data-asm style={`--ar: ${assembly.ar}`}>
+  {
+    /* Said in the open, not in a disclosure. A schematic presented as a
+       capture is the one thing this page cannot do, and a notice a reader has
+       to press for is a notice that did not happen. */
+    !assembly.real && (
+      <p class="asm__pending">
+        <b>Placeholder plates.</b>
+        {assembly.note}
+      </p>
+    )
+  }
+
+  <div class="asm__stage" data-asm-stage>
+    {
+      assembly.plates.map((p, i) => {
+        const at = FAN[p.key] ?? { x: 0, y: 0 };
+        const shot = shots[i];
+        return (
+          <div class="asm__plate" data-plate={p.key} style={`--x: ${at.x}; --y: ${at.y}`}>
+            <div class="asm__sheet">
+              {shot && p.alt ? (
+                <picture>
+                  <source type="image/avif" srcset={shot.avif} sizes={shot.sizes} />
+                  <source type="image/webp" srcset={shot.webp} sizes={shot.sizes} />
+                  <img
+                    src={shot.src}
+                    width={shot.width}
+                    height={shot.height}
+                    alt={p.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
+              ) : (
+                <AsmPlate kind={p.key} uid={`${uid}-${p.key}`} />
+              )}
+            </div>
+            <p class="asm__tag">
+              <b>{p.name}</b>
+              <span>{p.by}</span>
+            </p>
+          </div>
+        );
+      })
+    }
+
+    {
+      /* The cost of the technique, at three and a half times. It arrives only
+         once the stack has landed, because there is nothing to inspect until
+         there is a finished frame to inspect. */
+      !assembly.real && (
+        <div
+          class="asm__loupe"
+          style={`--fx: ${assembly.edge.x}; --fy: ${assembly.edge.y}; --zoom: ${assembly.edge.zoom}`}
+          aria-hidden="true"
+        >
+          <div class="asm__loupe-in">
+            <AsmPlate kind="runtime" uid={`${uid}-loupe`} />
+          </div>
+          <p class="asm__loupe-t">Edge error, {assembly.edge.zoom}&times;</p>
+        </div>
+      )
+    }
+  </div>
+
+  <div class="asm__scrub">
+    <label class="range" for={`${uid}-asm`}>
+      <span>
+        Assembly <output for={`${uid}-asm`} data-asm-out aria-hidden="true"
+          >Three passes, apart</output
+        >
+      </span>
+      <input
+        id={`${uid}-asm`}
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        value="0"
+        data-asm-range
+        aria-valuetext="Three passes, apart"
+      />
+    </label>
+    {/* Only rendered as reachable once the scrub has taken the wheel. */}
+    <button type="button" class="asm__hand" data-asm-hand>Hand it back to the scroll</button>
+  </div>
+
+  <figcaption class="asm__cap">
+    {
+      assembly.real
+        ? assembly.said
+        : 'Scroll it together, or drag it apart. The near trunk shifts furthest because it is nearest, and the hatched sliver behind it is ground the bake never saw: a reprojection can move what was rendered, not invent what was hidden.'
+    }
+  </figcaption>
+</figure>

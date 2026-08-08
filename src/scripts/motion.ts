@@ -1,3 +1,4 @@
+import { installAssembly } from './assembly';
 import { springKeyframes } from './spring';
 import { installHero } from '../heroes/runtime';
 
@@ -430,3 +431,4 @@ installThemeColor();
 installLongTab();
 installReceipts();
 installHeroCanvas();
+installAssembly();

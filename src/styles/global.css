@@ -1931,6 +1931,199 @@ summary,
   margin-bottom: 0;
 }
 
+/* ── 9c. THE HIDAMARI ASSEMBLY ───────────────────────────────────────── */
+/* Three plates that land on each other. Every transform in here is a function
+   of --p, which the driver writes and nothing else touches, so the scroll, the
+   scrub and the reduced-motion still are three ways of setting one number
+   rather than three code paths. */
+.asm {
+  --p: 0;
+
+  margin: 1.4rem 0 0;
+}
+
+/* Not a disclosure and not small print. The plates are a schematic and the
+   page has to say so at the same size it says everything else. */
+.asm__pending {
+  margin: 0 0 0.9rem;
+  padding: 0.62rem 0.75rem;
+  border-left: 2px solid var(--sand);
+  border-radius: 0 var(--r-xs) var(--r-xs) 0;
+  background: color-mix(in srgb, var(--sand) 9%, transparent);
+  color: var(--on-ink-2);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.asm__pending b {
+  margin-right: 0.3rem;
+  color: var(--sand);
+  font: 800 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.asm__stage {
+  position: relative;
+  aspect-ratio: var(--ar);
+  overflow: hidden;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-sm);
+  background: var(--screen);
+}
+
+/* The fan collapses as --p rises: each sheet walks its offset back to zero and
+   its scale up to one, so at 1 all three occupy the same box and the runtime
+   frame, last in source order, is the one you are left looking at. */
+.asm__plate {
+  position: absolute;
+  inset: 0;
+  translate: calc(var(--x) * (1 - var(--p)) * 1%) calc(var(--y) * (1 - var(--p)) * 1%);
+  scale: calc(0.62 + 0.38 * var(--p));
+}
+
+.asm__sheet {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--on-ink) 22%, transparent);
+  border-radius: var(--r-xs);
+  /* Short and dark. A sheet lifted off the one behind it needs an edge, not a
+     glow, and a glow over near-black composites to nothing anyway. */
+  box-shadow: 0 8px 20px rgb(0 0 0 / 46%);
+}
+
+.asm__svg,
+.asm__sheet img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Names the sheet while there are three of them and gets out of the way once
+   there is one. Gone before it would sit on the finished frame.
+
+   Top left, because the fan runs down and right, so that corner is the one
+   part of a back sheet the sheets in front never cover. Counter-scaled against
+   the plate: the artwork is what shrinks in the fan, and a label that shrinks
+   with it is a label nobody reads at 6px. */
+.asm__tag {
+  position: absolute;
+  inset: 0 auto auto 0;
+  margin: 0;
+  /* Two lines, never three: the band of a back sheet the front one leaves
+     uncovered is the fan's vertical offset deep, and this has to sit in it. */
+  white-space: nowrap;
+  padding: 0.3rem 0.44rem 0.34rem;
+  border-radius: var(--r-xs) 0 var(--r-xs);
+  background: color-mix(in srgb, var(--screen) 86%, transparent);
+  color: var(--on-ink-3);
+  font: 700 var(--fs-micro) / 1.45 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transform-origin: 0 0;
+  scale: calc(1 / (0.62 + 0.38 * var(--p)));
+  opacity: clamp(0, calc(1.15 - var(--p) * 2.4), 1);
+}
+
+.asm__tag b {
+  display: block;
+  color: var(--sand);
+}
+
+/* The loupe holds a second copy of the runtime plate, blown up and slid so the
+   focus point lands in the middle. Same aspect ratio as the stage, which is
+   what lets one --zoom do both axes. */
+.asm__loupe {
+  position: absolute;
+  right: 3.5%;
+  bottom: 6%;
+  width: 30%;
+  aspect-ratio: var(--ar);
+  overflow: hidden;
+  border: 1px solid var(--sand);
+  border-radius: var(--r-xs);
+  background: var(--screen);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 55%);
+  /* Held back until the seams have actually closed. Arriving while the sheets
+     are still a few percent apart puts a magnifier on a frame that has not
+     finished being one. */
+  opacity: clamp(0, calc((var(--p) - 0.9) * 10), 1);
+  pointer-events: none;
+}
+
+.asm__loupe-in {
+  position: absolute;
+  left: calc(50% - var(--fx) * var(--zoom) * 100%);
+  top: calc(50% - var(--fy) * var(--zoom) * 100%);
+  width: calc(var(--zoom) * 100%);
+  aspect-ratio: var(--ar);
+}
+
+.asm__loupe-t {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0.16rem 0.34rem;
+  background: var(--sand);
+  color: var(--on-accent);
+  font: 800 0.56rem/1.35 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.asm__scrub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin-top: 2.1rem;
+}
+
+/* The scrub keeps the whole row and the hand-back wraps under it. Sharing a
+   line, the long label and the longest phase word run out of card at the width
+   this figure actually gets, and the thing that then moves is the caption,
+   below the control, not the control under the reader's cursor. */
+.asm__scrub .range {
+  flex: 1 1 100%;
+}
+
+/* Only offered once the scrub has taken it. Nothing to hand back while the
+   scroll still has it, and nothing to hand it to under reduced motion. */
+.asm__hand {
+  display: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--on-ink-3);
+  font: 700 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentcolor 40%, transparent);
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.asm[data-driver='manual'] .asm__hand {
+  display: block;
+}
+
+.asm__hand:hover {
+  color: var(--sand);
+}
+
+.asm__cap {
+  max-width: 62ch;
+  margin: 0.75rem 0 0;
+  color: var(--on-ink-3);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
 /* ── 9b. MODEL CARDS ─────────────────────────────────────────────────── */
 /* The appendix under the four projects. Flat and ruled: four more raised
    panels beneath four raised cards would read as four more projects, and the
@@ -4434,6 +4627,14 @@ span.buoy__p {
     gap: 0.15rem;
   }
 
+  /* Thirty percent of a phone-width stage is a loupe the caption does not fit
+     in, and a magnifier you cannot read the magnification off is decoration.
+     It takes more of the frame instead, which it can afford: by the time it
+     appears there are no sheets behind it left to hide. */
+  .asm__loupe {
+    width: 42%;
+  }
+
   /* /socket-canvas/public/index.html is thirty-two characters, and next to it
      a name gets three. The address takes the row and everything else stacks
      under it. */
@@ -4766,5 +4967,12 @@ span.buoy__p {
   .js [data-reveal].in {
     opacity: 1;
     transform: none;
+  }
+
+  /* The assembled still, from the first paint rather than from whenever the
+     script lands. The driver agrees with this and then writes --p inline, so
+     the scrub still comes apart for a reader who asks it to. */
+  .asm {
+    --p: 1;
   }
 }

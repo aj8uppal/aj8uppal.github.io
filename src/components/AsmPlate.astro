@@ -1,0 +1,187 @@
+---
+/**
+ * One schematic plate: the same five-trunk scene rendered three ways.
+ *
+ * A stand-in, and drawn rather than photographed on purpose. Faking a depth
+ * pass off the one real canopy capture would put an invented render beside a
+ * true one on a page whose whole argument is that it does not do that. A
+ * diagram is honestly a diagram.
+ *
+ * It is not decoration either. All three views share one array of trunks with
+ * one depth each, and the runtime view derives its parallax from that depth
+ * rather than from a number that looked right: near things shift furthest, far
+ * things barely move, and the void bands are exactly as wide as the shift that
+ * opened them. So the schematic demonstrates the actual technique, including
+ * the part of it that costs something.
+ */
+import type { PlateKey } from '../data/assembly';
+
+interface Props {
+  kind: PlateKey;
+  /** Unique per instance: the runtime plate is drawn twice, stage and loupe. */
+  uid: string;
+}
+
+const { kind, uid } = Astro.props;
+
+/** Base x, real trunk width, and depth from 0 (nearest) to 1 (furthest). */
+const TRUNKS = [
+  { x: 28, w: 18, d: 0.06 },
+  { x: 92, w: 17, d: 0.36 },
+  { x: 148, w: 16, d: 0.58 },
+  { x: 198, w: 18, d: 0.2 },
+  { x: 258, w: 18, d: 0.8 },
+];
+
+const HORIZON = 148;
+
+/* One camera, so one function of depth drives everything on screen: how large
+   a thing at that depth appears, 1 at the near plane. Trunk width, trunk
+   height, how far below the horizon the base falls and how far the trunk
+   slides when the camera moves all come off this number. Authoring those
+   separately is how you get five trees standing on the horizon line. */
+const seen = (d: number): number => 1 - 0.82 * d;
+const base = (d: number): number => HORIZON + 50 * seen(d);
+const crown = (d: number): number => base(d) - 172 * seen(d);
+
+/* How far the camera moved between the bake and the runtime frame, measured at
+   the near plane. Parallax falls off with depth on the same curve size does,
+   which is why the near trunk moves ten units and the far one under four. */
+const SHIFT = 11;
+
+/** Warm near, hazed out with distance. The bake's job. */
+const lit = (d: number): string => {
+  const mix = Math.round(d * 62);
+  return `color-mix(in srgb, #8f7a5c ${mix}%, #33251a)`;
+};
+
+/** Near is bright, far is dark. The convention the reprojection reads. */
+const grey = (d: number): string => {
+  const v = Math.round(238 - d * 214);
+  return `rgb(${v} ${v} ${v})`;
+};
+
+const shift = (d: number): number => SHIFT * seen(d);
+
+/* Every trunk leaves a sliver; only the near three leave one wide enough to
+   see. A four-unit hairline behind a trunk most of the way to the horizon is
+   true and unreadable, and drawing all five turns the point into noise. */
+const voids = TRUNKS.filter((t) => shift(t.d) > 6);
+
+const sky = `sky-${uid}`;
+const ground = `ground-${uid}`;
+const hatch = `hatch-${uid}`;
+---
+
+<svg
+  class="asm__svg"
+  viewBox="0 0 320 200"
+  role="img"
+  aria-label={`Schematic ${kind} plate: five tree trunks at five depths over a path.`}
+  preserveAspectRatio="xMidYMid slice"
+>
+  <defs>
+    {
+      kind === 'depth' ? (
+        <linearGradient id={ground} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="rgb(46 46 46)" />
+          <stop offset="1" stop-color="rgb(232 232 232)" />
+        </linearGradient>
+      ) : (
+        <linearGradient id={ground} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#a8763f" />
+          <stop offset="1" stop-color="#d9ab68" />
+        </linearGradient>
+      )
+    }
+    {
+      kind !== 'depth' && (
+        <linearGradient id={sky} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#c98f36" />
+          <stop offset="1" stop-color="#f6e7bd" />
+        </linearGradient>
+      )
+    }
+    {
+      kind === 'runtime' && (
+        <pattern
+          id={hatch}
+          width="6"
+          height="6"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(45)"
+        >
+          <rect width="6" height="6" fill="#0d0e0d" />
+          <line x1="0" y1="0" x2="0" y2="6" stroke="#f5cb5c" stroke-width="1.6" />
+        </pattern>
+      )
+    }
+  </defs>
+
+  {/* Sky. Infinitely far, so the depth pass reads it as the darkest thing. */}
+  <rect width="320" height={HORIZON} fill={kind === 'depth' ? 'rgb(20 20 20)' : `url(#${sky})`}
+  ></rect>
+  <rect y={HORIZON} width="320" height={200 - HORIZON} fill={`url(#${ground})`}></rect>
+
+  {
+    kind !== 'depth' && (
+      <g class="asm__canopy">
+        <ellipse cx="60" cy="30" rx="72" ry="34" fill="#c8742c" opacity="0.5" />
+        <ellipse cx="176" cy="20" rx="86" ry="30" fill="#d98f3a" opacity="0.42" />
+        <ellipse cx="278" cy="34" rx="60" ry="26" fill="#b8641f" opacity="0.38" />
+      </g>
+    )
+  }
+
+  {
+    /* The bake is lit; the reprojection inherits that lighting and cannot
+       change it, which is the whole trick and the whole limitation. */
+    kind !== 'depth' && (
+      <path
+        d="M112 0 L162 0 L214 200 L138 200 Z"
+        fill="#fbeec4"
+        opacity="0.17"
+        transform={kind === 'runtime' ? 'translate(6 0)' : undefined}
+      />
+    )
+  }
+
+  {
+    /* Drawn far to near so the near trunks occlude the distant ones, which is
+       the ordering the depth pass exists to record. */
+    [...TRUNKS]
+      .sort((a, b) => b.d - a.d)
+      .map((t) => {
+        const dx = kind === 'runtime' ? shift(t.d) : 0;
+        return (
+          <rect
+            x={t.x + dx}
+            y={crown(t.d)}
+            width={t.w * seen(t.d)}
+            height={base(t.d) - crown(t.d)}
+            fill={kind === 'depth' ? grey(t.d) : lit(t.d)}
+          />
+        );
+      })
+  }
+
+  {
+    /* What the reprojection could not fill. The trunk moved right and the
+       ground behind its left edge was never rendered, so the sliver it left
+       has no colour to take. Exactly as wide as the shift that opened it, and
+       outlined, because a dark hatch against a dark trunk reads as more trunk
+       and this is the one thing in the frame worth being able to find. */
+    kind === 'runtime' &&
+      voids.map((t) => (
+        <rect
+          x={t.x}
+          y={crown(t.d)}
+          width={shift(t.d)}
+          height={base(t.d) - crown(t.d)}
+          fill={`url(#${hatch})`}
+          stroke="#f5cb5c"
+          stroke-width="0.7"
+        />
+      ))
+  }
+</svg>
