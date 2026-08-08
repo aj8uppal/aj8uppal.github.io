@@ -370,6 +370,53 @@ function installLongTab(): void {
   if (!document.hidden) start();
 }
 
+/* ── Show receipts ───────────────────────────────────────────────────── */
+/* The switch that puts an evidence class and an observation date beside every
+   number on the page.
+
+   The state lives in the URL and nowhere else. Nothing is remembered in
+   storage, because a reader who comes back tomorrow to a page covered in mono
+   annotations they turned on last week has been handed a mystery rather than a
+   mode, and ?receipts is a link they can send to somebody who does not believe
+   them. Base.astro reads the same parameter before first paint, so arriving
+   with the mode on never animates it on.
+
+   No pushState: this is not a place in the history, it is how the current page
+   is being read. */
+function installReceipts(): void {
+  const btn = document.querySelector<HTMLButtonElement>('[data-receipts]');
+  const said = document.querySelector('[data-receipts-said]');
+  if (!btn) return;
+
+  const root = document.documentElement;
+  const count = document.querySelectorAll('.clm').length;
+
+  /* `announce` is off for the first call. A live region that speaks on load is
+     an announcement nobody asked for, and the button's own label already says
+     which way round it is. */
+  const apply = (want: boolean, announce = true): void => {
+    root.classList.toggle('receipts', want);
+    btn.setAttribute('aria-pressed', String(want));
+    btn.textContent = want ? 'Hide receipts' : 'Show receipts';
+
+    const url = new URL(location.href);
+    if (want) url.searchParams.set('receipts', '');
+    else url.searchParams.delete('receipts');
+    /* URLSearchParams writes a valueless key as `receipts=`. The trailing
+       equals is legal and ugly, and the reader is looking at it. */
+    history.replaceState(null, '', url.href.replace(/receipts=(?=&|$)/, 'receipts'));
+
+    if (said && announce) {
+      said.textContent = want
+        ? `Receipts shown. ${count} claims on this page now name their evidence.`
+        : 'Receipts hidden.';
+    }
+  };
+
+  apply(root.classList.contains('receipts'), false);
+  btn.addEventListener('click', () => apply(!root.classList.contains('receipts')));
+}
+
 /* ── Hero ────────────────────────────────────────────────────────────── */
 function installHeroCanvas(): void {
   const canvas = document.getElementById('hero-canvas');
@@ -381,4 +428,5 @@ installNav();
 installNavPanel();
 installThemeColor();
 installLongTab();
+installReceipts();
 installHeroCanvas();

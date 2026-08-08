@@ -84,6 +84,11 @@ const Lab = devTools || labFlag ? (await import('../components/Lab.astro')).defa
          reader who is already looking at the page. */
       if (new URLSearchParams(location.search).get('seed') === '4193')
         document.documentElement.classList.add('inspect');
+      /* Same reason for show receipts mode. Arriving on a shared ?receipts
+         link should look like the page was always annotated, not like the
+         annotations were bolted on a moment after it loaded. */
+      if (new URLSearchParams(location.search).has('receipts'))
+        document.documentElement.classList.add('receipts');
     </script>
   </head>
 

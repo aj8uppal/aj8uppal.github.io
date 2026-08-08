@@ -1317,6 +1317,31 @@ await run(
       unearned.map((u) => u.card).join(' | '),
     );
 
+    /* Show receipts, from the other end. Without script there is no switch to
+       press, so the page must not offer one - and the annotations must still
+       be inert rather than merely unstyled. The head script that reads
+       ?receipts is checked as text here because it is the thing that has to
+       run before the first paint, and nothing that runs later can prove it. */
+    const rec = await page.evaluate(() => ({
+      switch: getComputedStyle(document.querySelector('.foot__rec')).display,
+      tags: [...document.querySelectorAll('.clm__ev')].map((n) => getComputedStyle(n).display),
+      head: (document.head.querySelector('script:not([src])')?.textContent ?? '').includes(
+        "has('receipts')",
+      ),
+      inHead: document.head.contains(document.querySelector('script:not([src])')),
+    }));
+    note(rec.switch === 'none', 'no script, no offer of a receipts switch', rec.switch);
+    note(
+      rec.tags.length > 0 && rec.tags.every((d) => d === 'none'),
+      'and every annotation is still inert',
+      `${rec.tags.length} tags, ${[...new Set(rec.tags)].join('/')}`,
+    );
+    note(
+      rec.head && rec.inHead,
+      'and the mode is read in the head, before anything is painted',
+      `found ${rec.head}, in head ${rec.inHead}`,
+    );
+
     const bad = await page.evaluate(CONTRAST);
     note(
       bad.length === 0,
@@ -1326,6 +1351,164 @@ await run(
 
     await page.screenshot({ path: `${OUT}/full-1440-no-script.png`, fullPage: true });
     console.log(`       wrote ${OUT}/full-1440-no-script.png`);
+  },
+);
+
+/* ── show receipts ───────────────────────────────────────────────────── */
+/* The mode that annotates a claim with what it rests on. Two things have to
+   hold or it is worse than not having it.
+ 
+   Off has to mean off. A reader who never presses the switch must get a page
+   that is not one pixel different from the page without this feature in it,
+   so the tags are measured as display:none rather than as invisible.
+ 
+   And no date may be invented. Every date the mode prints is compared against
+   the two records that are allowed to produce one - the probe log and the
+   capture log - so a class that grew a plausible-looking day would fail here
+   rather than read as evidence. A pending claim carrying a date is the same
+   fault from the other side, and is checked too.
+ */
+await run(
+  'show receipts',
+  { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, reducedMotion: 'reduce' },
+  async (page) => {
+    const read = () =>
+      page.evaluate(() => ({
+        on: document.documentElement.classList.contains('receipts'),
+        pressed: document.querySelector('[data-receipts]')?.getAttribute('aria-pressed') ?? null,
+        label: document.querySelector('[data-receipts]')?.textContent.trim() ?? null,
+        url: location.search,
+        said: document.querySelector('[data-receipts-said]')?.textContent.trim() ?? '',
+        claims: [...document.querySelectorAll('.clm')].map((n) => ({
+          key: n.dataset.claim,
+          shown: getComputedStyle(n.querySelector('.clm__ev')).display !== 'none',
+          lined: getComputedStyle(n).textDecorationLine,
+          srcs: [...n.querySelectorAll('.clm__src')].map((s) => ({
+            cls: s.firstChild?.textContent.trim() ?? '',
+            when:
+              s
+                .querySelector('.clm__on')
+                ?.textContent.replace(/^\s*·\s*/, '')
+                .trim() ?? '',
+          })),
+        })),
+      }));
+
+    const off = await read();
+    note(off.claims.length >= 10, 'the page carries claims to annotate', `${off.claims.length}`);
+    note(
+      !off.on && off.claims.every((c) => !c.shown && c.lined === 'none'),
+      'and off means off: no tag, no underline, no reflow',
+      off.claims
+        .filter((c) => c.shown || c.lined !== 'none')
+        .map((c) => c.key)
+        .join(' | '),
+    );
+    note(
+      off.pressed === 'false' && off.label === 'Show receipts',
+      'the switch says which way it is set',
+      `${off.label} / ${off.pressed}`,
+    );
+
+    const dup = off.claims.map((c) => c.key).filter((k, i, a) => a.indexOf(k) !== i);
+    note(dup.length === 0, 'and every claim is annotated once', dup.join(' | '));
+
+    await page.click('[data-receipts]');
+    await page.waitForTimeout(120);
+    const on = await read();
+
+    note(
+      on.on && on.pressed === 'true' && on.label === 'Hide receipts',
+      'pressing it turns the mode on and says so',
+      `${on.label} / ${on.pressed} / ${on.on}`,
+    );
+    note(on.url === '?receipts', 'and puts the mode in the URL, so it can be sent', on.url);
+    note(
+      on.said ===
+        `Receipts shown. ${on.claims.length} claims on this page now name their evidence.`,
+      'and tells a screen reader what just happened',
+      on.said,
+    );
+    note(
+      on.claims.every((c) => c.shown && c.lined !== 'none'),
+      'every claim now shows what it rests on',
+      on.claims
+        .filter((c) => !c.shown)
+        .map((c) => c.key)
+        .join(' | '),
+    );
+
+    const empty = on.claims.filter((c) => c.srcs.length === 0 || c.srcs.some((s) => !s.cls));
+    note(
+      empty.length === 0,
+      'and none of them is annotated with nothing',
+      empty.map((c) => c.key).join(' | '),
+    );
+
+    /* Every date printed has to come out of a record. Nothing else is allowed
+       to produce one, so the union of the two logs plus a bare year is the
+       whole permitted vocabulary. */
+    const day = (iso) =>
+      new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        timeZone: 'UTC',
+      }).format(new Date(iso));
+    const probes = JSON.parse(
+      await readFile(new URL('../src/data/receipts.json', import.meta.url)),
+    );
+    const shots = JSON.parse(await readFile(new URL('../src/data/captures.json', import.meta.url)));
+    const dated = new Set([
+      ...probes.runs.filter((r) => r.outcome === 'pass').map((r) => day(r.at)),
+      ...shots.map((c) => day(`${c.dated}T00:00:00Z`)),
+    ]);
+    const invented = on.claims.flatMap((c) =>
+      c.srcs
+        .filter((s) => s.when && !dated.has(s.when) && !/^\d{4}$/.test(s.when))
+        .map((s) => `${c.key}: ${s.cls} ${s.when}`),
+    );
+    note(invented.length === 0, 'and no date on the page was made up', invented.join(' | '));
+
+    const overclaimed = on.claims.flatMap((c) =>
+      c.srcs.filter((s) => s.cls === 'Evidence pending' && s.when).map((s) => `${c.key} ${s.when}`),
+    );
+    note(
+      overclaimed.length === 0,
+      'and nothing pending pretends to a date',
+      overclaimed.join(' | '),
+    );
+
+    const badOn = await page.evaluate(CONTRAST);
+    note(
+      badOn.length === 0,
+      'the annotations clear AA on every ground they land on',
+      badOn.map((b) => `${b.sel} ${b.ratio}:1 (needs ${b.need}) ${b.fg} on ${b.bg}`).join(' | '),
+    );
+
+    await page.click('[data-receipts]');
+    await page.waitForTimeout(120);
+    const back = await read();
+    note(
+      !back.on && back.url === '' && back.claims.every((c) => !c.shown),
+      'and pressing it again leaves no trace of the mode',
+      `${back.url} / ${back.on}`,
+    );
+
+    /* Arriving on a shared link. The head script has already been proved to
+       sit before the paint; this proves it does the right thing when it runs. */
+    await page.goto(new URL('?receipts', BASE).href, { waitUntil: 'networkidle' });
+    await page.evaluate(() => document.querySelector('[data-lab]')?.remove());
+    await settle(page);
+    const link = await read();
+    note(
+      link.on && link.pressed === 'true' && link.claims.every((c) => c.shown),
+      'a shared ?receipts link opens already annotated',
+      `${link.pressed} / ${link.claims.filter((c) => !c.shown).length} unshown`,
+    );
+
+    await page.screenshot({ path: `${OUT}/full-1440-receipts.png`, fullPage: true });
+    console.log(`       wrote ${OUT}/full-1440-receipts.png`);
   },
 );
 

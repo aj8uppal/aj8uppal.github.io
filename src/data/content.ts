@@ -20,6 +20,10 @@ export interface Role {
   /** Current role only: what the job is right now, under the record of it. */
   status?: string;
   stack?: string;
+  /** A key in the evidence map, for what `body` rests on. */
+  ev?: string;
+  /** The same, for `status`, which is a claim of a different kind. */
+  statusEv?: string;
   pending?: { note: string };
   ref?: string;
 }
@@ -501,6 +505,8 @@ export const roles: Role[] = [
     /* Outcome first. The rest of the log is one line a job; this one earns the
        room, so it opens with what the thing carries and then how I got it. */
     body: 'Healthcare AI, 100+ enterprise customers. I own the voice platform end to end: 250,000 patient calls a month at 99% uptime, conversation layer down to carrier-facing telephony.',
+    ev: 'notable.scale',
+    statusEv: 'notable.lead',
     bullets: [
       'Built the voice platform from zero: agent orchestration, state management, deploy tooling, and the reliability work that took it to 99%.',
       "Designed and shipped inbound calling over SIP: calls arrive from a health system's own telephony, not the public network. I wrote the spec their telecom teams build against.",
@@ -527,6 +533,7 @@ export const roles: Role[] = [
     title: 'Student Software Developer',
     org: 'UMass Amherst, Physics Department',
     body: 'Built and maintained the software professors used to acquire and share demonstrations across more than 100 classes. Ported a legacy WordPress site with a JSON backend to an Express, React and PostgreSQL application deployed on site.',
+    ev: 'umass.reach',
     stack: 'Express · React · PostgreSQL',
   },
   {
@@ -641,6 +648,7 @@ export const callTrace: TraceStep[] = [
 export const errata = [
   {
     ref: 'a',
+    ev: 'errata.a',
     text: 'My old site dates this internship Summer 2017 and my 2024 resume says June to August 2019, which collides with the Got It internship. Until I dig up the truth, the year stays off.',
   },
 ] as const;

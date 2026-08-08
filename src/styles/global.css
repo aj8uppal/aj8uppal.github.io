@@ -3698,9 +3698,23 @@ button.toolbar__link {
    the whole separation: a second hairline inside the footer would only reach
    as far as the 60ch the paragraphs are held to, and a rule that stops in the
    middle of the page reads as a mistake. Muted, and the two words that are the
-   link are the only ink in the footer. */
+   link are the only ink in the footer.
+
+   A full row and nothing else on it. `.foot p` caps every paragraph at 60ch,
+   and a flex item clamped to 60ch leaves room for the next one beside it - the
+   receipts switch below has the same basis and the two of them packed into one
+   line and read as a pair, which they are not. Both drop the cap; both are one
+   short sentence rather than a paragraph, so the cap was not holding anything.
+
+   Two classes on the override, because `.foot p` is a class and a type and
+   outranks a bare class however far down the file it sits. */
+.foot .foot__flip,
+.foot .foot__rec {
+  max-width: none;
+}
+
 .foot__flip {
-  flex-basis: 100%;
+  flex: 0 0 100%;
   margin-top: 0.5rem;
   color: var(--on-camel-3);
 }
@@ -3999,6 +4013,110 @@ span.buoy__p {
   .ins__d dd {
     margin-bottom: 0.35rem;
   }
+}
+
+/* ── 14d. SHOW RECEIPTS ──────────────────────────────────────────────── */
+/* `?receipts`, or the switch in the footer. Same shape as inspection mode and
+   for the same reason: the annotations are display:none until asked for, so a
+   reader who never presses the switch gets a page that is not one pixel
+   different from the page without this feature in it.
+
+   Dashed hairline, mono, micro. That is already this page's handwriting for
+   instrumentation - `.ins` uses it - and it is the one outline shape here that
+   A5's rule cannot mistake for something you press, which matters because
+   these tags sit inside running prose.
+
+   Struck off `currentcolor` rather than the `--line-*` pair, for the reason
+   the inspection blocks are: claims hang on six grounds and two of them are
+   dark cards standing in a light section, where a ground-named line comes out
+   invisible. */
+.clm__ev {
+  display: none;
+}
+
+/* The claim itself only declares what it is once somebody is reading the
+   annotations. An underline under every number all the time would be the
+   feature arguing before it was asked. */
+.receipts .clm {
+  text-decoration: underline dotted color-mix(in srgb, currentcolor 42%, transparent);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+
+.receipts .clm__ev {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25em 0.45em;
+  margin-left: 0.5em;
+  color: var(--muted);
+  font: 700 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  vertical-align: baseline;
+}
+
+.receipts .clm__src {
+  padding: 0.1em 0.45em;
+  border: 1px dashed color-mix(in srgb, currentcolor 32%, transparent);
+  border-radius: var(--r-xs);
+  white-space: nowrap;
+}
+
+/* The class is the label and the date is the value, the same split the
+   inspection blocks make. */
+.receipts .clm__on {
+  color: currentcolor;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+/* The switch. A real control, so it takes the round outline the page reserves
+   for things you press, and it says which state it is in with a fill rather
+   than only with its label - a reader who has just pressed it is looking at
+   the annotations, not back at the button. */
+.foot__rec {
+  flex: 0 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.5rem;
+  color: var(--on-camel-3);
+}
+
+.foot__btn {
+  padding: 0.32rem 0.8rem;
+  border: 1px solid var(--line-light-2);
+  border-radius: var(--r-pill);
+  color: var(--on-paper);
+  background: none;
+  font: 750 var(--fs-micro) / 1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-1) var(--ease),
+    background var(--dur-1) var(--ease);
+}
+
+.foot__rec span {
+  max-width: 60ch;
+}
+
+.foot__btn:hover {
+  border-color: var(--on-paper);
+}
+
+.foot__btn[aria-pressed='true'] {
+  border-color: transparent;
+  color: var(--on-accent);
+  background: var(--sand);
+}
+
+/* No switch without the script that drives it, and no offer of one either. */
+.no-js .foot__rec {
+  display: none;
 }
 
 /* ── 15. MOTION ──────────────────────────────────────────────────────── */

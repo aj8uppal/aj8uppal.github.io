@@ -1,4 +1,5 @@
 ---
+import Claim from '../components/Claim.astro';
 import Inspect from '../components/Inspect.astro';
 import Section from '../components/Section.astro';
 import type { Tone } from '../components/Section.astro';
@@ -57,7 +58,7 @@ const list = newestFirst ? past : [...past].reverse();
                   <p class="stack">{stackLine(r)}</p>
                   {r.body && (
                     <p>
-                      {r.body}
+                      {r.ev ? <Claim of={r.ev}>{r.body}</Claim> : r.body}
                       {r.ref && (
                         <sup class="ref" id={`ref-${r.ref}`} data-place>
                           <a href={`#note-${r.ref}`} aria-label={`Note ${r.ref}`}>
@@ -92,7 +93,9 @@ const list = newestFirst ? past : [...past].reverse();
                   [{e.ref}]
                 </a>
               </dt>
-              <dd>{e.text}</dd>
+              <dd>
+                <Claim of={e.ev}>{e.text}</Claim>
+              </dd>
             </div>
           ))
         }

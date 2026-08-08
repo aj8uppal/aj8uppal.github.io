@@ -1,0 +1,42 @@
+---
+/**
+ * A claim, and where it came from.
+ *
+ * Wraps the sentence that carries a number or a status and hangs its evidence
+ * class and observation date off the end. Invisible until a reader asks for
+ * receipts, and then the tag is the whole annotation: no panel over the copy,
+ * no second reading order, nothing that moves except the line growing an
+ * underline and a few words in mono.
+ *
+ * Dashed, like the inspection blocks, because that is already this page's
+ * handwriting for instrumentation and it is the one outline shape here that
+ * cannot be mistaken for something to press.
+ *
+ * The key has to be in the evidence map. A claim that has lost its entry
+ * throws at build rather than rendering an unannotated sentence that looks
+ * annotated everywhere else.
+ */
+import { evidence } from '../data/evidence';
+
+interface Props {
+  /** A key in src/data/evidence.ts. */
+  of: string;
+}
+
+const { of } = Astro.props;
+const sources = evidence(of);
+if (!sources) throw new Error(`Claim: nothing in the evidence map for "${of}"`);
+---
+
+<span class="clm" data-claim={of}
+  ><slot /><span class="clm__ev"
+    >{
+      sources.map((s) => (
+        <span class="clm__src">
+          {s.cls}
+          {s.when && <span class="clm__on"> &middot; {s.when}</span>}
+        </span>
+      ))
+    }</span
+  ></span
+>

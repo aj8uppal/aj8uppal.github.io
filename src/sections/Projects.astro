@@ -1,5 +1,6 @@
 ---
 import { Picture } from 'astro:assets';
+import Claim from '../components/Claim.astro';
 import Inspect from '../components/Inspect.astro';
 import Receipt from '../components/Receipt.astro';
 import Section from '../components/Section.astro';
@@ -118,7 +119,10 @@ const elderFrames: SwitchFrame[] = await Promise.all(
             />
             <p class="flag">{saltline.lead.flag}</p>
           </div>
-          <p class="plate-cap"><b>{saltline.spread.t}.</b> {saltline.spread.s}</p>
+          <p class="plate-cap">
+            <b>{saltline.spread.t}.</b>
+            <Claim of="saltline.plate">{saltline.spread.s}</Claim>
+          </p>
           <Inspect by="astro:assets Picture" assets={saltline.lead.asset} />
         </div>
 
@@ -143,6 +147,7 @@ const elderFrames: SwitchFrame[] = await Promise.all(
           <p class="card__sub">{saltline.sub}</p>
           <Skim
             {...saltline.skim}
+            ev="saltline.proof"
             cta={{ href: saltline.href, label: 'Play saltline', out: true }}
           />
         </div>
@@ -235,7 +240,11 @@ const elderFrames: SwitchFrame[] = await Promise.all(
             <a href={ember.href} target="_blank" rel="noopener">{ember.name}</a>
           </h3>
           <p class="card__sub">{ember.sub}</p>
-          <Skim {...ember.skim} cta={{ href: ember.href, label: 'Open Ember Wilds', out: true }} />
+          <Skim
+            {...ember.skim}
+            ev="ember.proof"
+            cta={{ href: ember.href, label: 'Open Ember Wilds', out: true }}
+          />
         </div>
       </div>
 
@@ -288,7 +297,11 @@ const elderFrames: SwitchFrame[] = await Promise.all(
           <Inspect by="astro:assets Picture" assets="ember-proof-two-players" />
           <div class="inset__body">
             <h4>{ember.proof.t}</h4>
-            {ember.proof.body.map((p) => <p>{p}</p>)}
+            {
+              ember.proof.body.map((p, i) => (
+                <p>{i === 0 ? <Claim of="ember.two">{p}</Claim> : p}</p>
+              ))
+            }
           </div>
         </div>
       </div>
@@ -321,7 +334,7 @@ const elderFrames: SwitchFrame[] = await Promise.all(
         <h3 class="display">{hidamari.name}</h3>
         <p class="card__sub">{hidamari.sub}</p>
 
-        <Skim {...hidamari.skim} />
+        <Skim {...hidamari.skim} ev="hidamari.proof" />
 
         <div class="card__body">
           {hidamari.prose.map((p) => <p>{p}</p>)}
@@ -355,7 +368,7 @@ const elderFrames: SwitchFrame[] = await Promise.all(
         <h3 class="display">{elderwood.name}</h3>
         <p class="card__sub">{elderwood.sub}</p>
 
-        <Skim {...elderwood.skim} />
+        <Skim {...elderwood.skim} ev="elderwood.proof" />
 
         <div class="card__body">
           {elderwood.prose.map((p) => <p>{p}</p>)}

@@ -1,4 +1,5 @@
 ---
+import Claim from '../components/Claim.astro';
 import Inspect from '../components/Inspect.astro';
 import Section from '../components/Section.astro';
 import type { Tone } from '../components/Section.astro';
@@ -114,7 +115,7 @@ const deviationPoster = await sources('legacy-deviation', POSTER_W, POSTER_S);
 
   <div class="method">
     <p class="kicker">Method</p>
-    <p>{playground.method}</p>
+    <p><Claim of="play.method">{playground.method}</Claim></p>
   </div>
 
   {
