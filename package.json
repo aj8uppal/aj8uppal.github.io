@@ -15,6 +15,7 @@
     "astro": "astro",
     "images": "node scripts/prepare-images.mjs",
     "poster:deviation": "node scripts/capture-deviation.mjs",
+    "receipts": "node scripts/receipts.mjs",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "check": "astro check",

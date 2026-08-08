@@ -10,7 +10,7 @@
  */
 import { chromium } from 'playwright';
 import sharp from 'sharp';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 
 const BASE = process.argv[2] ?? 'http://127.0.0.1:4321/';
 const OUT = process.argv[3] ?? '/tmp/p6shots';
@@ -1250,6 +1250,72 @@ await run(
         .map((n) => String(n.className)),
     );
     note(hollow.length === 0, 'no media slot is an empty hole', hollow.join(' | '));
+
+    /* The playable receipts. They are the one thing on the page that claims to
+       be evidence rather than description, so what is rendered is compared to
+       the record byte for byte rather than eyeballed - a receipt that has
+       drifted from the run that earned it is worse than no receipt. */
+    const record = JSON.parse(
+      await readFile(new URL('../src/data/receipts.json', import.meta.url)),
+    );
+    const day = (iso) =>
+      new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        timeZone: 'UTC',
+      }).format(new Date(iso));
+
+    const shapeBad = record.runs.filter(
+      (r) =>
+        !['pass', 'fail', 'blocked'].includes(r.outcome) ||
+        (r.outcome === 'pass') !== Boolean(r.build) ||
+        new Date(r.at).getTime() > Date.now(),
+    );
+    note(
+      shapeBad.length === 0,
+      'every receipt names an outcome, and only a pass carries a build',
+      shapeBad.map((r) => `${r.key} ${r.outcome}`).join(' | '),
+    );
+
+    const shown = await page.$$eval('.receipt', (ns) =>
+      ns.map((n) => ({
+        card: n.closest('.card')?.id ?? '?',
+        outcome: n.dataset.receipt,
+        text: n.textContent.replace(/\s+/g, ' ').trim(),
+        at: n.querySelector('time')?.getAttribute('datetime') ?? null,
+      })),
+    );
+    const speaking = record.runs.filter((r) => r.outcome !== 'blocked');
+    note(
+      shown.length === speaking.length,
+      'a receipt on the page for every run that reached a verdict',
+      `${shown.length} shown, ${speaking.length} spoke`,
+    );
+
+    const wrong = shown.filter((s) => {
+      const r = record.runs.find((x) => s.card.endsWith(x.key));
+      if (!r) return true;
+      const want =
+        r.outcome === 'pass'
+          ? `Last proved playable ${day(r.at)}`
+          : `Did not come up on ${day(r.at)}`;
+      return s.outcome !== r.outcome || s.at !== r.at || s.text !== want;
+    });
+    note(
+      wrong.length === 0,
+      'and each one says exactly what its run recorded',
+      wrong.map((w) => `${w.card}: ${w.text}`).join(' | '),
+    );
+
+    /* A receipt is only meaningful next to a thing you can go and open. A
+       greybox with a date on it would be the green dot all over again. */
+    const unearned = shown.filter((s) => !['p-saltline', 'p-ember'].includes(s.card));
+    note(
+      unearned.length === 0,
+      'and only the two public games carry one',
+      unearned.map((u) => u.card).join(' | '),
+    );
 
     const bad = await page.evaluate(CONTRAST);
     note(

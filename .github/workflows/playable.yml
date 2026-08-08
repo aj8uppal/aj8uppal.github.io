@@ -1,0 +1,82 @@
+# Playable receipts.
+#
+# Opens the two public games over HTTPS, waits for the state each one only
+# reaches when it is running, and commits the verdict back as a small JSON
+# file the site reads at build time. The site stays static. This is the only
+# moving part, and it is the only thing allowed to write that file.
+#
+# runs-on: macos-latest is load-bearing, not a preference. Ember Wilds refuses
+# to boot on a software renderer by design - it matches UNMASKED_RENDERER_WEBGL
+# against swiftshader, llvmpipe and friends - and a GitHub-hosted Linux runner
+# has no GPU, so Chromium there falls back to exactly what that guard rejects.
+# On a macOS runner headless Chromium gets ANGLE on Metal and the game boots.
+# Faking the renderer string would prove a slideshow playable, so it is not
+# done; on a runner that cannot reach a verdict the record says "blocked" and
+# the site says nothing.
+#
+# Weekly rather than nightly. "Last proved playable" to the week is an honest
+# and useful claim, and it is worth one commit a week rather than 365. For
+# nightly, change the cron below to '0 9 * * *'.
+
+name: Playable receipts
+
+on:
+  schedule:
+    # 09:00 UTC on Mondays.
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# One at a time, and never cancel one in flight: a half-written record is
+# worse than a stale one.
+concurrency:
+  group: receipts
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install chromium
+
+      - name: Open both games
+        run: node scripts/receipts.mjs "${{ runner.temp }}/receipts"
+
+      # The thumbnails are evidence for a person reading the run, not content
+      # for the site. Publishing an unreviewed screenshot of a live game to the
+      # portfolio every week means whatever is on screen that week goes public.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playable-thumbnails
+          path: ${{ runner.temp }}/receipts
+          retention-days: 30
+          if-no-files-found: ignore
+
+      # Only on master, and only when the record actually moved. Deploy is
+      # workflow_dispatch only, so this commit publishes nothing by itself -
+      # the receipt goes out with the next deploy someone chooses to send.
+      - name: Commit the record
+        if: github.ref == 'refs/heads/master'
+        run: |
+          if git diff --quiet -- src/data/receipts.json; then
+            echo "record unchanged"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/receipts.json
+          git commit -m "chore: playable receipts $(date -u +%Y-%m-%d)"
+          git push

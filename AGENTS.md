@@ -67,6 +67,12 @@ The WCAG sweep in `scripts/verify.mjs` resolves an element's background by first
 The selected tab is ink on an acid pill drawn by `.fs__ind`, a sibling; an ancestor walk finds the dark card and reports a false failure at 1.2:1.
 It also measures `-webkit-text-stroke-color` for text with a transparent fill, because the outlined second name line is drawn entirely by its stroke.
 
+## `src/data/receipts.json` is a transcript, not content
+
+Nothing hand-edits it. `npm run receipts` opens the two public games over HTTPS, waits for the state each one only reaches when it is running, and writes the verdict; `.github/workflows/playable.yml` runs that weekly and commits the result.
+A missing run renders as "not yet proved this build", which is the correct output and not a bug to route around.
+That workflow runs on `macos-latest` because Ember Wilds refuses to boot on a software renderer by design, and a GitHub-hosted Linux runner has no GPU - a run that cannot reach a verdict is recorded as `blocked` and the page then says nothing at all.
+
 ## Grid items have a min-content floor
 
 A grid item's automatic minimum size is its min-content unless `min-width: 0` says otherwise.
