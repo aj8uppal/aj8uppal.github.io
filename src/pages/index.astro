@@ -251,13 +251,29 @@ const heroLabel =
 
       <dl class="facts" data-reveal>
         {
-          about.notes.map(([k, v], i) => (
+          about.notes.map((n, i) => (
             <div class="fact">
               <span class="fact__i" aria-hidden="true">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <dt>{k}</dt>
-              <dd>{v}</dd>
+              <dt>{n.k}</dt>
+              <dd>
+                {n.v}
+                {/* "Will debate" is a claim with a door in it, and the door
+                    should open. Subject filled, body left empty: the argument
+                    is the reader's to make. */}
+                {n.reply && (
+                  <>
+                    {' '}
+                    <a
+                      class="fact__reply"
+                      href={`mailto:${contact.email}?subject=${encodeURIComponent(n.reply.subject)}`}
+                    >
+                      {n.reply.label}
+                    </a>
+                  </>
+                )}
+              </dd>
             </div>
           ))
         }

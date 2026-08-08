@@ -1116,6 +1116,29 @@ summary,
   font: 800 0.72rem/1.25 var(--mono);
 }
 
+/* Full ink against the note's own softer grey, which is the whole emphasis it
+   needs: it is one small link at the end of one line, not a call to action.
+
+   Same geometry as the other inline links on the page - padded for a thumb,
+   negatively margined back out so the row it sits in is the height it was.
+   Unbroken because three words split across a line wrap stop looking like one
+   link and start looking like the sentence stuttered. */
+.fact__reply {
+  display: inline-block;
+  padding: 0.45rem 0;
+  margin: -0.45rem 0;
+  color: var(--on-paper);
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentcolor 35%, transparent);
+  text-underline-offset: 3px;
+}
+
+.fact__reply:hover {
+  text-decoration-color: currentcolor;
+}
+
 /* ── 9. PROJECT CARDS ───────────────────────────────────────────────── */
 .work {
   position: relative;

@@ -155,6 +155,18 @@ export const cover = {
   ],
 } as const;
 
+export interface AboutNote {
+  k: string;
+  v: string;
+  /**
+   * An answer the note invites, offered as a mail draft.
+   *
+   * Subject only. A canned body would be writing the reader's argument for
+   * them, and "will debate" is not an invitation to send a form back.
+   */
+  reply?: { label: string; subject: string };
+}
+
 export const about = {
   statement: 'I learn things by building them.',
   prose: [
@@ -162,11 +174,18 @@ export const about = {
     'In college I simulated CO2 cooling for particle detectors. Now I simulate oceans for a sailing game. It’s more or less the same job: pick a model, pick a timestep, and know what you’re leaving out.',
   ],
   notes: [
-    ['Off the clock', 'Heirloom tomatoes, bikes, and Pink Floyd, roughly in that order.'],
-    ['Long held', 'Wanted to be an astronaut since I was four. Still would.'],
-    ['Will debate', 'Python is the best language. I’ve heard the counterarguments.'],
-    ['Best class', 'Cosmology and Consciousness. An independent study, and I had to ask for it.'],
-  ] as Array<[string, string]>,
+    { k: 'Off the clock', v: 'Heirloom tomatoes, bikes, and Pink Floyd, roughly in that order.' },
+    { k: 'Long held', v: 'Wanted to be an astronaut since I was four. Still would.' },
+    {
+      k: 'Will debate',
+      v: 'Python is the best language. I’ve heard the counterarguments.',
+      reply: { label: 'File an appeal', subject: 'Python counterargument' },
+    },
+    {
+      k: 'Best class',
+      v: 'Cosmology and Consciousness. An independent study, and I had to ask for it.',
+    },
+  ] as AboutNote[],
   method:
     'Every screenshot on this page is a real capture of the project it belongs to. Nothing is mocked up.',
 } as const;
