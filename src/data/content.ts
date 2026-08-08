@@ -143,8 +143,10 @@ export const cover = {
   lead: 'I build production AI systems, and improbable things that run in a browser.',
   support:
     'At Notable I work on voice infrastructure. Outside work it’s multiplayer worlds, renderers, sailing models, and small things you can open and play with.',
-  second:
-    'Right now that’s four projects: a sailing game that runs a real sailing model, a voxel MMORPG that holds up to 64 people in a realm, a rendering experiment that fakes sunlight by refusing to compute it, and a tower defense with a deterministic sim core. Two are live today. Two aren’t finished yet.',
+  /* This used to name all four projects in a 57-word run-on, immediately above
+     four cards that name themselves. What is left is the only thing the cards
+     cannot say from inside one card: which half of them you can open. */
+  second: 'Two are live today. Two aren’t finished yet.',
   strip: [
     { dt: 'Place', dd: 'Bay Area', sub: 'California' },
     { dt: 'Work', dd: 'Software engineer', sub: 'Notable Health, since Aug 2022' },
