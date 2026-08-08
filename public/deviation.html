@@ -2,12 +2,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
+                <!-- 2026: was a cdnjs URL. Same file, byte for byte, served from
+                     this repo - see libs/README.md. Nothing else changed here. -->
+                <script src="libs/chartjs/Chart.1.0.2.js"></script>
                 <style>
                         body {
                                 padding: 25px;
                         }
-                          @import url(http://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css);
+                        /* 2026: an @import of Font Awesome 2.0 over plain HTTP stood
+                           here. It never loaded - an @import after another rule is
+                           invalid, so browsers skipped it and logged the stylesheet -
+                           and this page draws no icons, so nothing wanted it. */
   body{
                 background: #ECECEC;
                 margin:0px ;
@@ -95,35 +100,44 @@
                 </center>
                 <!--<canvas id="canvas"></canvas>-->
                 <script>
+                        /* 2026: this loop used to run eval() on the query string, once
+                           to declare a global named after the key and once to read it
+                           back. Six numbers arrive here and all six are parsed as
+                           numbers instead. A link is no longer a way to run code in
+                           this page, and for the six numeric fields the file was
+                           written for the result is the same value in the same box.
+                           Nothing below this block changed: calculate() always read
+                           the six inputs, never these. */
                         var vars = [];
+                        var query = {};
                         var args = location.search.substring(1).split("&"); //max, reps
                         if(args.length > 0){
                                 if(args[0].length > 0){
                                         for(var a = 0; a < args.length; a++){
                                                 arg = args[a].split('=');
-                                                eval("var "+arg[0]+" = "+decodeURI(arg[1]));
-                                                vars.push([arg[0], eval(arg[0])]);
+                                                vars.push([arg[0], parseFloat(decodeURI(arg[1]))]);
+                                                query[arg[0]] = vars[vars.length - 1][1];
                                         }
                                 }
                         }
                         names = vars.map(function(x){return x[0]})
                         if(names.indexOf("reps") > -1){
-                                document.getElementById("reps").value = reps;
+                                document.getElementById("reps").value = query["reps"];
                         }
                         if(names.indexOf("mean") > -1){
-                                document.getElementById("mean").value = mean;
+                                document.getElementById("mean").value = query["mean"];
                         }
                         if(names.indexOf("stdev") > -1){
-                                document.getElementById("stdev").value = stdev;
+                                document.getElementById("stdev").value = query["stdev"];
                         }
                         if(names.indexOf("reps2") > -1){
-                                document.getElementById("reps2").value = reps2;
+                                document.getElementById("reps2").value = query["reps2"];
                         }
                         if(names.indexOf("mean2") > -1){
-                                document.getElementById("mean2").value = mean2;
+                                document.getElementById("mean2").value = query["mean2"];
                         }
                         if(names.indexOf("stdev2") > -1){
-                                document.getElementById("stdev2").value = stdev2;
+                                document.getElementById("stdev2").value = query["stdev2"];
                         }
                         var calculated = false;
                         function FocusOnInput()
