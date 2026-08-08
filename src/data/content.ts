@@ -587,13 +587,25 @@ export const callTrace: TraceStep[] = [
     text: 'Ask for two identifiers, and match them before anything else runs.',
   },
   { state: 'authentication', text: 'Both match. The call is verified from here down.' },
-  { state: 'tool call', text: 'Go and get what the caller is calling about.' },
+  /* These two used to say "go and get what the caller is calling about" and
+     "the second attempt answers", which is a diagram of a tool call rather than
+     a boundary anyone drew. They name the read scope and the reason a read is
+     the only thing being retried, which is what makes the refused write four
+     rows down a different kind of failure rather than a worse one. Still no
+     vendor, no schema and nobody's data: the boundary is the general one. */
+  {
+    state: 'tool call',
+    text: "Read the caller's record. Only theirs, and only the fields this call needs.",
+  },
   {
     state: 'retry',
     recovery: true,
     text: 'Nothing came back inside the budget. Same request, second attempt.',
   },
-  { state: 'tool call', text: 'The second attempt answers.' },
+  {
+    state: 'tool call',
+    text: 'The second attempt answers. Reads are safe to repeat, which is why this one got a retry.',
+  },
   { state: 'scheduling', text: 'Offer what is open, take the pick, write it back.' },
   {
     state: 'tool call',
