@@ -1,0 +1,62 @@
+---
+/**
+ * Four simulations, audited against one schema.
+ *
+ * The four cards above each describe their model in whatever register suited
+ * that project, which reads well one card at a time and makes the four
+ * impossible to compare. This asks all of them the same five questions in the
+ * same order and prints the answers in columns, so the interesting differences
+ * (a fixed thirtieth of a second against no timestep at all) are visible by
+ * looking down the page rather than by taking my word for it.
+ *
+ * Ruled and flat, deliberately. Four more raised panels under four raised
+ * cards would read as a fifth through eighth project; this is an appendix to
+ * the four, and it should look like the back of the book.
+ *
+ * The rows line up across the columns with subgrid, which is what makes
+ * reading across a real offer rather than a claim in the lede. Without it the
+ * cards still read top to bottom, one project at a time, so the fallback loses
+ * the comparison and nothing else.
+ */
+import { places } from '../data/content';
+import { FIELDS, models, NOT_ON_RECORD } from '../data/models';
+---
+
+<div class="models" data-models data-reveal>
+  <div class="models__head">
+    <p class="kicker">Appendix &middot; the same five questions</p>
+    <h3 class="models__t">Pick a model, pick a timestep</h3>
+    <p class="models__lede">
+      That is the claim About makes about the job, and these are the four answers to it, in one
+      order so they can be read across. Where something is not written down anywhere I can point at,
+      the field says so rather than filling itself in.
+    </p>
+  </div>
+
+  <div class="models__grid">
+    {
+      models.map((m) => (
+        <article class="mcard">
+          <h4 class="mcard__n">
+            <a href={`#${places[m.key].at}`}>{places[m.key].name}</a>
+          </h4>
+          <p class="mcard__kind">{m.kind}</p>
+          <dl class="mcard__f">
+            {FIELDS.map(([k, label]) => (
+              <div>
+                <dt>{label}</dt>
+                {m.fields[k] ? (
+                  <dd>{m.fields[k]}</dd>
+                ) : (
+                  /* Not styled as an apology. It is a row of the audit like
+                     any other, and the answer it carries is a real one. */
+                  <dd class="mcard__gap">{NOT_ON_RECORD}</dd>
+                )}
+              </div>
+            ))}
+          </dl>
+        </article>
+      ))
+    }
+  </div>
+</div>

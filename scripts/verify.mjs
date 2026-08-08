@@ -1559,6 +1559,37 @@ await run(
             times: said ? document.body.textContent.split(said.slice(0, 60)).length - 1 : 0,
           };
         })(),
+        /* The appendix is only worth anything if all four cards answer the
+           same five questions in the same order. One card quietly dropping a
+           field it could not fill is exactly the failure it exists to prevent,
+           so the schema is compared across the four rather than counted. */
+        models: (() => {
+          const cards = [...document.querySelectorAll('.mcard')];
+          if (!cards.length) return null;
+          const schema = cards.map((c) =>
+            [...c.querySelectorAll('dt')].map((d) => d.textContent.trim()).join('|'),
+          );
+          return {
+            cards: cards.length,
+            schemas: [...new Set(schema)].length,
+            fields: schema[0]?.split('|').length ?? 0,
+            /* Every card names the project it describes and lands on it. */
+            lands: cards.every((c) => {
+              const to = c.querySelector('.mcard__n a')?.getAttribute('href');
+              return !!to && !!document.querySelector(to);
+            }),
+            /* Blank is spelled one way and only that way. An empty dd, or a
+               shrug written out longhand, would both read as an answer. */
+            gaps: [
+              ...new Set(
+                [...document.querySelectorAll('.mcard__gap')].map((g) => g.textContent.trim()),
+              ),
+            ],
+            empty: cards.some((c) =>
+              [...c.querySelectorAll('dd')].some((d) => !d.textContent.trim()),
+            ),
+          };
+        })(),
       }));
 
     const b = await read();
@@ -1619,6 +1650,22 @@ await run(
       a.now?.to === '#r-notable' && a.now.lands && b.now?.lands,
       'and points at the full record, which is there',
       `${a.now?.to} lands A ${a.now?.lands} B ${b.now?.lands}`,
+    );
+
+    note(
+      a.models?.cards === 4 && a.models.schemas === 1 && a.models.fields === 5,
+      'all four projects answer the same five questions in the same order',
+      `${a.models?.cards} cards, ${a.models?.schemas} distinct schemas, ${a.models?.fields} fields`,
+    );
+    note(
+      a.models?.lands && b.models?.lands,
+      'and each card lands on the project it describes, on both sides',
+      `A ${a.models?.lands}, B ${b.models?.lands}`,
+    );
+    note(
+      !a.models?.empty && a.models?.gaps.every((g) => g === 'Not on record.'),
+      'and an unanswered field says so in words rather than going blank',
+      `empty ${a.models?.empty}, wordings ${JSON.stringify(a.models?.gaps)}`,
     );
 
     const missing = a.ids.filter((id) => !b.ids.includes(id));

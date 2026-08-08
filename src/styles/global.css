@@ -1931,6 +1931,129 @@ summary,
   margin-bottom: 0;
 }
 
+/* ── 9b. MODEL CARDS ─────────────────────────────────────────────────── */
+/* The appendix under the four projects. Flat and ruled: four more raised
+   panels beneath four raised cards would read as four more projects, and the
+   whole point of this block is that it is the same four seen a second way. */
+.models {
+  position: relative;
+  margin-top: 2.6rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--line-dark-2);
+}
+
+.models__head {
+  max-width: 74ch;
+  margin-bottom: 1.7rem;
+}
+
+.models__t {
+  margin: 0.5rem 0 0;
+  color: var(--on-ink);
+  font-size: clamp(1.24rem, 2vw, 1.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.models__lede {
+  max-width: 68ch;
+  margin: 0.55rem 0 0;
+  color: var(--on-ink-2);
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
+/* Seven rows shared by all four columns: the name, the kind line, and the five
+   fields. The cards subscribe to them with subgrid, so "read across" is the
+   layout doing it and not the reader keeping their place with a finger. */
+.models__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 1.5rem;
+}
+
+.mcard {
+  min-width: 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line-dark);
+}
+
+@supports (grid-template-rows: subgrid) {
+  .models__grid {
+    grid-template-rows: repeat(7, auto);
+  }
+
+  .mcard {
+    display: grid;
+    grid-row: span 7;
+    grid-template-rows: subgrid;
+    align-content: start;
+  }
+
+  .mcard__f {
+    display: grid;
+    grid-row: span 5;
+    grid-template-rows: subgrid;
+  }
+}
+
+.mcard__n {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.mcard__n a {
+  color: var(--on-ink);
+  text-decoration-color: color-mix(in srgb, currentcolor 30%, transparent);
+  text-underline-offset: 4px;
+}
+
+.mcard__n a:hover {
+  color: var(--sand);
+}
+
+.mcard__kind {
+  margin: 0.25rem 0 0.9rem;
+  color: var(--on-ink-3);
+  font-size: 0.83rem;
+  line-height: 1.45;
+}
+
+.mcard__f {
+  margin: 0;
+}
+
+.mcard__f > div {
+  padding: 0.55rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--on-ink) 11%, transparent);
+}
+
+.mcard__f dt {
+  margin-bottom: 0.28rem;
+  color: var(--on-ink-4);
+  font: 750 var(--fs-micro) / 1.4 var(--mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.mcard__f dd {
+  margin: 0;
+  color: var(--on-ink-2);
+  font-size: 0.83rem;
+  line-height: 1.55;
+}
+
+/* Set in the mono the rest of the page uses for machine-written facts, because
+   that is what this is: the record reporting that it holds nothing here. */
+.mcard__gap {
+  color: var(--on-ink-4);
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-style: normal;
+}
+
 /* ── 10. FRAME SWITCHER ──────────────────────────────────────────────── */
 /* Stage and readout side by side, tab row across the bottom of both. Seven
    regions stacked would be seven full-width plates; this is one. */
@@ -4207,6 +4330,13 @@ span.buoy__p {
   .card--full .specs {
     grid-template-columns: 1fr;
   }
+
+  /* Two up. Four columns of a five-field card below this width leaves each
+     answer about eighteen characters wide, which is a shape, not a sentence.
+     The subgrid still holds, so a pair still reads across. */
+  .models__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (width <= 900px) {
@@ -4267,6 +4397,28 @@ span.buoy__p {
   .earlier li {
     grid-template-columns: 1fr;
     gap: 0.25rem;
+  }
+
+  /* One up, and the subgrid comes off with it. Aligned rows across a single
+     column is every card padded to the tallest answer in the set, which is a
+     column of holes bought for a comparison nobody can make on one screen. */
+  .models__grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem 0;
+  }
+
+  .models__grid,
+  .mcard,
+  .mcard__f {
+    grid-template-rows: none;
+  }
+
+  .mcard {
+    grid-row: auto;
+  }
+
+  .mcard__f {
+    grid-row: auto;
   }
 }
 
