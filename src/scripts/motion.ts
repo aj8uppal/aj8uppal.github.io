@@ -264,6 +264,67 @@ function installNavPanel(): void {
   });
 }
 
+/* ── Browser chrome ──────────────────────────────────────────────────── */
+/**
+ * `theme-color` follows the ground under the top of the viewport.
+ *
+ * On a phone the browser paints its own bar in this colour, so a single fixed
+ * value agrees with the page for one section and fights it for the other five:
+ * a graphite bar sits above the bone Experience band like a bar from a
+ * different site. Following the ground makes the bar the top edge of the page
+ * instead of a lid on it.
+ *
+ * The probe is the top of the viewport, not the nav's 36% mark. The bar is at
+ * the top, so the ground it has to match is the one directly beneath it, and
+ * borrowing the nav's probe would recolour the chrome while a third of the
+ * screen still showed the section before.
+ *
+ * The colour is read off the section rather than mapped from its tone, so a
+ * palette switched in the lab takes the chrome with it and there is no second
+ * copy of the ground list to keep in step with the stylesheet.
+ */
+function installThemeColor(): void {
+  const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-sec]'));
+  if (!meta || !sections.length) return;
+
+  let shown = '';
+  let ticking = false;
+
+  const paint = (): void => {
+    ticking = false;
+    // Four pixels in rather than the exact edge: at a boundary the top row of
+    // pixels belongs to whichever section rounds up, and rounding is not a
+    // reason to repaint the browser's chrome.
+    const probe = window.scrollY + 4;
+    // The hero and the footer are not sections, and both stand on the page's
+    // own ground, which is what the document ships in the tag already.
+    let ground = getComputedStyle(document.body).backgroundColor;
+    for (const sec of sections) {
+      if (sec.offsetTop <= probe && probe < sec.offsetTop + sec.offsetHeight) {
+        ground = getComputedStyle(sec).backgroundColor;
+        break;
+      }
+    }
+    if (ground === shown) return;
+    shown = ground;
+    meta.content = ground;
+  };
+
+  const tick = (): void => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(paint);
+  };
+
+  window.addEventListener('scroll', tick, { passive: true });
+  window.addEventListener('resize', tick, { passive: true });
+  // Every ground on the page just changed and the reader has not moved, so
+  // nothing else here would notice.
+  window.addEventListener('palettechange', paint);
+  paint();
+}
+
 /* ── Hero ────────────────────────────────────────────────────────────── */
 function installHeroCanvas(): void {
   const canvas = document.getElementById('hero-canvas');
@@ -273,4 +334,5 @@ function installHeroCanvas(): void {
 installReveals();
 installNav();
 installNavPanel();
+installThemeColor();
 installHeroCanvas();
