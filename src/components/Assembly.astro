@@ -41,6 +41,19 @@ const FAN: Record<string, { x: number; y: number }> = {
   runtime: { x: 18, y: 13 },
 };
 
+/* The loupe's window on the frame, in the plate's own coordinates. The plate
+   is 320 by 200 and the crop keeps that ratio, so the magnifier shows the
+   frame at the loupe's aspect and nothing is squashed to fit. */
+const VB = { w: 320, h: 200 };
+const cw = VB.w / assembly.edge.zoom;
+const ch = VB.h / assembly.edge.zoom;
+const crop = [
+  (assembly.edge.x * VB.w - cw / 2).toFixed(2),
+  (assembly.edge.y * VB.h - ch / 2).toFixed(2),
+  cw.toFixed(2),
+  ch.toFixed(2),
+].join(' ');
+
 const shots = assembly.real
   ? await Promise.all(
       assembly.plates.map(async (p) =>
@@ -105,12 +118,13 @@ const shots = assembly.real
          there is a finished frame to inspect. */
       !assembly.real && (
         <div
-          class="asm__loupe"
-          style={`--fx: ${assembly.edge.x}; --fy: ${assembly.edge.y}; --zoom: ${assembly.edge.zoom}`}
+          class="asm__mark"
+          style={`--mw: ${(100 / assembly.edge.zoom).toFixed(2)}%; --mx: ${(assembly.edge.x * 100 - 50 / assembly.edge.zoom).toFixed(2)}%; --my: ${(assembly.edge.y * 100 - 50 / assembly.edge.zoom).toFixed(2)}%`}
           aria-hidden="true"
-        >
+        />
+        <div class="asm__loupe" aria-hidden="true">
           <div class="asm__loupe-in">
-            <AsmPlate kind="runtime" uid={`${uid}-loupe`} />
+            <AsmPlate kind="runtime" uid={`${uid}-loupe`} view={crop} />
           </div>
           <p class="asm__loupe-t">Edge error, {assembly.edge.zoom}&times;</p>
         </div>

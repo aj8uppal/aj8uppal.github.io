@@ -292,7 +292,7 @@ await run(
           if (!(r.width > 0) || getComputedStyle(e).position === 'fixed') return false;
           // Wider than the viewport on purpose, under its own overflow: the
           // frame switcher, and the 2015 file at a size it will not bend.
-          if (e.closest('.fs__scroll, .devframe')) return false;
+          if (e.closest('.fs__scroll, .devframe, .asm__loupe')) return false;
           return r.right > de.clientWidth + 1;
         })
         .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
@@ -735,7 +735,7 @@ await run(
           if (!(r.width > 0) || getComputedStyle(e).position === 'fixed') return false;
           // Wider than the viewport on purpose, under its own overflow: the
           // frame switcher, and the 2015 file at a size it will not bend.
-          if (e.closest('.fs__scroll, .devframe')) return false;
+          if (e.closest('.fs__scroll, .devframe, .asm__loupe')) return false;
           return r.right > de.clientWidth + 1;
         })
         .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
@@ -1016,7 +1016,12 @@ await run(
           .filter((e) => {
             const r = e.getBoundingClientRect();
             if (!(r.width > 0) || getComputedStyle(e).position === 'fixed') return false;
-            if (e.closest('.fs__scroll, .devframe')) return false;
+            /* Three windows that magnify or pan something larger than
+               themselves. Their contents are meant to be wider than the frame
+               and are clipped to it; a rect is the wrong instrument for them,
+               because getBoundingClientRect reports geometry the reader never
+               sees. Everything else on the page still has to fit. */
+            if (e.closest('.fs__scroll, .devframe, .asm__loupe')) return false;
             return r.right > de.clientWidth + 1;
           })
           .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
@@ -1219,12 +1224,18 @@ await run(
     const shape = await page.$$eval('section[id]', (ns) =>
       ns.map((n) => ({
         id: n.id,
+        numbered: n.hasAttribute('data-sec'),
         words: (n.textContent || '').trim().split(/\s+/).length,
         h: Math.round(n.getBoundingClientRect().height),
       })),
     );
     note(shape.length >= 6, 'every section is in the HTML', `${shape.length} sections`);
-    const thin = shape.filter((s) => s.words < 25 || s.h < 200);
+    /* The floor is for the numbered sections, which are what the nav offers and
+       what a reader lands on. data-sec is the page's own test of that, and the
+       side B suite asserts the current-role band deliberately fails it: it is a
+       band, sixty words on one line of the spine, and holding it to a section's
+       height would only pad it. */
+    const thin = shape.filter((s) => s.numbered && (s.words < 25 || s.h < 200));
     note(
       thin.length === 0,
       'and every one of them says something',

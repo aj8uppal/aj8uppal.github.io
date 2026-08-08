@@ -2036,12 +2036,33 @@ summary,
 /* The loupe holds a second copy of the runtime plate, blown up and slid so the
    focus point lands in the middle. Same aspect ratio as the stage, which is
    what lets one --zoom do both axes. */
+/* What the loupe is looking at. Without it the magnifier is a second picture
+   in the corner and the reader has to guess which part of the first one it
+   came from, which is the guess the whole figure exists to remove. */
+.asm__mark {
+  position: absolute;
+  left: var(--mx);
+  top: var(--my);
+  width: var(--mw);
+  aspect-ratio: var(--ar);
+  border: 1px solid var(--sand);
+  border-radius: var(--r-xs);
+  /* The plate runs from near black to near white inside one frame, so the
+     marquee carries its own dark edge and is legible on either. */
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 45%),
+    inset 0 0 0 1px rgb(0 0 0 / 30%);
+  opacity: clamp(0, calc((var(--p) - 0.9) * 10), 1);
+  pointer-events: none;
+}
+
 .asm__loupe {
   position: absolute;
   right: 3.5%;
   bottom: 6%;
   width: 30%;
   aspect-ratio: var(--ar);
+  /* The crop is the viewBox's job now; this only keeps the corner radius. */
   overflow: hidden;
   border: 1px solid var(--sand);
   border-radius: var(--r-xs);
@@ -2056,10 +2077,7 @@ summary,
 
 .asm__loupe-in {
   position: absolute;
-  left: calc(50% - var(--fx) * var(--zoom) * 100%);
-  top: calc(50% - var(--fy) * var(--zoom) * 100%);
-  width: calc(var(--zoom) * 100%);
-  aspect-ratio: var(--ar);
+  inset: 0;
 }
 
 .asm__loupe-t {

@@ -20,9 +20,16 @@ interface Props {
   kind: PlateKey;
   /** Unique per instance: the runtime plate is drawn twice, stage and loupe. */
   uid: string;
+  /**
+   * An alternative viewBox, which is how the loupe magnifies. Cropping in the
+   * viewBox rather than scaling a full copy behind an overflow:hidden window
+   * means the magnified plate's box is the window's box: nothing on the page
+   * is ever wider than the page, at any width, and there is nothing to clip.
+   */
+  view?: string;
 }
 
-const { kind, uid } = Astro.props;
+const { kind, uid, view } = Astro.props;
 
 /** Base x, real trunk width, and depth from 0 (nearest) to 1 (furthest). */
 const TRUNKS = [
@@ -75,7 +82,7 @@ const hatch = `hatch-${uid}`;
 
 <svg
   class="asm__svg"
-  viewBox="0 0 320 200"
+  viewBox={view ?? '0 0 320 200'}
   role="img"
   aria-label={`Schematic ${kind} plate: five tree trunks at five depths over a path.`}
   preserveAspectRatio="xMidYMid slice"
