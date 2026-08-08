@@ -4085,7 +4085,10 @@ span.buoy__p {
   color: var(--on-camel-3);
 }
 
+/* A real control, so it takes the pill and the 34px the rest of them take.
+   Micro mono type on its own is a 22px box, which is a thumb's problem. */
 .foot__btn {
+  min-height: 34px;
   padding: 0.32rem 0.8rem;
   border: 1px solid var(--line-light-2);
   border-radius: var(--r-pill);

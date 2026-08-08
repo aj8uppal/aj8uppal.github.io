@@ -1479,6 +1479,14 @@ await run(
       overclaimed.join(' | '),
     );
 
+    /* Back to the top before sweeping. The sweep works out an element's ground
+       from live rects, and pressing the switch scrolled the footer into view,
+       which parks the fixed header off the top of the screen on top of the
+       hidden skip link - two invisible boxes overlapping, reported as pale
+       type on sand. Every other sweep runs from the top; this one does too. */
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(400);
+
     const badOn = await page.evaluate(CONTRAST);
     note(
       badOn.length === 0,
