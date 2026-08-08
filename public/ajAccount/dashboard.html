@@ -46,7 +46,7 @@ $(document).ready(function() {
 	socket.on("sendData", function(data){
 		console.log(data);
 		if(data.username == undefined){
-			document.location = "signup.html?";
+			document.location = "index.html";
 			return;
 		}
 		$("#welcome")[0].innerHTML = "Welcome "+data.username+"!";
