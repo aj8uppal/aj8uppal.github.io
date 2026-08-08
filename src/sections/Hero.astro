@@ -1,0 +1,48 @@
+---
+import { contact, cover, saltline } from '../data/content';
+
+const heroLabel =
+  'Soft patches of golden light drifting behind the name, as if through a canopy. Move the pointer or press the arrow keys and the light gathers where you point.';
+---
+
+<header class="hero" id="top">
+  <canvas id="hero-canvas" tabindex="0" role="img" aria-label={heroLabel}></canvas>
+
+  <div class="shell hero__in">
+    <p class="hero__meta">
+      <span><i class="dot" aria-hidden="true"></i>{cover.kicker[1]}</span>
+      <span>{cover.kicker[0]}</span>
+    </p>
+
+    <h1 class="display">
+      <span>AJ</span><span class="out">Uppal</span>
+    </h1>
+
+    <div class="hero__bottom">
+      <div class="hero__copy">
+        <p class="hero__intro">{cover.lead}</p>
+        <p class="hero__support">{cover.support}</p>
+      </div>
+
+      {
+        /* Three actions at one weight is three actions with no answer to
+          "where do I start". Now: the whole body of work, the one project
+          that best represents it, and a way to write. Ember Wilds and the
+          archive keep their own play links in their own sections. */
+      }
+      <div class="hero__actions">
+        <div class="hero__btns">
+          <a class="btn btn--sand" href="#building">Explore selected work</a>
+          <a class="btn" href={saltline.href} target="_blank" rel="noopener">
+            Play saltline<span class="arrow" aria-hidden="true">&#8599;</span>
+          </a>
+        </div>
+        <a class="hero__mail" href={`mailto:${contact.email}`}>Email</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="hint" aria-hidden="true">
+    Bring your own light<span>Pointer, or the arrow keys</span>
+  </p>
+</header>

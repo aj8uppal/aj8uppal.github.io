@@ -1,0 +1,141 @@
+---
+import Inspect from '../components/Inspect.astro';
+import Section from '../components/Section.astro';
+import type { Tone } from '../components/Section.astro';
+import AutoTyper from '../components/react/AutoTyper';
+import DeviationFrame from '../components/react/DeviationFrame';
+import GameFrame from '../components/react/GameFrame';
+import { sources } from '../lib/images';
+import { dots } from '../lib/text';
+import { earlier, places, playground } from '../data/content';
+
+interface Props {
+  /** Its number on this route. The sides run the same sections in two orders. */
+  n: string;
+  tone: Tone;
+}
+
+const { n, tone } = Astro.props;
+
+const POSTER_W = [640, 960, 1280];
+const POSTER_S = '(min-width: 1400px) 1200px, 92vw';
+
+const grinchPoster = await sources('legacy-grinchjump', POSTER_W, POSTER_S);
+/* Captured off the running file at the same seed the card mounts, by
+   scripts/capture-deviation.mjs. It stands in for the chart until the chart
+   arrives, and stands in for it permanently where no script runs. */
+const deviationPoster = await sources('legacy-deviation', POSTER_W, POSTER_S);
+---
+
+<Section n={n} id="playground" name="Playground" tone={tone}>
+  <div class="head" data-reveal>
+    <div class="head__k">
+      <p class="kicker">{n} / Playground</p>
+      <p class="head__count">3 running inline</p>
+    </div>
+    <div>
+      <h2 class="display head__t--long">{playground.statement}</h2>
+      <p class="head__lead">{playground.prose[0]}</p>
+    </div>
+  </div>
+
+  <div class="labs">
+    <article class="lab" id={places.autotyper.at} data-place data-reveal>
+      <div class="lab__head">
+        <span class="lab__date">{playground.items[0]?.statusLabel}</span>
+        <h3>
+          {playground.items[0]?.name}<span class="era">{playground.items[0]?.yr}</span>
+        </h3>
+        <p>{playground.items[0]?.what}</p>
+        <Inspect by="AutoTyper.tsx" />
+      </div>
+      <AutoTyper client:visible />
+    </article>
+
+    <article class="lab" id={places.deviation.at} data-place data-reveal>
+      <div class="lab__head">
+        <span class="lab__date">{playground.items[1]?.statusLabel}</span>
+        <h3>
+          {playground.items[1]?.name}<span class="era">{playground.items[1]?.yr}</span>
+        </h3>
+        <p>{playground.items[1]?.what}</p>
+        <Inspect by="DeviationFrame.tsx" assets="legacy-deviation" />
+      </div>
+      <DeviationFrame
+        client:visible
+        src="/deviation.html?reps=1000&mean=-4&stdev=2&reps2=1000&mean2=6&stdev2=3"
+        href="/deviation.html"
+        title="deviation.html"
+        poster={deviationPoster}
+        posterAlt="The deviation.html chart at this seed: two overlapping bell curves of a thousand samples each, a dark green one centred near -4 and a pale green one centred near 6, over a table holding the six numbers that made them."
+        note="The 2015 file itself, unmodified, seeded from its query string"
+      />
+    </article>
+
+    {
+      /* The two panels above are demos. This one is a game, it is the only
+        thing on the page still wearing its own colours, and it is about to
+        take the keyboard. All three are worth saying before it starts. */
+    }
+    <p class="play__break" data-reveal>
+      <span>Original artifact</span>
+      Its own 2015 colours, not this page's
+    </p>
+
+    <article class="lab lab--wide" id={places.grinch.at} data-place data-reveal>
+      <div class="lab__head">
+        <span class="lab__date">{playground.items[2]?.statusLabel}</span>
+        <h3>
+          {playground.items[2]?.name}<span class="era">{playground.items[2]?.yr}</span>
+        </h3>
+        <p>{playground.items[2]?.what}</p>
+        <ul class="keys">
+          <li><kbd>&larr;</kbd><kbd>&rarr;</kbd> Steer</li>
+          <li class="keys--touch"><kbd>Tap</kbd> Steer</li>
+          <li><kbd>P</kbd> Pause</li>
+          <li><kbd>Esc</kbd> Exit</li>
+          <li><kbd>R</kbd> Restart</li>
+        </ul>
+        <p class="keys__note">
+          The jump is not a control: landing on a platform is what throws him.
+        </p>
+        <Inspect by="GameFrame.tsx" assets="legacy-grinchjump" />
+      </div>
+      <GameFrame
+        client:visible
+        src="/grinchjump.html"
+        title="GrinchJump"
+        poster={grinchPoster}
+        posterAlt="GrinchJump running in a browser: a low-poly figure on a stack of green platforms against a pale sky, score counter in the corner."
+        note="Vendored three.js r70, served from its original URL"
+      />
+    </article>
+  </div>
+
+  <div class="method">
+    <p class="kicker">Method</p>
+    <p>{playground.method}</p>
+  </div>
+
+  {
+    /* An h3, like the three cards above it, because that is what it is a
+      sibling of. The names inside were h4s, which made every one of them
+      read as a subsection of GrinchJump. They are row labels, not sections,
+      so they stop claiming to be headings. */
+  }
+  <h3 class="earlier__h" data-reveal>Also built, nothing left to run</h3>
+  <ul class="earlier" data-reveal>
+    {
+      earlier.map((e) => (
+        <li id={places[e.key].at} data-place>
+          <span class="era">{e.yr}</span>
+          <div>
+            <p class="earlier__n">{e.name}</p>
+            <p>{e.what}</p>
+          </div>
+          <span class="stack">{dots(e.k)}</span>
+        </li>
+      ))
+    }
+  </ul>
+</Section>

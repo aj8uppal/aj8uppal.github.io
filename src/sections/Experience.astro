@@ -1,0 +1,138 @@
+---
+import Inspect from '../components/Inspect.astro';
+import Section from '../components/Section.astro';
+import type { Tone } from '../components/Section.astro';
+import StackFilter from '../components/react/StackFilter';
+import RoleNow from './RoleNow.astro';
+import { courses, education, errata, places, roles } from '../data/content';
+import { filterTags, past, stackKey, stackLine } from '../lib/roles';
+
+interface Props {
+  /** Its number on this route. The two sides run the same sections in two orders. */
+  n: string;
+  tone: Tone;
+  /**
+   * Which end of the log to open at. Side A reads back from now, which is what
+   * a hiring reader wants first. Side B reads forward from the first job, so
+   * the current role is the thing you arrive at rather than the thing you start
+   * from. Same eight roles, same markup, reversed.
+   */
+  order?: 'newest' | 'oldest';
+}
+
+const { n, tone, order = 'newest' } = Astro.props;
+const newestFirst = order === 'newest';
+const list = newestFirst ? past : [...past].reverse();
+---
+
+<Section n={n} id="work" name="Experience" tone={tone}>
+  <div class="log">
+    <div class="log__intro">
+      <p class="kicker">{n} / Experience</p>
+      <h2 class="display">Eight roles, one through-line</h2>
+      <p>
+        Physics research, university software, first-engineer jobs, and production healthcare AI. I
+        keep turning up where the system is new and somebody has to make the first real version
+        work.
+      </p>
+    </div>
+
+    <div>
+      <StackFilter client:visible tags={filterTags} total={roles.length} />
+      <Inspect by="StackFilter.tsx" />
+
+      <div class:list={['roles', !newestFirst && 'roles--fwd']}>
+        {newestFirst && <RoleNow />}
+
+        <ol class="tl">
+          {
+            list.map((r) => (
+              <li class="role" id={places[r.key].at} data-place data-stack={stackKey(r.stack)}>
+                <p class="role__when">{r.when}</p>
+                <div>
+                  <h3>
+                    <b>{r.org}</b>
+                    {r.where && <span> &middot; {r.where}</span>}
+                  </h3>
+                  <p class="stack">{stackLine(r)}</p>
+                  {r.body && (
+                    <p>
+                      {r.body}
+                      {r.ref && (
+                        <sup class="ref" id={`ref-${r.ref}`} data-place>
+                          <a href={`#note-${r.ref}`} aria-label={`Note ${r.ref}`}>
+                            [{r.ref}]
+                          </a>
+                        </sup>
+                      )}
+                    </p>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+
+        {!newestFirst && <RoleNow />}
+      </div>
+
+      {
+        /* A footnote is a round trip or it is a trapdoor. `data-place` is what
+          gives it the header clearance and the arrival mark the skills index
+          already established, and the marker in the margin is the way back to
+          the sentence that sent you - which is also why the mention upstairs
+          carries an id it otherwise would not need. */
+      }
+      <dl class="errata">
+        {
+          errata.map((e) => (
+            <div id={`note-${e.ref}`} data-place>
+              <dt>
+                <a href={`#ref-${e.ref}`} aria-label={`Back to note ${e.ref} in the text`}>
+                  [{e.ref}]
+                </a>
+              </dt>
+              <dd>{e.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <section class="edu" id="education" data-place data-reveal>
+        <p class="kicker">Education &middot; {education.when}</p>
+        <h3>{education.school}</h3>
+        <p class="edu__note">{education.note}</p>
+
+        <dl class="edu__deg">
+          {
+            education.degrees.map((d) => (
+              <div>
+                <dt>{d.h}</dt>
+                <dd>{d.p}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <ul class="courses">
+          {
+            courses.map((c) => (
+              <li>
+                <b>{c.d}</b>
+                {c.t}
+                {/* Non-breaking, so a wrapped course never opens a line on
+                    the separator. Same rule as the work log's stack row. */}
+                {c.i && <i>&#160;&middot; {c.i}</i>}
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="method">
+          <p class="kicker">Method</p>
+          <p>{education.method}</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</Section>

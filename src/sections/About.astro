@@ -1,0 +1,80 @@
+---
+import Section from '../components/Section.astro';
+import type { Tone } from '../components/Section.astro';
+import { about, contact, cover } from '../data/content';
+
+interface Props {
+  /** Its number on this route. The sides run the same sections in two orders. */
+  n: string;
+  tone: Tone;
+}
+
+const { n, tone } = Astro.props;
+---
+
+<Section n={n} id="about" name="About" tone={tone}>
+  <div class="head" data-reveal>
+    <div class="head__k">
+      <p class="kicker">{n} / About</p>
+      <p class="head__count">Two degrees, one habit</p>
+    </div>
+    <div>
+      <h2 class="display head__t">{about.statement}</h2>
+    </div>
+  </div>
+
+  <dl class="vitals" data-reveal>
+    {
+      cover.strip.map((c) => (
+        <div>
+          <dt>{c.dt}</dt>
+          <dd>
+            {c.dd}
+            <span>{c.sub}</span>
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+
+  <div class="about">
+    <div class="about__copy" data-reveal>
+      {about.prose.map((p) => <p>{p}</p>)}
+    </div>
+
+    <dl class="facts" data-reveal>
+      {
+        about.notes.map((n, i) => (
+          <div class="fact">
+            <span class="fact__i" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <dt>{n.k}</dt>
+            <dd>
+              {n.v}
+              {/* "Will debate" is a claim with a door in it, and the door
+                  should open. Subject filled, body left empty: the argument
+                  is the reader's to make. */}
+              {n.reply && (
+                <>
+                  {' '}
+                  <a
+                    class="fact__reply"
+                    href={`mailto:${contact.email}?subject=${encodeURIComponent(n.reply.subject)}`}
+                  >
+                    {n.reply.label}
+                  </a>
+                </>
+              )}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+
+  <div class="method">
+    <p class="kicker">Method</p>
+    <p>{about.method}</p>
+  </div>
+</Section>

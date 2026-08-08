@@ -1,0 +1,382 @@
+---
+import { Picture } from 'astro:assets';
+import Inspect from '../components/Inspect.astro';
+import Section from '../components/Section.astro';
+import type { Tone } from '../components/Section.astro';
+import Skim from '../components/Skim.astro';
+import State from '../components/State.astro';
+import Arc from '../components/react/Arc';
+import type { ArcShot } from '../components/react/Arc';
+import FrameSwitcher from '../components/react/FrameSwitcher';
+import type { SwitchFrame } from '../components/react/FrameSwitcher';
+import { asset, sources } from '../lib/images';
+import {
+  cover,
+  elderwood,
+  ember,
+  emberRegions,
+  hidamari,
+  places,
+  saltline,
+  saltlineArc,
+} from '../data/content';
+
+interface Props {
+  /** Its number on this route. The sides run the same sections in two orders. */
+  n: string;
+  tone: Tone;
+}
+
+const { n, tone } = Astro.props;
+
+/* A full-bleed card lead runs the width of the shell: 1240 at the maximum. */
+const LEAD_W = [720, 1080, 1440, 1920, 2480];
+const LEAD_S = '(min-width: 1400px) 1240px, 94vw';
+
+const HALF_W = [420, 640, 900, 1240];
+const HALF_S = '(min-width: 1400px) 610px, (min-width: 900px) 46vw, 94vw';
+
+/* The switcher and the arc share a stage: 1.35 of a 2fr split inside the card. */
+const STAGE_W = [560, 860, 1200, 1720];
+const STAGE_S = '(min-width: 1400px) 800px, (min-width: 1000px) 56vw, 88vw';
+
+const THUMB_W = [96, 192];
+const THUMB_S = '88px';
+
+const INSET_W = [420, 640, 900, 1240];
+const INSET_S = '(min-width: 1400px) 590px, (min-width: 1000px) 45vw, 88vw';
+
+/* Elderwood's three captures sit in a half-width card. */
+const EW_W = [280, 420, 560, 840];
+const EW_S = '(min-width: 1400px) 570px, (min-width: 1000px) 44vw, 88vw';
+
+const emberAsset: Record<string, string> = {
+  hearthvale: 'ember-region-hearthvale',
+  fallowmere: 'ember-region-fallowmere',
+  greenmarch: 'ember-region-greenmarch',
+  fenmarch: 'ember-region-fenmarch',
+  ashen: 'ember-region-ashen-waste',
+  greywall: 'ember-region-greywall-peaks',
+  plateau: 'ember-region-black-plateau',
+};
+
+const emberFrames: SwitchFrame[] = await Promise.all(
+  emberRegions.map(async (f) => ({
+    ...f,
+    img: await sources(emberAsset[f.key] ?? '', STAGE_W, STAGE_S),
+  })),
+);
+
+const arcFrames: ArcShot[] = await Promise.all(
+  saltlineArc.map(async (f) => ({
+    ...f,
+    img: await sources(`saltline-arc-${f.key}`, STAGE_W, STAGE_S),
+    thumb: await sources(`saltline-arc-${f.key}`, THUMB_W, THUMB_S),
+  })),
+);
+
+const elderFrames: SwitchFrame[] = await Promise.all(
+  elderwood.figures.map(async (f) => ({
+    key: f.key,
+    tab: f.tab,
+    alt: `Elderwood Vale, ${f.cap.toLowerCase()}`,
+    note: f.cap,
+    img: await sources(`elderwood-${f.key}`, EW_W, EW_S),
+  })),
+);
+---
+
+<Section n={n} id="building" name="Projects" tone={tone} cls="work">
+  <div class="head" data-reveal>
+    <div class="head__k">
+      <p class="kicker">{n} / Projects</p>
+      <p class="head__count">4 entries · 2 open to anyone</p>
+    </div>
+    <div>
+      <h2 class="display head__t">Four projects</h2>
+      <p class="head__lead head__lead--big">{cover.second}</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    {/* saltline */}
+    <article class="card card--full" id={places.saltline.at} data-place data-reveal>
+      <div class="card__hero">
+        <div class="card__plate">
+          <div class="shot shot--lead">
+            <Picture
+              src={asset(saltline.lead.asset)}
+              alt={saltline.lead.alt}
+              widths={LEAD_W}
+              sizes={LEAD_S}
+              formats={['avif']}
+              fallbackFormat="webp"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+            <p class="flag">{saltline.lead.flag}</p>
+          </div>
+          <p class="plate-cap"><b>{saltline.spread.t}.</b> {saltline.spread.s}</p>
+          <Inspect by="astro:assets Picture" assets={saltline.lead.asset} />
+        </div>
+
+        <div class="card__intro">
+          <span class="card__index">{saltline.spread.n}</span>
+          <div class="card__badges">
+            <State status={saltline.status} label="Live" />
+            <span class="tag">01 &middot; Flagship</span>
+            {
+              /* Was "Live multiplayer". The state to its left now reads LIVE in
+                the same mono at the same size, and two of those in one row is
+                a stutter the pill shape used to hide. */
+            }
+            <span class="tag">Multiplayer</span>
+            <span class="tag">Six frames &middot; one seed</span>
+          </div>
+
+          <h3 class="display">
+            <a href={saltline.href} target="_blank" rel="noopener">{saltline.name}</a>
+          </h3>
+          <p class="card__sub">{saltline.sub}</p>
+          <Skim
+            {...saltline.skim}
+            cta={{ href: saltline.href, label: 'Play saltline', out: true }}
+          />
+        </div>
+      </div>
+
+      <div class="card__copy">
+        <div class="card__cols">
+          <div class="card__body">
+            {saltline.prose.map((p) => <p>{p}</p>)}
+          </div>
+          <div class="card__aside">
+            <details class="notes">
+              <summary>Technical notes</summary>
+              <dl class="specs">
+                {
+                  saltline.plate.map(([k, v]) => (
+                    <div>
+                      <dt>{k}</dt>
+                      <dd>{v}</dd>
+                    </div>
+                  ))
+                }
+                <div>
+                  <dt>Open</dt>
+                  <dd><a href={saltline.href} target="_blank" rel="noopener">saltline.app</a></dd>
+                </div>
+              </dl>
+            </details>
+          </div>
+        </div>
+
+        <p class="card__lede">{saltline.framesLede}</p>
+        <p class="cue">{saltline.framesCue}</p>
+        <Arc client:visible frames={arcFrames} note={saltline.arcNote} />
+        <Inspect by="Arc.tsx" assets={arcFrames.map((f) => `saltline-arc-${f.key}`)} />
+
+        <div class="inset">
+          <div class="shot shot--inset">
+            <Picture
+              src={asset('saltline-proof-panel')}
+              alt="The same 16:46 frame uncropped, with the development panel down the left edge: time of day, sea state, wind angle, crest sharpness and seed. Three raider contacts are marked on the nav chart."
+              widths={INSET_W}
+              sizes={INSET_S}
+              formats={['avif']}
+              fallbackFormat="webp"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <Inspect by="astro:assets Picture" assets="saltline-proof-panel" />
+          <div class="inset__body">
+            <h4>{saltline.proof.t}</h4>
+            {saltline.proof.body.map((p) => <p>{p}</p>)}
+          </div>
+        </div>
+      </div>
+    </article>
+
+    {/* Ember Wilds */}
+    <article class="card card--full" id={places.ember.at} data-place data-reveal>
+      <div class="card__hero">
+        <div class="card__plate">
+          <div class="shot shot--lead">
+            <Picture
+              src={asset('ember-spread-fallowmere-dusk')}
+              alt="Fallowmere in Ember Wilds at dusk: an ember-orange plain of voxel trees, a level thirty character in the centre, quest log and satchel along the edges."
+              widths={LEAD_W}
+              sizes={LEAD_S}
+              formats={['avif']}
+              fallbackFormat="webp"
+              loading="lazy"
+              decoding="async"
+            />
+            <p class="flag">Fallowmere &middot; level 30 &middot; dusk</p>
+          </div>
+          <p class="plate-cap"><b>{ember.spread.t}.</b> {ember.spread.s}</p>
+          <Inspect by="astro:assets Picture" assets="ember-spread-fallowmere-dusk" />
+        </div>
+
+        <div class="card__intro">
+          <span class="card__index">{ember.spread.n}</span>
+          <div class="card__badges">
+            <State status={ember.status} label="Live MMORPG" />
+            <span class="tag">02 &middot; In production</span>
+            <span class="tag">64-player realm</span>
+          </div>
+
+          <h3 class="display">
+            <a href={ember.href} target="_blank" rel="noopener">{ember.name}</a>
+          </h3>
+          <p class="card__sub">{ember.sub}</p>
+          <Skim {...ember.skim} cta={{ href: ember.href, label: 'Open Ember Wilds', out: true }} />
+        </div>
+      </div>
+
+      <div class="card__copy">
+        <div class="card__cols">
+          <div class="card__body">
+            {ember.prose.map((p) => <p>{p}</p>)}
+          </div>
+          <div class="card__aside">
+            <details class="notes">
+              <summary>Technical notes</summary>
+              <dl class="specs">
+                {
+                  ember.plate.map(([k, v]) => (
+                    <div>
+                      <dt>{k}</dt>
+                      <dd>{v}</dd>
+                    </div>
+                  ))
+                }
+                <div>
+                  <dt>Open</dt>
+                  <dd>
+                    <a href={ember.href} target="_blank" rel="noopener">emberwilds-web.fly.dev</a>
+                  </dd>
+                </div>
+              </dl>
+            </details>
+          </div>
+        </div>
+
+        <p class="card__lede">{ember.framesLede}</p>
+        <p class="cue">{ember.framesCue}</p>
+        <FrameSwitcher client:visible label="Ember Wilds regions" frames={emberFrames} />
+        <Inspect by="FrameSwitcher.tsx" assets={emberFrames.map((f) => emberAsset[f.key] ?? '')} />
+
+        <div class="inset">
+          <div class="shot shot--inset">
+            <Picture
+              src={asset('ember-proof-two-players')}
+              alt="Two Ember Wilds clients side by side in the Hearthvale. Each character has a speech bubble above it and the same two lines appear in the chat log at bottom left."
+              widths={INSET_W}
+              sizes={INSET_S}
+              formats={['avif']}
+              fallbackFormat="webp"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <Inspect by="astro:assets Picture" assets="ember-proof-two-players" />
+          <div class="inset__body">
+            <h4>{ember.proof.t}</h4>
+            {ember.proof.body.map((p) => <p>{p}</p>)}
+          </div>
+        </div>
+      </div>
+    </article>
+
+    {/* hidamari */}
+    <article class="card card--half" id={places.hidamari.at} data-place data-reveal>
+      <div class="shot shot--lead">
+        <Picture
+          src={asset('hidamari-spread-canopy')}
+          alt="hidamari: an autumn canopy path at golden hour, low sun through orange leaves, the trail running away between the trees."
+          widths={HALF_W}
+          sizes={HALF_S}
+          formats={['avif']}
+          fallbackFormat="webp"
+          loading="lazy"
+          decoding="async"
+        />
+        <p class="flag">Blender Cycles, offline &middot; 116 fps live</p>
+      </div>
+
+      <div class="card__copy">
+        <Inspect by="astro:assets Picture" assets="hidamari-spread-canopy" />
+        <span class="card__index">{hidamari.spread.n}</span>
+        <div class="card__badges">
+          <State status={hidamari.status} label="Not public" />
+          <span class="tag">03 &middot; Rendering</span>
+        </div>
+
+        <h3 class="display">{hidamari.name}</h3>
+        <p class="card__sub">{hidamari.sub}</p>
+
+        <Skim {...hidamari.skim} />
+
+        <div class="card__body">
+          {hidamari.prose.map((p) => <p>{p}</p>)}
+        </div>
+
+        <details class="notes">
+          <summary>Technical notes</summary>
+          <dl class="specs">
+            {
+              hidamari.plate.map(([k, v]) => (
+                <div>
+                  <dt>{k}</dt>
+                  <dd>{v}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </details>
+      </div>
+    </article>
+
+    {/* Elderwood Vale */}
+    <article class="card card--half" id={places.elderwood.at} data-place data-reveal>
+      <div class="card__copy">
+        <span class="card__index">{elderwood.title}</span>
+        <div class="card__badges">
+          <State status={elderwood.status} label="Greybox" />
+          <span class="tag">04 &middot; Architecture</span>
+        </div>
+
+        <h3 class="display">{elderwood.name}</h3>
+        <p class="card__sub">{elderwood.sub}</p>
+
+        <Skim {...elderwood.skim} />
+
+        <div class="card__body">
+          {elderwood.prose.map((p) => <p>{p}</p>)}
+        </div>
+
+        <details class="notes">
+          <summary>Technical notes</summary>
+          <dl class="specs">
+            {
+              elderwood.plate.map(([k, v]) => (
+                <div>
+                  <dt>{k}</dt>
+                  <dd>{v}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </details>
+
+        <p class="card__lede">{elderwood.framesLede}</p>
+        <p class="cue">{elderwood.framesCue}</p>
+        <FrameSwitcher client:visible label="Elderwood Vale captures" frames={elderFrames} />
+        <Inspect by="FrameSwitcher.tsx" assets={elderFrames.map((f) => `elderwood-${f.key}`)} />
+      </div>
+    </article>
+  </div>
+</Section>

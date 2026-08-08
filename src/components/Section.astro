@@ -1,10 +1,16 @@
 ---
+/**
+ * Which ground a section stands on. Exported because the sections themselves
+ * take it as a prop now, and two spellings of the same list is one spelling
+ * too many.
+ */
+export type Tone = 'ink' | 'ink-deep' | 'paper' | 'paper-2' | 'ink-3' | 'sand' | 'camel';
+
 interface Props {
   n: string;
   id: string;
   name: string;
-  /** Which ground this section stands on. */
-  tone: 'ink' | 'ink-deep' | 'paper' | 'paper-2' | 'ink-3' | 'sand' | 'camel';
+  tone: Tone;
   cls?: string;
 }
 
