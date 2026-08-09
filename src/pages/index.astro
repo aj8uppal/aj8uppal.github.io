@@ -1,7 +1,7 @@
 ---
 /**
- * Side A: the way round a hiring reader wants it. Who I am, what I am building
- * now, the log behind it, then the archive.
+ * Side A: the way round a hiring reader wants it. Who I am, what I am paid to
+ * do, what I build outside it, then the archive.
  *
  * The sections themselves live in src/sections so the two sides can run the
  * same six components in two orders. Nothing here but the running order, and
@@ -10,7 +10,6 @@
 import Base from '../layouts/Base.astro';
 import Hero from '../sections/Hero.astro';
 import About from '../sections/About.astro';
-import Now from '../sections/Now.astro';
 import Projects from '../sections/Projects.astro';
 import Experience from '../sections/Experience.astro';
 import Playground from '../sections/Playground.astro';
@@ -22,9 +21,8 @@ import { sideA as s } from '../lib/route';
 <Base nav={s.nav}>
   <Hero />
   <About n={s.n('about')} tone="paper" />
-  <Now />
-  <Projects n={s.n('building')} tone="ink-deep" />
   <Experience n={s.n('work')} tone="paper-2" order="newest" />
+  <Projects n={s.n('building')} tone="ink-deep" />
   <Playground n={s.n('playground')} tone="sand" />
   <Skills n={s.n('skills')} tone="ink-3" />
   <Contact n={s.n('contact')} tone="camel" side="a" />

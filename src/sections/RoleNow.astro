@@ -4,10 +4,11 @@
  * get. It keeps the .role class and the stack key, so the work-log filter
  * counts it as one of eight.
  *
- * It opens on the four points of ownership rather than on a summary, because
- * the summary is the compact block up by About and printing it twice would
- * spend the strongest sentence on the page on being read again. This is the
- * record; that is the answer.
+ * It opens on the outcome and then gives the four points of ownership under
+ * it. That summary used to live in a band of its own up by About, back when
+ * the log sat below the projects and a reader met eight jobs late; the whole
+ * section is second on the page now, so the band would be the same sentence
+ * twice within a screen of itself. One telling, in the record.
  */
 import Claim from '../components/Claim.astro';
 import { callTrace, places } from '../data/content';
@@ -32,6 +33,11 @@ import { current, stackKey, stackLine } from '../lib/roles';
           {current.where && <span> &middot; {current.where}</span>}
         </h3>
         <p class="stack">{stackLine(current)}</p>
+        {current.body && (
+          <p class="role__lede">
+            {current.ev ? <Claim of={current.ev}>{current.body}</Claim> : current.body}
+          </p>
+        )}
         {current.bullets && (
           <ul class="role__pts">
             {current.bullets.map((pt) => (

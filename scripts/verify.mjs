@@ -1554,22 +1554,15 @@ await run(
         nowLast:
           document.querySelector('.roles > *:last-child')?.classList.contains('role--now') ?? false,
         fwd: !!document.querySelector('.roles--fwd'),
-        /* The compact summary that stands in front of the projects. It is one
-           sentence and a link, and the whole point of splitting it off the
-           record is that the sentence is not also in the record. */
-        now: (() => {
-          const n = document.querySelector('.now');
-          if (!n) return null;
-          const said = n.querySelector('.now__lede')?.textContent.trim() ?? '';
-          const to = n.querySelector('.now__more')?.getAttribute('href') ?? null;
+        /* The summary the band used to carry, now folded back into the record.
+           It is the strongest sentence on the page and the reason the section
+           moved up, so what is checked is that it is there and said once. */
+        lede: (() => {
+          const said = document.querySelector('.role--now .role__lede')?.textContent.trim() ?? '';
           return {
-            after: n.previousElementSibling?.id ?? null,
-            sec: n.hasAttribute('data-sec'),
-            rows: n.querySelectorAll('.role, [data-stack]').length,
-            to,
-            lands: to ? !!document.querySelector(to) : false,
             said: said.slice(0, 60),
             times: said ? document.body.textContent.split(said.slice(0, 60)).length - 1 : 0,
+            band: !!document.querySelector('.now'),
           };
         })(),
         /* The appendix is only worth anything if all four cards answer the
@@ -1645,24 +1638,19 @@ await run(
     );
 
     note(
-      a.now?.after === 'about' && b.now?.after === 'about',
-      'and the current role is answered right after About on both sides',
-      `A after ${a.now?.after}, B after ${b.now?.after}`,
+      a.secs[1] === '02 work',
+      'side A answers what he does for a living second, right after About',
+      a.secs.join(' | '),
     );
     note(
-      a.now && !a.now.sec && a.now.rows === 0,
-      'the summary is a band, not a seventh section and not a row in the log',
-      `data-sec ${a.now?.sec}, rows ${a.now?.rows}`,
+      !!a.lede?.said && a.lede.times === 1 && b.lede?.times === 1,
+      'and the current role says its opening sentence once, inside the record',
+      `A ${a.lede?.times}, B ${b.lede?.times}`,
     );
     note(
-      a.now?.times === 1 && b.now?.times === 1,
-      'and it says its sentence once, with the record holding the rest',
-      `A ${a.now?.times}, B ${b.now?.times}`,
-    );
-    note(
-      a.now?.to === '#r-notable' && a.now.lands && b.now?.lands,
-      'and points at the full record, which is there',
-      `${a.now?.to} lands A ${a.now?.lands} B ${b.now?.lands}`,
+      !a.lede?.band && !b.lede?.band,
+      'with no separate summary band left over on either side',
+      `A ${a.lede?.band}, B ${b.lede?.band}`,
     );
 
     note(

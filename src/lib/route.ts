@@ -55,8 +55,8 @@ export function side(
   };
 }
 
-/** The way round a hiring reader wants it. */
-export const sideA = side(['about', 'building', 'work', 'playground', 'skills', 'contact']);
+/** The way round a hiring reader wants it: who, then what he is paid to do. */
+export const sideA = side(['about', 'work', 'building', 'playground', 'skills', 'contact']);
 
 /**
  * The same record from the other end: the earliest things first, then the work
