@@ -141,12 +141,17 @@ export const cover = {
   /* The hero used to open on the two degrees, which is the same story About
      opens on, told slightly worse. It says what he does now instead, and the
      degrees keep their one telling in `about.prose[0]`. Both lines are drawn
-     from what the page already publishes: the Notable role names the voice
-     platform and its production numbers, and the four projects below are the
-     worlds, the renderer and the sailing model. */
-  lead: 'I build production AI systems, and improbable things that run in a browser.',
+     from what the page already publishes: the Notable role names the platform
+     and its production numbers, and the four projects below are the worlds,
+     the renderer and the sailing model.
+
+     INTERIM, both of them. The captain is picking the final tagline from a
+     set; these are placed so nothing downstream breaks while he chooses. The
+     second line is the only place on the page that says what the job is before
+     the Experience section says it properly. */
+  lead: 'Full-stack engineer. I take things from zero to one: services, ML and voice systems, the infrastructure under them, and games I build for the fun of it.',
   support:
-    'At Notable I work on voice infrastructure. Outside work it’s multiplayer worlds, renderers, sailing models, and small things you can open and play with.',
+    'At Notable, a healthcare AI company, I work across the stack: integrations, voice AI, the conversation and API layers, frontend to database, and the occasional flight to a customer’s site to make it work in the room.',
   /* This used to name all four projects in a 57-word run-on, immediately above
      four cards that name themselves. What is left is the only thing the cards
      cannot say from inside one card: which half of them you can open. */
