@@ -3891,6 +3891,143 @@ button.toolbar__link {
    It still needs a name of its own: unlabelled, the list arrived after the
    three cards as five untitled rows, and its own entries were the only thing
    telling a reader what they had reached. */
+/* ── Rendezvous ─────────────────────────────────────────────────────────
+   Not a lab, and it does not wear the dark card the three above it wear.
+   Nothing here runs, so there is no stage to frame; what it has is three
+   captures, and the captures should be the loudest thing in the block.
+
+   The text sits beside the lead rather than above it, which makes the first
+   row one image tall instead of an image plus a paragraph. The pair takes the
+   full measure underneath, because two dashboards at a third of the page each
+   are two dashboards nobody can read. */
+.rz {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.58fr) minmax(0, 1fr);
+  gap: 1.15rem;
+  margin-top: 1.7rem;
+}
+
+/* Centred against the lead, which is the taller of the two. Left at the top it
+   would hang a paragraph off the ceiling of a 460px image. */
+.rz__head {
+  align-content: center;
+  min-width: 0;
+}
+
+.rz__date {
+  display: block;
+  margin-bottom: 0.6rem;
+  color: var(--muted);
+  font: 750 0.64rem/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rz__head h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 2.5vw, 2.1rem);
+  line-height: 1;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+}
+
+.rz__head p {
+  max-width: 62ch;
+  margin: 0.55rem 0 0;
+  font-size: var(--fs-small);
+  line-height: 1.55;
+}
+
+/* The one sentence in the block a reader might act on, which here means not
+   act on. It says the door is gone, so it is set apart from the description
+   rather than tucked at the end of it. */
+.rz__host {
+  color: var(--muted);
+}
+
+.rz .stack {
+  color: var(--muted);
+  font: 650 0.69rem/1.45 var(--mono);
+}
+
+.rz figure {
+  min-width: 0;
+  margin: 0;
+}
+
+.rz img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 2px solid var(--ink);
+  border-radius: var(--r-sm);
+  background: var(--screen);
+}
+
+.rz figcaption {
+  margin-top: 0.55rem;
+  color: var(--muted);
+  font: 650 0.72rem/1.55 var(--mono);
+}
+
+.rz__pair {
+  grid-column: 1 / -1;
+}
+
+.rz__two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.rz__shot {
+  position: relative;
+  min-width: 0;
+}
+
+/* Which theme, on the theme. The pair is only an argument if a reader can tell
+   at a glance that these are the same screen and not two screens, and the
+   labels are what let the caption underneath be one sentence instead of three.
+   Inside the frame, so the row stays two images tall rather than two images
+   and two lines. */
+.rz__theme {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--r-xs);
+  color: var(--on-ink);
+  background: color-mix(in srgb, var(--ink-deep) 84%, transparent);
+  font: 800 var(--fs-micro) / 1 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* Under 900 the text column has stopped being a column: it is 240px of
+   minimum next to an image that wants the rest, and the paragraph breaks
+   every four words. Stack it and give the lead the whole measure. */
+@media (width <= 900px) {
+  .rz {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Two dashboards side by side stop being readable long before the layout
+   stops fitting them. Below 620 they go one above the other, full width. */
+@media (width <= 620px) {
+  .rz__two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* A rule's worth of air after a figure caption, which is already small grey
+   type and reads as the end of nothing in particular. */
+.rz + .earlier__h {
+  margin-top: 2rem;
+}
+
 .earlier__h {
   margin: 1.05rem 0 0;
   font: 800 var(--fs-label) / 1.4 var(--mono);

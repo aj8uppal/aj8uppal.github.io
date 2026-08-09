@@ -736,6 +736,51 @@ export const playground = {
   ],
 } as const;
 
+/**
+ * The one thing in this section that was a product rather than an exercise,
+ * and the only one with nothing left to open.
+ *
+ * It gets a block instead of a row in the list below for two reasons. A row
+ * cannot show a day and a night of the same screen, and the theme was most of
+ * the work. And the three captures are all that is left of it: the host is
+ * gone, there is no link, and a list row would be the whole of the record.
+ *
+ * Every date and time in the copy is read off the captures themselves. The
+ * two dashboards were taken in one session, one toggle apart, which is why
+ * the clock in both of them says 5:16.
+ */
+export const rendezvous = {
+  key: 'rendezvous' as PlaceKey,
+  name: 'Rendezvous',
+  yr: 'c. 2020',
+  what: 'A central place for UMass students to find each other through the classes they were taking. Everyone’s assignments in one calendar, a chat per lecture, and, that year, a Zoom link where the room number used to be.',
+  host: 'The host is gone and there is nothing to click. These three captures are what survives.',
+  k: 'React · Redux · Flask · PostgreSQL · GCP',
+  lead: {
+    asset: 'rendezvous-dashboard',
+    alt: 'The Rendezvous dashboard in its dark theme: four courses listed down a sidebar, a month of colour-coded assignment bars across a calendar, and a right-hand column of the day’s lectures, each with a Zoom button.',
+    cap: 'The dashboard. Term’s classes down the left, every assignment in one calendar, the day’s lectures on the right.',
+  },
+  /* Named light and dark rather than day and night: the toggle in the corner
+     of the capture is a sun and a moon, and the labels should say what the
+     control says. */
+  pair: {
+    cap: 'The same screen at the same second, one toggle apart. Thursday 14 October 2021, 5:16 in the afternoon, both times.',
+    shots: [
+      {
+        asset: 'rendezvous-day',
+        label: 'Light',
+        alt: 'The same dashboard in its light theme, week view: five courses in the sidebar, a week of assignment bars, and two lectures on the right with their times.',
+      },
+      {
+        asset: 'rendezvous-night',
+        label: 'Dark',
+        alt: 'The identical view in the dark theme, the same courses and the same two lectures, changed only in colour.',
+      },
+    ],
+  },
+} as const;
+
 export const earlier = [
   {
     key: 'pickle',
@@ -743,13 +788,6 @@ export const earlier = [
     yr: 'High school',
     what: 'Designed, built and calibrated low-cost air pollution monitors to make the problem visible. Hardware, firmware, cloud and data science in one project, with Sonoma Technology, BAAQMD and Manylabs.',
     k: 'C · Python · R · Time-series storage',
-  },
-  {
-    key: 'rendezvous',
-    name: 'Rendezvous',
-    yr: 'c. 2020',
-    what: 'A central place for UMass students to find each other through the classes they were taking. The host is gone, so there is no link.',
-    k: 'React · Redux · Flask · PostgreSQL · GCP',
   },
 ] as const;
 

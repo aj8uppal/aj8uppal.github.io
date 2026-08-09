@@ -39,6 +39,14 @@ const SALT_FULL = { left: 0, top: 75, width: 3456, height: 2159 }; // panel kept
  * height comes off the bottom, where there is nothing but water and chrome.
  */
 const SALT_LEAD = { left: 680, top: 75, width: 2776, height: 1291 };
+/**
+ * The Rendezvous dashboard capture was framed for a portfolio slide: a 14 to
+ * 26px band of black-and-white speckle all the way round it, which is nobody's
+ * UI. 28 off every edge clears the widest of it and takes nothing but the
+ * application's own background with it. The two theme captures next to it were
+ * taken flush and are not cropped at all.
+ */
+const RZ_FRAME = { left: 28, top: 28, width: 2864, height: 1784 };
 
 /**
  * What each crop takes out, in the words the comments above already use.
@@ -53,6 +61,7 @@ const OMITS = new Map([
   [SALT_CLEAN, 'the developer panel down the left edge, and the bar above the viewport'],
   [SALT_LEAD, 'the developer panel down the left edge, the top bar, and open water below the hull'],
   [SALT_FULL, 'the bar above the viewport; the developer panel is kept, on purpose'],
+  [RZ_FRAME, 'the speckled decorative border the capture was framed in'],
 ]);
 
 /** @type {Array<{in: string, out: string, crop?: object, width: number, quality?: number}>} */
@@ -172,6 +181,13 @@ const JOBS = [
 
   // Playground - the three legacy demos that actually run
   { in: 'legacy-grinchjump-REVIVED.png', out: 'legacy-grinchjump', width: 1200, quality: 88 },
+
+  // Rendezvous - the only thing in the playground that was a product. Nothing
+  // runs, so these three are the whole of the evidence. The lead is the
+  // dashboard; the two after it are one screen at one second in both themes.
+  { in: 'rz-rendezvous-main.png', out: 'rendezvous-dashboard', crop: RZ_FRAME, width: 2400 },
+  { in: 'rz-rendezvous1light.png', out: 'rendezvous-day', width: 1400 },
+  { in: 'rz-rendezvous1dark.png', out: 'rendezvous-night', width: 1400 },
 ];
 
 async function run() {

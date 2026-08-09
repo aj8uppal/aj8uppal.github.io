@@ -1,13 +1,14 @@
 ---
+import { Picture } from 'astro:assets';
 import Inspect from '../components/Inspect.astro';
 import Section from '../components/Section.astro';
 import type { Tone } from '../components/Section.astro';
 import AutoTyper from '../components/react/AutoTyper';
 import DeviationFrame from '../components/react/DeviationFrame';
 import GameFrame from '../components/react/GameFrame';
-import { sources } from '../lib/images';
+import { asset, sources } from '../lib/images';
 import { dots } from '../lib/text';
-import { earlier, places, playground } from '../data/content';
+import { earlier, places, playground, rendezvous } from '../data/content';
 
 interface Props {
   /** Its number on this route. The sides run the same sections in two orders. */
@@ -25,6 +26,16 @@ const grinchPoster = await sources('legacy-grinchjump', POSTER_W, POSTER_S);
    scripts/capture-deviation.mjs. It stands in for the chart until the chart
    arrives, and stands in for it permanently where no script runs. */
 const deviationPoster = await sources('legacy-deviation', POSTER_W, POSTER_S);
+
+/* The dashboard sits in the wider of a 0.58 / 1 split: 740px at the maximum. */
+const RZ_LEAD_W = [480, 740, 1080, 1480];
+const RZ_LEAD_S = '(min-width: 1400px) 740px, (min-width: 900px) 60vw, 92vw';
+
+/* The pair halves the full measure: 605px each at the maximum. */
+const RZ_PAIR_W = [400, 605, 900, 1210];
+const RZ_PAIR_S = '(min-width: 1400px) 605px, (min-width: 760px) 46vw, 92vw';
+
+const rzShots = [rendezvous.lead.asset, ...rendezvous.pair.shots.map((sh) => sh.asset)];
 ---
 
 <Section n={n} id="playground" name="Playground" tone={tone}>
@@ -113,12 +124,69 @@ const deviationPoster = await sources('legacy-deviation', POSTER_W, POSTER_S);
   </div>
 
   {
+    /* Not a lab: nothing here runs, and there is nowhere to send a reader. It
+      gets a block rather than a row anyway. It is the only thing in this
+      section that was a product other people used, and the pair underneath is
+      a claim a line of text in a list cannot make. */
+  }
+  <article class="rz" id={places.rendezvous.at} data-place data-reveal>
+    <div class="rz__head">
+      <span class="rz__date">Nothing left to run</span>
+      <h3>
+        {rendezvous.name}<span class="era">{rendezvous.yr}</span>
+      </h3>
+      <p>{rendezvous.what}</p>
+      <p class="rz__host">{rendezvous.host}</p>
+      <p class="stack">{dots(rendezvous.k)}</p>
+    </div>
+
+    <figure class="rz__lead">
+      <Picture
+        src={asset(rendezvous.lead.asset)}
+        alt={rendezvous.lead.alt}
+        widths={RZ_LEAD_W}
+        sizes={RZ_LEAD_S}
+        formats={['avif']}
+        fallbackFormat="webp"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>{rendezvous.lead.cap}</figcaption>
+    </figure>
+
+    <figure class="rz__pair">
+      <div class="rz__two">
+        {
+          rendezvous.pair.shots.map((sh) => (
+            <div class="rz__shot">
+              <Picture
+                src={asset(sh.asset)}
+                alt={sh.alt}
+                widths={RZ_PAIR_W}
+                sizes={RZ_PAIR_S}
+                formats={['avif']}
+                fallbackFormat="webp"
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="rz__theme">{sh.label}</span>
+            </div>
+          ))
+        }
+      </div>
+      <figcaption>{rendezvous.pair.cap}</figcaption>
+    </figure>
+
+    <Inspect by="astro:assets Picture" assets={rzShots} />
+  </article>
+
+  {
     /* An h3, like the three cards above it, because that is what it is a
       sibling of. The names inside were h4s, which made every one of them
       read as a subsection of GrinchJump. They are row labels, not sections,
       so they stop claiming to be headings. */
   }
-  <h3 class="earlier__h" data-reveal>Also built, nothing left to run</h3>
+  <h3 class="earlier__h" data-reveal>Also built</h3>
   <ul class="earlier" data-reveal>
     {
       earlier.map((e) => (

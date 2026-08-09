@@ -568,5 +568,60 @@
       "bytes": 5066
     },
     "dated": "2026-08-06"
+  },
+  {
+    "out": "rendezvous-dashboard",
+    "from": "rz-rendezvous-main.png",
+    "src": {
+      "w": 2920,
+      "h": 1840
+    },
+    "asset": {
+      "w": 2400,
+      "h": 1495,
+      "bytes": 134908
+    },
+    "dated": "2026-08-09",
+    "crop": {
+      "left": 28,
+      "top": 28,
+      "width": 2864,
+      "height": 1784
+    },
+    "trim": {
+      "left": 28,
+      "top": 28,
+      "right": 28,
+      "bottom": 28
+    },
+    "omits": "the speckled decorative border the capture was framed in"
+  },
+  {
+    "out": "rendezvous-day",
+    "from": "rz-rendezvous1light.png",
+    "src": {
+      "w": 2744,
+      "h": 1722
+    },
+    "asset": {
+      "w": 1400,
+      "h": 879,
+      "bytes": 65812
+    },
+    "dated": "2026-08-09"
+  },
+  {
+    "out": "rendezvous-night",
+    "from": "rz-rendezvous1dark.png",
+    "src": {
+      "w": 2738,
+      "h": 1712
+    },
+    "asset": {
+      "w": 1400,
+      "h": 875,
+      "bytes": 66932
+    },
+    "dated": "2026-08-09"
   }
 ]
