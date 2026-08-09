@@ -4005,7 +4005,11 @@ button.toolbar__link {
    at a glance that these are the same screen and not two screens, and the
    labels are what let the caption underneath be one sentence instead of three.
    Inside the frame, so the row stays two images tall rather than two images
-   and two lines. */
+   and two lines.
+
+   Opaque, not the 84% it started at. A chip that lets the capture through is
+   a chip whose contrast is decided by whatever pixels happen to be under it,
+   which on the light half of a light/dark pair is not a bet worth taking. */
 .rz__theme {
   position: absolute;
   top: 0.6rem;
@@ -4013,7 +4017,7 @@ button.toolbar__link {
   padding: 0.2rem 0.5rem;
   border-radius: var(--r-xs);
   color: var(--on-ink);
-  background: color-mix(in srgb, var(--ink-deep) 84%, transparent);
+  background: var(--ink-deep);
   font: 800 var(--fs-micro) / 1 var(--mono);
   letter-spacing: 0.09em;
   text-transform: uppercase;
