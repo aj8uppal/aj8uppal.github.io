@@ -11,7 +11,7 @@
  * twice within a screen of itself. One telling, in the record.
  */
 import Claim from '../components/Claim.astro';
-import { callTrace, notableLately, places } from '../data/content';
+import { callTrace, notableBrowser, notableLately, places } from '../data/content';
 import { current, stackKey, stackLine } from '../lib/roles';
 ---
 
@@ -45,9 +45,10 @@ import { current, stackKey, stackLine } from '../lib/roles';
             ))}
           </ul>
         )}
-        {/* Gated off. See the note on notableLately: unreleased work, and the
-            captain has not signed the wording. */}
-        {notableLately.approved && <p class="role__lately">{notableLately.interim}</p>}
+        {/* Two threads, gated one at a time. The flow line is signed off; the
+            browser-automation line is not, and does not render until it is. */}
+        {notableLately.approved && <p class="role__lately">{notableLately.text}</p>}
+        {notableBrowser.approved && <p class="role__lately">{notableBrowser.text}</p>}
         {current.status && (
           <p class="role__status">
             {current.statusEv ? (

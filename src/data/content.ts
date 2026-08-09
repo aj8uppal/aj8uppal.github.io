@@ -144,11 +144,9 @@ export const cover = {
      and its production numbers, and the four projects below are the worlds,
      the renderer and the sailing model.
 
-     INTERIM, both of them. The captain is picking the final tagline from a
-     set; these are placed so nothing downstream breaks while he chooses. The
-     second line is the only place on the page that says what the job is before
-     the Experience section says it properly. */
-  lead: 'Full-stack engineer. I take things from zero to one: services, ML and voice systems, the infrastructure under them, and games I build for the fun of it.',
+     The second line is the only place on the page that says what the job is
+     before the Experience section says it properly. */
+  lead: 'I build across the stack: zero-to-one services, AI and voice systems, infrastructure, and, off the clock, worlds that run in a browser.',
   support:
     'At Notable, a healthcare AI company, I work across the stack: integrations, voice AI, the conversation and API layers, frontend to database, and the occasional flight to a customer’s site to make it work in the room.',
   /* This used to name all four projects in a 57-word run-on, immediately above
@@ -611,21 +609,30 @@ export const roles: Role[] = [
 ];
 
 /**
- * What the job is this month, written and deliberately not published.
+ * What the job is this month.
  *
- * Two threads of current work. Both characterise things that have not shipped,
- * at a company he still works for, so the wording is not his employer's to be
- * surprised by and not mine to choose. It is built rather than left in a note
- * so that saying yes is one boolean and no rebuild.
- *
- * `approved` flips only on the captain's explicit sign-off on this exact
- * sentence. Until then the page does not render it, and the text is interim.
- * Nothing here names a customer, and nothing here ever will.
+ * Two threads of current work, and they are signed off one at a time rather
+ * than together. Both characterise things that have not shipped, at a company
+ * he still works for, so the wording is not his employer's to be surprised by
+ * and not mine to choose. `approved` flips only on an explicit sign-off on
+ * that exact sentence, and until it does the page does not render the line at
+ * all. Nothing here names a customer, and nothing here ever will.
  */
-export const notableLately: { approved: boolean; interim: string } = {
+export const notableLately: { approved: boolean; text: string } = {
+  approved: true,
+  text: 'Lately I’ve been making those conversations testable, so a builder can trust a flow before it ever takes a real call.',
+};
+
+/**
+ * The second thread, still held.
+ *
+ * Same gate, its own boolean, kept next to the first so approving it is one
+ * word and no rebuild. The wording has not been signed off, so it stays as
+ * written rather than being tidied into something nobody agreed to.
+ */
+export const notableBrowser: { approved: boolean; text: string } = {
   approved: false,
-  interim:
-    'Lately I’ve been making those conversations testable, so a builder can trust a flow before it ever takes a real call, and teaching our software to use the systems that only have a screen instead of an API, with a person stepping in for the moments that need one.',
+  text: 'And teaching our software to use the systems that only have a screen instead of an API, with a person stepping in for the moments that need one.',
 };
 
 /* ── One call, generically ────────────────────────────────────────────────
