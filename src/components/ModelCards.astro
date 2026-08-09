@@ -13,6 +13,12 @@
  * cards would read as a fifth through eighth project; this is an appendix to
  * the four, and it should look like the back of the book.
  *
+ * Closed by default, and it took a while to admit why. Reading across four
+ * columns is a thing a reader chooses to do, and until they choose it this is
+ * eight hundred pixels of schema between them and the next section. Shut, it
+ * is one pill on a rule. The summary names what is inside precisely enough
+ * that opening it is a decision rather than a guess.
+ *
  * The rows line up across the columns with subgrid, which is what makes
  * reading across a real offer rather than a claim in the lede. Without it the
  * cards still read top to bottom, one project at a time, so the fallback loses
@@ -22,40 +28,46 @@ import { places } from '../data/content';
 import { FIELDS, models, NOT_ON_RECORD } from '../data/models';
 ---
 
-<div class="models" data-models data-reveal>
-  <div class="models__head">
-    <p class="kicker">Appendix &middot; the same three questions</p>
-    <h3 class="models__t">The same three questions, four times</h3>
+<details class="models notes" data-reveal>
+  {
+    /* The heading stays a heading inside the control, so the four card names
+      below it are still an h4 under an h3 rather than under the section. */
+  }
+  <summary>
+    <h3 class="models__t">Appendix &middot; all four models, asked the same three questions</h3>
+  </summary>
+
+  <div class="models__body">
     <p class="models__lede">
       Four simulations, asked in the same order so they can be read across rather than one at a
       time: what decides the outcome, what goes into it, and how I know it is behaving.
     </p>
-  </div>
 
-  <div class="models__grid">
-    {
-      models.map((m) => (
-        <article class="mcard">
-          <h4 class="mcard__n">
-            <a href={`#${places[m.key].at}`}>{places[m.key].name}</a>
-          </h4>
-          <p class="mcard__kind">{m.kind}</p>
-          <dl class="mcard__f">
-            {FIELDS.map(([k, label]) => (
-              <div>
-                <dt>{label}</dt>
-                {m.fields[k] ? (
-                  <dd>{m.fields[k]}</dd>
-                ) : (
-                  /* Not styled as an apology. It is a row of the audit like
-                     any other, and the answer it carries is a real one. */
-                  <dd class="mcard__gap">{NOT_ON_RECORD}</dd>
-                )}
-              </div>
-            ))}
-          </dl>
-        </article>
-      ))
-    }
+    <div class="models__grid">
+      {
+        models.map((m) => (
+          <article class="mcard">
+            <h4 class="mcard__n">
+              <a href={`#${places[m.key].at}`}>{places[m.key].name}</a>
+            </h4>
+            <p class="mcard__kind">{m.kind}</p>
+            <dl class="mcard__f">
+              {FIELDS.map(([k, label]) => (
+                <div>
+                  <dt>{label}</dt>
+                  {m.fields[k] ? (
+                    <dd>{m.fields[k]}</dd>
+                  ) : (
+                    /* Not styled as an apology. It is a row of the audit like
+                       any other, and the answer it carries is a real one. */
+                    <dd class="mcard__gap">{NOT_ON_RECORD}</dd>
+                  )}
+                </div>
+              ))}
+            </dl>
+          </article>
+        ))
+      }
+    </div>
   </div>
-</div>
+</details>
