@@ -91,10 +91,6 @@ const MAP: Record<string, Source[]> = {
 
   'umass.reach': [{ cls: 'resume', said: '2026' }],
 
-  /* The erratum's own sources disagree, which is why it exists. Labelling it
-     pending is not an admission; it is the erratum agreeing with itself. */
-  'errata.a': [{ cls: 'pending' }],
-
   'play.method': [{ cls: 'git' }, { cls: 'page' }],
 
   'foot.captures': [{ cls: 'page' }],

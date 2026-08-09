@@ -296,13 +296,6 @@ summary,
   outline-offset: 2px;
 }
 
-/* Six points of clearance around a marker set in superscript is a halo three
-   times the size of the thing it is marking. */
-.ref[data-place]:target,
-.ref[data-place]:focus {
-  outline-offset: 0;
-}
-
 /* The one focusable element that cannot know what it is standing on: it is
    fixed to the top of the window, so the ground behind it is whatever section
    happens to be scrolled there. So the ring goes inside the button, where the
@@ -3104,51 +3097,6 @@ summary,
   left: 0;
   color: var(--on-paper-3);
   font: 800 0.72rem/1.5 var(--mono);
-}
-
-/* A footnote marker set in superscript is a thirteen by fourteen target, which
-   is exempt from the size rule for being inline in a sentence and is still
-   annoying to hit. Padded out to something a thumb can find, with the padding
-   pulled back out of the line box so a note in the middle of a paragraph does
-   not open a gap in the leading above it. */
-.ref {
-  margin: -0.6rem -0.35rem;
-}
-
-.ref a {
-  display: inline-block;
-  padding: 0.6rem 0.35rem;
-  color: var(--on-paper-2);
-}
-
-.errata {
-  margin: 1.4rem 0 0;
-}
-
-.errata > div {
-  display: grid;
-  grid-template-columns: 2rem minmax(0, 1fr);
-  gap: 0.6rem;
-}
-
-.errata dt {
-  color: var(--on-paper-3);
-  font: 750 0.7rem/1.6 var(--mono);
-}
-
-/* Same marker, same size problem, and here it is the way back. */
-.errata dt a {
-  display: inline-block;
-  padding: 0.35rem 0.3rem;
-  margin: -0.35rem -0.3rem;
-  color: inherit;
-}
-
-.errata dd {
-  max-width: 78ch;
-  margin: 0;
-  color: var(--on-paper-2);
-  font-size: 0.83rem;
 }
 
 .edu {

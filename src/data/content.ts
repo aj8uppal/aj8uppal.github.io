@@ -25,7 +25,6 @@ export interface Role {
   /** The same, for `status`, which is a claim of a different kind. */
   statusEv?: string;
   pending?: { note: string };
-  ref?: string;
 }
 
 export interface Frame {
@@ -594,21 +593,20 @@ export const roles: Role[] = [
     stack: 'Python · JavaScript · Chrome extensions',
   },
   {
-    key: 'baaqmd',
-    when: 'Summer',
-    title: 'Air Quality Scientist and Data Analytics Intern',
-    org: 'Bay Area Air Quality Management District',
-    ref: 'a',
-    body: 'Built, tested and calibrated low-cost air pollution monitors, and built the cloud networking interface for viewing their data from anywhere. Secured a $3,000 grant for Los Altos High School to bring monitor building into its APES curriculum.',
-    stack: 'C · Python · Cloud data pipeline',
-  },
-  {
     key: 'youweb',
     when: 'Summer 2018',
     title: 'Software Engineering Intern',
     org: 'YouWeb, Inc.',
     body: 'Led a marketing campaign for a YouWeb project and built its campaign website and web application.',
     stack: 'JavaScript · Node.js',
+  },
+  {
+    key: 'baaqmd',
+    when: 'Summer 2017',
+    title: 'Air Quality Scientist and Data Analytics Intern',
+    org: 'Bay Area Air Quality Management District',
+    body: 'Built, tested and calibrated low-cost air pollution monitors, and built the cloud networking interface for viewing their data from anywhere. Secured a $3,000 grant for Los Altos High School to bring monitor building into its APES curriculum.',
+    stack: 'C · Python · Cloud data pipeline',
   },
 ];
 
@@ -695,14 +693,6 @@ export const callTrace: TraceStep[] = [
     text: 'Hand the call to a person, and tell them where it got to.',
   },
 ];
-
-export const errata = [
-  {
-    ref: 'a',
-    ev: 'errata.a',
-    text: 'My old site dates this internship Summer 2017 and my 2024 resume says June to August 2019, which collides with the Got It internship. Until I dig up the truth, the year stays off.',
-  },
-] as const;
 
 /* ── Playground ──────────────────────────────────────────────────────── */
 

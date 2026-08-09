@@ -1070,8 +1070,6 @@ await run(
       '.links a',
       '.toolbar__link',
       '.skg__set .sk',
-      '.ref a',
-      '.errata dt a',
     ];
     const worst = [];
     for (const sel of STATEFUL) {
