@@ -1,7 +1,7 @@
 ---
 import Section from '../components/Section.astro';
 import type { Tone } from '../components/Section.astro';
-import { about, contact, cover } from '../data/content';
+import { about, contact, cover, saltline } from '../data/content';
 
 interface Props {
   /** Its number on this route. The sides run the same sections in two orders. */
@@ -40,6 +40,16 @@ const { n, tone } = Astro.props;
   <div class="about">
     <div class="about__copy" data-reveal>
       {about.prose.map((p) => <p>{p}</p>)}
+      {
+        /* The three parts stay welded to each other. Astro keeps template
+          whitespace, so a line break between the link and the text either side
+          of it is a stray space in the sentence. */
+      }
+      <p>
+        {about.sim[0]}<a href={saltline.href} target="_blank" rel="noopener">{about.sim[1]}</a>{
+          about.sim[2]
+        }
+      </p>
     </div>
 
     <dl class="facts" data-reveal>

@@ -180,8 +180,20 @@ export const about = {
   statement: 'I learn things by building them.',
   prose: [
     'I did two degrees at once, computer science and astrophysics, because I couldn’t choose between them. Some weeks that meant Algorithms and General Relativity in the same problem-set pile.',
-    'In college I simulated CO2 cooling for particle detectors. Now I simulate oceans for a sailing game. It’s more or less the same job: pick a model, pick a timestep, and know what you’re leaving out.',
   ],
+  /**
+   * The second paragraph, split around its one link.
+   *
+   * A tuple rather than a sentence with markup in it, because the words in the
+   * middle are the only claim here a reader can go and check, and the link
+   * belongs to the data that makes the claim rather than to the template that
+   * happens to print it.
+   */
+  sim: [
+    'In college I simulated CO2 cooling for particle detectors. Now I simulate an ocean for a ',
+    'sailing game',
+    '. Replicating a real environment in code isn’t just satisfying; it opens doors, and it’s the closest thing I know to the magic of technology.',
+  ] as const,
   notes: [
     { k: 'Off the clock', v: 'Heirloom tomatoes, bikes, and Pink Floyd, roughly in that order.' },
     { k: 'Long held', v: 'Wanted to be an astronaut since I was four. Still would.' },
