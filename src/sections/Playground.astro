@@ -35,7 +35,10 @@ const RZ_LEAD_S = '(min-width: 1400px) 740px, (min-width: 900px) 60vw, 92vw';
 const RZ_PAIR_W = [400, 605, 900, 1210];
 const RZ_PAIR_S = '(min-width: 1400px) 605px, (min-width: 760px) 46vw, 92vw';
 
-const rzShots = [rendezvous.lead.asset, ...rendezvous.pair.shots.map((sh) => sh.asset)];
+const rzShots = [
+  rendezvous.lead.asset,
+  ...rendezvous.pairs.flatMap((pr) => pr.shots.map((sh) => sh.asset)),
+];
 ---
 
 <Section n={n} id="playground" name="Playground" tone={tone}>
@@ -154,28 +157,30 @@ const rzShots = [rendezvous.lead.asset, ...rendezvous.pair.shots.map((sh) => sh.
       <figcaption>{rendezvous.lead.cap}</figcaption>
     </figure>
 
-    <figure class="rz__pair">
-      <div class="rz__two">
-        {
-          rendezvous.pair.shots.map((sh) => (
-            <div class="rz__shot">
-              <Picture
-                src={asset(sh.asset)}
-                alt={sh.alt}
-                widths={RZ_PAIR_W}
-                sizes={RZ_PAIR_S}
-                formats={['avif']}
-                fallbackFormat="webp"
-                loading="lazy"
-                decoding="async"
-              />
-              <span class="rz__theme">{sh.label}</span>
-            </div>
-          ))
-        }
-      </div>
-      <figcaption>{rendezvous.pair.cap}</figcaption>
-    </figure>
+    {
+      rendezvous.pairs.map((pr) => (
+        <figure class="rz__pair">
+          <div class="rz__two">
+            {pr.shots.map((sh) => (
+              <div class="rz__shot">
+                <Picture
+                  src={asset(sh.asset)}
+                  alt={sh.alt}
+                  widths={RZ_PAIR_W}
+                  sizes={RZ_PAIR_S}
+                  formats={['avif']}
+                  fallbackFormat="webp"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="rz__theme">{sh.label}</span>
+              </div>
+            ))}
+          </div>
+          <figcaption>{pr.cap}</figcaption>
+        </figure>
+      ))
+    }
 
     <Inspect by="astro:assets Picture" assets={rzShots} />
   </article>

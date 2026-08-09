@@ -749,19 +749,24 @@ export const playground = {
  *
  * It gets a block instead of a row in the list below for two reasons. A row
  * cannot show a day and a night of the same screen, and the theme was most of
- * the work. And the three captures are all that is left of it: the host is
+ * the work. And the five captures are all that is left of it: the host is
  * gone, there is no link, and a list row would be the whole of the record.
  *
  * Every date and time in the copy is read off the captures themselves. The
  * two dashboards were taken in one session, one toggle apart, which is why
  * the clock in both of them says 5:16.
+ *
+ * The second pair carries a classmate's real name and five real messages.
+ * They are published because she said yes, not because they were in the
+ * folder. If that ever changes, both frames come out and the caption with
+ * them.
  */
 export const rendezvous = {
   key: 'rendezvous' as PlaceKey,
   name: 'Rendezvous',
   yr: 'c. 2020',
   what: 'A central place for UMass students to find each other through the classes they were taking. Everyone’s assignments in one calendar, a chat per lecture, and, that year, a Zoom link where the room number used to be.',
-  host: 'The host is gone and there is nothing to click. These three captures are what survives.',
+  host: 'The host is gone and there is nothing to click. These five captures are what survives.',
   k: 'React · Redux · Flask · PostgreSQL · GCP',
   lead: {
     asset: 'rendezvous-dashboard',
@@ -770,22 +775,45 @@ export const rendezvous = {
   },
   /* Named light and dark rather than day and night: the toggle in the corner
      of the capture is a sun and a moon, and the labels should say what the
-     control says. */
-  pair: {
-    cap: 'The same screen at the same second, one toggle apart. Thursday 14 October 2021, 5:16 in the afternoon, both times.',
-    shots: [
-      {
-        asset: 'rendezvous-day',
-        label: 'Light',
-        alt: 'The same dashboard in its light theme, week view: five courses in the sidebar, a week of assignment bars, and two lectures on the right with their times.',
-      },
-      {
-        asset: 'rendezvous-night',
-        label: 'Dark',
-        alt: 'The identical view in the dark theme, the same courses and the same two lectures, changed only in colour.',
-      },
-    ],
-  },
+     control says.
+
+     Two pairs, because they answer different questions. The first is the
+     theme, which was most of the work. The second is the thing the whole
+     product was for, and it needs both themes for the same reason the first
+     one does: a single frame of a chat panel is a screenshot of a chat panel,
+     and the pair is the evidence that it was one screen. */
+  pairs: [
+    {
+      cap: 'The same screen at the same second, one toggle apart. Thursday 14 October 2021, 5:16 in the afternoon, both times.',
+      shots: [
+        {
+          asset: 'rendezvous-day',
+          label: 'Light',
+          alt: 'The same dashboard in its light theme, week view: five courses in the sidebar, a week of assignment bars, and two lectures on the right with their times.',
+        },
+        {
+          asset: 'rendezvous-night',
+          label: 'Dark',
+          alt: 'The identical view in the dark theme, the same courses and the same two lectures, changed only in colour.',
+        },
+      ],
+    },
+    {
+      cap: 'One course, with its lecture chat open: the room the class talked in, the two problem sets due out of it, and the seed message every new room opens with. Same screen, one toggle apart, again.',
+      shots: [
+        {
+          asset: 'rendezvous-chat-day',
+          label: 'Light',
+          alt: 'The Physics 568 course page in its light theme: two problem sets with released and due dates in a table, and a docked Official Lecture Chat panel on the right carrying five messages between two students.',
+        },
+        {
+          asset: 'rendezvous-chat-night',
+          label: 'Dark',
+          alt: 'The identical course page and the identical chat in the dark theme, the same two problem sets and the same five messages, changed only in colour.',
+        },
+      ],
+    },
+  ],
 } as const;
 
 export const earlier = [

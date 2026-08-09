@@ -623,5 +623,33 @@
       "bytes": 66932
     },
     "dated": "2026-08-09"
+  },
+  {
+    "out": "rendezvous-chat-day",
+    "from": "rz-rendezvous2light.png",
+    "src": {
+      "w": 2736,
+      "h": 1714
+    },
+    "asset": {
+      "w": 1400,
+      "h": 877,
+      "bytes": 58818
+    },
+    "dated": "2026-08-09"
+  },
+  {
+    "out": "rendezvous-chat-night",
+    "from": "rz-rendezvous2dark.png",
+    "src": {
+      "w": 2738,
+      "h": 1714
+    },
+    "asset": {
+      "w": 1400,
+      "h": 876,
+      "bytes": 62192
+    },
+    "dated": "2026-08-09"
   }
 ]

@@ -183,11 +183,13 @@ const JOBS = [
   { in: 'legacy-grinchjump-REVIVED.png', out: 'legacy-grinchjump', width: 1200, quality: 88 },
 
   // Rendezvous - the only thing in the playground that was a product. Nothing
-  // runs, so these three are the whole of the evidence. The lead is the
-  // dashboard; the two after it are one screen at one second in both themes.
+  // runs, so these five are the whole of the evidence. The lead is the
+  // dashboard; the four after it are two screens, each in both themes.
   { in: 'rz-rendezvous-main.png', out: 'rendezvous-dashboard', crop: RZ_FRAME, width: 2400 },
   { in: 'rz-rendezvous1light.png', out: 'rendezvous-day', width: 1400 },
   { in: 'rz-rendezvous1dark.png', out: 'rendezvous-night', width: 1400 },
+  { in: 'rz-rendezvous2light.png', out: 'rendezvous-chat-day', width: 1400 },
+  { in: 'rz-rendezvous2dark.png', out: 'rendezvous-chat-night', width: 1400 },
 ];
 
 async function run() {
