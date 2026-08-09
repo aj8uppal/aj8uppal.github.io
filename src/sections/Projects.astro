@@ -185,7 +185,11 @@ const elderFrames: SwitchFrame[] = await Promise.all(
 
         <p class="card__lede">{saltline.framesLede}</p>
         <p class="cue">{saltline.framesCue}</p>
-        <Arc client:visible frames={arcFrames} note={saltline.arcNote} />
+        {
+          /* Hydrated a screenful early, like every island below the fold, so
+            the mount is finished before the reader gets here. */
+        }
+        <Arc client:visible={{ rootMargin: '600px' }} frames={arcFrames} note={saltline.arcNote} />
         <Inspect by="Arc.tsx" assets={arcFrames.map((f) => `saltline-arc-${f.key}`)} />
 
         <div class="inset">
@@ -282,7 +286,11 @@ const elderFrames: SwitchFrame[] = await Promise.all(
 
         <p class="card__lede">{ember.framesLede}</p>
         <p class="cue">{ember.framesCue}</p>
-        <FrameSwitcher client:visible label="Ember Wilds regions" frames={emberFrames} />
+        <FrameSwitcher
+          client:visible={{ rootMargin: '600px' }}
+          label="Ember Wilds regions"
+          frames={emberFrames}
+        />
         <Inspect by="FrameSwitcher.tsx" assets={emberFrames.map((f) => emberAsset[f.key] ?? '')} />
 
         <div class="inset">
@@ -396,7 +404,11 @@ const elderFrames: SwitchFrame[] = await Promise.all(
 
         <p class="card__lede">{elderwood.framesLede}</p>
         <p class="cue">{elderwood.framesCue}</p>
-        <FrameSwitcher client:visible label="Elderwood Vale captures" frames={elderFrames} />
+        <FrameSwitcher
+          client:visible={{ rootMargin: '600px' }}
+          label="Elderwood Vale captures"
+          frames={elderFrames}
+        />
         <Inspect by="FrameSwitcher.tsx" assets={elderFrames.map((f) => `elderwood-${f.key}`)} />
       </div>
     </article>

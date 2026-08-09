@@ -39,7 +39,14 @@ const list = newestFirst ? past : [...past].reverse();
     </div>
 
     <div>
-      <StackFilter client:visible tags={filterTags} total={roles.length} />
+      {
+        /* Idle, not visible. This is the first island on the page, so it is the
+          one that pays for the React runtime: 182KB to fetch, parse and
+          evaluate, and on a throttled machine that is a 26ms frame in the
+          middle of a scroll. At idle it lands in the quiet after load, and
+          every island below it then costs only its own two or three KB. */
+      }
+      <StackFilter client:idle tags={filterTags} total={roles.length} />
       <Inspect by="StackFilter.tsx" />
 
       <div class:list={['roles', !newestFirst && 'roles--fwd']}>

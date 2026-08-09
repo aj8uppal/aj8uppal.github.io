@@ -63,7 +63,13 @@ const rzShots = [
         <p>{playground.items[0]?.what}</p>
         <Inspect by="AutoTyper.tsx" />
       </div>
-      <AutoTyper client:visible />
+      {
+        /* A screenful of lead time. Hydrating at the viewport edge means the
+          mount, its chunk and its first images all land in the frame the
+          reader arrives on, which is the frame they can see. 600px is roughly
+          two thirds of a laptop viewport of warning. */
+      }
+      <AutoTyper client:visible={{ rootMargin: '600px' }} />
     </article>
 
     <article class="lab" id={places.deviation.at} data-place data-reveal>
@@ -76,7 +82,7 @@ const rzShots = [
         <Inspect by="DeviationFrame.tsx" assets="legacy-deviation" />
       </div>
       <DeviationFrame
-        client:visible
+        client:visible={{ rootMargin: '600px' }}
         src="/deviation.html?reps=1000&mean=-4&stdev=2&reps2=1000&mean2=6&stdev2=3"
         href="/deviation.html"
         title="deviation.html"
@@ -116,7 +122,7 @@ const rzShots = [
         <Inspect by="GameFrame.tsx" assets="legacy-grinchjump" />
       </div>
       <GameFrame
-        client:visible
+        client:visible={{ rootMargin: '600px' }}
         src="/grinchjump.html"
         title="GrinchJump"
         poster={grinchPoster}
