@@ -94,7 +94,7 @@ export const sections = [
     n: '04',
     id: 'playground',
     name: 'Playground',
-    desc: 'Twenty-five opened, twelve kept',
+    desc: 'Three of the oldest, still running',
     count: '3 playable',
   },
   { n: '05', id: 'skills', name: 'Skills', desc: 'Grouped, unrated', count: '5 groups' },
@@ -697,8 +697,14 @@ export const callTrace: TraceStep[] = [
 /* ── Playground ──────────────────────────────────────────────────────── */
 
 export const playground = {
-  statement: 'I opened all twenty-five and kept the twelve that still run.',
-  prose: ['Three of them run right here. Go ahead.'],
+  /* The archive count used to be the headline: twenty-five opened, twelve
+     kept. It is a true number and it is still on the 404 page, where the
+     audit that produced it lives. It is the wrong headline here, because what
+     this section is actually for is the length of the habit. The first commit
+     in this repository is dated 10 February 2015, so eleven years is a fact
+     git will hand back to anyone who asks it. */
+  statement: 'Eleven years of this, and the oldest ones still run.',
+  prose: ['Here are three of the oldest, running in the page. Go ahead.'],
   items: [
     {
       yr: 'c. 2019',
@@ -728,8 +734,6 @@ export const playground = {
       k: 'three.js r70 · vendored deps',
     },
   ],
-  method:
-    'Three were deleted outright; the rest still live at their old URLs, just not linked here. Dates marked c. are from git, not memory.',
 } as const;
 
 export const earlier = [

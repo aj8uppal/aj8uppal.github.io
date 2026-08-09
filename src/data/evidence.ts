@@ -91,8 +91,6 @@ const MAP: Record<string, Source[]> = {
 
   'umass.reach': [{ cls: 'resume', said: '2026' }],
 
-  'play.method': [{ cls: 'git' }, { cls: 'page' }],
-
   'foot.captures': [{ cls: 'page' }],
 };
 

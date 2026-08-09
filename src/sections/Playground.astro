@@ -1,5 +1,4 @@
 ---
-import Claim from '../components/Claim.astro';
 import Inspect from '../components/Inspect.astro';
 import Section from '../components/Section.astro';
 import type { Tone } from '../components/Section.astro';
@@ -111,11 +110,6 @@ const deviationPoster = await sources('legacy-deviation', POSTER_W, POSTER_S);
         note="Vendored three.js r70, served from its original URL"
       />
     </article>
-  </div>
-
-  <div class="method">
-    <p class="kicker">Method</p>
-    <p><Claim of="play.method">{playground.method}</Claim></p>
   </div>
 
   {
