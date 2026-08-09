@@ -1564,7 +1564,7 @@ await run(
           };
         })(),
         /* The appendix is only worth anything if all four cards answer the
-           same five questions in the same order. One card quietly dropping a
+           same three questions in the same order. One card quietly dropping a
            field it could not fill is exactly the failure it exists to prevent,
            so the schema is compared across the four rather than counted. */
         models: (() => {
@@ -1652,8 +1652,8 @@ await run(
     );
 
     note(
-      a.models?.cards === 4 && a.models.schemas === 1 && a.models.fields === 5,
-      'all four projects answer the same five questions in the same order',
+      a.models?.cards === 4 && a.models.schemas === 1 && a.models.fields === 3,
+      'all four projects answer the same three questions in the same order',
       `${a.models?.cards} cards, ${a.models?.schemas} distinct schemas, ${a.models?.fields} fields`,
     );
     note(
