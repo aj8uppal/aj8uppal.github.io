@@ -3059,6 +3059,16 @@ summary,
   font-size: 0.96rem;
 }
 
+/* Unrendered today, and here anyway: the gated "lately" line ships the moment
+   its flag flips, and a sentence that arrives unstyled is a sentence that
+   arrives twice. */
+.role--now .role__lately {
+  max-width: 74ch;
+  margin-top: 0.7rem;
+  color: var(--on-paper);
+  font-style: italic;
+}
+
 .role--now .role__status {
   max-width: 74ch;
   margin-top: 0.95rem;

@@ -509,15 +509,19 @@ export const roles: Role[] = [
     org: 'Notable Health',
     where: 'San Mateo, CA',
     /* Outcome first. The rest of the log is one line a job; this one earns the
-       room, so it opens with what the thing carries and then how I got it. */
-    body: 'Healthcare AI, 100+ enterprise customers. I own the voice platform end to end: 250,000 patient calls a month at 99% uptime, conversation layer down to carrier-facing telephony.',
+       room, so it opens with what the thing carries and then how I got it.
+
+       Public-safe by construction: everything here is on the résumé or is the
+       generic shape of the work. No customer is named anywhere in this role,
+       and none ever gets to be. */
+    body: 'I own the voice and conversations platform at a healthcare AI company: the AI-driven patient calls and the whole stack under them, from the conversation services and workflow APIs down to carrier-facing telephony. It handles around 250,000 patient calls a month at 99% uptime.',
     ev: 'notable.scale',
     statusEv: 'notable.lead',
     bullets: [
-      'Built the voice platform from zero: agent orchestration, state management, deploy tooling, and the reliability work that took it to 99%.',
-      "Designed and shipped inbound calling over SIP: calls arrive from a health system's own telephony, not the public network. I wrote the spec their telecom teams build against.",
-      'Designed and built caller identity verification for inbound calls, HIPAA-compliant and live across 5+ health systems: the RFC, the system, the runbook and the dashboards.',
-      'Built the FHIR integration layer and the canonical clinical data mappings, then made new integrations configurable at launch. New-customer launches went from weeks to days.',
+      'Own secure patient identity end to end: EHR and FHIR lookup, one-time-code authentication, and the auditable hand-off of a verified caller to a health system’s own call center.',
+      'Design the telephony integrations down to the protocol - SIP, Twilio, media, caller-ID, transfer orchestration - and wrote the specification health systems build against to connect their phone systems to ours.',
+      'Own reliability and incident response for voice: I lead the debriefs and turn failure modes into platform improvements, including fallback routing that keeps a caller connected when an upstream provider goes dark.',
+      'Grew the platform past calls into a broader conversations domain - a phased database split, a BigQuery analytics foundation, multilingual support - and contribute to the healthcare-integration core (HL7, FHIR, insurance data) where it overlaps. Across all of it I’m a technical owner: I write the RFCs and integration guides, review across services, and run go-lives.',
     ],
     /* Opens on where the role stands, not on how long it took to get there.
        The audit's read was that "Fourth year." spends the first beat on tenure
@@ -590,6 +594,24 @@ export const roles: Role[] = [
     stack: 'JavaScript · Node.js',
   },
 ];
+
+/**
+ * What the job is this month, written and deliberately not published.
+ *
+ * Two threads of current work. Both characterise things that have not shipped,
+ * at a company he still works for, so the wording is not his employer's to be
+ * surprised by and not mine to choose. It is built rather than left in a note
+ * so that saying yes is one boolean and no rebuild.
+ *
+ * `approved` flips only on the captain's explicit sign-off on this exact
+ * sentence. Until then the page does not render it, and the text is interim.
+ * Nothing here names a customer, and nothing here ever will.
+ */
+export const notableLately: { approved: boolean; interim: string } = {
+  approved: false,
+  interim:
+    'Lately I’ve been making those conversations testable, so a builder can trust a flow before it ever takes a real call, and teaching our software to use the systems that only have a screen instead of an API, with a person stepping in for the moments that need one.',
+};
 
 /* ── One call, generically ────────────────────────────────────────────────
    An illustration of the class of system, not a recording of one. There is no

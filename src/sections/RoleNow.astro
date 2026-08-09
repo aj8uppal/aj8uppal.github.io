@@ -11,7 +11,7 @@
  * twice within a screen of itself. One telling, in the record.
  */
 import Claim from '../components/Claim.astro';
-import { callTrace, places } from '../data/content';
+import { callTrace, notableLately, places } from '../data/content';
 import { current, stackKey, stackLine } from '../lib/roles';
 ---
 
@@ -45,6 +45,9 @@ import { current, stackKey, stackLine } from '../lib/roles';
             ))}
           </ul>
         )}
+        {/* Gated off. See the note on notableLately: unreleased work, and the
+            captain has not signed the wording. */}
+        {notableLately.approved && <p class="role__lately">{notableLately.interim}</p>}
         {current.status && (
           <p class="role__status">
             {current.statusEv ? (
