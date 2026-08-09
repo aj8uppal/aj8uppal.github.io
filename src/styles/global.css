@@ -821,8 +821,8 @@ summary,
   justify-content: flex-end;
 }
 
-/* The quiet one. It is a text link on purpose: two buttons and a link is a
-   hierarchy a reader can see without being told, and three buttons is not. */
+/* The quiet one. It is a text link on purpose: one button and a link is a
+   hierarchy a reader can see without being told, and two buttons is not. */
 .hero__mail {
   display: inline-flex;
   align-items: center;
@@ -4991,11 +4991,11 @@ span.buoy__p {
     font-size: 1.16rem;
   }
 
-  /* Both buttons to equal halves rather than to their label lengths, so the
-     primary is not the smaller of the two just because its word is shorter. */
+  /* The one action takes the whole measure. Sized to its label it would sit
+     as a short tab in a wide empty row and stop reading as the way in. */
   .hero__btns {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     width: 100%;
   }
 

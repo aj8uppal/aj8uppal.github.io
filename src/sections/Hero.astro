@@ -1,5 +1,5 @@
 ---
-import { contact, cover, saltline } from '../data/content';
+import { contact, cover } from '../data/content';
 
 const heroLabel =
   'Soft patches of golden light drifting behind the name, as if through a canopy. Move the pointer or press the arrow keys and the light gathers where you point.';
@@ -25,17 +25,14 @@ const heroLabel =
       </div>
 
       {
-        /* Three actions at one weight is three actions with no answer to
-          "where do I start". Now: the whole body of work, the one project
-          that best represents it, and a way to write. Ember Wilds and the
-          archive keep their own play links in their own sections. */
+        /* One way in, and a way to write. A play link at the very top sends
+          the reader off the page before it has said anything; saltline is two
+          screens down with the work that argues for it, and it keeps its own
+          link there, as Ember Wilds and the archive keep theirs. */
       }
       <div class="hero__actions">
         <div class="hero__btns">
           <a class="btn btn--sand" href="#building">Explore selected work</a>
-          <a class="btn" href={saltline.href} target="_blank" rel="noopener">
-            Play saltline<span class="arrow" aria-hidden="true">&#8599;</span>
-          </a>
         </div>
         <a class="hero__mail" href={`mailto:${contact.email}`}>Email</a>
       </div>

@@ -832,13 +832,13 @@ await run(
     note(m.labs === 1, '390 playground is one column', `${m.labs}`);
     note(m.skills === 1, '390 a skill group stacks its label over its chips', `${m.skills}`);
     note(m.ticks === 3, '390 the clock ticks are three across', `${m.ticks}`);
-    /* Two buttons to equal halves, and the quiet link sized to its own word.
+    /* One button across the measure, and the quiet link sized to its own word.
        A five-letter mailto stretched across the row is a tap target you hit
        by accident from an inch away. */
     note(
-      m.btns.length === 2 && m.btns[0] === m.btns[1],
-      '390 the two hero buttons share the row evenly',
-      m.btns.join(' / '),
+      m.btns.length === 1 && m.btns[0] >= m.mail.rowW - 1,
+      '390 the one hero button takes the whole row',
+      `${m.btns.join(' / ')} of ${m.mail.rowW}`,
     );
     note(
       m.mail.href.startsWith('mailto:') && m.mail.w < m.mail.rowW * 0.4,
