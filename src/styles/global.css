@@ -4963,6 +4963,39 @@ span.buoy__p {
   }
 }
 
+/* Nothing sits a rail beside its content under 700. The phone band already
+   collapsed at 620, and 620 was enough right up until a viewport landed
+   between the two - a tablet in split view, a foldable half open - and got a
+   140px rail against a 454px column with no breakpoint to catch it. The rail
+   is a desktop affordance; the moment the content column is the narrower half
+   of a small screen it should be a header instead. Cheaper to move the
+   boundary than to keep guessing which devices live under it. */
+@media (max-width: 700px) {
+  .head,
+  .about,
+  .card__hero,
+  .card__cols,
+  .card--full .card__cols,
+  .role,
+  .skg {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The rail was carrying the gap between the two columns; stacked, that same
+     gap is dead space between a label and the thing it labels. */
+  .head {
+    gap: 0.8rem;
+  }
+
+  .skg {
+    gap: 0.5rem;
+  }
+
+  .role {
+    gap: 0.4rem;
+  }
+}
+
 @media (max-width: 620px) {
   :root {
     --pad: 1rem;
