@@ -2,9 +2,9 @@
  * The maths the wind tunnel runs on, kept apart from the numbers it runs on.
  *
  * Nothing in here knows anything about saltline. It takes a polar table and an
- * angle and answers what the boat is doing, which means the table can be
- * swapped for the captain's real export without a line of this changing, and
- * the same functions serve the server render and the browser.
+ * angle and answers what the boat is doing, which is why swapping the table for
+ * saltline's real model cost this file one field, and why the same functions
+ * serve the server render and the browser.
  */
 
 export interface PolarRow {
@@ -12,8 +12,6 @@ export interface PolarRow {
   rel: number;
   /** Share of the hull's best thrust, 0 to 1. */
   thrust: number;
-  /** Whether this row was read off a capture or filled in to shape the curve. */
-  from: 'capture' | 'sample';
 }
 
 export interface Polar {

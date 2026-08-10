@@ -2792,9 +2792,9 @@ summary,
   color: var(--on-ink-3);
 }
 
-/* The six rows that are real, marked in the accent the rest of the page uses
-   for real things. The word in the last column says it too, for anyone who
-   cannot use the colour. */
+/* The six rows that were read off a running game, marked in the accent the
+   rest of the page uses for observed things. The paragraph above the table
+   says the same in words, for anyone who cannot use the colour. */
 .wt__table tr[data-from='capture'] td {
   color: var(--on-ink-2);
 }
@@ -2810,6 +2810,18 @@ summary,
   color: var(--on-ink-3);
   font-size: 0.78rem;
   line-height: 1.6;
+}
+
+/* Two columns, held together. Left to fill the card the angle and its thrust
+   end up half a figure apart and stop reading as a pair. */
+.wt__table .wt__curve {
+  max-width: 24rem;
+}
+
+/* The curve is quoted in the same face it is written in. */
+.wt__table code {
+  color: var(--on-ink-2);
+  font: 400 0.95em/1 var(--mono);
 }
 
 .wt__cap {

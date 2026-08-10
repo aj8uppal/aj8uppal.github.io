@@ -1,68 +1,145 @@
 /**
- * The sample polar the wind tunnel runs on, and where each number came from.
+ * saltline's own sailing model, and the six live readings that check it.
  *
- * The captain has a real polar export coming out of saltline. Until it lands
- * this table stands in, and it is built so a reader can see exactly how much
- * of it is real: six of the twelve rows are read straight off the HUD in the
- * six arc captures further up the same card, and the wind tunnel prints the
- * whole table with each row's provenance beside it.
+ * This is not a curve drawn to look like a polar. `pointOfSail` below is the
+ * function the game itself runs, ported out of saltline's shared package, and
+ * the table the wind tunnel reads is that function evaluated every two degrees.
+ * The maths in lib/polar.ts knows how to answer questions about a table and
+ * nothing about where tables come from, so the sampling happens here: one file
+ * knows this curve is saltline's, and it is this one.
  *
- * The six captures are parsed out of `saltlineArc` rather than copied here, so
- * a correction to a transcription on the page corrects the curve too and the
- * two can never drift apart.
+ * The check is the part worth having. The six arc captures further up the same
+ * card were read off the running game's HUD months before this port existed,
+ * and every one of them lands within six tenths of a point of the table the
+ * figure draws. That is a model and a set of screenshots agreeing with each
+ * other without either being bent to fit. They are parsed out of `saltlineArc`
+ * rather than copied here, so a correction to a transcription on the page
+ * corrects the check with it.
  *
- * What is sample and nothing else: the six rows below marked so, the no-go
- * angle, and the sheeting rule that swings the sail in the drawing. What is
- * derived and not invented: the hull speed, which is the mean of speed over
- * thrust across the six captures and lands inside a knot of every one of them.
- *
- * The swap, when the export arrives: replace `rows` with the exported table,
- * set `noGo` and `hull` from it, and flip `real` to true. Nothing else in the
- * figure knows where the numbers come from.
+ * Hull speed is still the captures' own, and has to be. The model answers in
+ * shares of full thrust, not in knots, so the only honest way to put a speed on
+ * the dial is the mean of speed over thrust across the six, which lands inside
+ * a knot of every one of them.
  */
 import type { Polar, PolarRow } from '../lib/polar';
+import { thrustAt } from '../lib/polar';
 import { saltlineArc } from './content';
+
+const DEG = Math.PI / 180;
+
+/*
+ * Ported from saltline, packages/shared/src/sailing.ts, and deliberately not
+ * tidied on the way in. A port that has been improved is a port you can no
+ * longer diff against the original, and being able to diff it is the whole
+ * point of having it here.
+ */
+const clamp01 = (v: number): number => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+const smoothstep = (a: number, b: number, x: number): number => {
+  const t = clamp01((x - a) / (b - a));
+  return t * t * (3 - 2 * t);
+};
+
+/** Furled, reefed, full, in newtons. The curve is a share of the third. */
+const SAIL_THRUST = [0, 16380, 35700] as const;
+
+/** Where the sails stop working. saltline's number, not an estimate of it. */
+const NOGO = 30 * DEG;
+
+/** A sloop points as well as anything afloat, so it takes no penalty here. */
+const SLOOP_POINTING = 1;
+
+/**
+ * Share of full-sail thrust at theta radians off the wind-from direction. Zero
+ * inside the no-go, peaks a little past a beam reach, about 0.62 dead downwind.
+ */
+function pointOfSail(theta: number, pointingAbility: number = SLOOP_POINTING): number {
+  if (theta <= NOGO) return 0;
+  const ramp = smoothstep(NOGO, NOGO + 22 * DEG, theta); // out of the no-go
+  const x = (theta - NOGO) / (Math.PI - NOGO);
+  const bell = 0.62 + 0.38 * Math.sin(Math.PI * Math.min(x * 1.05, 1));
+  const closeHauled = 1 - smoothstep(NOGO, NOGO + 55 * DEG, theta); // 1 at the edge, 0 by 55 off
+  const penalty = 1 - (1 - pointingAbility) * closeHauled;
+  return ramp * clamp01(bell) * penalty;
+}
+
+/** What a thrust of 1 on the curve is worth, in newtons, at full sail. */
+export const fullSailN = SAIL_THRUST[2];
+
+/** The no-go half-angle in degrees, which is the unit the figure works in. */
+const NO_GO_DEG = 30;
+
+/**
+ * Degrees between rows. Two, because the wind tunnel joins rows with straight
+ * lines and two keeps that shortcut smaller than the captures' own agreement
+ * with the curve; a table that was rougher than its own evidence would be
+ * making the evidence look better than it is.
+ */
+export const polarStep = 2;
+
+/* Four decimals is a hundredth of a point, well under anything the figure
+   claims, and it keeps the table that travels to the client as an attribute
+   from carrying seventeen significant digits of nothing. */
+const rows: PolarRow[] = [];
+for (let rel = NO_GO_DEG; rel <= 180; rel += polarStep) {
+  rows.push({ rel, thrust: +pointOfSail(rel * DEG).toFixed(4) });
+}
 
 /** The HUD strings carry their units. Take the number and leave the unit. */
 const num = (s: string): number => Number.parseFloat(s.replace(/[^\d.-]/g, ''));
 
-/* Thrust is symmetric about the wind, so which side the capture was sailing on
-   does not matter to the curve. Only the angle off the wind does. */
-const captured: PolarRow[] = saltlineArc.map((f) => ({
-  rel: Math.abs(num(f.rel)),
-  thrust: num(f.thrust) / 100,
-  from: 'capture',
-}));
-
-/* The shape between and beyond them. A sloop's thrust climbs off close hauled,
-   holds through the reaches and falls away running, and these are placed to
-   join the captured points into that curve without contradicting any of them. */
-const filled: PolarRow[] = (
-  [
-    [45, 0.12],
-    [50, 0.46],
-    [56, 0.74],
-    [100, 0.98],
-    [132, 0.92],
-    [162, 0.74],
-    [180, 0.66],
-  ] as Array<[number, number]>
-).map(([rel, thrust]) => ({ rel, thrust, from: 'sample' }));
-
 export const polar: Polar & { real: boolean } = {
-  real: false,
-  /* Sample. "Point too close to the wind and you stop" is on the record; the
-     angle it stops at is not, and it is the first thing the real export will
-     settle. */
-  noGo: 45,
+  real: true,
+  noGo: NO_GO_DEG,
   hull:
     saltlineArc.reduce((sum, f) => sum + num(f.speed) / (num(f.thrust) / 100), 0) /
     saltlineArc.length,
-  rows: [...captured, ...filled].sort((a, b) => a.rel - b.rel),
+  rows,
 };
 
-export const polarNote =
-  'The curve is a sample. Six of its points are read off the HUD in the arc captures above; the rest shape the line between them, and the angle the sails stop working at is a placeholder. The real polar export from saltline drops into this table and nothing else moves.';
+/**
+ * How far the straight lines between rows can stray from the function they were
+ * sampled from, in points of thrust. Swept at a twentieth of a degree rather
+ * than asserted, so the number the page prints cannot outlive the step it
+ * describes.
+ */
+export const polarLerpError = (() => {
+  let worst = 0;
+  for (let rel = NO_GO_DEG; rel <= 180; rel += 0.05) {
+    worst = Math.max(worst, Math.abs(thrustAt(polar, rel) - pointOfSail(rel * DEG)));
+  }
+  return worst * 100;
+})();
+
+/** One HUD reading, and what the shipped table says at the same angle. */
+export interface PolarCheck {
+  /** Clock time in the capture, which is how the arc above labels its frames. */
+  at: string;
+  /** Degrees off the wind. Thrust is symmetric about it, so the sign goes. */
+  rel: number;
+  /** What the game's HUD read, as a share of full thrust. */
+  hud: number;
+  /** What this table answers at that angle, interpolation and all. */
+  table: number;
+  /** Boat speed the same HUD read at the same moment, in knots. */
+  speed: number;
+}
+
+export const checks: PolarCheck[] = saltlineArc
+  .map((f) => {
+    const rel = Math.abs(num(f.rel));
+    return {
+      at: f.time,
+      rel,
+      hud: num(f.thrust) / 100,
+      table: thrustAt(polar, rel),
+      speed: num(f.speed),
+    };
+  })
+  .sort((a, b) => a.rel - b.rel);
+
+/** The worst any of the six misses the table by, in points of thrust. */
+export const checkWorst = Math.max(...checks.map((c) => Math.abs(c.table - c.hud))) * 100;
 
 export const polarSaid =
-  'Drag the boat, or nudge it with the arrow keys. Thrust comes off the polar, boat speed comes off thrust, and VMG is the part of that speed going the way you actually want to go, which is why the fastest heading is almost never the useful one.';
+  'The curve is saltline’s own point-of-sail function rather than a drawing of one, so the boat here behaves the way the boat there does. Drag it, or nudge it with the arrow keys. Thrust comes off the polar, boat speed comes off thrust, and VMG is the part of that speed going the way you actually want to go, which is why the fastest heading is almost never the useful one.';

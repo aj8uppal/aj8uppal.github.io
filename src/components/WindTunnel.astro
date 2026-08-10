@@ -9,14 +9,36 @@
  * changing as you swing it, including the wedge at the top where the sails
  * stop working and you stop with them.
  *
+ * The curve is saltline's own point-of-sail function, sampled; the six captures
+ * above are the check that it is. Both are built in data/polar.ts.
+ *
  * The server renders the whole thing at the opening heading, so the figure is
  * correct and readable before any script runs and there is nothing to flash.
  * The script re-runs the same functions on the same table; the table travels
  * to it as JSON on the element rather than as an import, which keeps saltline's
- * prose out of a bundle that only needs twelve pairs of numbers.
+ * prose and the model that built the table out of a bundle that only needs the
+ * pairs of numbers it came out as.
  */
-import { polar, polarNote, polarSaid } from '../data/polar';
+import {
+  checks,
+  checkWorst,
+  fullSailN,
+  polar,
+  polarLerpError,
+  polarSaid,
+  polarStep,
+} from '../data/polar';
 import { bestVmg, kn, said, sail, saidVmg, sailPath } from '../lib/polar';
+
+/** Points of thrust, the unit both agreements below are quoted in. */
+const pt = (n: number): string => n.toFixed(1);
+
+/* Signed, and built here rather than in the template, because Astro keeps the
+   line break between two expressions and would put a space after the sign. */
+const outBy = (c: (typeof checks)[number]): string => {
+  const d = (c.table - c.hud) * 100;
+  return `${d < 0 ? '-' : '+'}${pt(Math.abs(d))}`;
+};
 
 /* Beam reach: the fastest thing the boat does, and far enough from the no-go
    wedge that the first drag in either direction shows something changing. */
@@ -52,15 +74,6 @@ const rows: Array<[string, string]> = [
   data-polar={JSON.stringify({ noGo: polar.noGo, hull: polar.hull, rows: polar.rows })}
   data-best={best.toFixed(3)}
 >
-  {
-    !polar.real && (
-      <p class="pending">
-        <b>Sample polar.</b>
-        {polarNote}
-      </p>
-    )
-  }
-
   <div class="wt__body">
     <div class="wt__dial" data-wt-dial>
       <svg
@@ -157,32 +170,70 @@ const rows: Array<[string, string]> = [
   </label>
 
   <details class="wt__table">
-    <summary>The sample polar, all {polar.rows.length} rows</summary>
+    <summary
+      >The real polar, all {polar.rows.length} rows, and the six captures that check it</summary
+    >
+
+    <p>
+      The six frames above were read off the game's own HUD long before this curve was on the page.
+      Each one is a heading the game sailed and a thrust it reported at that heading, so laying them
+      beside what this table answers at the same angle is the only check that matters. The worst of
+      the six is {pt(checkWorst)} of a point out.
+    </p>
     <table>
       <thead>
         <tr>
+          <th scope="col">Frame</th>
           <th scope="col">Off the wind</th>
-          <th scope="col">Thrust</th>
-          <th scope="col">Where it came from</th>
+          <th scope="col">HUD</th>
+          <th scope="col">Here</th>
+          <th scope="col">Out by</th>
         </tr>
       </thead>
       <tbody>
         {
-          polar.rows.map((r) => (
-            <tr data-from={r.from}>
-              <td>{r.rel}&deg;</td>
-              <td>{Math.round(r.thrust * 100)}%</td>
-              <td>{r.from === 'capture' ? 'Read off a capture above' : 'Sample'}</td>
+          checks.map((c) => (
+            <tr data-from="capture">
+              <td>{c.at}</td>
+              <td>{c.rel}&deg;</td>
+              <td>{Math.round(c.hud * 100)}%</td>
+              <td>{pt(c.table * 100)}%</td>
+              <td>{outBy(c)}</td>
             </tr>
           ))
         }
       </tbody>
     </table>
+
     <p>
-      Boat speed is thrust times {kn(polar.hull)} knots, which is the mean of speed over thrust across
-      those six captures and within a knot of every one of them. Below {polar.noGo}&deg; the sails
-      luff and thrust is nothing; that angle is the sample's, not the game's.
+      The curve itself is saltline's <code>pointOfSail</code> function, ported unchanged and evaluated
+      every {polarStep} degrees. The figure joins the rows with straight lines, which is a shortcut, and
+      it is worth {pt(polarLerpError)} of a point at its worst: smaller than the captures' own agreement
+      above, so the shortcut is not what is holding the check together. Thrust of 1 is full sail, which
+      is {fullSailN.toLocaleString('en-US')} newtons in the game. Boat speed is thrust times {
+        kn(polar.hull)
+      } knots, the mean of speed over thrust across those same six captures and within a knot of every
+      one of them. Below {polar.noGo}&deg; the sails luff and thrust is nothing, and that angle is
+      the game's.
     </p>
+    <table class="wt__curve">
+      <thead>
+        <tr>
+          <th scope="col">Off the wind</th>
+          <th scope="col">Thrust</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          polar.rows.map((r) => (
+            <tr>
+              <td>{r.rel}&deg;</td>
+              <td>{pt(r.thrust * 100)}%</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
   </details>
 
   <figcaption class="wt__cap">{polarSaid}</figcaption>

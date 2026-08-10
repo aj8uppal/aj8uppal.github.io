@@ -7,8 +7,8 @@
  *
  * The table comes off the element as JSON rather than as an import, so the
  * numbers can be swapped at the data layer and this file never learns where
- * they came from. It also keeps saltline's prose out of a bundle that needs
- * twelve pairs of numbers.
+ * they came from. It also keeps saltline's prose, and the function the table
+ * was sampled out of, out of a bundle that only needs the samples.
  *
  * Nothing here animates. The boat is where the reader put it, which is the
  * reduced-motion still and the normal behaviour at the same time: the only
