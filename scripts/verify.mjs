@@ -1220,6 +1220,68 @@ await run(
   },
 );
 
+/* ── the polar, against the six frames that check it ─────────────────── */
+/* The wind tunnel used to publish this agreement in a table under the figure.
+   The table has gone; the agreement has not. The six arc frames were read off
+   the running game's HUD months before the curve was ported, so the check is
+   that the table the page ships still answers what the game answered.
+
+   Both halves come off the page rather than out of the source - the HUD
+   numbers by clicking through the frames, the curve out of the attribute the
+   figure hands its own script - so this checks what a reader can see. */
+await run(
+  'the polar and its captures',
+  { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, reducedMotion: 'reduce' },
+  async (page) => {
+    const table = await page.$eval('[data-wt]', (n) => JSON.parse(n.dataset.polar));
+    note(
+      table.rows?.length > 30 && table.noGo > 0 && table.hull > 0,
+      'the wind tunnel ships the curve it draws',
+      `${table.rows?.length} rows, no-go ${table.noGo}, hull ${table.hull?.toFixed(2)} kn`,
+    );
+
+    /* The figure's own reading of that table: straight lines between rows,
+       nothing inside the no-go. Written out again here rather than imported,
+       so a change to the shipped maths has to survive a second opinion. */
+    const thrustAt = (rel) => {
+      if (rel <= table.noGo) return 0;
+      for (let i = 1; i < table.rows.length; i++) {
+        const [a, b] = [table.rows[i - 1], table.rows[i]];
+        if (b.rel >= rel)
+          return a.thrust + ((rel - a.rel) / (b.rel - a.rel)) * (b.thrust - a.thrust);
+      }
+      return table.rows.at(-1).thrust;
+    };
+
+    /* The HUD strings carry their units, and the sign on the angle: thrust is
+       symmetric about the wind, so which side the boat is on does not matter. */
+    const num = (s) => Number.parseFloat(String(s ?? '').replace(/[^\d.-]/g, ''));
+    const got = [];
+    for (const tick of await page.$$('.arc__tick')) {
+      await tick.scrollIntoViewIfNeeded();
+      await tick.click();
+      await page.waitForTimeout(150);
+      const hud = await page.$eval('.arc .fs__read', (dl) =>
+        Object.fromEntries(
+          [...dl.querySelectorAll('div')].map((d) => [
+            d.querySelector('dt').textContent.trim(),
+            d.querySelector('dd').textContent.trim(),
+          ]),
+        ),
+      );
+      const rel = Math.abs(num(hud['Rel. wind']));
+      got.push({ at: (await tick.textContent()).trim(), rel, said: num(hud.Thrust) / 100 });
+    }
+
+    const out = got.map((c) => ({ ...c, by: Math.abs(thrustAt(c.rel) - c.said) * 100 }));
+    note(
+      out.length === 6 && out.every((c) => c.by <= 0.6),
+      'and answers all six captures within six tenths of a point of the HUD',
+      out.map((c) => `${c.at} ${c.rel}° ${c.by.toFixed(2)}`).join(' | '),
+    );
+  },
+);
+
 /* ── the page with the scripts switched off ──────────────────────────── */
 /* Not a courtesy to a reader who disabled JavaScript. It is the state the page
    is in for the first second on a slow connection, and for the whole visit if
