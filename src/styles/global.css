@@ -5246,9 +5246,20 @@ span.buoy__p {
     order: 1;
   }
 
+  /* Label above value, not beside it. A label column is a bargain that only
+     pays while the value column is wide enough to be a column: at 390 a 5.6rem
+     label leaves 217px, and a value like "Live, sail together, one world
+     staying consistent" spends three lines in it against two at full width. So
+     the label column costs height rather than saving it, and it is the reason
+     these read as cramped. Stacked they cost nothing - every one of these dt
+     is already uppercase mono micro-type, which is a label whether or not it
+     has a column to sit in. */
   .specs > div,
-  .fs__read > div {
-    grid-template-columns: 5.6rem minmax(0, 1fr);
+  .fs__read > div,
+  .wt__read > div,
+  .skim > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.1rem;
   }
 
   .role {
@@ -5388,20 +5399,6 @@ span.buoy__p {
 
   .card[data-fold] .deep__go {
     display: inline-flex;
-  }
-}
-
-/* Phones only, and one rule. Everywhere wider, the skim's label column leaves
-   the sentence beside it four hundred pixels or more and the alignment down
-   the column is worth having. On a 390 handset it leaves two hundred and
-   forty, which is four words a line, so the label steps above the sentence
-   and both take the full width - the same shape the about-page facts use for
-   the same reason. Costs about 130px of page and buys back a readable
-   measure, which on the one device that is all measure is the better trade. */
-@media (max-width: 470px) {
-  .skim > div {
-    grid-template-columns: 1fr;
-    gap: 0.1rem;
   }
 }
 
