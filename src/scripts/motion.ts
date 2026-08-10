@@ -1,4 +1,5 @@
 import { installAssembly } from './assembly';
+import { installLedger } from './ledger';
 import { installSwipe } from './swipe';
 import { installTunnel } from './tunnel';
 import { springKeyframes } from './spring';
@@ -505,3 +506,4 @@ installHeroCanvas();
 installAssembly();
 installTunnel();
 installSwipe();
+installLedger();

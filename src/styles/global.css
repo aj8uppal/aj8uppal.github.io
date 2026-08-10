@@ -5097,6 +5097,67 @@ span.buoy__p {
     border-bottom: 0;
   }
 
+  /* The finished jobs, folded into a ledger: dates, employer, job title, and
+     the entry itself one tap away. The disclosure is assembled by script - see
+     ledger.ts for why it is not in the markup - so `data-fold` is the row
+     saying the shape below actually got built. Without it the log stays whole
+     and these rules describe nothing. */
+  .tl[data-fold] .role {
+    padding-block: 0;
+  }
+
+  .fold__sum {
+    position: relative;
+    padding: 0.72rem 1.5rem 0.72rem 0;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .fold__sum::-webkit-details-marker {
+    display: none;
+  }
+
+  /* The same two strokes the spec lists fold behind, so a fold reads as a fold
+     wherever the page puts one. */
+  .fold__sum::after {
+    content: '';
+    position: absolute;
+    top: 1.15rem;
+    right: 0.3rem;
+    width: 0.42rem;
+    height: 0.42rem;
+    border-right: 2px solid var(--on-paper-3);
+    border-bottom: 2px solid var(--on-paper-3);
+    transform: rotate(45deg);
+    transition: transform var(--dur-1) var(--ease);
+  }
+
+  .fold[open] > .fold__sum::after {
+    margin-top: 0.16rem;
+    transform: rotate(-135deg);
+  }
+
+  /* The date leads the line rather than sitting in a column that no longer
+     exists, so it loses the offsets that were holding it level with one. */
+  .fold__sum .role__when {
+    margin: 0;
+    padding: 0;
+  }
+
+  .fold__hd {
+    margin-top: 0.16rem;
+  }
+
+  /* Shut, the line is the job title and stops. Opening it lets the stack back
+     onto the end of its own sentence. */
+  .fold:not([open]) .role__tail {
+    display: none;
+  }
+
+  .fold > div {
+    padding-bottom: 0.85rem;
+  }
+
   .edu {
     padding: 1.05rem;
   }
