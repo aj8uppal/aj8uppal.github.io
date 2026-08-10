@@ -11,7 +11,7 @@
  * twice within a screen of itself. One telling, in the record.
  */
 import Claim from '../components/Claim.astro';
-import { callTrace, notableBrowser, notableLately, places } from '../data/content';
+import { notableBrowser, notableLately, places } from '../data/content';
 import { current, stackKey, stackLine } from '../lib/roles';
 ---
 
@@ -58,29 +58,6 @@ import { current, stackKey, stackLine } from '../lib/roles';
             )}
           </p>
         )}
-
-        {/* Behind a press, like the projects' technical notes and for
-            the same reason: the four points above are what a reader
-            skimming this role needs, and ten more rows in front of
-            them would bury the thing they came for. */}
-        <details class="notes notes--paper trace">
-          <summary>What one call looks like</summary>
-          <p class="trace__frame">
-            Not a recording. It is the shape of the thing: generic states, nobody's data, and the
-            failure path left in, because that part is the job.
-          </p>
-          <ol class="trace__rows">
-            {callTrace.map((s, i) => (
-              <li class="trace__row">
-                <span class="trace__n" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <span class:list={['trace__st', s.recovery && 'trace__st--rec']}>{s.state}</span>
-                <span>{s.text}</span>
-              </li>
-            ))}
-          </ol>
-        </details>
       </div>
     </article>
   )
