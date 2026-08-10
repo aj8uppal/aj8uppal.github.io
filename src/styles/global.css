@@ -3994,11 +3994,23 @@ button.toolbar__link {
   }
 }
 
-/* Two dashboards side by side stop being readable long before the layout
-   stops fitting them. Below 620 they go one above the other, full width. */
+/* This used to stack the pair below 620, on the reasoning that two dashboards
+   side by side stop being readable long before the layout stops fitting them.
+   The swipe row answers that differently. Stacked inside a 78vw card the pair
+   is twice the height of the lead beside it, and a row is only as short as its
+   tallest card: 243px of empty ground under the dashboard, which is the first
+   thing a thumb meets. Side by side the three cards are 253, 155 and 190, and
+   the argument the pair exists to make - same screen, one toggle apart - is
+   the one thing a shot this small still carries, better adjacent than
+   separated by a scroll. */
 @media (width <= 620px) {
-  .rz__two {
-    grid-template-columns: minmax(0, 1fr);
+  /* Sized for a 605px frame, and a third of the width of a 143px one. The
+     type is already at the floor, so the room comes out of the padding. */
+  .rz__theme {
+    top: 0.35rem;
+    left: 0.35rem;
+    padding: 0.15rem 0.32rem;
+    letter-spacing: 0.03em;
   }
 }
 
