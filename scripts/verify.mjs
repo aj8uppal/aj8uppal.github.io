@@ -1270,20 +1270,13 @@ await run(
     );
     note(hollow.length === 0, 'no media slot is an empty hole', hollow.join(' | '));
 
-    /* The playable receipts. They are the one thing on the page that claims to
-       be evidence rather than description, so what is rendered is compared to
-       the record byte for byte rather than eyeballed - a receipt that has
-       drifted from the run that earned it is worse than no receipt. */
+    /* The playable receipts. The dated line under the badges is gone from the
+       card, but the record behind it is not: the annotations still read it,
+       and the date check further down will not let anything print a date that
+       is not in it. So the record itself is still held to its shape here. */
     const record = JSON.parse(
       await readFile(new URL('../src/data/receipts.json', import.meta.url)),
     );
-    const day = (iso) =>
-      new Intl.DateTimeFormat('en-GB', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        timeZone: 'UTC',
-      }).format(new Date(iso));
 
     const shapeBad = record.runs.filter(
       (r) =>
@@ -1297,44 +1290,11 @@ await run(
       shapeBad.map((r) => `${r.key} ${r.outcome}`).join(' | '),
     );
 
-    const shown = await page.$$eval('.receipt', (ns) =>
-      ns.map((n) => ({
-        card: n.closest('.card')?.id ?? '?',
-        outcome: n.dataset.receipt,
-        text: n.textContent.replace(/\s+/g, ' ').trim(),
-        at: n.querySelector('time')?.getAttribute('datetime') ?? null,
-      })),
-    );
-    const speaking = record.runs.filter((r) => r.outcome !== 'blocked');
-    note(
-      shown.length === speaking.length,
-      'a receipt on the page for every run that reached a verdict',
-      `${shown.length} shown, ${speaking.length} spoke`,
-    );
-
-    const wrong = shown.filter((s) => {
-      const r = record.runs.find((x) => s.card.endsWith(x.key));
-      if (!r) return true;
-      const want =
-        r.outcome === 'pass'
-          ? `Last proved playable ${day(r.at)}`
-          : `Did not come up on ${day(r.at)}`;
-      return s.outcome !== r.outcome || s.at !== r.at || s.text !== want;
-    });
-    note(
-      wrong.length === 0,
-      'and each one says exactly what its run recorded',
-      wrong.map((w) => `${w.card}: ${w.text}`).join(' | '),
-    );
-
-    /* A receipt is only meaningful next to a thing you can go and open. A
-       greybox with a date on it would be the green dot all over again. */
-    const unearned = shown.filter((s) => !['p-saltline', 'p-ember'].includes(s.card));
-    note(
-      unearned.length === 0,
-      'and only the two public games carry one',
-      unearned.map((u) => u.card).join(' | '),
-    );
+    /* And it stays behind the annotations. A dated observation on the face of
+       a card reads as a badge however it is set, which is the thing the cards
+       are meant not to do. */
+    const onCard = await page.$$eval('.receipt', (ns) => ns.length);
+    note(onCard === 0, 'and it stays out of the cards', `${onCard} on the face`);
 
     /* Show receipts, from the other end. Without script there is no switch to
        press, so the page must not offer one - and the annotations must still

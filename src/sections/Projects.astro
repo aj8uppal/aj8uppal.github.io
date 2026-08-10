@@ -4,7 +4,6 @@ import Claim from '../components/Claim.astro';
 import Assembly from '../components/Assembly.astro';
 import Inspect from '../components/Inspect.astro';
 import ModelCards from '../components/ModelCards.astro';
-import Receipt from '../components/Receipt.astro';
 import Section from '../components/Section.astro';
 import type { Tone } from '../components/Section.astro';
 import Skim from '../components/Skim.astro';
@@ -142,8 +141,6 @@ const elderFrames: SwitchFrame[] = await Promise.all(
             <span class="tag">Multiplayer</span>
             <span class="tag">Six frames &middot; one seed</span>
           </div>
-          <Receipt of="saltline" />
-
           <h3 class="display">
             <a href={saltline.href} target="_blank" rel="noopener">{saltline.name}</a>
           </h3>
@@ -242,8 +239,6 @@ const elderFrames: SwitchFrame[] = await Promise.all(
             <span class="tag">02 &middot; In production</span>
             <span class="tag">64-player realm</span>
           </div>
-          <Receipt of="ember" />
-
           <h3 class="display">
             <a href={ember.href} target="_blank" rel="noopener">{ember.name}</a>
           </h3>

@@ -1441,33 +1441,6 @@ summary,
   background: var(--line-light-2);
 }
 
-/* When a machine last opened the game and found it working. It sits under the
-   badges rather than in them, and it is the one micro line on the card that is
-   not uppercase, because the row above it is labels and this is a sentence
-   about an observation. Same rule as A5 read the other way: if it does not
-   behave like a label it must not look like one.
-
-   The date carries the weight, since the date is the part of the sentence a
-   reader is scanning for. */
-.receipt {
-  margin: 0.45rem 0 0;
-  color: var(--muted);
-  font: 500 var(--fs-micro)/1.5 var(--mono);
-  letter-spacing: 0.02em;
-}
-
-.receipt time {
-  color: var(--on-ink-2);
-  font-weight: 700;
-}
-
-.sec--sand .receipt time,
-.sec--paper .receipt time,
-.sec--paper-2 .receipt time,
-.sec--camel .receipt time {
-  color: var(--on-paper-2);
-}
-
 /* Project facts as a mono key/value list. A value you can check, next to the
    name of the thing checked - not a row of ticks in a feature grid. */
 .specs {
