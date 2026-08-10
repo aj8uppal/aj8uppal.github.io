@@ -4931,6 +4931,13 @@ span.buoy__p {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* 2.1rem is the gap under a one-line key on a wide card. Under a two-row key
+     on a phone it is a hole, and the control it separates is the one thing in
+     the figure a thumb is meant to find. */
+  .asm__scrub {
+    margin-top: 1.1rem;
+  }
+
   /* /socket-canvas/public/index.html is thirty-two characters, and next to it
      a name gets three. The address takes the row and everything else stacks
      under it. */
