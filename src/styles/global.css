@@ -3397,6 +3397,35 @@ summary,
   margin-top: 0;
 }
 
+/* The press that unfolds the controls. Same rule as the deviation card's: in
+   the document at every width, drawn only where the controls start folded, and
+   gone once they are open - wide, it would be a button for something already on
+   screen. The base has to stand above the query, or `display: none` wins the
+   cascade on source order and the button is never drawn at all. */
+.typer__go {
+  display: none;
+  align-self: start;
+  align-items: center;
+  margin-top: 0.9rem;
+}
+
+/* A field, a slider and three presets are 191px, which on a 390 screen is the
+   card's whole second half spent on controls nobody has reached for. The line
+   the card exists to show is already finished above them.
+
+   The component only ever folds below this width, so the query is a second
+   lock rather than the condition: whatever the script does, the wide layout
+   keeps every control it has. */
+@media (width <= 620px) {
+  .stage--typer[data-fold] .typer {
+    display: none;
+  }
+
+  .stage--typer[data-fold] .typer__go {
+    display: inline-flex;
+  }
+}
+
 .stage--dev {
   display: grid;
   align-content: center;
@@ -3446,6 +3475,33 @@ summary,
 .devpan[data-l]::before,
 .devpan[data-r]::after {
   opacity: 1;
+}
+
+/* The press that boots the chart, in the document at every width and drawn at
+   none of them until the media query above says the frame is waiting to be
+   asked. Wide, the frame starts itself and this would be a button for
+   something that already happened. */
+.devgo {
+  position: absolute;
+  z-index: 2;
+  right: 0.55rem;
+  bottom: 0.55rem;
+  display: none;
+  align-items: center;
+  min-height: 40px;
+  padding: 0.5rem 0.85rem;
+  border: 0;
+  border-radius: var(--r-pill);
+  color: var(--on-accent);
+  background: var(--sand);
+  font: 800 0.66rem/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.devgo:hover {
+  background: var(--sand-soft);
 }
 
 /* The instruction, and it names the payoff rather than the gesture, because
@@ -3516,6 +3572,26 @@ summary,
      becomes true. */
   .devpan__cue {
     display: block;
+  }
+
+  /* Which is also exactly where half a chart at half scale stops being the
+     better offer than the whole of one. Below the crossing the poster is the
+     same seed drawn end to end at the card's width, so the box takes the
+     document's own ratio again and there is nothing to swipe at and nothing
+     to say about swiping. The live file is one press away, and pressing it is
+     what puts the box back to the height it scrolls at. */
+  .stage--dev:not([data-live]) .devframe {
+    aspect-ratio: 1330 / 595;
+    height: auto;
+    overflow-x: hidden;
+  }
+
+  .stage--dev:not([data-live]) .devpan__cue {
+    display: none;
+  }
+
+  .devgo {
+    display: inline-flex;
   }
 }
 

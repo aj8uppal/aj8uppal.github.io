@@ -41,6 +41,13 @@ const H = 595;
     card above the 665px that costs, so this only ever bites on a phone. */
 const MIN = 0.5;
 
+/** Where the shrinking stops and the sideways scroll would start - the same
+    crossing the stylesheet knows. Below it the poster is the better chart: it
+    is the same seed drawn whole at the card's width rather than half of one at
+    half scale, and it does not pull Chart.js off a CDN to sample two thousand
+    deviates on a handset. So down here the file waits to be asked. */
+const HANDSET = '(width <= 765px)';
+
 export default function DeviationFrame({ src, href, title, poster, posterAlt, note }: Props) {
   const [live, setLive] = useState(false);
   const [scale, setScale] = useState(MIN);
@@ -52,6 +59,25 @@ export default function DeviationFrame({ src, href, title, poster, posterAlt, no
   const returnTo = useRef<HTMLElement | null>(null);
   /** Lets the frame's own load end the hold below, from outside this effect. */
   const unpin = useRef<(() => void) | null>(null);
+  /** True where the reader has to ask. Read rather than rendered: branching the
+      markup on a media query is a hydration mismatch, and the press below is in
+      the document at every width with the stylesheet deciding where it shows. */
+  const handset = useRef(false);
+  /** The boot, lent out to that press. It is defined inside the effect below
+      because the scroll hold it opens with has to go up in the same instant. */
+  const ask = useRef<(() => void) | null>(null);
+
+  /* Before the boot effect, so the observer it installs already knows whether
+     anything it sees is allowed to start. */
+  useEffect(() => {
+    const mq = window.matchMedia(HANDSET);
+    const read = (): void => {
+      handset.current = mq.matches;
+    };
+    read();
+    mq.addEventListener('change', read);
+    return () => mq.removeEventListener('change', read);
+  }, []);
 
   /* Boot on sight rather than at load. It pulls Chart.js off a CDN and samples
      two thousand deviates to draw itself, and a reader who never gets this far
@@ -143,9 +169,14 @@ export default function DeviationFrame({ src, href, title, poster, posterAlt, no
       setLive(true);
       stop();
     };
+    ask.current = boot;
+
+    /* On a handset nothing arms: the poster stands until the press above calls
+       the same boot by hand. Checked here rather than at install, so a phone
+       turned on its side is a phone the frame may start itself on. */
     const arm = (): void => {
       window.clearTimeout(timer);
-      if (seen) timer = window.setTimeout(boot, 220);
+      if (seen && !handset.current) timer = window.setTimeout(boot, 220);
     };
     const io = new IntersectionObserver(
       (entries) => {
@@ -160,6 +191,7 @@ export default function DeviationFrame({ src, href, title, poster, posterAlt, no
     return () => {
       stop();
       release();
+      ask.current = null;
     };
   }, []);
 
@@ -233,7 +265,10 @@ export default function DeviationFrame({ src, href, title, poster, posterAlt, no
 
   return (
     <>
-      <div className="stage stage--dev">
+      {/* One attribute for both of the things a booted frame changes down
+          here: the box goes back to the height it scrolls at, and the swipe
+          instruction becomes true again. */}
+      <div className="stage stage--dev" data-live={live || undefined}>
         <span className="stage__label">Two distributions</span>
         {/* The frame's own height is the stylesheet's, from the same ratio and
             the same floor this component clamps to. Setting it from here would
@@ -247,8 +282,15 @@ export default function DeviationFrame({ src, href, title, poster, posterAlt, no
             {/* A transform does not resize the box it is on, and the scroll area
               of the frame above is measured off boxes. So the drawn width is
               stated here, and the only thing that scrolls is what is really
-              wider than the card. */}
-            <div className="devframe__fit" style={{ width: `${Math.round(W * scale)}px` }}>
+              wider than the card.
+
+              Only while a frame is drawn, though. A poster is an image and
+              fits whatever it is given; stating a width for it would be
+              claiming a scroll the still does not have. */}
+            <div
+              className="devframe__fit"
+              style={live ? { width: `${Math.round(W * scale)}px` } : undefined}
+            >
               {live ? (
                 <iframe
                   ref={frame}
@@ -280,6 +322,16 @@ export default function DeviationFrame({ src, href, title, poster, posterAlt, no
               )}
             </div>
           </div>
+          {/* In the corner rather than across the middle, because the poster
+              under it is the chart: a scrim over a chart, advertising the same
+              chart, is a curtain in front of the thing it is selling. In the
+              document at every width and shown by the stylesheet only where
+              nothing starts by itself. */}
+          {!live && (
+            <button className="devgo" type="button" onClick={() => ask.current?.()}>
+              Run the 2015 file
+            </button>
+          )}
         </div>
         {/* Only true where the frame actually pans, which the stylesheet knows
             as the same 765px the drawn height stops changing at. It is in the
