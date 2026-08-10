@@ -4018,13 +4018,6 @@ button.toolbar__link {
   line-height: 1.55;
 }
 
-/* The one sentence in the block a reader might act on, which here means not
-   act on. It says the door is gone, so it is set apart from the description
-   rather than tucked at the end of it. */
-.rz__host {
-  color: var(--muted);
-}
-
 .rz .stack {
   color: var(--muted);
   font: 650 0.69rem/1.45 var(--mono);

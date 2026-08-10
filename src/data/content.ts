@@ -700,7 +700,6 @@ export const rendezvous = {
   name: 'Rendezvous',
   yr: 'c. 2020',
   what: 'A central place for UMass students to find each other through the classes they were taking. Everyone’s assignments in one calendar, a chat per lecture, and, that year, a Zoom link where the room number used to be.',
-  host: 'The host is gone and there is nothing to click. These five captures are what survives.',
   k: 'React · Redux · Flask · PostgreSQL · GCP',
   lead: {
     asset: 'rendezvous-dashboard',
@@ -890,6 +889,4 @@ export const education = {
     },
   ],
   note: 'Both degrees at once, in four years.',
-  method:
-    'The old version of this page listed 37 courses, every one of them a link, and every link had died. These are the eight that mattered.',
 } as const;
