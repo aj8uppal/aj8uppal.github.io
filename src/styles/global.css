@@ -54,6 +54,14 @@
   --on-ink-3: #b2b0ac;
   --on-ink-4: #a6a5a2;
 
+  /* A step above the top of that scale, for the one place a flat ground is not
+     what the type is standing on. Those four hold because the ground under them
+     is a colour; the hero's is a canvas with a light moving about in it, and
+     there is a band of widths where the paragraph is standing in the brightest
+     part of it. Kept warm rather than taken to white, so it is the same cream
+     half a shade further up and not a different colour. 12.0 on the slate. */
+  --on-ink-hi: #fffdf9;
+
   /* Text on light. Measured against --paper-2, the darker light ground:
      10.9, 7.1, 5.3. */
   --on-paper: #1a1e24;
@@ -805,6 +813,26 @@ summary,
   font-size: clamp(1.12rem, 1.85vw, 1.6rem);
   line-height: 1.28;
   letter-spacing: -0.03em;
+}
+
+/* The one band where this paragraph is standing in the light rather than under
+   it. At 900 the action row collapses to one column and lifts the intro a
+   hundred and sixteen pixels, out of the bottom vignette that holds the canopy
+   down under the type and into the middle of the frame, which that vignette
+   leaves at full brightness on purpose - nothing is written there at any other
+   width. At 620 the measure narrows to 340 and it clears the gather again. In
+   between it is also at the floor of its clamp, small enough that the bar it
+   has to clear is 4.5 rather than the 3 it gets at reading size.
+
+   With the pointer parked on the line and the light given the nine seconds it
+   takes to finish gathering there, the cream comes in at 3.9. The light is the
+   picture and does not move for the type; the type moves, and the same worst
+   case reads 4.7. Above and below the band it is untouched, at 5.2 and better
+   on the same measurement. */
+@media (width > 620px) and (width <= 900px) {
+  .hero__intro {
+    color: var(--on-ink-hi);
+  }
 }
 
 /* The second line, which says where the first one comes from. Held to two
