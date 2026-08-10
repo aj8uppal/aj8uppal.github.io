@@ -17,9 +17,10 @@ const OUT = process.argv[3] ?? '/tmp/p6shots';
 
 /* The captain's stated reason for preferring this direction was less to
    scroll through. It is a number, so it gets asserted like one. */
-/* Raised from 11000: the model cards, the wind tunnel, the hidamari assembly
-   and the Notable band are 2,052px he decided to keep. */
-const HEIGHT_BUDGET = 13500;
+/* 12,615px at 1440 after the last round of cuts. The margin is one card's
+   worth: enough that adding a project does not trip it, tight enough that
+   quietly growing a section back does. */
+const HEIGHT_BUDGET = 13000;
 
 const fail = [];
 const note = (ok, label, detail) => {
