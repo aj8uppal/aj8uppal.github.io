@@ -189,7 +189,7 @@ export const about = {
   sim: [
     'In college I simulated CO2 cooling for particle detectors. Now I simulate an ocean for a ',
     'sailing game',
-    '. Replicating a real environment in code isn’t just satisfying; it opens doors, and it’s the closest thing I know to the magic of technology.',
+    '.',
   ] as const,
   notes: [
     { k: 'Off the clock', v: 'Heirloom tomatoes, bikes, and Pink Floyd, roughly in that order.' },
