@@ -44,7 +44,14 @@ async function settle(page) {
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
     await Promise.all(
-      [...document.images].filter((i) => !i.complete).map((i) => i.decode().catch(() => {})),
+      [...document.images]
+        .filter((i) => !i.complete)
+        /* A lazy image inside a folded card is not being rendered, so it is not
+           being fetched either, and its decode never settles rather than
+           failing. Waiting on that forever is how a pass hangs at 390. */
+        .map((i) =>
+          Promise.race([i.decode().catch(() => {}), new Promise((r) => setTimeout(r, 2000))]),
+        ),
     );
     await document.fonts.ready;
   });
@@ -229,8 +236,9 @@ await run(
           const r = e.getBoundingClientRect();
           if (!(r.width > 0) || getComputedStyle(e).position === 'fixed') return false;
           // Wider than the viewport on purpose, under its own overflow: the
-          // frame switcher, and the 2015 file at a size it will not bend.
-          if (e.closest('.fs__scroll, .devframe, .asm__loupe')) return false;
+          // frame switcher, the swipe row, and the 2015 file at a size it will
+          // not bend.
+          if (e.closest('.fs__scroll, .swipe__row, .devframe, .asm__loupe')) return false;
           return r.right > de.clientWidth + 1;
         })
         .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
@@ -672,8 +680,9 @@ await run(
           const r = e.getBoundingClientRect();
           if (!(r.width > 0) || getComputedStyle(e).position === 'fixed') return false;
           // Wider than the viewport on purpose, under its own overflow: the
-          // frame switcher, and the 2015 file at a size it will not bend.
-          if (e.closest('.fs__scroll, .devframe, .asm__loupe')) return false;
+          // frame switcher, the swipe row, and the 2015 file at a size it will
+          // not bend.
+          if (e.closest('.fs__scroll, .swipe__row, .devframe, .asm__loupe')) return false;
           return r.right > de.clientWidth + 1;
         })
         .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
@@ -1046,7 +1055,7 @@ await run(
                and are clipped to it; a rect is the wrong instrument for them,
                because getBoundingClientRect reports geometry the reader never
                sees. Everything else on the page still has to fit. */
-            if (e.closest('.fs__scroll, .devframe, .asm__loupe')) return false;
+            if (e.closest('.fs__scroll, .swipe__row, .devframe, .asm__loupe')) return false;
             return r.right > de.clientWidth + 1;
           })
           .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
