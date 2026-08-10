@@ -5156,6 +5156,18 @@ span.buoy__p {
     height: 52%;
   }
 
+  /* And the same argument at the other end. The narrow hero is tall and its
+     text is stacked, so the intro sits from 48% to 61% of the frame - above
+     the top edge of the desktop bottom vignette, in the one band the two
+     scrims both leave alone. At 1440 that paragraph is 25.6px and only owes
+     3:1; here it is 18.6px and owes 4.5, and it was landing at 4.46 over the
+     brightest light the canopy makes. Reaching the scrim up to meet the text
+     is the fix the vignette exists for, and it takes the same paragraph to
+     5.1. The upper 38% of the frame, where nothing is written, is untouched. */
+  .hero::after {
+    height: 62%;
+  }
+
   /* Two items pushed to opposite edges need room between them to read as two
      items. At 390 there is none, so both wrapped, and the role line's second
      word landed under the dot rather than under its own first word. Stacked,
