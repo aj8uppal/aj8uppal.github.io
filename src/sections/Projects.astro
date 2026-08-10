@@ -3,7 +3,6 @@ import { Picture } from 'astro:assets';
 import Claim from '../components/Claim.astro';
 import Assembly from '../components/Assembly.astro';
 import Inspect from '../components/Inspect.astro';
-import ModelCards from '../components/ModelCards.astro';
 import Section from '../components/Section.astro';
 import type { Tone } from '../components/Section.astro';
 import Skim from '../components/Skim.astro';
@@ -408,6 +407,4 @@ const elderFrames: SwitchFrame[] = await Promise.all(
       </div>
     </article>
   </div>
-
-  <ModelCards />
 </Section>
