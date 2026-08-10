@@ -136,5 +136,5 @@ export const assembly = {
   },
 
   /** The caption under the figure. */
-  said: 'One frame of hidamari in the four plates it is composited from, their four depth passes, and the same scene alive in the browser. The distances are hidamari’s own, taken over the whole plate rather than this window; the greys are this page’s, one log scale from 4 to 300 metres across all four, because raw inverse depth would arrive as three black rectangles and a picture. Nothing in the finished frame was lit by the browser. What the browser does is move the camera through it.',
+  said: 'One frame of hidamari in the four plates it is composited from, their four depth passes, and the same scene alive in the browser. The distances are hidamari’s own, taken over the whole plate rather than this window, and the greys run on one log scale from 4 to 300 metres across all four. Nothing in the finished frame was lit by the browser. What the browser does is move the camera through it.',
 } as const;

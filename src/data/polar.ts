@@ -142,4 +142,4 @@ export const checks: PolarCheck[] = saltlineArc
 export const checkWorst = Math.max(...checks.map((c) => Math.abs(c.table - c.hud))) * 100;
 
 export const polarSaid =
-  'The curve is saltline’s own point-of-sail function rather than a drawing of one, so the boat here behaves the way the boat there does. Drag it, or nudge it with the arrow keys. Thrust comes off the polar, boat speed comes off thrust, and VMG is the part of that speed going the way you actually want to go, which is why the fastest heading is almost never the useful one.';
+  'The curve is saltline’s own point-of-sail function, so the boat here behaves the way the boat there does. Drag it, or nudge it with the arrow keys. Thrust comes off the polar, boat speed comes off thrust, and VMG is the part of that speed going the way you actually want to go, which is why the fastest heading is almost never the useful one.';

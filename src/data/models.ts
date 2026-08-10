@@ -62,7 +62,7 @@ export const models: ModelCard[] = [
         'The realm service. It simulates every player in the realm and resolves combat there, so a nova ring is a result the browser is handed rather than one it decided.',
       inputs: 'Movement, camera, combat and trade, from up to 64 people at once in the same realm.',
       checks:
-        'Two browsers in the same Hearthvale, each drawing the other character where the other client puts it, with the same two lines in both chat logs. That capture is on this page.',
+        'Two browsers in the same Hearthvale, each drawing the other character where the other client puts it, with the same two lines in both chat logs.',
     },
   },
   {

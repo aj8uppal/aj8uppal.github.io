@@ -429,7 +429,7 @@ export const saltline = {
   arcNote:
     'At golden hour the sloop is doing 15 knots through the water but only 2.3 toward the mark; at sunrise it’s 13.6 and 11. Picking the angle is the whole game.',
   proof: {
-    t: 'The dev panel, left in on purpose',
+    t: 'The dev panel, uncropped',
     body: [
       'This is the 16:46 frame, uncropped. The panel on the left is the simulation’s actual inputs: time of day, sea state, wind angle, crest sharpness, seed. New seed, new ocean, same rules.',
     ],
