@@ -304,7 +304,6 @@ export const ember = {
   },
   prose: [
     'A voxel MMORPG that runs in a browser tab. I designed it, built it, and put it in production on Fly.io, where a web tier and a separate realm service keep one world consistent for everyone in it.',
-    'It’s the most complete thing I’ve built. A stranger can open a tab right now, make a character, and run into other people.',
   ],
   framesLede: 'Seven regions, one level-30 character.',
   framesCue: 'Choose a region, or use the arrow keys',
@@ -312,7 +311,6 @@ export const ember = {
     t: 'One realm, up to 64 players',
     body: [
       'This frame is two of us in the same Hearthvale from two browsers, and a realm holds up to 64 at once. Everyone in it is simulated by the same server, which was the hard part.',
-      'If I could only show one screenshot from eleven years of side projects, it’d be this one.',
     ],
   },
   plate: [
@@ -458,7 +456,7 @@ export const hidamari = {
   skim: {
     role: 'The offline bake, the runtime reprojection, the delivery.',
     hard: 'Photoreal light on hardware that cannot path-trace a frame of it. Cycles bakes offline, the browser reprojects.',
-    proof: '116 frames per second live. Not public yet: the audio is not right.',
+    proof: '116 frames per second live.',
   },
   spread: {
     n: 'Plate 03 / hidamari',
@@ -535,11 +533,11 @@ export const roles: Role[] = [
       'Own reliability and incident response for voice: I lead the debriefs and turn failure modes into platform improvements, including fallback routing that keeps a caller connected when an upstream provider goes dark.',
       'Grew the platform past calls into a broader conversations domain - a phased database split, a BigQuery analytics foundation, multilingual support - and contribute to the healthcare-integration core (HL7, FHIR, insurance data) where it overlaps. Across all of it I’m a technical owner: I write the RFCs and integration guides, review across services, and run go-lives.',
     ],
-    /* Opens on where the role stands, not on how long it took to get there.
-       The audit's read was that "Fourth year." spends the first beat on tenure
-       and buries the title behind two clauses. Same three facts, reversed. */
-    status:
-      'Tech lead, mentor, and the primary reviewer for a distributed contractor team. Fourth year: I joined on EHR automation and took each layer under it in turn.',
+    /* Where the role stands, and nothing about how long it took to get there.
+       Tenure is already on the face of the entry in the dates beside it, so
+       saying it again here spent the line's second half on the one fact a
+       reader had before they got to it. */
+    status: 'Tech lead, mentor, and the primary reviewer for a distributed contractor team.',
     stack:
       'Python · TypeScript · Node.js · React · PostgreSQL · BigQuery · SIP · GCP · Kubernetes · Terraform',
   },
