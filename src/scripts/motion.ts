@@ -1,4 +1,5 @@
 import { installAssembly } from './assembly';
+import { installSwipe } from './swipe';
 import { installTunnel } from './tunnel';
 import { springKeyframes } from './spring';
 import { installHero } from '../heroes/runtime';
@@ -503,3 +504,4 @@ installKonami();
 installHeroCanvas();
 installAssembly();
 installTunnel();
+installSwipe();

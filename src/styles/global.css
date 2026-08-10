@@ -206,6 +206,8 @@ html {
 }
 
 body {
+  --ground: var(--ink);
+
   margin: 0;
   min-width: 320px;
   overflow-x: hidden;
@@ -917,10 +919,16 @@ summary,
 
 /* Each ground names its own text colour and, where the sun would vanish on
    it, its own focus ring. The muted step travels with the ground too, so a
-   caption can ask for "the quiet one" without knowing what it is standing on. */
+   caption can ask for "the quiet one" without knowing what it is standing on.
+
+   `--ground` is the ground said back as a colour. Anything that has to fade
+   something out to nothing - the edge of a swipe row, a scrim over a capture -
+   needs the colour underneath it and has no business knowing which section it
+   is in. */
 .sec--paper {
   --muted: var(--on-paper-3);
   --focus: var(--on-paper);
+  --ground: var(--paper);
 
   color: var(--on-paper);
   background: var(--paper);
@@ -929,6 +937,7 @@ summary,
 .sec--paper-2 {
   --muted: var(--on-paper-3);
   --focus: var(--on-paper);
+  --ground: var(--paper-2);
 
   color: var(--on-paper);
   background: var(--paper-2);
@@ -937,6 +946,7 @@ summary,
 /* The floor the project cards stand on. */
 .sec--ink-deep {
   --muted: var(--on-ink-3);
+  --ground: var(--ink-deep);
 
   color: var(--on-ink);
   background: var(--ink-deep);
@@ -944,6 +954,7 @@ summary,
 
 .sec--ink {
   --muted: var(--on-ink-3);
+  --ground: var(--ink);
 
   color: var(--on-ink);
   background: var(--ink);
@@ -951,6 +962,7 @@ summary,
 
 .sec--ink-3 {
   --muted: var(--on-ink-3);
+  --ground: var(--ink-3);
 
   color: var(--on-ink);
   background: var(--ink-3);
@@ -959,6 +971,7 @@ summary,
 .sec--sand {
   --muted: var(--on-sand-3);
   --focus: var(--on-accent);
+  --ground: var(--sand-soft);
 
   color: var(--on-accent);
   background: var(--sand-soft);
@@ -967,6 +980,7 @@ summary,
 .sec--camel {
   --muted: var(--on-camel-3);
   --focus: var(--on-accent-2);
+  --ground: var(--camel);
 
   color: var(--on-accent-2);
   background: var(--camel);
@@ -3875,6 +3889,97 @@ button.toolbar__link {
 @media (width <= 620px) {
   .rz__two {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── 12b. SWIPE ROWS ─────────────────────────────────────────────────────
+   A set of captures that stacks on a phone is a set nobody reaches the end of.
+   The rendezvous block is five dashboards one above the next: 1,361px of
+   scrolling to look at an argument that is one glance wide. Below 620 a set
+   turns on its side and becomes one row a thumb pushes.
+
+   The mechanism is the deviation card's, promoted to a pattern. Native
+   overflow with snap points - no library, no autoplay, no dots, and no
+   listener between the finger and the scroll. It works with the script off,
+   and browsers make an overflowing box a keyboard scroll region on their own,
+   so arrow keys reach it without a tabindex that would be a dead focus stop
+   at every other width.
+
+   Cards are 78vw, which is the point: the next frame is always half in view,
+   and a row that visibly continues does not need to be labelled as one.
+
+   Above the breakpoint the wrapper and the row are `display: contents`, so the
+   set lays out exactly as it did - the pattern adds two elements to the
+   document and not one box to the page. */
+.swipe,
+.swipe__row {
+  display: contents;
+}
+
+@media (width <= 620px) {
+  .swipe {
+    position: relative;
+    display: block;
+    grid-column: 1 / -1;
+  }
+
+  /* Each card is its own height. Stretched to the tallest they would all be
+     boxes the length of the longest one, which costs nothing today because a
+     frame has no ground of its own, and costs a row of empty panels the first
+     time one does. */
+  .swipe__row {
+    display: flex;
+    align-items: start;
+    gap: 0.9rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .swipe__row::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Whatever the set was made of, in the row it is a card: the frames keep
+     their own internals and only their width is decided here. */
+  .swipe__row > * {
+    flex: 0 0 78vw;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  /* The fades are on the wrapper rather than the scroller, because a box
+     inside a scroller travels with the content and an edge that scrolls away
+     is not an edge. Each side is drawn only when there is really more row
+     behind it, which the script reads off the scroll position - so the first
+     card keeps its own left edge until the reader has moved it, and with no
+     script there is no fade rather than a fade that lies. */
+  .swipe::before,
+  .swipe::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset-block: 0;
+    width: 2rem;
+    opacity: 0;
+    transition: opacity var(--dur-2) var(--ease);
+    pointer-events: none;
+  }
+
+  .swipe::before {
+    left: 0;
+    background: linear-gradient(to right, var(--ground), transparent);
+  }
+
+  .swipe::after {
+    right: 0;
+    background: linear-gradient(to left, var(--ground), transparent);
+  }
+
+  .swipe[data-l]::before,
+  .swipe[data-r]::after {
+    opacity: 1;
   }
 }
 

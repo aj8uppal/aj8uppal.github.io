@@ -27,13 +27,17 @@ const grinchPoster = await sources('legacy-grinchjump', POSTER_W, POSTER_S);
    arrives, and stands in for it permanently where no script runs. */
 const deviationPoster = await sources('legacy-deviation', POSTER_W, POSTER_S);
 
-/* The dashboard sits in the wider of a 0.58 / 1 split: 740px at the maximum. */
-const RZ_LEAD_W = [480, 740, 1080, 1480];
-const RZ_LEAD_S = '(min-width: 1400px) 740px, (min-width: 900px) 60vw, 92vw';
+/* The dashboard sits in the wider of a 0.58 / 1 split: 740px at the maximum.
+   Below 620 the set is a swipe row and every frame in it is a 78vw card, which
+   is the last clause in each of these lists. */
+const RZ_LEAD_W = [320, 480, 740, 1080, 1480];
+const RZ_LEAD_S =
+  '(min-width: 1400px) 740px, (min-width: 900px) 60vw, (min-width: 621px) 92vw, 78vw';
 
 /* The pair halves the full measure: 605px each at the maximum. */
-const RZ_PAIR_W = [400, 605, 900, 1210];
-const RZ_PAIR_S = '(min-width: 1400px) 605px, (min-width: 760px) 46vw, 92vw';
+const RZ_PAIR_W = [320, 400, 605, 900, 1210];
+const RZ_PAIR_S =
+  '(min-width: 1400px) 605px, (min-width: 760px) 46vw, (min-width: 621px) 92vw, 78vw';
 
 const rzShots = [
   rendezvous.lead.asset,
@@ -148,44 +152,53 @@ const rzShots = [
       <p class="stack">{dots(rendezvous.k)}</p>
     </div>
 
-    <figure class="rz__lead">
-      <Picture
-        src={asset(rendezvous.lead.asset)}
-        alt={rendezvous.lead.alt}
-        widths={RZ_LEAD_W}
-        sizes={RZ_LEAD_S}
-        formats={['avif']}
-        fallbackFormat="webp"
-        loading="lazy"
-        decoding="async"
-      />
-      <figcaption>{rendezvous.lead.cap}</figcaption>
-    </figure>
-
     {
-      rendezvous.pairs.map((pr) => (
-        <figure class="rz__pair">
-          <div class="rz__two">
-            {pr.shots.map((sh) => (
-              <div class="rz__shot">
-                <Picture
-                  src={asset(sh.asset)}
-                  alt={sh.alt}
-                  widths={RZ_PAIR_W}
-                  sizes={RZ_PAIR_S}
-                  formats={['avif']}
-                  fallbackFormat="webp"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <span class="rz__theme">{sh.label}</span>
-              </div>
-            ))}
-          </div>
-          <figcaption>{pr.cap}</figcaption>
-        </figure>
-      ))
+      /* Three frames, and on a phone they are a row rather than a column. The
+        wrapper is two elements of nothing above 620 - see .swipe - so the
+        block below that width is the only place this is a scroller. */
     }
+    <div class="swipe">
+      <div class="swipe__row">
+        <figure class="rz__lead">
+          <Picture
+            src={asset(rendezvous.lead.asset)}
+            alt={rendezvous.lead.alt}
+            widths={RZ_LEAD_W}
+            sizes={RZ_LEAD_S}
+            formats={['avif']}
+            fallbackFormat="webp"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>{rendezvous.lead.cap}</figcaption>
+        </figure>
+
+        {
+          rendezvous.pairs.map((pr) => (
+            <figure class="rz__pair">
+              <div class="rz__two">
+                {pr.shots.map((sh) => (
+                  <div class="rz__shot">
+                    <Picture
+                      src={asset(sh.asset)}
+                      alt={sh.alt}
+                      widths={RZ_PAIR_W}
+                      sizes={RZ_PAIR_S}
+                      formats={['avif']}
+                      fallbackFormat="webp"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span class="rz__theme">{sh.label}</span>
+                  </div>
+                ))}
+              </div>
+              <figcaption>{pr.cap}</figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
 
     <Inspect by="astro:assets Picture" assets={rzShots} />
   </article>
