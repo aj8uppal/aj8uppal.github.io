@@ -312,7 +312,7 @@ export const ember = {
     t: 'One realm, up to 64 players',
     body: [
       'This frame is two of us in the same Hearthvale from two browsers, and a realm holds up to 64 at once. Everyone in it is simulated by the same server, which was the hard part.',
-      'If I could only show one screenshot from four years of side projects, it’d be this one.',
+      'If I could only show one screenshot from eleven years of side projects, it’d be this one.',
     ],
   },
   plate: [

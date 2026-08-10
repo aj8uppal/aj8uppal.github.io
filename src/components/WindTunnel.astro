@@ -176,9 +176,8 @@ const rows: Array<[string, string]> = [
 
     <p>
       The six frames above were read off the game's own HUD long before this curve was on the page.
-      Each one is a heading the game sailed and a thrust it reported at that heading, so laying them
-      beside what this table answers at the same angle is the only check that matters. The worst of
-      the six is {pt(checkWorst)} of a point out.
+      Each one is a heading the game sailed and a thrust it reported at that heading, laid beside
+      what this table answers at the same angle. The worst of the six is {pt(checkWorst)} of a point out.
     </p>
     <table>
       <thead>
@@ -208,13 +207,11 @@ const rows: Array<[string, string]> = [
     <p>
       The curve itself is saltline's <code>pointOfSail</code> function, ported unchanged and evaluated
       every {polarStep} degrees. The figure joins the rows with straight lines, which is a shortcut, and
-      it is worth {pt(polarLerpError)} of a point at its worst: smaller than the captures' own agreement
-      above, so the shortcut is not what is holding the check together. Thrust of 1 is full sail, which
-      is {fullSailN.toLocaleString('en-US')} newtons in the game. Boat speed is thrust times {
-        kn(polar.hull)
-      } knots, the mean of speed over thrust across those same six captures and within a knot of every
-      one of them. Below {polar.noGo}&deg; the sails luff and thrust is nothing, and that angle is
-      the game's.
+      it is worth {pt(polarLerpError)} of a point at its worst, smaller than the captures' own agreement
+      above. Thrust of 1 is full sail, which is {fullSailN.toLocaleString('en-US')} newtons in the game.
+      Boat speed is thrust times {kn(polar.hull)} knots, the mean of speed over thrust across those same
+      six captures and within a knot of every one of them. Below {polar.noGo}&deg; the sails luff
+      and thrust is nothing, and that angle is the game's.
     </p>
     <table class="wt__curve">
       <thead>

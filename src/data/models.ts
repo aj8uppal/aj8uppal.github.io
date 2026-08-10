@@ -77,7 +77,7 @@ export const models: ModelCard[] = [
          receipts mode to disclose. A number this good should carry its own
          caveat whether or not anyone turns the annotations on. */
       checks:
-        '116 frames per second, read off my own machine in one session. That is a developer measurement rather than a benchmark run, and there is no capture behind it yet.',
+        '116 frames per second, read off my own machine in one session. A developer measurement, not a benchmark run.',
     },
   },
   {
