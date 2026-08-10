@@ -40,7 +40,6 @@ export const stackKey = (stack?: string): string =>
     .map((t) => t.toLowerCase())
     .join('|')}|`;
 
-/** Job title and stack on one line. */
 export const stackLine = (r: Role): string => dots(r.title, r.stack);
 
 /* Both treatments keep the .role class and the stack key, so the filter still

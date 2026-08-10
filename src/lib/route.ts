@@ -26,10 +26,8 @@ export interface Side {
   n: (id: SectionId) => string;
 }
 
-/**
- * @param order every section id, once, in the order the page runs them.
- * @param desc  per-side replacements for nav lines that name a direction.
- */
+/* `desc` is the escape hatch for the two nav lines that name a direction:
+   "reverse order" is only true on one side. */
 export function side(
   order: readonly SectionId[],
   desc: Partial<Record<SectionId, string>> = {},
