@@ -175,7 +175,7 @@ export default function AutoTyper() {
             than left to the re-render, because `type` reads it in the same tick
             and would otherwise skip the very run being asked for. */}
         <button
-          className="choice choice--go typer__go"
+          className="choice typer__go"
           type="button"
           onClick={() => {
             asked.current = true;

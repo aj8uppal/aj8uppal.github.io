@@ -3396,14 +3396,19 @@ summary,
   border-color: color-mix(in srgb, var(--sand) 45%, transparent);
 }
 
-.choice--go {
+/* The fold's press is the same offer one size up, so it wears the same accent
+   - by name rather than by taking the modifier, which is how the run button
+   stays the only `.choice--go` in the card. */
+.choice--go,
+.typer__go {
   border-color: var(--sand);
   color: var(--on-accent);
   background: var(--sand);
   font-weight: 800;
 }
 
-.choice--go:hover {
+.choice--go:hover,
+.typer__go:hover {
   background: var(--sand-soft);
   border-color: var(--sand-soft);
 }
