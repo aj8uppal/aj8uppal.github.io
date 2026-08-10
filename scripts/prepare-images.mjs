@@ -67,8 +67,15 @@ const HERO = { left: 1008, top: 864, width: 3360, height: 1440 };
  * shown on log distance instead, one scale for all four, near white and far
  * black, which keeps the layers readable AND comparable with each other. It is
  * a re-encoding of the same numbers and the page says so beside the figure.
+ *
+ * The window is 4 to 300 metres rather than the encoding's own 0.8 to 400,
+ * because the four layers between them run 4.0 to 260 and a scale with a third
+ * of itself hanging off either end spends the contrast on nothing: on the
+ * codec's range the whole scene lands between grey 61 and grey 180 and the
+ * figure shows a slab. Nothing in these plates is clipped by the narrower
+ * window, which is the condition for narrowing it.
  */
-const DEPTH = { invLo: 0.0025, invHi: 1.25, near: 0.8, far: 400 };
+const DEPTH = { invLo: 0.0025, invHi: 1.25, near: 4, far: 300 };
 
 /**
  * One depth pass, turned into something an eye can read.

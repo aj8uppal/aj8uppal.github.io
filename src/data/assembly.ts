@@ -1,106 +1,112 @@
 /**
- * hidamari's technique, taken apart into the three passes it is made of.
+ * hidamari's canopy frame, taken apart into the plates it is made of.
  *
- * The app looks path-traced and is not. A beauty pass is rendered offline in
- * Blender Cycles, a depth pass is rendered beside it, and at runtime the
- * browser reprojects the first through the second so the camera gets real
- * parallax through a still photograph. Describing that in a paragraph asks a
- * reader to hold three images in their head; stacking the three and letting
- * them land on each other does not.
+ * The app looks path-traced and is not. Four layers are rendered offline in
+ * Blender Cycles, each with a depth pass beside it, and at runtime the browser
+ * reprojects them through those depths so the camera gets real parallax through
+ * a still photograph. Describing that in a paragraph asks a reader to hold
+ * eight images in their head; stacking them and letting them land on each other
+ * does not.
  *
- * WHAT IS REAL HERE AND WHAT IS NOT. The assembly, the scroll driver, the
- * scrub control and the edge loupe are finished and shipping. The three plates
- * are not hidamari. They are a schematic of the technique drawn for this page,
- * because the alternative was to synthesise a depth pass from the one canopy
- * capture we have and print it as an export, and an invented depth map beside
- * an honest one is the exact failure this page spends its whole budget
- * avoiding. The page says so where a reader can see it, not only here.
+ * These are the plates, not a drawing of them. They come out of hidamari's own
+ * `plates/` directory by way of prepare-images.mjs, cut to the 3360 by 1440
+ * window the finished frame shows, which is the centre 62.5 percent of the
+ * 5376 by 3168 render; the rest is overscan for the reprojection to pan into.
+ * Composited back to front they land within three percent of the shipped hero
+ * capture, which is the check that the stack on this page is the stack the app
+ * runs and not a set of pictures that resemble it.
  *
- * THE DROP. When one aligned triplet of the same hidamari frame exists, the
- * swap is this file and nothing else:
- *
- *   1. Put three images in src/assets: the Cycles beauty pass, the depth pass
- *      rendered from the same camera, and one runtime frame captured from the
- *      browser at a camera offset from that origin. All three must be the same
- *      resolution and pixel-aligned, or the stack lands crooked and the loupe
- *      magnifies a registration error rather than a reprojection one.
- *   2. Set `asset` and `alt` on each plate below to those three.
- *   3. Set `ar` to their real aspect ratio.
- *   4. Move `edge` onto a silhouette in the real frame where the disocclusion
- *      is visible, in fractions of the frame.
- *   5. Flip `real` to true. That is what removes the placeholder notice.
- *
- * Nothing about the mechanism changes, and the placeholder markup drops out on
- * the same flag that removes the notice, so a half-done swap cannot ship a
- * schematic under a caption claiming it is an export.
+ * The depth passes are shown, not shipped raw. They are 16-bit inverse depth,
+ * and on their own scale everything past thirty metres sits in the darkest two
+ * percent of the range: three of the four would arrive as black rectangles.
+ * They are re-encoded onto log distance, one scale across all four, near white
+ * and far black. The numbers are hidamari's; the mapping to grey is this page's,
+ * and the caption says so.
  */
 
-export type PlateKey = 'beauty' | 'depth' | 'runtime';
-
 export interface Plate {
-  key: PlateKey;
-  /** What the pass is called, printed on the sheet while the stack is apart. */
+  /** Layer index in hidamari's manifest. Also the source order here. */
+  key: 'l0' | 'l1' | 'l2' | 'l3';
+  /** What the layer is called, printed on the sheet while the stack is apart. */
   name: string;
-  /** Where it was made. One line, under the name. */
+  /** How far away it is. One line, under the name. */
   by: string;
-  /** The export, once one exists. Null runs the schematic stand-in. */
-  asset: string | null;
-  alt: string | null;
+  /** The colour plate and the depth pass, both in src/assets. */
+  colour: string;
+  depth: string;
+  alt: string;
+  depthAlt: string;
 }
 
 export const assembly = {
+  /** The hero window's own shape, which is now the stage's. */
+  ar: '3360 / 1440',
+
   /**
-   * True only when all three plates are real, aligned exports of one frame.
-   * Everything that would misrepresent a schematic as a capture is behind it.
+   * Back to front, which is both the order they composite in and the order
+   * they arrive in as the stack lands.
+   *
+   * Every number on a tag is hidamari's own, off plates/manifest.json. Three of
+   * the layers publish a 5th-to-95th-percentile depth and the foreground does
+   * not, so the foreground's tag carries the figure it does publish: how much
+   * of the frame its matte covers. Measuring a distance for it here to make the
+   * set look tidy would be inventing evidence to fill a column, and it would
+   * read oddly besides, since the arch's trunks come nearer than most of the
+   * ground the foreground is made of.
    */
-  real: false,
-
-  /** The stage's shape. The schematic's own, until the exports set theirs. */
-  ar: '320 / 200',
-
   plates: [
     {
-      key: 'beauty',
-      name: 'Beauty pass',
-      by: 'Blender Cycles, offline',
-      asset: null,
-      alt: null,
+      key: 'l0',
+      name: 'Backing plate',
+      by: '35 to 260 m',
+      colour: 'hidamari-plate-0-sky',
+      depth: 'hidamari-depth-0-sky',
+      alt: 'The backing plate: a smeared, inpainted version of the whole scene, sharp only down the centre of the path where the layers in front leave a gap.',
+      depthAlt: 'The backing plate as depth: almost flat, because nearly all of it is far away.',
     },
     {
-      key: 'depth',
-      name: 'Depth pass',
-      by: 'Same camera, same render',
-      asset: null,
-      alt: null,
+      key: 'l1',
+      name: 'Background trees',
+      by: '15 to 63 m',
+      colour: 'hidamari-plate-1-trees',
+      depth: 'hidamari-depth-1-trees',
+      alt: 'The background trees: autumn canopy across the top and sides, with a hole punched through the middle where the sunlit path runs away from the camera.',
+      depthAlt:
+        'The background trees as depth: mid grey, darkening into the hole where there is nothing on this layer.',
     },
     {
-      key: 'runtime',
-      name: 'Runtime frame',
-      by: 'Reprojected in the browser',
-      asset: null,
-      alt: null,
+      key: 'l2',
+      name: 'Midground arch',
+      by: '5.5 to 22 m',
+      colour: 'hidamari-plate-2-arch',
+      depth: 'hidamari-depth-2-arch',
+      alt: 'The midground arch: the two big trunks and the branches that meet overhead, which is most of what the finished frame looks like.',
+      depthAlt:
+        'The midground arch as depth: the brightest of the four, because it is the nearest thing that fills the frame.',
+    },
+    {
+      key: 'l3',
+      name: 'Foreground',
+      by: '18% of the frame',
+      colour: 'hidamari-plate-3-canopy',
+      depth: 'hidamari-depth-3-canopy',
+      alt: 'The foreground: a band of leaf litter and grass along the bottom with the path cut through it, and nothing at all above.',
+      depthAlt:
+        'The foreground as depth: bright along the bottom edge and falling away up the path.',
     },
   ] as Plate[],
 
   /**
    * Where the loupe looks, in fractions of the frame, and how far it zooms.
    *
-   * Aimed at the left silhouette of the near-right trunk, which is where a
-   * reprojection has the least to work with: the trunk moved and the ground it
-   * was standing in front of was never rendered, so there is nothing to fill
-   * the sliver it left. Every depth reprojection has this edge. Showing it at
-   * three and a half times is more honest than a paragraph promising the
-   * technique is not free.
+   * Aimed at the left trunk, just inside its edge. The magnifier holds the
+   * backing plate rather than the finished frame, because that is the part of
+   * this technique nobody sees and the part that decides whether it holds up:
+   * the front layers cover it, so it is smeared, and the only time it shows is
+   * in the slivers the parallax opens beside a near trunk.
    */
-  /* Fractions of the frame. Aimed at the near trunk, where the camera move is
-     largest and so the sliver behind it is widest, and low enough that the
-     horizon runs through the loupe: the error has to be seen against both the
-     sky and the ground to read as missing rather than as shading. */
-  edge: { x: 0.15, y: 0.775, zoom: 3.4 },
+  edge: { x: 0.2, y: 0.5, zoom: 3.4 },
 
-  /** The one-line status the page prints while `real` is false. */
-  note: 'The stack, the scrub and the loupe are real. The three plates are not hidamari: they are a schematic of the technique, standing in until one aligned beauty, depth and runtime triplet of the same frame exists to drop in.',
-
-  /** The caption once the plates are real. Written now so the swap is data. */
-  said: 'One frame of hidamari in the three passes it is made of. Nothing in the finished image was lit by the browser.',
+  /** The caption under the figure. */
+  said: 'One frame of hidamari in the four plates it is composited from, their four depth passes, and the same scene alive in the browser. The distances are hidamari’s own, taken over the whole plate rather than this window; the greys are this page’s, one log scale from 4 to 300 metres across all four, because raw inverse depth would arrive as three black rectangles and a picture. Nothing in the finished frame was lit by the browser. What the browser does is move the camera through it.',
 } as const;

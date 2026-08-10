@@ -1,7 +1,7 @@
 /**
  * The one number behind the hidamari assembly, and the three things that set it.
  *
- * Everything the stack does is a function of `--p`, from 0 (three plates fanned
+ * Everything the stack does is a function of `--p`, from 0 (four plates fanned
  * apart) to 1 (one resolved frame). The CSS interpolates every transform off
  * it, so this file never touches a plate: it works out where the reader is and
  * writes one custom property.
@@ -24,12 +24,14 @@
 /* Where the stack is, named. Read aloud by the scrub and printed beside it, so
    the state has words and not only a handle position. */
 const PHASES: Array<[number, string]> = [
-  [0.06, 'Three passes, apart'],
-  [0.45, 'Depth pass, closing'],
-  /* Not "assembled" until it is. At 0.97 the sheets are still six pixels apart
-     on a full-width stage, and a caption claiming a finished frame over a
-     frame with a seam in it is the small kind of lie this page argues against. */
-  [0.99, 'Reprojecting'],
+  [0.24, 'Four plates, apart'],
+  [0.46, 'Compositing, back to front'],
+  /* Not "assembled" until it is. The fan closes at 0.45 and the depth pass is
+     over the stack until 0.70, and a caption claiming a finished frame over a
+     frame with a grey sheet on it is the small kind of lie this page argues
+     against. The names are the CSS ramps in section 9c of global.css, in
+     words; if one moves, the other has to. */
+  [0.7, 'Depth pass, over the stack'],
   [1.01, 'One frame, assembled'],
 ];
 

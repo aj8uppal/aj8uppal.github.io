@@ -1857,36 +1857,34 @@ summary,
 }
 
 /* ── 9c. THE HIDAMARI ASSEMBLY ───────────────────────────────────────── */
-/* Three plates that land on each other. Every transform in here is a function
+/* Four plates that land on each other. Every transform in here is a function
    of --p, which the driver writes and nothing else touches, so the scroll, the
    scrub and the reduced-motion still are three ways of setting one number
-   rather than three code paths. */
+   rather than three code paths.
+
+   The three ramps below are the whole timeline, and they are here rather than
+   in the driver because they are a matter of how the figure looks, which is
+   this file's business and not the script's. */
 .asm {
   --p: 0;
 
+  /* Landed. The four beats do not overlap: an earlier cut had the depth pass
+     rising over sheets that were still moving, and a fanned stack, a
+     transparency checkerboard and a grey depth frame at once is three things
+     asking to be read in the same instant. Each one finishes before the next
+     starts. */
+  --l: clamp(0, calc(var(--p) / 0.45), 1);
+
+  /* The depth pass, over the stack: up once the sheets have landed, held, and
+     away again before anything else is asked of the frame. */
+  --d: clamp(0, min((var(--p) - 0.46) * 10, (0.7 - var(--p)) * 12.5), 1);
+
+  /* The magnifier, on the assembled bake and nowhere else. It waits for the
+     depth pass to clear: a loupe on a grey slab is magnifying the wrong
+     picture, and the thing it is looking for is a colour. */
+  --m: clamp(0, min((var(--p) - 0.72) * 16.67, (0.88 - var(--p)) * 25), 1);
+
   margin: 1.4rem 0 0;
-}
-
-/* Not a disclosure and not small print. Where a figure is standing in for an
-   export that has not arrived, the page says so above the figure, in the size
-   it says everything else in. Shared by the two figures waiting on one. */
-.pending {
-  margin: 0 0 0.9rem;
-  padding: 0.62rem 0.75rem;
-  border-left: 2px solid var(--sand);
-  border-radius: 0 var(--r-xs) var(--r-xs) 0;
-  background: color-mix(in srgb, var(--sand) 9%, transparent);
-  color: var(--on-ink-2);
-  font-size: 0.78rem;
-  line-height: 1.55;
-}
-
-.pending b {
-  margin-right: 0.3rem;
-  color: var(--sand);
-  font: 800 var(--fs-micro) / 1.5 var(--mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .asm__stage {
@@ -1898,14 +1896,14 @@ summary,
   background: var(--screen);
 }
 
-/* The fan collapses as --p rises: each sheet walks its offset back to zero and
-   its scale up to one, so at 1 all three occupy the same box and the runtime
-   frame, last in source order, is the one you are left looking at. */
+/* The fan collapses as --l rises: each sheet walks its offset back to zero and
+   its scale up to one, so at 1 all four occupy the same box and what is left is
+   the four of them composited, which is the finished frame. */
 .asm__plate {
   position: absolute;
   inset: 0;
-  translate: calc(var(--x) * (1 - var(--p)) * 1%) calc(var(--y) * (1 - var(--p)) * 1%);
-  scale: calc(0.62 + 0.38 * var(--p));
+  translate: calc(var(--x) * (1 - var(--l)) * 1%) calc(var(--y) * (1 - var(--l)) * 1%);
+  scale: calc(0.52 + 0.48 * var(--l));
 }
 
 .asm__sheet {
@@ -1919,7 +1917,40 @@ summary,
   box-shadow: 0 8px 20px rgb(0 0 0 / 46%);
 }
 
-.asm__svg,
+/* Three of the four plates are mostly holes, which is the point of them and
+   also unreadable while they are apart: a sheet you can see two other sheets
+   through is not a sheet. So each gets a backing until the moment the stack
+   closes, and then loses it, because at that moment the holes stop being holes
+   and start being what the layer behind is for.
+
+   A checker rather than a flat fill, in the two darkest steps this palette
+   has. Flat black behind a cut-out matte reads as black paint, and half of
+   what these plates have to say is how much of each one is nothing. */
+.asm__sheet::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-conic-gradient(
+      color-mix(in srgb, var(--on-ink) 7%, var(--screen)) 0% 25%,
+      var(--screen) 0% 50%
+    )
+    0 0 / 16px 16px;
+  opacity: clamp(0, calc((1 - var(--l)) * 4), 1);
+}
+
+.asm__sheet picture {
+  position: absolute;
+  inset: 0;
+}
+
+/* The depth pass rides over its own colour plate, one fade for all four at
+   once. Opacity only: this runs under a scroll listener and a wipe that made
+   the compositor repaint four full-width sheets a frame would undo the work
+   the rest of the page does to stay smooth. */
+.asm__z {
+  opacity: var(--d);
+}
+
 .asm__sheet img {
   display: block;
   width: 100%;
@@ -1927,40 +1958,70 @@ summary,
   object-fit: cover;
 }
 
-/* Names the sheet while there are three of them and gets out of the way once
-   there is one. Gone before it would sit on the finished frame.
+/* Which sheet this is, in one character, keyed to the list under the stage.
+   A label wide enough to read the layer's name off would cover the sheet in
+   front of it at every width this figure is drawn at; a digit fits in the
+   sliver that is always uncovered, because the fan runs down and to the right
+   and the top left corner is the one part a front sheet never reaches.
 
-   Top left, because the fan runs down and right, so that corner is the one
-   part of a back sheet the sheets in front never cover. Counter-scaled against
-   the plate: the artwork is what shrinks in the fan, and a label that shrinks
-   with it is a label nobody reads at 6px. */
-.asm__tag {
+   Counter-scaled against the plate: the artwork is what shrinks in the fan, and
+   a number that shrinks with it is a number nobody reads at 6px. */
+.asm__no {
   position: absolute;
   inset: 0 auto auto 0;
   margin: 0;
-  /* Two lines, never three: the band of a back sheet the front one leaves
-     uncovered is the fan's vertical offset deep, and this has to sit in it. */
-  white-space: nowrap;
-  padding: 0.3rem 0.44rem 0.34rem;
+  padding: 0.12rem 0.32rem 0.14rem;
   border-radius: var(--r-xs) 0 var(--r-xs);
   background: color-mix(in srgb, var(--screen) 86%, transparent);
-  color: var(--on-ink-3);
-  font: 700 var(--fs-micro) / 1.45 var(--mono);
+  color: var(--sand);
+  font: 800 var(--fs-micro) / 1.3 var(--mono);
+  transform-origin: 0 0;
+  scale: calc(1 / (0.52 + 0.48 * var(--l)));
+  /* Gone well before the sheets overlap, since a digit on a sheet nobody can
+     see any more is a digit sitting on the sheet in front of it. Held at full
+     for the first quarter of the close, which is the only window a reader has
+     to tie a number to a name in the key. */
+  opacity: clamp(0, calc(1.6 - var(--l) * 2.4), 1);
+}
+
+/* The names the digits stand for. Under the stage rather than on it, which
+   also means they are still there once the stack has landed and there is one
+   frame with four layers inside it and nothing left to point at. */
+.asm__key {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem 0.9rem;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.asm__key li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0 0.4rem;
+  align-items: baseline;
+}
+
+.asm__key b {
+  color: var(--sand);
+  font: 800 var(--fs-micro) / 1.5 var(--mono);
+}
+
+.asm__key span {
+  color: var(--on-ink-2);
+  font: 700 var(--fs-micro) / 1.5 var(--mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  transform-origin: 0 0;
-  scale: calc(1 / (0.62 + 0.38 * var(--p)));
-  opacity: clamp(0, calc(1.15 - var(--p) * 2.4), 1);
 }
 
-.asm__tag b {
-  display: block;
-  color: var(--sand);
+.asm__key em {
+  grid-column: 2;
+  color: var(--on-ink-4);
+  font: 400 var(--fs-micro) / 1.5 var(--mono);
+  font-style: normal;
 }
 
-/* The loupe holds a second copy of the runtime plate, blown up and slid so the
-   focus point lands in the middle. Same aspect ratio as the stage, which is
-   what lets one --zoom do both axes. */
 /* What the loupe is looking at. Without it the magnifier is a second picture
    in the corner and the reader has to guess which part of the first one it
    came from, which is the guess the whole figure exists to remove. */
@@ -1977,32 +2038,53 @@ summary,
   box-shadow:
     0 0 0 1px rgb(0 0 0 / 45%),
     inset 0 0 0 1px rgb(0 0 0 / 30%);
-  opacity: clamp(0, calc((var(--p) - 0.9) * 10), 1);
+  opacity: var(--m);
   pointer-events: none;
 }
 
+/* The loupe holds a second copy of the backing plate, blown up and slid so the
+   focus point lands in the middle. Same aspect ratio as the stage, which is
+   what lets one zoom do both axes. */
 .asm__loupe {
   position: absolute;
   right: 3.5%;
   bottom: 6%;
   width: 30%;
   aspect-ratio: var(--ar);
-  /* The crop is the viewBox's job now; this only keeps the corner radius. */
   overflow: hidden;
   border: 1px solid var(--sand);
   border-radius: var(--r-xs);
   background: var(--screen);
   box-shadow: 0 6px 18px rgb(0 0 0 / 55%);
-  /* Held back until the seams have actually closed. Arriving while the sheets
-     are still a few percent apart puts a magnifier on a frame that has not
-     finished being one. */
-  opacity: clamp(0, calc((var(--p) - 0.9) * 10), 1);
+  /* Held back until the seams have actually closed, and gone again before the
+     camera moves. A magnifier on a frame that has not finished being one is
+     magnifying a seam, and a marquee over a frame shot from somewhere else is
+     pointing at nothing. */
+  opacity: var(--m);
   pointer-events: none;
 }
 
+/* The magnified copy. Percentages against a box that carries the same aspect
+   ratio as the picture, so one number does the width and the height and the
+   focus point arrives in the middle without a second sum. */
 .asm__loupe-in {
   position: absolute;
   inset: 0;
+}
+
+.asm__loupe-in picture {
+  position: absolute;
+  left: var(--lx);
+  top: var(--ly);
+  width: var(--lw);
+  height: var(--lw);
+}
+
+.asm__loupe-in img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .asm__loupe-t {
@@ -4946,6 +5028,11 @@ span.buoy__p {
      appears there are no sheets behind it left to hide. */
   .asm__loupe {
     width: 42%;
+  }
+
+  /* Four layer names across a phone is four words a column. Two by two. */
+  .asm__key {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   /* /socket-canvas/public/index.html is thirty-two characters, and next to it
