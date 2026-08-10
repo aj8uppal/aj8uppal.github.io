@@ -17,11 +17,18 @@
  * not declared: `pick` takes whichever of the two poles has more contrast. That
  * is what makes a light-ground palette work without a second code path.
  *
- * Tuscan graphite is the exception, and deliberately so. It is the shipped
- * palette, it lives in global.css, and it is the one that has been measured
- * against composited pixels. Its entry here carries no tokens at all: selecting
- * it removes every override and lets the stylesheet be what it already is. That
- * way the default can never drift away from the verified page.
+ * The default is the exception, and deliberately so. It is the shipped palette,
+ * it lives in global.css as the stylesheet's own `:root`, and it is the one
+ * measured against composited pixels. Its entry here carries no tokens at all:
+ * selecting it removes every override and lets the stylesheet be what it
+ * already is. That way the default can never drift away from the verified page.
+ *
+ * Which means moving the default is not a one-line change here. The stylesheet
+ * has to become the new palette at the same time, or this file would be
+ * claiming a default the page does not wear. Dawn watch took the flag from
+ * Tuscan graphite in that pair of edits, and `resolve` reproduced graphite's
+ * hand-tuned `:root` to the byte on every token but the two accent captions,
+ * which is the check that the derivation and the stylesheet still agree.
  */
 
 export type Scheme = 'dark' | 'light';
@@ -49,7 +56,7 @@ export interface PaletteSeed {
   ink: string;
   /** The lightest tone the palette owns. */
   light: string;
-  /** True for Tuscan graphite: the stylesheet already is this palette. */
+  /** True for exactly one: the stylesheet already is this palette. */
   isDefault?: boolean;
 }
 
@@ -288,8 +295,11 @@ export const palettes: readonly Palette[] = [
      lets the saffron be the only saturated thing on the screen. Structure is
      the pale blue-grey brought down to where a border wants to live.
 
-     The shipped palette. No tokens: selecting it clears the overrides and the
-     stylesheet's own :root is the palette. */
+     The palette the page shipped in until the captain's final look, and the
+     one every measurement in the stylesheet was first taken against. Its
+     tokens are derived here now rather than being the stylesheet, and the
+     derivation lands on graphite's own hand-tuned hexes everywhere except the
+     two accent captions, which it splits apart instead of sharing. */
   {
     id: 'TG',
     name: 'Tuscan graphite',
@@ -303,7 +313,6 @@ export const palettes: readonly Palette[] = [
     structure: '#8a938d',
     ink: '#141514',
     light: '#e8eddf',
-    isDefault: true,
   },
 
   /* Given: slate, pine, sage, straw, shell. A light scheme by measurement
@@ -343,7 +352,10 @@ export const palettes: readonly Palette[] = [
   },
 
   /* Straight off the saltline dawn frame, so the flagship imagery and the
-     chrome around it share one light. */
+     chrome around it share one light.
+
+     The shipped palette, on the captain's final call. No tokens: selecting it
+     clears the overrides and the stylesheet's own :root is the palette. */
   {
     id: 'E',
     name: 'Dawn watch',
@@ -357,6 +369,7 @@ export const palettes: readonly Palette[] = [
     structure: '#8fa1ad',
     ink: '#1a1e24',
     light: '#ede8df',
+    isDefault: true,
   },
 
   /* Fallowmere and the Ashen Waste: the MMORPG's temperature. */
@@ -408,13 +421,13 @@ export const pairings: Pairing[] = [
     id: 'tg',
     dark: null,
     light: null,
-    note: 'Tuscan graphite for every client, whatever it prefers. What the site does today.',
+    note: 'Dawn watch for every client, whatever it prefers. What the site does today.',
   },
   {
     id: 'pair',
     dark: null,
     light: 'SM',
-    note: 'Slate meadow for a client that asks for a light scheme, Tuscan graphite for everyone else.',
+    note: 'Slate meadow for a client that asks for a light scheme, Dawn watch for everyone else.',
   },
   {
     id: 'c-sm',

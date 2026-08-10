@@ -272,7 +272,7 @@ function installNavPanel(): void {
  *
  * On a phone the browser paints its own bar in this colour, so a single fixed
  * value agrees with the page for one section and fights it for the other five:
- * a graphite bar sits above the bone Experience band like a bar from a
+ * a slate bar sits above the linen Experience band like a bar from a
  * different site. Following the ground makes the bar the top edge of the page
  * instead of a lid on it.
  *

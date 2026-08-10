@@ -19,15 +19,15 @@
 import { heroes, defaultHero } from '../data/heroes';
 import type { HeroFrame, HeroInstance, HeroTokens, HeroVariant, HeroView, Rgb } from './types';
 
-/* The six canopy colours, with the Tuscan graphite values as the fallback for
-   the case where the stylesheet has not arrived yet. */
+/* The six canopy colours, with the Dawn watch values as the fallback for the
+   case where the stylesheet has not arrived yet. */
 const HERO_TOKENS = {
-  sky0: ['--hero-sky-0', '#242423'],
-  sky1: ['--hero-sky-1', '#2d2f2d'],
-  core: ['--hero-core', '#f1d686'],
-  mid: ['--hero-mid', '#f5cb5c'],
-  skirt: ['--hero-skirt', '#cfdbd5'],
-  line: ['--hero-line', '#8a938d'],
+  sky0: ['--hero-sky-0', '#232830'],
+  sky1: ['--hero-sky-1', '#2a313b'],
+  core: ['--hero-core', '#e6cda7'],
+  mid: ['--hero-mid', '#e3c08d'],
+  skirt: ['--hero-skirt', '#c98a7d'],
+  line: ['--hero-line', '#8fa1ad'],
 } as const;
 
 /**

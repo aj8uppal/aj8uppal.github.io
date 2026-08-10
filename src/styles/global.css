@@ -14,89 +14,91 @@
 :root {
   color-scheme: dark;
 
-  /* Grounds. Every section stands on exactly one of these. Carbon black is
-     the page, graphite is anything raised off it. */
-  --ink: #242423;
-  --ink-2: #333533;
-  --ink-3: #2a2b2a;
-  --paper: #e8eddf;
-  --paper-2: #d7dccf;
+  /* Grounds. Every section stands on exactly one of these. The deep blue-grey
+     is the page, the slate raised off it is anything that carries content. */
+  --ink: #232830;
+  --ink-2: #2e3642;
+  --ink-3: #282e38;
+  --paper: #e5e0d4;
+  --paper-2: #d5d0c6;
 
-  /* The floor, one step under the page. Graphite on carbon is 1.26, which is
-     too small a step to read as raised on a screen already mostly dark, and
-     the usual answers - a glow, a wide drop shadow - are either not this
-     page's language or invisible on it. The section carrying the cards drops
-     instead, and the same two card colours are suddenly 1.41 apart. */
-  --ink-deep: #1a1a19;
+  /* The floor, one step under the page. Slate on the page ground is 1.22,
+     which is too small a step to read as raised on a screen already mostly
+     dark, and the usual answers - a glow, a wide drop shadow - are either not
+     this page's language or invisible on it. The section carrying the cards
+     drops instead, and the same two card colours are suddenly 1.39 apart. */
+  --ink-deep: #191d23;
 
-  /* Graphite answering a pointer. Deliberately small, because the border does
+  /* Slate answering a pointer. Deliberately small, because the border does
      the louder half of a hover, and held light enough that all four text
-     steps still clear 4.5 on it: 9.5, 6.7, 5.3, 4.5. */
-  --ink-2-hi: #383b38;
+     steps still clear 4.5 on it: 9.2, 6.6, 5.2, 4.6. */
+  --ink-2-hi: #343b47;
 
   /* The screen colour. Behind a canvas or a running game, and nowhere else:
      a screen should read as darker than the page it sits on. */
-  --screen: #0d0e0d;
+  --screen: #111417;
 
   /* Laid over photographs and over the running games, with its own two text
      steps. This pair does not follow the page from dark to light the way the
      grounds do: a screenshot of a night sea needs the same dark wash under a
      caption whatever colour the page around it is. */
-  --shade: #141514;
-  --on-shade: #e8eddf;
-  --on-shade-2: #c2c6ba;
+  --shade: #1a1e24;
+  --on-shade: #ede8df;
+  --on-shade-2: #c7c4bd;
 
-  /* Text on dark, in four steps. All measured against --ink-2, the graphite,
+  /* Text on dark, in four steps. All measured against --ink-2, the slate,
      which is the lightest dark ground on the page, so they hold on every
-     one of them: 10.4, 7.3, 5.8, 4.9. */
-  --on-ink: #e8eddf;
-  --on-ink-2: #c5c9bd;
-  --on-ink-3: #afb3a8;
-  --on-ink-4: #a1a59b;
+     one of them: 10.0, 7.1, 5.6, 5.0. */
+  --on-ink: #ede8df;
+  --on-ink-2: #c9c5c0;
+  --on-ink-3: #b2b0ac;
+  --on-ink-4: #a6a5a2;
 
   /* Text on light. Measured against --paper-2, the darker light ground:
-     13.1, 8.5, 6.1. */
-  --on-paper: #141514;
-  --on-paper-2: #363834;
-  --on-paper-3: #4b4d49;
+     10.9, 7.1, 5.3. */
+  --on-paper: #1a1e24;
+  --on-paper-2: #3a3d40;
+  --on-paper-3: #4f5052;
 
-  /* The same quiet step for the two accent grounds, which need one of their
-     own: a caption on the contact section is standing on alabaster, not on
-     bone, and borrowing the step above only works while the two are the same
-     kind of pale. Here they are, so this is that colour - 5.8 on alabaster,
-     5.1 on soft sun. On a palette where they part company these are derived
-     apart and the caption follows the ground it is actually on. */
-  --on-sand-3: #4b4d49;
-  --on-camel-3: #4b4d49;
+  /* The quiet step for the two accent grounds, which need one of their own: a
+     caption on the contact section is standing on clay, not on linen, and
+     borrowing the step above assumes the two are the same kind of pale. On
+     this palette they are nothing like each other - one is dawn light and the
+     other is a warm red - so each gets its own, from its own ground: 5.6 on
+     the softened sand, 4.5 on the clay. */
+  --on-sand-3: #4f4c46;
+  --on-camel-3: #383033;
 
-  /* The one saturated colour on the page and two neutrals to set it against.
-     Tuscan sun is the primary and carries every interaction, including focus.
-     Alabaster is the secondary and the hover, and the contact section is
-     painted in it. Sage is a border and a wash: at 3.9 against the graphite
-     it is not allowed to carry small text anywhere. */
-  --sand: #f5cb5c;
-  --camel: #cfdbd5;
-  --earth: #8a938d;
+  /* The two colours the page is warmed by, and the cool structural one that
+     sets them off. Dawn light is the primary and carries every interaction,
+     including focus. Clay is the secondary and the hover, and the contact
+     section is painted in it. The pale steel is a border and a wash; it
+     clears 4.5 on the slate, but it is still not asked to carry small text
+     anywhere, because it is the colour that draws the boxes. */
+  --sand: #e3c08d;
+  --camel: #c98a7d;
+  --earth: #8fa1ad;
 
-  /* The sun at reading strength, for areas too large to take it neat. A whole
-     section painted in full sand stops being a signal and becomes the wall,
-     and then there is nothing left for the controls standing on it to be. */
-  --sand-soft: #f1d686;
+  /* The dawn light at reading strength, for areas too large to take it neat.
+     A whole section painted in full sand stops being a signal and becomes the
+     wall, and then there is nothing left for the controls standing on it. */
+  --sand-soft: #e6cda7;
 
-  /* The sun deepened until it carries small text on the light grounds. The
-     bright sun is 1.1 on paper-2, which is nothing at all; this is 4.5. */
-  --earth-ink: #6e5e31;
+  /* The same light deepened until it carries small text on the light grounds.
+     Neat, it is 1.1 on paper-2, which is nothing at all; this is 4.6. */
+  --earth-ink: #605749;
 
   /* Text sitting directly on sand, and on camel. Both are this palette's own
      near-black, but each is its own role: two accents are rarely on the same
      side of the light-or-dark flip, and the contact section is painted in the
      second one. */
-  --on-accent: #141514;
-  --on-accent-2: #141514;
+  --on-accent: #1a1e24;
+  --on-accent-2: #1a1e24;
 
-  /* The accent again, lifted until it reads on the shade. Here the sun
-     already does; a palette whose accent is darker than its page needs a
-     brighter one for the nav, which floats on shade wherever it is. */
+  /* The accent again, lifted until it reads on the shade. Here the dawn light
+     already does, at 9.5 on the composited nav; a palette whose accent is
+     darker than its page needs a brighter one for the nav, which floats on
+     shade wherever it is. */
   --accent-shade: var(--sand);
 
   /* The canopy. The hero paints these onto a canvas rather than into a box, so
@@ -104,12 +106,12 @@
      script reads them back out. Sky runs top to bottom; the three light steps
      are the core of a patch, its shoulder, and the long skirt; the line is for
      whatever a variant draws structurally rather than as light. */
-  --hero-sky-0: #242423;
-  --hero-sky-1: #2d2f2d;
-  --hero-core: #f1d686;
-  --hero-mid: #f5cb5c;
-  --hero-skirt: #cfdbd5;
-  --hero-line: #8a938d;
+  --hero-sky-0: #232830;
+  --hero-sky-1: #2a313b;
+  --hero-core: #e6cda7;
+  --hero-mid: #e3c08d;
+  --hero-skirt: #c98a7d;
+  --hero-line: #8fa1ad;
 
   /* Lines are the text colour at low alpha rather than a colour of their own,
      so a rule on a card is the same family as the words on it. */
@@ -118,12 +120,13 @@
   --line-light: color-mix(in srgb, var(--on-paper) 18%, transparent);
   --line-light-2: color-mix(in srgb, var(--on-paper) 34%, transparent);
 
-  /* The focus ring, as a token rather than a colour, because the sun cannot
-     be the ring everywhere. It is 10.1 on the page and 1.1 on the paper,
-     the camel and the softened sand - which is not a dim ring, it is no ring
-     at all across four of the six sections. A ground that cannot carry the
-     sun overrides this with its own darkest pole, so focus is always at
-     least 12:1 and the sun keeps hover, selection and active states. */
+  /* The focus ring, as a token rather than a colour, because the accent
+     cannot be the ring everywhere. It is 8.6 on the page and 1.3 on the
+     paper, 1.6 on the camel and 1.1 on the softened sand - which is not a dim
+     ring, it is no ring at all across four of the six sections. A ground that
+     cannot carry the accent overrides this with its own darkest pole, so
+     focus is always at least 12:1 and the accent keeps hover, selection and
+     active states. */
   --focus: var(--sand);
 
   /* The quiet text step for whatever ground is underfoot. Secondary copy used

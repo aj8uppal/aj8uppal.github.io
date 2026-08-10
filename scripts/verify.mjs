@@ -78,7 +78,7 @@ async function run(name, opts, body, url = BASE) {
 }
 
 /* Relative luminance and the WCAG ratio, so the palette is checked rather than
-   asserted. A Tuscan sun on graphite is not automatically safe. */
+   asserted. A dawn light on slate is not automatically safe. */
 const CONTRAST = `(() => {
   const lin = (c) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
   const lum = ([r, g, b]) => 0.2126 * lin(r / 255) + 0.7152 * lin(g / 255) + 0.0722 * lin(b / 255);
@@ -657,7 +657,7 @@ await run(
     const bad = await page.evaluate(CONTRAST);
     note(
       bad.length === 0,
-      'WCAG AA contrast against the Tuscan graphite palette',
+      'WCAG AA contrast against the Dawn watch palette',
       bad.map((b) => `${b.sel} ${b.ratio}:1 (needs ${b.need}) ${b.fg} on ${b.bg}`).join(' | '),
     );
 
