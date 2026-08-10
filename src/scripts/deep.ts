@@ -11,7 +11,7 @@
  * markup is a press that would do nothing there.
  */
 
-const NARROW = '(width <= 620px)';
+const NARROW = '(max-width: 620px)';
 
 function fold(deep: HTMLElement): void {
   deep.setAttribute('hidden', 'until-found');

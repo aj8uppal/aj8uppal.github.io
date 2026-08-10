@@ -9,14 +9,14 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
-    "build:lab": "astro check && astro build --mode lab",
+    "build": "astro check && astro build && node scripts/check-mq.mjs",
+    "build:lab": "astro check && astro build --mode lab && node scripts/check-mq.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "images": "node scripts/prepare-images.mjs",
     "poster:deviation": "node scripts/capture-deviation.mjs",
     "receipts": "node scripts/receipts.mjs",
-    "lint": "eslint . && prettier --check .",
+    "lint": "eslint . && prettier --check . && node scripts/check-mq.mjs",
     "format": "prettier --write .",
     "check": "astro check",
     "verify": "node scripts/verify.mjs"

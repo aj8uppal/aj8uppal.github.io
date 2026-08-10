@@ -39,7 +39,7 @@ const LIMIT = 140;
 /* Where the two controls stop being worth 191px of a phone. Below it the card
    opens as its own finished output and one press, and the field, the slider and
    the presets arrive when a thumb asks for them. */
-const NARROW = '(width <= 620px)';
+const NARROW = '(max-width: 620px)';
 
 export default function AutoTyper() {
   const [source, setSource] = useState(PRESETS[0]?.[1] ?? '');
