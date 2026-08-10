@@ -752,9 +752,24 @@ summary,
   box-shadow: 0 0 0 6px color-mix(in srgb, var(--sand) 12%, transparent);
 }
 
+/* The wordmark is turned in space rather than set flat. The axis and the angle
+   are the ones tried by hand in a browser and kept; the lift that came with
+   them was a fixed 69px, which is a third of a line at 1440 and two thirds of
+   one at 390, so it put the A through the meta row on every narrow screen. The
+   rotation on its own reads the same and stays clear of it.
+
+   No perspective on the parent. With one, the block projects smaller and floats
+   up the frame, and the stroke on the second line thins unevenly enough that a
+   bar drops out. Flattened, it reads like a poster, which is the intent.
+
+   The origin is the left edge because everything else on the page starts there:
+   the brand, the meta dot, the paragraph, the button. Spun about its centre the
+   wordmark lands ninety pixels in from all of them. */
 .hero h1 {
   font-size: clamp(4rem, 13.3vw, 12.5rem);
   color: var(--on-ink);
+  transform: rotate3d(4, -10, -0.9, 34deg);
+  transform-origin: 0% 50%;
 }
 
 .hero h1 span {
@@ -762,11 +777,15 @@ summary,
 }
 
 /* The second line is drawn rather than filled. It is the one moment of pure
-   swagger on the page, and it costs nothing but a stroke. */
+   swagger on the page, and it costs nothing but a stroke. It also carries its
+   own turn on top of the line's, so the two lines fall away at different rates
+   and the pair reads as depth rather than as one sheared block. */
 .hero h1 .out {
   margin-left: clamp(0rem, 13vw, 11.5rem);
   color: transparent;
   -webkit-text-stroke: clamp(1.4px, 0.15vw, 2.4px) var(--on-ink);
+  transform: rotate3d(4, -10, -0.9, 18deg);
+  transform-origin: 0% 50%;
 }
 
 /* The action column's floor is the unwrapped button row. At a 250px floor the

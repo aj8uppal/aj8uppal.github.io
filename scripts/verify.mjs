@@ -231,16 +231,24 @@ async function heroContrast(page, width, height, spots = SWEEP) {
        is driving the compositor, so a screenshot taken straight after the
        style change can come back with the previous frame still on it - the
        sand dot in the meta line then reads as canopy light and the row fails
-       at 1.3:1 against a ground the canvas never painted. */
+       at 1.3:1 against a ground the canvas never painted.
+
+       The nav goes with them. A box here is the axis-aligned bounds of the
+       element, and the wordmark is turned in space, so its bounds reach up
+       past the nav pill - whose own type is the same cream as the wordmark's.
+       Left visible it is found as the brightest pixel behind the letters and
+       the row reports 1:1 against itself. The nav has its own ground and the
+       walk above already checks it. */
     await page.evaluate(async () => {
-      for (const e of document.querySelectorAll('.hero__in, .hint')) e.style.visibility = 'hidden';
+      for (const e of document.querySelectorAll('.hero__in, .hint, .nav'))
+        e.style.visibility = 'hidden';
       await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
     });
     const shot = await page.screenshot({
       clip: { x: 0, y: Math.max(0, hero.y), width, height: Math.min(height, hero.h) },
     });
     await page.evaluate(() => {
-      for (const e of document.querySelectorAll('.hero__in, .hint')) e.style.visibility = '';
+      for (const e of document.querySelectorAll('.hero__in, .hint, .nav')) e.style.visibility = '';
     });
     const { data, info } = await sharp(shot).raw().toBuffer({ resolveWithObject: true });
     const scale = info.width / width;
