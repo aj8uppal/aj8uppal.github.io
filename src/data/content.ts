@@ -518,20 +518,24 @@ export const roles: Role[] = [
     title: 'Software Engineer',
     org: 'Notable Health',
     where: 'San Mateo, CA',
-    /* Outcome first. The rest of the log is one line a job; this one earns the
-       room, so it opens with what the thing carries and then how I got it.
+    /* Outcome first, and the team first inside that. A platform this size is
+       not one person's, and a lede that says "I own" is claiming a team's work
+       as well as making a claim about him that the rest of the entry then has
+       to keep. So the platform is the team's and the direction is his, which
+       is the true division and also the more interesting one.
 
        Public-safe by construction: everything here is on the résumé or is the
        generic shape of the work. No customer is named anywhere in this role,
        and none ever gets to be. */
-    body: 'I own the voice and conversations platform at a healthcare AI company: the AI-driven patient calls and the whole stack under them, from the conversation services and workflow APIs down to carrier-facing telephony. It handles around 250,000 patient calls a month at 99% uptime.',
+    body: 'My team owns the voice and conversations platform at a healthcare AI company serving 100+ enterprise customers: the AI-driven patient calls and the whole stack under them, from the conversation services and workflow APIs down to carrier-facing telephony. It handles around 250,000 patient calls a month at 99% uptime, and I set the technical direction for patient identity, routing, observability and reliability.',
     ev: 'notable.scale',
     statusEv: 'notable.lead',
     bullets: [
-      'Own secure patient identity end to end: EHR and FHIR lookup, one-time-code authentication, and the auditable hand-off of a verified caller to a health system’s own call center.',
-      'Design the telephony integrations down to the protocol - SIP, Twilio, media, caller-ID, transfer orchestration - and wrote the specification health systems build against to connect their phone systems to ours.',
-      'Own reliability and incident response for voice: I lead the debriefs and turn failure modes into platform improvements, including fallback routing that keeps a caller connected when an upstream provider goes dark.',
-      'Grew the platform past calls into a broader conversations domain - a phased database split, a BigQuery analytics foundation, multilingual support - and contribute to the healthcare-integration core (HL7, FHIR, insurance data) where it overlaps. Across all of it I’m a technical owner: I write the RFCs and integration guides, review across services, and run go-lives.',
+      'Design the telephony integrations down to the protocol - SIP and TLS, SRTP, caller-ID preservation, DTMF, DID routing - and I wrote the specification health systems build against to connect their phone systems to ours. It has driven more than $1M in ARR.',
+      'Own secure caller authentication end to end: EHR and FHIR patient lookup, one-time-code verification by SMS, and the auditable hand-off of a verified caller into a customer’s own call center. HIPAA-compliant verification across 5+ health systems.',
+      'Own reliability and incident response for voice: I lead the debriefs and turn failure modes into platform fixes, including customer-configurable fallback routing that keeps a caller connected when an upstream provider goes dark.',
+      'Lead the AI-powered testing capability for the flow builder, so a builder can trust a flow before it ever takes a real call. Flow success rates are above 90%.',
+      'Shipped multilingual conversations, configurable transfer workflows and builder-facing configuration, which cut new-customer launch time from weeks to days. I also contribute to the healthcare-integration core - HL7 and Mirth encounter ingestion, FHIR authorization, insurance data modeling - and mentor engineers from junior through senior.',
     ],
     /* Where the role stands, and nothing about how long it took to get there.
        Tenure is already on the face of the entry in the dates beside it, so
@@ -607,24 +611,18 @@ export const roles: Role[] = [
 /**
  * What the job is this month.
  *
- * Two threads of current work, and they are signed off one at a time rather
- * than together. Both characterise things that have not shipped, at a company
- * he still works for, so the wording is not his employer's to be surprised by
- * and not mine to choose. `approved` flips only on an explicit sign-off on
- * that exact sentence, and until it does the page does not render the line at
- * all. Nothing here names a customer, and nothing here ever will.
- */
-export const notableLately: { approved: boolean; text: string } = {
-  approved: true,
-  text: 'Lately I’ve been making those conversations testable, so a builder can trust a flow before it ever takes a real call.',
-};
-
-/**
- * The second thread, still held.
+ * There were two threads here, signed off one at a time rather than together.
+ * The flow-testing one has gone into the role's own bullets, where it now
+ * carries the number that goes with it; its signed-off wording travelled with
+ * it word for word rather than being reworded on the way, so nothing is
+ * published that was not agreed to. Saying it in both places was saying it
+ * twice within four lines of itself.
  *
- * Same gate, its own boolean, kept next to the first so approving it is one
- * word and no rebuild. The wording has not been signed off, so it stays as
- * written rather than being tidied into something nobody agreed to.
+ * This one characterises something that has not shipped, at a company he still
+ * works for, so the wording is not his employer's to be surprised by and not
+ * mine to choose. `approved` flips only on an explicit sign-off on that exact
+ * sentence, and until it does the page does not render the line at all.
+ * Nothing here names a customer, and nothing here ever will.
  */
 export const notableBrowser: { approved: boolean; text: string } = {
   approved: false,

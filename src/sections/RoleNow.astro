@@ -4,14 +4,14 @@
  * get. It keeps the .role class and the stack key, so the work-log filter
  * counts it as one of eight.
  *
- * It opens on the outcome and then gives the four points of ownership under
- * it. That summary used to live in a band of its own up by About, back when
+ * It opens on the outcome and then gives the points of ownership under it.
+ * That summary used to live in a band of its own up by About, back when
  * the log sat below the projects and a reader met eight jobs late; the whole
  * section is second on the page now, so the band would be the same sentence
  * twice within a screen of itself. One telling, in the record.
  */
 import Claim from '../components/Claim.astro';
-import { notableBrowser, notableLately, places } from '../data/content';
+import { notableBrowser, places } from '../data/content';
 import { current, stackKey, stackLine } from '../lib/roles';
 ---
 
@@ -45,9 +45,8 @@ import { current, stackKey, stackLine } from '../lib/roles';
             ))}
           </ul>
         )}
-        {/* Two threads, gated one at a time. The flow line is signed off; the
-            browser-automation line is not, and does not render until it is. */}
-        {notableLately.approved && <p class="role__lately">{notableLately.text}</p>}
+        {/* The one thread still held. The browser-automation line is not
+            signed off, and does not render until it is. */}
         {notableBrowser.approved && <p class="role__lately">{notableBrowser.text}</p>}
         {current.status && (
           <p class="role__status">
