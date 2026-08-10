@@ -32,10 +32,13 @@ const PHASES: Array<[number, string]> = [
      against. The names are the CSS ramps in section 9c of global.css, in
      words; if one moves, the other has to. */
   [0.7, 'Depth pass, over the stack'],
-  [1.01, 'One frame, assembled'],
+  [0.92, 'One frame, assembled'],
+  [1.01, 'Reprojected, alive'],
 ];
 
-const phase = (p: number): string => PHASES.find(([at]) => p < at)?.[1] ?? 'One frame, assembled';
+const LAST = 'Reprojected, alive';
+
+const phase = (p: number): string => PHASES.find(([at]) => p < at)?.[1] ?? LAST;
 
 const clamp = (n: number): number => (n < 0 ? 0 : n > 1 ? 1 : n);
 

@@ -107,6 +107,26 @@ export const assembly = {
    */
   edge: { x: 0.2, y: 0.5, zoom: 3.4 },
 
+  /**
+   * The last beat: the same four plates, running.
+   *
+   * A frame off hidamari's own player at simultaneous maximum gaze and lean,
+   * which is the furthest the camera ever gets from the window the plates were
+   * cut for. It arrives over the composited bake, and the bake is the same
+   * camera at rest, so the dissolve between them is the parallax itself: the
+   * near trunks travel, the far path barely moves, and the overscan the stage
+   * never shows is what fills the edges as they go.
+   *
+   * The sun glyph in the corner is the player's own settings control. It is
+   * left in because cropping the interface out of a screenshot of an interface
+   * is the kind of tidying that makes a capture stop being evidence.
+   */
+  alive: {
+    src: 'hidamari-runtime-lean',
+    tag: 'Running, at maximum lean',
+    alt: 'The same canopy in the running app, with the camera leaned to its limit: the near trunks have swung across the frame and the path down the middle has hardly moved.',
+  },
+
   /** The caption under the figure. */
   said: 'One frame of hidamari in the four plates it is composited from, their four depth passes, and the same scene alive in the browser. The distances are hidamari’s own, taken over the whole plate rather than this window; the greys are this page’s, one log scale from 4 to 300 metres across all four, because raw inverse depth would arrive as three black rectangles and a picture. Nothing in the finished frame was lit by the browser. What the browser does is move the camera through it.',
 } as const;

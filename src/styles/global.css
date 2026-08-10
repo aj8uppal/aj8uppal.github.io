@@ -1862,7 +1862,7 @@ summary,
    scrub and the reduced-motion still are three ways of setting one number
    rather than three code paths.
 
-   The three ramps below are the whole timeline, and they are here rather than
+   The four ramps below are the whole timeline, and they are here rather than
    in the driver because they are a matter of how the figure looks, which is
    this file's business and not the script's. */
 .asm {
@@ -1883,6 +1883,11 @@ summary,
      depth pass to clear: a loupe on a grey slab is magnifying the wrong
      picture, and the thing it is looking for is a colour. */
   --m: clamp(0, min((var(--p) - 0.72) * 16.67, (0.88 - var(--p)) * 25), 1);
+
+  /* The running frame, over the bake, and it stays. This is the one beat with
+     no way back: the figure is an argument that ends at the app, so the end of
+     the scrub is the app and not a stack of pictures of it. */
+  --a: clamp(0, calc((var(--p) - 0.9) * 10), 1);
 
   margin: 1.4rem 0 0;
 }
@@ -2091,6 +2096,40 @@ summary,
   position: absolute;
   right: 0;
   bottom: 0;
+  margin: 0;
+  padding: 0.16rem 0.34rem;
+  background: var(--sand);
+  color: var(--on-accent);
+  font: 800 0.56rem/1.35 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* The plates, running. It sits over the whole stack and dissolves in from the
+   bake underneath it, which is this same camera at rest, so what changes
+   across the dissolve is only what the reprojection did to it. */
+.asm__alive {
+  position: absolute;
+  inset: 0;
+  opacity: var(--a);
+  pointer-events: none;
+}
+
+.asm__alive img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Left rather than right: the player's own sun glyph is in the bottom right of
+   this capture, and a caption of ours sitting on top of the interface we are
+   claiming is untouched would be an odd place to put it. */
+.asm__alive-t {
+  position: absolute;
+  bottom: 0;
+  left: 0;
   margin: 0;
   padding: 0.16rem 0.34rem;
   background: var(--sand);
@@ -2520,8 +2559,12 @@ summary,
   font: 680 0.62rem/1.3 var(--mono);
 }
 
+/* Wraps rather than runs off. The state names are as long as they need to be
+   to be honest about the state, and at 390 the longest of them plus its label
+   is wider than the card it sits in. */
 .range span {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 0.5rem;
 }

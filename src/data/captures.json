@@ -730,6 +730,20 @@
     "omits": "the 1.6x overscan margin the reprojection pans into, which the camera never shows at rest"
   },
   {
+    "out": "hidamari-runtime-lean",
+    "from": "hidamari-runtime-max-parallax-1280x548.png",
+    "src": {
+      "w": 1280,
+      "h": 548
+    },
+    "asset": {
+      "w": 1240,
+      "h": 531,
+      "bytes": 257476
+    },
+    "dated": "2026-08-10"
+  },
+  {
     "out": "elderwood-default",
     "from": "elderwood-vale-default-1280x720.png",
     "src": {

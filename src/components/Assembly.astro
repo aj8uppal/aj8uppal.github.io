@@ -51,10 +51,12 @@ const fan = (i: number, n: number): { x: number; y: number } => {
  * it is the file the browser has already fetched rather than a second one. A
  * magnifier on a smear does not need a sharper smear.
  */
+const SIZES = '(min-width: 1000px) 560px, 90vw';
 const back = assembly.plates[0];
-const seen = back
-  ? await sources(back.colour, [420, 640, 900, 1240], '(min-width: 1000px) 560px, 90vw')
-  : null;
+const seen = back ? await sources(back.colour, [420, 640, 900, 1240], SIZES) : null;
+
+/* The running frame, over the top of everything, last. */
+const live = await sources(assembly.alive.src, [420, 640, 900, 1240], SIZES);
 
 /* The magnified copy, in percentages of the loupe box. The loupe carries the
    stage's aspect ratio, so one zoom does both axes and the focus point lands in
@@ -128,6 +130,27 @@ const mark = {
         </Fragment>
       )
     }
+
+    {
+      /* The same plates, running. Last, over everything, and over the bake it
+         dissolves from: the bake is this camera at rest, so what moves between
+         the two is exactly what the reprojection did. */
+    }
+    <div class="asm__alive">
+      <picture>
+        <source type="image/avif" srcset={live.avif} sizes={live.sizes} />
+        <source type="image/webp" srcset={live.webp} sizes={live.sizes} />
+        <img
+          src={live.src}
+          width={live.width}
+          height={live.height}
+          alt={assembly.alive.alt}
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+      <p class="asm__alive-t" aria-hidden="true">{assembly.alive.tag}</p>
+    </div>
   </div>
 
   {

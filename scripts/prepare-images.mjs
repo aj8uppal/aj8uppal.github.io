@@ -317,6 +317,13 @@ const JOBS = [
     width: 1240,
   },
 
+  // hidamari - and the same four plates alive: a frame off the running player
+  // at simultaneous maximum gaze and lean, which is the furthest the camera
+  // ever leans from the window the plates were cut for. It is hidamari's own
+  // capture, not one taken here, so nothing was built or run in that repo to
+  // get it. Native 1280x548, resized only to match the sheets it sits on.
+  { in: 'hidamari-runtime-max-parallax-1280x548.png', out: 'hidamari-runtime-lean', width: 1240 },
+
   // Elderwood Vale - software-rendered captures at 1280x720. Card size only, never full bleed.
   { in: 'elderwood-vale-default-1280x720.png', out: 'elderwood-default', width: 1280 },
   { in: 'elderwood-vale-placement-coverage-1280x720.png', out: 'elderwood-coverage', width: 1280 },
