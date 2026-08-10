@@ -23,6 +23,11 @@ const OUT = process.argv[3] ?? '/tmp/p6shots';
    quietly growing a section back does. */
 const HEIGHT_BUDGET = 13000;
 
+/* The same number for the phone, which used to be twice it. 12,708px after the
+   swipe rows, the ledger and the card fold; the margin is one folded card, on
+   the same reasoning as the line above. */
+const MOBILE_BUDGET = 13200;
+
 const fail = [];
 const note = (ok, label, detail) => {
   if (!ok) fail.push(`${label}: ${detail}`);
@@ -777,6 +782,93 @@ await run(
       `${m.mail.w} of ${m.mail.rowW}`,
     );
     note(m.tap.length === 0, '390 every control clears a 34px tap target', m.tap.join(', '));
+
+    /* The three mechanisms this width is built out of, each checked where it
+       can actually be wrong: a set that does not scroll, a ledger that shipped
+       already open, a fold that swallowed the text it was meant to hold. */
+    const mob = await page.evaluate(() => {
+      const vw = document.documentElement.clientWidth;
+      const rows = [...document.querySelectorAll('.swipe__row')];
+      const folds = [...document.querySelectorAll('.tl .fold')];
+      const deeps = [...document.querySelectorAll('.deep')];
+      const held = document.activeElement;
+      const reach = rows.every((r) => {
+        r.focus();
+        return (
+          document.activeElement === r ||
+          r.contains(document.activeElement) ||
+          !!r.querySelector('a[href], button')
+        );
+      });
+      if (held instanceof HTMLElement) held.focus();
+      return {
+        rows: rows.length,
+        scrolls: rows.filter((r) => r.scrollWidth > r.clientWidth + 2).length,
+        snaps: rows.filter((r) => getComputedStyle(r).scrollSnapType === 'x mandatory').length,
+        peek: rows.every((r) =>
+          [...r.children].every((c) => {
+            const w = c.getBoundingClientRect().width;
+            return w > vw * 0.7 && w < vw * 0.86;
+          }),
+        ),
+        reach,
+        ledger: folds.length,
+        shut: folds.every((d) => !d.open),
+        kept: folds.every((d) => !!d.querySelector(':scope > div > *')),
+        deeps: deeps.length,
+        untilFound: deeps.every((d) => d.getAttribute('hidden') === 'until-found'),
+        /* content-visibility, not display: none. The difference is whether
+           find-in-page can reach the four cards' whole argument. */
+        reachable: deeps.every((d) => getComputedStyle(d).contentVisibility === 'hidden'),
+      };
+    });
+
+    /* One row, because it was the only set left stacked: the arc, the region
+       switcher and the deviation card each carry a horizontal grammar of their
+       own, and the pattern was lifted out of the last of them. */
+    note(
+      mob.rows === 1 && mob.scrolls === 1 && mob.snaps === 1,
+      '390 the stacked set is a snapping swipe row',
+      `${mob.rows} rows, ${mob.scrolls} scroll, ${mob.snaps} snap`,
+    );
+    note(mob.peek, '390 a swipe card is ~78vw, so the next one peeks', '');
+    note(mob.reach, '390 a swipe row is reachable without a thumb', '');
+    note(
+      mob.ledger === 7 && mob.shut && mob.kept,
+      '390 the finished jobs are a shut ledger with their entries still in it',
+      `${mob.ledger} rows, all shut ${mob.shut}, entries kept ${mob.kept}`,
+    );
+    note(
+      mob.deeps === 4 && mob.untilFound && mob.reachable,
+      '390 each project folds to hidden="until-found", not out of the document',
+      `${mob.deeps} folds, until-found ${mob.untilFound}, findable ${mob.reachable}`,
+    );
+
+    /* One press, opened, because everything above is true of a fold that does
+       not open either. */
+    const opened = await page.evaluate(async () => {
+      const card = document.getElementById('p-elderwood');
+      card.querySelector('.deep__go').click();
+      await new Promise((r) => setTimeout(r, 200));
+      const deep = card.querySelector('.deep');
+      return {
+        shown: !deep.hasAttribute('hidden'),
+        gone: getComputedStyle(card.querySelector('.deep__go')).display === 'none',
+        focus: document.activeElement?.className,
+        rest: document.querySelectorAll('.card[data-fold]').length,
+      };
+    });
+    note(
+      opened.shown && opened.gone && opened.focus === 'deep' && opened.rest === 3,
+      '390 the press opens its own card and hands over the focus it held',
+      `shown ${opened.shown}, press gone ${opened.gone}, focus ${opened.focus}, ${opened.rest} still shut`,
+    );
+
+    note(
+      m.height <= MOBILE_BUDGET,
+      `390 page fits the ${MOBILE_BUDGET}px budget`,
+      `measured ${m.height}px`,
+    );
     console.log(`       page height ${m.height}px at 390`);
 
     /* The narrow hero stacks the type lower into the frame, past where the
