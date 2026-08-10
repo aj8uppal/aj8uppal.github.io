@@ -8,6 +8,17 @@
 
    Mono is a label face here, not an annotation layer: kickers, badges,
    captions, and nothing else.
+
+   Every breakpoint is written `max-width:` / `min-width:`, never the Level 4
+   range form `(width <= 620px)`. The range form is nicer to read and it cost
+   us the entire mobile site: a browser that cannot parse a media query drops
+   the whole block, so on iOS Safari before 16.4 every one of these breakpoints
+   vanished and a phone was served the raw desktop layout - two-column rails at
+   430px, label/value grids printing on top of each other, the page scrolling
+   sideways. The same rule holds for `matchMedia` strings in TS, which fail the
+   same way and took the folds and the swipe rows down with them. Modernising
+   this back is a site-wide outage on older phones; `scripts/check-mq.mjs`
+   fails the build if it reappears.
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* ── 1. TOKENS ───────────────────────────────────────────────────────── */
@@ -674,7 +685,7 @@ summary,
 
 /* Nothing can open it above the breakpoint, but a window dragged wider while
    it is open would otherwise leave it hanging there over the full-width row. */
-@media (width > 620px) {
+@media (min-width: 620.001px) {
   .nav__panel {
     display: none;
   }
@@ -831,7 +842,7 @@ summary,
    picture and does not move for the type; the type moves, and the same worst
    case reads 4.7. Above and below the band it is untouched, at 5.2 and better
    on the same measurement. */
-@media (width > 620px) and (width <= 900px) {
+@media (min-width: 620.001px) and (max-width: 900px) {
   .hero__intro {
     color: var(--on-ink-hi);
   }
@@ -3088,7 +3099,7 @@ summary,
 /* The split is worth having only while the wider column can still feed the
    frame the 665px it refuses to go below. Under that the row is costing the
    frame more than it saves the page, so it stops being a row. */
-@media (width <= 1260px) {
+@media (max-width: 1260px) {
   .labs {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -3450,7 +3461,7 @@ summary,
    The component only ever folds below this width, so the query is a second
    lock rather than the condition: whatever the script does, the wide layout
    keeps every control it has. */
-@media (width <= 620px) {
+@media (max-width: 620px) {
   .stage--typer[data-fold] .typer {
     display: none;
   }
@@ -3595,7 +3606,7 @@ summary,
 /* Below this the card is narrower than half the document and the component
    stops shrinking, so the drawn height stops changing too. 765 is where the
    card crosses 665, measured rather than guessed. */
-@media (width <= 765px) {
+@media (max-width: 765px) {
   .devframe {
     aspect-ratio: auto;
     height: 298px;
@@ -3988,7 +3999,7 @@ button.toolbar__link {
 /* Under 900 the text column has stopped being a column: it is 240px of
    minimum next to an image that wants the rest, and the paragraph breaks
    every four words. Stack it and give the lead the whole measure. */
-@media (width <= 900px) {
+@media (max-width: 900px) {
   .rz {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -4003,7 +4014,7 @@ button.toolbar__link {
    the argument the pair exists to make - same screen, one toggle apart - is
    the one thing a shot this small still carries, better adjacent than
    separated by a scroll. */
-@media (width <= 620px) {
+@media (max-width: 620px) {
   /* Sized for a 605px frame, and a third of the width of a 143px one. The
      type is already at the floor, so the room comes out of the padding. */
   .rz__theme {
@@ -4038,7 +4049,7 @@ button.toolbar__link {
   display: contents;
 }
 
-@media (width <= 620px) {
+@media (max-width: 620px) {
   .swipe {
     position: relative;
     display: block;
@@ -4748,7 +4759,7 @@ span.buoy__p {
   text-underline-offset: 3px;
 }
 
-@media (width <= 620px) {
+@media (max-width: 620px) {
   .ins__d > div {
     grid-template-columns: minmax(0, 1fr);
     gap: 0;
@@ -4882,7 +4893,7 @@ span.buoy__p {
 }
 
 /* ── 16. BREAKPOINTS ─────────────────────────────────────────────────── */
-@media (width <= 1000px) {
+@media (max-width: 1000px) {
   .fs,
   .card__cols,
   .card--full .card__cols,
@@ -4891,7 +4902,7 @@ span.buoy__p {
   }
 }
 
-@media (width <= 900px) {
+@media (max-width: 900px) {
   .hero__bottom,
   .about,
   .log,
@@ -4952,7 +4963,7 @@ span.buoy__p {
   }
 }
 
-@media (width <= 620px) {
+@media (max-width: 620px) {
   :root {
     --pad: 1rem;
   }
@@ -5354,7 +5365,7 @@ span.buoy__p {
    and both take the full width - the same shape the about-page facts use for
    the same reason. Costs about 130px of page and buys back a readable
    measure, which on the one device that is all measure is the better trade. */
-@media (width <= 470px) {
+@media (max-width: 470px) {
   .skim > div {
     grid-template-columns: 1fr;
     gap: 0.1rem;

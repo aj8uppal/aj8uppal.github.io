@@ -14,7 +14,7 @@
  * right way round for that failure to fall.
  */
 
-const NARROW = '(width <= 620px)';
+const NARROW = '(max-width: 620px)';
 
 /* The stack line is "job title · thing · thing", glued by the non-breaking
    separator `dots` puts in. Folded, the row wants the title and none of the

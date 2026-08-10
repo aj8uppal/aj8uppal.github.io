@@ -46,7 +46,7 @@ const MIN = 0.5;
     is the same seed drawn whole at the card's width rather than half of one at
     half scale, and it does not pull Chart.js off a CDN to sample two thousand
     deviates on a handset. So down here the file waits to be asked. */
-const HANDSET = '(width <= 765px)';
+const HANDSET = '(max-width: 765px)';
 
 export default function DeviationFrame({ src, href, title, poster, posterAlt, note }: Props) {
   const [live, setLive] = useState(false);

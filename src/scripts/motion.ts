@@ -266,7 +266,7 @@ function installNavPanel(): void {
 
   // Dragged wider than the breakpoint the toggle is gone, so anything left
   // open would be open with no way to shut it.
-  window.matchMedia('(width > 620px)').addEventListener('change', (e) => {
+  window.matchMedia('(min-width: 620.001px)').addEventListener('change', (e) => {
     if (e.matches) setOpen(false, false);
   });
 }
