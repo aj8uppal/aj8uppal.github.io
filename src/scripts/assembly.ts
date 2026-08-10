@@ -66,14 +66,22 @@ export function installAssembly(): void {
     if (out) out.textContent = said;
   };
 
-  /* The stage centre from nine tenths of the way down the viewport to under a
-     half. Measured off the stage rather than the figure so the caption and the
-     scrub under it do not shift where the stack lands. */
+  /* The stage centre from just under three quarters of the way down the
+     viewport to just over a quarter. Measured off the stage rather than the
+     figure so the caption and the scrub under it do not shift where the stack
+     lands.
+
+     The window used to open at nine tenths, which ran the whole fan along the
+     bottom edge of the screen with its lower half under the fold: by the time
+     the figure was somewhere a reader would look at it, the plates had already
+     closed. It opens now with the stage clear of the fold and closes with it
+     in the upper third. The travel is the same length as before; it sits
+     higher. */
   const reached = (): number => {
     const r = stage.getBoundingClientRect();
     const vh = window.innerHeight || 1;
     const mid = r.top + r.height / 2;
-    return clamp((0.9 * vh - mid) / (0.45 * vh));
+    return clamp((0.72 * vh - mid) / (0.44 * vh));
   };
 
   let driver: 'scroll' | 'manual' | 'still' = reduced.matches ? 'still' : 'scroll';
