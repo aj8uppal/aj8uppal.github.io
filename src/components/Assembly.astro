@@ -1,0 +1,199 @@
+---
+/**
+ * Four plates, landing on each other as the page scrolls past.
+ *
+ * The one place on this site where scroll drives motion, and it earns it by
+ * being what the app does: hidamari composites four still bakes into a moving
+ * frame, so watching the four converge into one image is the technique
+ * performing itself rather than a decoration that happens to be near the
+ * paragraph about it.
+ *
+ * It does not hijack anything. The page scrolls at the speed the reader
+ * scrolls it; a listener reads where the stage has got to and writes one
+ * number. Scrolling past at full tilt costs nothing but a stack that has
+ * already landed.
+ *
+ * Three drivers, one number. Scroll is the default. The scrub takes over the
+ * moment it is touched and says so, with a control to hand it back, because a
+ * slider that silently loses an argument with the next scroll event is a
+ * broken slider. Under reduced motion there is no scroll listener at all: the
+ * stack starts assembled and stays there, and the scrub is the only way it
+ * comes apart, which is a reader asking for movement rather than being handed
+ * it.
+ */
+import AsmPlate from './AsmPlate.astro';
+import { sources } from '../lib/images';
+import { assembly } from '../data/assembly';
+
+/* Fixed, not generated. One of these per page, and a random id would make two
+   builds of the same source differ, which costs the build comparison in
+   verify its whole point. */
+const uid = 'asm';
+
+/**
+ * Where each sheet sits while the stack is apart, in percent of the stage.
+ *
+ * The offsets are percentages of the stage and the scale does not touch them,
+ * so a sheet is flush with the edge at (1 - scale) / 2, which is 24 at the 0.52
+ * the fan opens to. The vertical spread is deliberately short of flush. On a
+ * stage this wide the sheets have far less height to give away than width, and
+ * the strip of a back sheet the next one leaves uncovered is the only place its
+ * number can sit.
+ */
+const SPAN = { x: 24, y: 16 };
+const fan = (i: number, n: number): { x: number; y: number } => {
+  const t = n > 1 ? (i / (n - 1)) * 2 - 1 : 0;
+  return { x: +(t * SPAN.x).toFixed(2), y: +(t * SPAN.y).toFixed(2) };
+};
+
+/**
+ * The loupe holds the backing plate at the same sources as the sheet does, so
+ * it is the file the browser has already fetched rather than a second one. A
+ * magnifier on a smear does not need a sharper smear.
+ */
+const SIZES = '(min-width: 1000px) 560px, 90vw';
+const back = assembly.plates[0];
+const seen = back ? await sources(back.colour, [420, 640, 900, 1240], SIZES) : null;
+
+/* The running frame, over the top of everything, last. */
+const live = await sources(assembly.alive.src, [420, 640, 900, 1240], SIZES);
+
+/* The magnified copy, in percentages of the loupe box. The loupe carries the
+   stage's aspect ratio, so one zoom does both axes and the focus point lands in
+   the middle of the window by construction. */
+const z = assembly.edge.zoom;
+const loupe = {
+  w: `${(z * 100).toFixed(2)}%`,
+  x: `${(50 - z * 100 * assembly.edge.x).toFixed(2)}%`,
+  y: `${(50 - z * 100 * assembly.edge.y).toFixed(2)}%`,
+};
+
+/* And where it is looking, on the frame itself. Same arithmetic, inverted. */
+const mark = {
+  w: `${(100 / z).toFixed(2)}%`,
+  x: `${(assembly.edge.x * 100 - 50 / z).toFixed(2)}%`,
+  y: `${(assembly.edge.y * 100 - 50 / z).toFixed(2)}%`,
+};
+---
+
+<figure class="asm" data-asm style={`--ar: ${assembly.ar}`}>
+  <div class="asm__stage" data-asm-stage>
+    {
+      assembly.plates.map((p, i) => {
+        const at = fan(i, assembly.plates.length);
+        return (
+          <div class="asm__plate" data-plate={p.key} style={`--x: ${at.x}; --y: ${at.y}`}>
+            <div class="asm__sheet">
+              <AsmPlate colour={p.colour} depth={p.depth} alt={p.alt} depthAlt={p.depthAlt} />
+            </div>
+            <p class="asm__no" aria-hidden="true">
+              {i}
+            </p>
+          </div>
+        );
+      })
+    }
+
+    <p class="asm__zt" aria-hidden="true">{assembly.depthTag}</p>
+
+    {
+      /* What the front layers never let you see, at three and a half times. It
+         arrives once the stack has landed and the depth pass has cleared off
+         it, and it leaves again before the runtime frame moves the camera,
+         because a marquee pointing at a frame shot from somewhere else is
+         pointing at nothing. */
+      seen && (
+        <Fragment>
+          <div
+            class="asm__mark"
+            style={`--mw: ${mark.w}; --mx: ${mark.x}; --my: ${mark.y}`}
+            aria-hidden="true"
+          />
+          <div class="asm__loupe" aria-hidden="true">
+            <div
+              class="asm__loupe-in"
+              style={`--lw: ${loupe.w}; --lx: ${loupe.x}; --ly: ${loupe.y}`}
+            >
+              <picture>
+                <source type="image/avif" srcset={seen.avif} sizes={seen.sizes} />
+                <source type="image/webp" srcset={seen.webp} sizes={seen.sizes} />
+                <img
+                  src={seen.src}
+                  width={seen.width}
+                  height={seen.height}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
+            </div>
+            <p class="asm__loupe-t">Backing plate, {z}&times;</p>
+          </div>
+        </Fragment>
+      )
+    }
+
+    {
+      /* The same plates, running. Last, over everything, and over the bake it
+         dissolves from: the bake is this camera at rest, so what moves between
+         the two is exactly what the reprojection did. */
+    }
+    <div class="asm__alive">
+      <picture>
+        <source type="image/avif" srcset={live.avif} sizes={live.sizes} />
+        <source type="image/webp" srcset={live.webp} sizes={live.sizes} />
+        <img
+          src={live.src}
+          width={live.width}
+          height={live.height}
+          alt={assembly.alive.alt}
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+      <p class="asm__alive-t" aria-hidden="true">{assembly.alive.tag}</p>
+    </div>
+  </div>
+
+  {
+    /* The numbers on the sheets, spelled out. On the stage a label wide enough
+       to read would cover the sheet in front of it at every width this figure
+       is ever drawn at, so the sheets carry an index and the naming happens
+       here, where it also survives the stack landing. */
+  }
+  <ol class="asm__key">
+    {
+      assembly.plates.map((p, i) => (
+        <li>
+          <b>{i}</b>
+          <span>{p.name}</span>
+          <em>{p.by}</em>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="asm__scrub">
+    <label class="range" for={`${uid}-asm`}>
+      <span>
+        Assembly <output for={`${uid}-asm`} data-asm-out aria-hidden="true"
+          >Four plates, apart</output
+        >
+      </span>
+      <input
+        id={`${uid}-asm`}
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        value="0"
+        data-asm-range
+        aria-valuetext="Four plates, apart"
+      />
+    </label>
+    {/* Only rendered as reachable once the scrub has taken the wheel. */}
+    <button type="button" class="asm__hand" data-asm-hand>Hand it back to the scroll</button>
+  </div>
+
+  <figcaption class="asm__cap">{assembly.said}</figcaption>
+</figure>

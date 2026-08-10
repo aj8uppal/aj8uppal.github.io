@@ -1,0 +1,60 @@
+---
+/**
+ * One sheet of the assembly: a colour plate with its depth pass over it.
+ *
+ * Two pictures in one box, the depth on top at an opacity the stack's own
+ * number drives, so the wipe that shows what lifts the layers is a compositor
+ * fade over an image that is already decoded rather than a swap that has to go
+ * and fetch something halfway through a scroll.
+ *
+ * The depth pass is asked for at three widths and the colour at four. It is
+ * only ever seen through a cross-fade on its way somewhere else, and it is a
+ * smooth grey field, which is the one kind of picture that survives being a
+ * size small.
+ */
+import { sources } from '../lib/images';
+
+interface Props {
+  colour: string;
+  depth: string;
+  alt: string;
+  depthAlt: string;
+}
+
+const { colour, depth, alt, depthAlt } = Astro.props;
+
+/* The stage is 560px at the width the card gets on a desktop and close to the
+   whole card below that. Written once here, for both pictures. */
+const SIZES = '(min-width: 1000px) 560px, 90vw';
+
+const [lit, z] = await Promise.all([
+  sources(colour, [420, 640, 900, 1240], SIZES),
+  sources(depth, [420, 640, 900], SIZES),
+]);
+---
+
+<picture class="asm__lit">
+  <source type="image/avif" srcset={lit.avif} sizes={lit.sizes} />
+  <source type="image/webp" srcset={lit.webp} sizes={lit.sizes} />
+  <img
+    src={lit.src}
+    width={lit.width}
+    height={lit.height}
+    alt={alt}
+    loading="lazy"
+    decoding="async"
+  />
+</picture>
+
+<picture class="asm__z">
+  <source type="image/avif" srcset={z.avif} sizes={z.sizes} />
+  <source type="image/webp" srcset={z.webp} sizes={z.sizes} />
+  <img
+    src={z.src}
+    width={z.width}
+    height={z.height}
+    alt={depthAlt}
+    loading="lazy"
+    decoding="async"
+  />
+</picture>

@@ -1,0 +1,92 @@
+---
+import Section from '../components/Section.astro';
+import type { Tone } from '../components/Section.astro';
+import { evidence, placeOrder, places, skills } from '../data/content';
+import type { PlaceKey } from '../data/content';
+
+interface Props {
+  /** Its number on this route. The sides run the same sections in two orders. */
+  n: string;
+  tone: Tone;
+}
+
+const { n, tone } = Astro.props;
+
+/* The skills index, resolved once. Every skill needs an entry in `evidence`,
+   even an empty one, because a skill the page cannot back up and a skill
+   somebody forgot to file look identical on the rendered page. This is the
+   only place that can tell them apart, so it does. */
+const skillIndex = skills.map((g) => ({
+  group: g.group,
+  items: g.items.map((name) => {
+    const found = evidence[name as keyof typeof evidence] as readonly PlaceKey[] | undefined;
+    if (!found) throw new Error(`skills: "${name}" has no entry in evidence`);
+    return {
+      name,
+      id: `sk-${name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')}`,
+      at: placeOrder.filter((k) => found.includes(k)).map((k) => places[k]),
+    };
+  }),
+}));
+
+const skillTotal = skillIndex.reduce((c, g) => c + g.items.length, 0);
+const skillShown = skillIndex.reduce((c, g) => c + g.items.filter((i) => i.at.length).length, 0);
+---
+
+<Section n={n} id="skills" name="Skills" tone={tone}>
+  <div class="head" data-reveal>
+    <div class="head__k">
+      <p class="kicker">{n} / Skills</p>
+      <p class="head__count">{skillShown} of {skillTotal} turn up above</p>
+    </div>
+    <div>
+      <h2 class="display head__t">Grouped, unrated</h2>
+      <p class="head__lead">Pick one to see where it turns up.</p>
+    </div>
+  </div>
+
+  {
+    /* An index, so it is built like one: pick an entry and it gives you the
+      references. Radio buttons rather than script, because a radio group is
+      already one-at-a-time, already arrow-navigable, already announced as a
+      set, and still works on a page where nothing ran. The whole reveal is a
+      single `:checked + label + p` rule.
+
+      The references are element ids, not section ids, so a reference lands
+      on the card that is the evidence. The card marks itself on arrival. */
+  }
+  <div class="skills" data-reveal>
+    {
+      skillIndex.map((g) => (
+        <section class="skg">
+          <h3>{g.group}</h3>
+          <div class="skg__set">
+            {g.items.map((i) => (
+              <>
+                <input class="sk__r" type="radio" name="sk" id={i.id} />
+                <label class="sk" for={i.id}>
+                  {i.name}
+                </label>
+                <p class="sk__ev">
+                  {i.at.length ? (
+                    <>
+                      <span>Turns up in</span>
+                      {i.at.map((pl) => (
+                        <a href={`#${pl.at}`}>{pl.name}</a>
+                      ))}
+                    </>
+                  ) : (
+                    <span class="sk__ev--none">On the r&#233;sum&#233; only.</span>
+                  )}
+                </p>
+              </>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</Section>

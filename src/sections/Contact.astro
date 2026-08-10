@@ -1,0 +1,124 @@
+---
+import Claim from '../components/Claim.astro';
+import Section from '../components/Section.astro';
+import type { Tone } from '../components/Section.astro';
+import { contact } from '../data/content';
+
+interface Props {
+  /** Its number on this route. The sides run the same sections in two orders. */
+  n: string;
+  tone: Tone;
+  /** Which side this is, so the footer offers the other one. */
+  side?: 'a' | 'b';
+}
+
+const { n, tone, side = 'a' } = Astro.props;
+---
+
+<Section n={n} id="contact" name="Contact" tone={tone} cls="contact">
+  <div class="contact__grid">
+    <div data-reveal>
+      <p class="kicker">{n} / Contact</p>
+      <h2 class="display">Write to me</h2>
+      <p class="contact__copy">
+        I read it, and I answer it. Send me a hard systems problem, an overambitious browser idea,
+        or a reason Python isn&#8217;t the best language. Email is the fastest way in.
+      </p>
+
+      {
+        /* The address, at the size of a thing you press. It is the only
+          filled shape on this ground: the heading is ink drawn as letters
+          and everything else in the section is a hairline, so the one solid
+          slab is not decoration, it is the instruction. The address stays
+          the label rather than the word "Email", because an address is a
+          fact somebody can copy and a verb is not. */
+      }
+      <a class="contact__mail" href={`mailto:${contact.email}`}>{contact.email}</a>
+    </div>
+
+    {
+      /* Everything that is not the ask, in one column that says so. A new tab
+        for the PDF rather than a forced download: it opens in the reader every
+        browser already ships, and saving it from there is one more click that
+        the person who wants the file will happily make. */
+    }
+    <div class="contact__more" data-reveal>
+      <p class="contact__lbl">Or read first</p>
+      <div class="links">
+        <a href={contact.github} rel="me noopener"><span>GitHub</span><span>aj8uppal</span></a>
+        <a href={contact.linkedin} rel="me noopener"><span>LinkedIn</span><span>aj-uppal</span></a>
+        <a href={contact.stackoverflow} rel="me noopener">
+          <span>Stack Overflow</span><span>A J Uppal</span>
+        </a>
+      </div>
+      <div class="resume">
+        <a class="btn" href={contact.resume} target="_blank" rel="noopener" data-resume>
+          Résumé (PDF)
+          <span class="btn__tag">{contact.resumeYear}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    {
+      /* The one line on the page that notices how long you have been here.
+        After twenty minutes of the tab actually being looked at, the build
+        note becomes the line in the attribute and nothing else moves: no
+        toast, no sound, nothing written down, gone on reload. The copy sits
+        here rather than in the script because it is copy. */
+    }
+    <p data-ambient="You have now left this open like an ambient app. hidamari would approve.">
+      Astro and TypeScript, built static. Seven React islands, all of them something you can move.
+    </p>
+    {
+      /* The screenshot line sits here rather than in the paragraph above it
+        because that paragraph gets replaced whole, and a claim that quietly
+        loses its receipt after twenty minutes is worse than no claim. It
+        keeps company with the dead-link line: both are about leaving the
+        real thing where it is. Last, so its receipt lands at the end of the
+        paragraph rather than in the middle of one. */
+    }
+    <p>
+      The demos that predate this page are still served from their original URLs.
+      <Claim of="foot.captures">Every screenshot is a capture of the actual project.</Claim>
+    </p>
+    <p>Source at <a href={contact.github}>github.com/aj8uppal</a>.</p>
+
+    {
+      /* Show receipts. Down here because a page that opens covered in mono
+        annotations is arguing before it has been read, and because a reader
+        who wants to know where a number came from goes looking rather than
+        needing to be offered. A claim two lines up answers on the press, so
+        the switch demonstrates itself instead of only promising. */
+    }
+    <p class="foot__rec">
+      <button class="foot__btn" type="button" data-receipts aria-pressed="false">
+        Show receipts
+      </button>
+      <span>Puts the evidence class and observation date beside every number on this page.</span>
+      <span class="sr" role="status" data-receipts-said></span>
+    </p>
+
+    {
+      /* The other side. Down here on purpose: a second running order is a
+        thing to find at the end rather than a choice to make at the start,
+        and a reader who has got this far has already read one of them. The
+        content is the same either way, so nothing is behind the link that
+        is not also above it. */
+    }
+    <p class="foot__flip">
+      {
+        side === 'a' ? (
+          <>
+            <a href="/side-b/">Side B</a> runs the same page from the other end, oldest work first.
+          </>
+        ) : (
+          <>
+            <a href="/">Side A</a> runs it the usual way round, current work first.
+          </>
+        )
+      }
+    </p>
+  </footer>
+</Section>

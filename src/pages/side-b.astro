@@ -1,0 +1,41 @@
+---
+/**
+ * Side B: the same record from the other end.
+ *
+ * Not a different site and not different content. The same six sections and
+ * the same eight roles, run oldest first - the browser games from before the
+ * degrees, then the jobs in the order they happened, then what they turned
+ * into, and who I am at the end rather than the start. A career reads
+ * differently forwards, and nobody gets to read it that way on a page that
+ * only knows how to open at now.
+ *
+ * Everything here is build-time ordering. No scroll trick decides what you
+ * see, and there is nothing behind this route that is not also on Side A.
+ * It asks not to be indexed, because to a crawler it is the home page twice.
+ */
+import Base from '../layouts/Base.astro';
+import Hero from '../sections/Hero.astro';
+import About from '../sections/About.astro';
+import Projects from '../sections/Projects.astro';
+import Experience from '../sections/Experience.astro';
+import Playground from '../sections/Playground.astro';
+import Skills from '../sections/Skills.astro';
+import Contact from '../sections/Contact.astro';
+import { site } from '../data/content';
+import { sideB as s } from '../lib/route';
+---
+
+<Base
+  title={`${site.title} · Side B`}
+  description="The same work in the order it happened: browser games first, then the jobs, then what they turned into."
+  nav={s.nav}
+  index={false}
+>
+  <Hero />
+  <Playground n={s.n('playground')} tone="sand" />
+  <Experience n={s.n('work')} tone="paper-2" order="oldest" />
+  <Projects n={s.n('building')} tone="ink-deep" />
+  <About n={s.n('about')} tone="paper" />
+  <Skills n={s.n('skills')} tone="ink-3" />
+  <Contact n={s.n('contact')} tone="camel" side="b" />
+</Base>

@@ -1,0 +1,515 @@
+/**
+ * The hero runtime: everything that is true of every hero.
+ *
+ * Sizing and the device pixel ratio cap, the spring the pointer pulls against,
+ * arrow keys and touch, the scroll lift, pausing when the canvas leaves the
+ * screen or the tab goes to the back, the reduced-motion still frame, the perf
+ * probe, and re-reading the colours when the palette changes. The variants in
+ * this directory paint; none of them owns any of the above.
+ *
+ * Reduced motion is a different path, not a slower one: the variant composes
+ * one frame and no loop is started.
+ *
+ * Two review-only events are listened for. `palettechange` re-reads the tokens
+ * and relights whatever is running; `herochange` swaps the variant, destroying
+ * the old instance first. Nothing dispatches either in the shipped build, so
+ * they cost two registrations and never fire.
+ */
+
+import { heroes, defaultHero } from '../data/heroes';
+import type { HeroFrame, HeroInstance, HeroTokens, HeroVariant, HeroView, Rgb } from './types';
+
+/* The six canopy colours, with the Dawn watch values as the fallback for the
+   case where the stylesheet has not arrived yet. */
+const HERO_TOKENS = {
+  sky0: ['--hero-sky-0', '#232830'],
+  sky1: ['--hero-sky-1', '#2a313b'],
+  core: ['--hero-core', '#e6cda7'],
+  mid: ['--hero-mid', '#e3c08d'],
+  skirt: ['--hero-skirt', '#c98a7d'],
+  line: ['--hero-line', '#8fa1ad'],
+} as const;
+
+/**
+ * Read the hero colours off `:root`.
+ *
+ * A custom property comes back as whatever string was written into it, which
+ * can be any CSS colour, so the parsing is handed to a 2d context: assigning a
+ * colour to `fillStyle` and reading it back normalises it, and an assignment
+ * the browser rejects leaves the previous value in place - which is the
+ * fallback, already loaded.
+ */
+function readTokens(): HeroTokens {
+  const probe = document.createElement('canvas').getContext('2d');
+  const root = getComputedStyle(document.documentElement);
+  const out = {} as HeroTokens;
+
+  for (const key of Object.keys(HERO_TOKENS) as (keyof typeof HERO_TOKENS)[]) {
+    const [prop, fallback] = HERO_TOKENS[key];
+    let value: string = fallback;
+    if (probe) {
+      probe.fillStyle = fallback;
+      probe.fillStyle = root.getPropertyValue(prop).trim() || fallback;
+      value = probe.fillStyle;
+    }
+    const hex = /^#([0-9a-f]{6})$/i.exec(value);
+    if (hex?.[1]) {
+      const n = parseInt(hex[1], 16);
+      out[key] = [(n >> 16) & 255, (n >> 8) & 255, n & 255] as Rgb;
+      continue;
+    }
+    const parts = value.match(/[\d.]+/g);
+    out[key] = parts
+      ? [Number(parts[0]) || 0, Number(parts[1]) || 0, Number(parts[2]) || 0]
+      : [0, 0, 0];
+  }
+  return out;
+}
+
+/**
+ * The ink of a heading, in client coordinates.
+ *
+ * Not its box: an `h1` is a block and its rect runs the whole column, which
+ * here is a third of the canvas wider than the letters and would hand the
+ * variants a dead band with nothing in it. Ranging over the text nodes gives a
+ * rect per line tight to the glyphs, which is the honest horizontal extent.
+ *
+ * Vertically it is the other way round - those rects are the font's bounding
+ * box, taller than the ink for a heavy display face - so the vertical extent
+ * comes from the element, whose line boxes are what you actually see.
+ */
+function inkBox(el: Element): DOMRect | null {
+  const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const range = document.createRange();
+  let l = Infinity;
+  let r = -Infinity;
+
+  for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+    if (!n.nodeValue?.trim()) continue;
+    range.selectNodeContents(n);
+    for (const q of range.getClientRects()) {
+      if (q.width < 1 || q.height < 1) continue;
+      l = Math.min(l, q.left);
+      r = Math.max(r, q.right);
+    }
+  }
+
+  const box = el.getBoundingClientRect();
+  if (box.width < 1 || box.height < 1) return null;
+  if (l >= r) return box;
+  return new DOMRect(l, box.top, r - l, box.height);
+}
+
+/* ── Interaction state ───────────────────────────────────────────────── */
+
+/* 0.12 stiffness, 0.73 damping, target set by pointer, touch or arrow keys. A
+   spring carries velocity, so grabbing the pointer mid-flight continues from
+   where the light is rather than restarting it. */
+const pointer = {
+  x: 0.62,
+  y: 0.42,
+  tx: 0.62,
+  ty: 0.42,
+  vx: 0,
+  vy: 0,
+  active: false,
+  pulse: 0,
+};
+
+let scrollVel = 0;
+let lastScroll = 0;
+let drift = 0;
+
+interface HeroPerf {
+  variant: string;
+  frames: number;
+  totalDrawMs: number;
+  maxDrawMs: number;
+  avgDrawMs: number;
+  fps: number;
+  setupMs: number;
+  elements: number;
+}
+
+const perf: HeroPerf = {
+  variant: defaultHero.id,
+  frames: 0,
+  totalDrawMs: 0,
+  maxDrawMs: 0,
+  avgDrawMs: 0,
+  fps: 0,
+  setupMs: 0,
+  elements: 0,
+};
+
+declare global {
+  interface Window {
+    __heroPerf?: HeroPerf;
+  }
+}
+
+export function installHero(canvas: HTMLCanvasElement): void {
+  const ctx = canvas.getContext('2d', { alpha: false });
+  if (!ctx) return;
+
+  window.__heroPerf = perf;
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const view: HeroView = { w: 0, h: 0, unit: 1, dpr: 1, safe: { x: 0, y: 0, w: 0, h: 0 } };
+  /* The display line, which is the one thing on the page nothing is allowed to
+     draw over. Looked up once; measured on every resize. */
+  const type = (canvas.parentElement ?? document).querySelector('h1');
+  let tokens = readTokens();
+  let variant: HeroVariant = defaultHero;
+  let hero: HeroInstance | null = null;
+
+  const frame: HeroFrame = {
+    t: 0,
+    dt: 16,
+    hand: false,
+    px: -1,
+    py: 0,
+    vx: 0,
+    vy: 0,
+    boost: 0,
+    offY: 0,
+  };
+
+  /* ── Sizing ────────────────────────────────────────────────────────── */
+
+  function measure(): boolean {
+    const r = canvas.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) return false;
+    view.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    view.w = r.width;
+    view.h = r.height;
+    view.unit = Math.sqrt(r.width * r.height);
+    canvas.width = Math.round(r.width * view.dpr);
+    canvas.height = Math.round(r.height * view.dpr);
+
+    const box = type ? inkBox(type) : null;
+    const pad = view.unit * 0.03;
+    view.safe.x = box ? box.left - r.left - pad : 0;
+    view.safe.y = box ? box.top - r.top - pad : 0;
+    view.safe.w = box ? box.width + pad * 2 : 0;
+    view.safe.h = box ? box.height + pad * 2 : 0;
+
+    /* Set once here rather than once a frame: a variant is handed a context
+       already working in CSS pixels and never has to think about the ratio. */
+    ctx!.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
+    return true;
+  }
+
+  function resize(): void {
+    if (!measure() || !hero) return;
+    hero.resize(view);
+    if (reduced.matches || !raf) hero.still();
+    // After the still frame, not before: a variant that composes its picture
+    // there is only as big as that picture once it has.
+    perf.elements = hero.elements;
+  }
+
+  /* ── The variant ───────────────────────────────────────────────────── */
+
+  /**
+   * Which variant the page is asking for.
+   *
+   * The attribute is the source of truth and `herochange` is only the update.
+   * It has to be that way round: the lab restores a stored choice by writing
+   * the attribute and firing the event, but its module script is rendered
+   * above this one and module scripts run in document order, so on every load
+   * the event arrives before this file exists to hear it. Mounting the default
+   * and waiting to be told otherwise left the panel reading Flow over a canvas
+   * running Dapple.
+   */
+  function wanted(): HeroVariant {
+    const id = document.documentElement.dataset.hero;
+    return heroes.find((v) => v.id === id) ?? defaultHero;
+  }
+
+  function mount(next: HeroVariant): void {
+    hero?.destroy();
+
+    /* One context is shared by every variant and several of them set a line
+       width or a composite mode without putting it back, so a variant's first
+       frame depended on which variant you arrived from. Reset to the defaults
+       here rather than asking twelve files to be tidy. Not the transform:
+       `measure()` owns that, and it is the one piece of state a variant is
+       entitled to inherit. */
+    ctx!.globalAlpha = 1;
+    ctx!.globalCompositeOperation = 'source-over';
+    ctx!.lineWidth = 1;
+    ctx!.lineCap = 'butt';
+    ctx!.lineJoin = 'miter';
+
+    variant = next;
+    hero = next.init(ctx!, view, tokens);
+    perf.variant = next.id;
+    perf.elements = hero.elements;
+    perf.frames = 0;
+    perf.totalDrawMs = 0;
+    perf.maxDrawMs = 0;
+    perf.avgDrawMs = 0;
+    canvas.setAttribute('aria-label', next.blurb);
+  }
+
+  /* ── Loop ──────────────────────────────────────────────────────────── */
+
+  let raf = 0;
+  let visible = true;
+  let last = 0;
+  let fpsMark = 0;
+  let fpsFrames = 0;
+
+  function loop(now: number): void {
+    raf = requestAnimationFrame(loop);
+    const dt = last ? Math.min(now - last, 50) : 16;
+    last = now;
+
+    const t0 = performance.now();
+
+    pointer.vx += (pointer.tx - pointer.x) * 0.12;
+    pointer.vy += (pointer.ty - pointer.y) * 0.12;
+    pointer.vx *= 0.73;
+    pointer.vy *= 0.73;
+    pointer.x += pointer.vx;
+    pointer.y += pointer.vy;
+    pointer.pulse = Math.max(0, pointer.pulse - dt * 0.0014);
+    scrollVel *= 0.86;
+    drift += dt * 0.00075;
+
+    // A flick of the pointer fans the effect out ahead of itself, the way a
+    // gust moves the leaves before it moves the patch.
+    const speed = Math.hypot(pointer.vx, pointer.vy);
+
+    frame.t = drift;
+    frame.dt = dt;
+    frame.hand = pointer.active;
+    frame.px = pointer.x * view.w;
+    frame.py = pointer.y * view.h;
+    frame.vx = pointer.vx * view.w;
+    frame.vy = pointer.vy * view.h;
+    frame.boost = Math.min(1.2, speed * 14) + pointer.pulse * 1.4;
+    // Scrolling lifts the canopy, so leaving the hero reads as walking out
+    // from under it rather than sliding a picture off the top of the screen.
+    frame.offY = Math.max(-26, Math.min(26, scrollVel * 0.09));
+
+    hero?.draw(frame);
+
+    const ms = performance.now() - t0;
+    perf.frames++;
+    // Not every variant has a fixed count: a trail grows and empties, and a
+    // row of type that does not fit at this width is not laid out. Reading it
+    // back each frame is what makes the probe worth reading at all.
+    if (hero) perf.elements = hero.elements;
+    perf.totalDrawMs += ms;
+    if (ms > perf.maxDrawMs) perf.maxDrawMs = ms;
+    perf.avgDrawMs = Math.round((perf.totalDrawMs / perf.frames) * 1000) / 1000;
+    fpsFrames++;
+    if (now - fpsMark > 500) {
+      perf.fps = Math.round((fpsFrames * 1000) / (now - fpsMark));
+      fpsMark = now;
+      fpsFrames = 0;
+    }
+  }
+
+  function start(): void {
+    if (raf || reduced.matches || !visible || document.hidden) return;
+    last = 0;
+    fpsMark = performance.now();
+    fpsFrames = 0;
+    raf = requestAnimationFrame(loop);
+  }
+
+  function stop(): void {
+    if (!raf) return;
+    cancelAnimationFrame(raf);
+    raf = 0;
+  }
+
+  /* ── Input ─────────────────────────────────────────────────────────── */
+
+  function setTarget(clientX: number, clientY: number): void {
+    const r = canvas.getBoundingClientRect();
+    pointer.tx = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+    pointer.ty = Math.min(1, Math.max(0, (clientY - r.top) / r.height));
+  }
+
+  const box = canvas.parentElement ?? canvas;
+
+  box.addEventListener(
+    'pointermove',
+    (e) => {
+      pointer.active = true;
+      setTarget(e.clientX, e.clientY);
+    },
+    { passive: true },
+  );
+
+  box.addEventListener(
+    'pointerdown',
+    (e) => {
+      setTarget(e.clientX, e.clientY);
+      pointer.pulse = 1;
+    },
+    { passive: true },
+  );
+
+  box.addEventListener('pointerleave', () => {
+    pointer.active = false;
+  });
+
+  const NUDGE: Record<string, [number, number]> = {
+    ArrowLeft: [-0.08, 0],
+    ArrowRight: [0.08, 0],
+    ArrowUp: [0, -0.08],
+    ArrowDown: [0, 0.08],
+  };
+
+  canvas.addEventListener('keydown', (e) => {
+    const n = NUDGE[e.key];
+    if (n) {
+      e.preventDefault();
+      // The keyboard is a hand too, and unlike a pointer it never leaves.
+      pointer.active = true;
+      pointer.tx = Math.min(1, Math.max(0, pointer.tx + n[0]));
+      pointer.ty = Math.min(1, Math.max(0, pointer.ty + n[1]));
+      return;
+    }
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      pointer.active = true;
+      pointer.pulse = 1;
+    }
+  });
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      const y = window.scrollY;
+      scrollVel += y - lastScroll;
+      lastScroll = y;
+    },
+    { passive: true },
+  );
+
+  let resizeTimer = 0;
+  const ro = new ResizeObserver(() => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(resize, 120);
+  });
+  ro.observe(canvas);
+
+  // Offscreen means nothing to draw. The hero is one viewport tall, so this
+  // fires almost immediately and the loop does not run for the rest of the page.
+  const io = new IntersectionObserver(
+    ([entry]) => {
+      visible = entry?.isIntersecting ?? false;
+      if (visible) start();
+      else stop();
+    },
+    { threshold: 0.01 },
+  );
+  io.observe(canvas);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else start();
+  });
+
+  /* A 2d context can be taken away underneath you - the GPU process restarting,
+     a machine waking, memory pressure - and unhandled that is permanent: the
+     canvas blanks, every draw call silently does nothing, and the loop goes on
+     counting frames into it. Asking for it back is one line, and the frame after
+     it returns has to be measured again, because a restored context comes back
+     without the device-pixel transform. */
+  canvas.addEventListener('contextlost', (e) => {
+    e.preventDefault();
+    stop();
+  });
+
+  canvas.addEventListener('contextrestored', () => {
+    if (!measure() || !hero) return;
+    hero.resize(view);
+    hero.still();
+    start();
+  });
+
+  /* The loop is not allowed to be the only thing that knows whether the loop is
+     running. `raf` is a handle, not a heartbeat: if a frame callback is ever
+     dropped without `stop()` having run, the handle stays set, every restart
+     path returns early at `if (raf)`, and the hero is finished for the life of
+     the page with its last frame still on screen. `visible` can strand it the
+     same way, being a cached observer result rather than a fact.
+
+     Nine minutes of soaking across both engines never produced either, so this
+     is not a fix for something measured - it is the difference between a class
+     of freeze that is permanent and one that clears itself within two seconds.
+     Once a second, and it does nothing at all unless the hero ought to be
+     drawing and is not. */
+  let heartbeat = -1;
+
+  const onscreen = (): boolean => {
+    const r = canvas.getBoundingClientRect();
+    return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < window.innerHeight;
+  };
+
+  window.setInterval(() => {
+    if (reduced.matches || document.hidden || !onscreen()) {
+      heartbeat = -1;
+      return;
+    }
+    if (raf && perf.frames !== heartbeat) {
+      heartbeat = perf.frames;
+      return;
+    }
+    heartbeat = -1;
+    // Ground truth over the cached flag, then clear the handle so `start()`
+    // is not refused by the very state that went wrong.
+    visible = true;
+    stop();
+    start();
+  }, 1000);
+
+  /* ── Review-only hooks ─────────────────────────────────────────────── */
+
+  window.addEventListener('palettechange', () => {
+    tokens = readTokens();
+    hero?.relight(tokens);
+    if (reduced.matches || !raf) hero?.still();
+  });
+
+  window.addEventListener('herochange', () => {
+    const want = document.documentElement.dataset.hero ?? defaultHero.id;
+    const next = heroes.find((v) => v.id === want);
+    if (!next || next.id === variant.id) return;
+    mount(next);
+    hero?.still();
+    if (hero) perf.elements = hero.elements;
+    // Switching variants is also the way out of a stopped loop, and it costs
+    // nothing when the loop is already running or ought to stay stopped.
+    start();
+  });
+
+  reduced.addEventListener('change', () => {
+    if (reduced.matches) {
+      stop();
+      hero?.still();
+    } else {
+      start();
+    }
+  });
+
+  measure();
+  lastScroll = window.scrollY;
+
+  // First paint, measured. Nothing above this line allocates anything worth
+  // amortising, so the still frame is up before the loop is asked for.
+  const t0 = performance.now();
+  mount(wanted());
+  hero!.still();
+  perf.setupMs = Math.round((performance.now() - t0) * 100) / 100;
+
+  if (!reduced.matches) start();
+}

@@ -1,0 +1,5070 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   aj8uppal.github.io
+
+   Heavy uppercase display type, mono only where it is a label, and bands of
+   flat colour that change the ground under your feet as you scroll. Panels
+   and cards carry the content, because three frames in a row cost a fraction
+   of the height of three frames stacked.
+
+   Mono is a label face here, not an annotation layer: kickers, badges,
+   captions, and nothing else.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. TOKENS ───────────────────────────────────────────────────────── */
+:root {
+  color-scheme: dark;
+
+  /* Grounds. Every section stands on exactly one of these. The deep blue-grey
+     is the page, the slate raised off it is anything that carries content. */
+  --ink: #232830;
+  --ink-2: #2e3642;
+  --ink-3: #282e38;
+  --paper: #e5e0d4;
+  --paper-2: #d5d0c6;
+
+  /* The floor, one step under the page. Slate on the page ground is 1.22,
+     which is too small a step to read as raised on a screen already mostly
+     dark, and the usual answers - a glow, a wide drop shadow - are either not
+     this page's language or invisible on it. The section carrying the cards
+     drops instead, and the same two card colours are suddenly 1.39 apart. */
+  --ink-deep: #191d23;
+
+  /* Slate answering a pointer. Deliberately small, because the border does
+     the louder half of a hover, and held light enough that all four text
+     steps still clear 4.5 on it: 9.2, 6.6, 5.2, 4.6. */
+  --ink-2-hi: #343b47;
+
+  /* The screen colour. Behind a canvas or a running game, and nowhere else:
+     a screen should read as darker than the page it sits on. */
+  --screen: #111417;
+
+  /* Laid over photographs and over the running games, with its own two text
+     steps. This pair does not follow the page from dark to light the way the
+     grounds do: a screenshot of a night sea needs the same dark wash under a
+     caption whatever colour the page around it is. */
+  --shade: #1a1e24;
+  --on-shade: #ede8df;
+  --on-shade-2: #c7c4bd;
+
+  /* Text on dark, in four steps. All measured against --ink-2, the slate,
+     which is the lightest dark ground on the page, so they hold on every
+     one of them: 10.0, 7.1, 5.6, 5.0. */
+  --on-ink: #ede8df;
+  --on-ink-2: #c9c5c0;
+  --on-ink-3: #b2b0ac;
+  --on-ink-4: #a6a5a2;
+
+  /* A step above the top of that scale, for the one place a flat ground is not
+     what the type is standing on. Those four hold because the ground under them
+     is a colour; the hero's is a canvas with a light moving about in it, and
+     there is a band of widths where the paragraph is standing in the brightest
+     part of it. Kept warm rather than taken to white, so it is the same cream
+     half a shade further up and not a different colour. 12.0 on the slate. */
+  --on-ink-hi: #fffdf9;
+
+  /* Text on light. Measured against --paper-2, the darker light ground:
+     10.9, 7.1, 5.3. */
+  --on-paper: #1a1e24;
+  --on-paper-2: #3a3d40;
+  --on-paper-3: #4f5052;
+
+  /* The quiet step for the two accent grounds, which need one of their own: a
+     caption on the contact section is standing on clay, not on linen, and
+     borrowing the step above assumes the two are the same kind of pale. On
+     this palette they are nothing like each other - one is dawn light and the
+     other is a warm red - so each gets its own, from its own ground: 5.6 on
+     the softened sand, 4.5 on the clay. */
+  --on-sand-3: #4f4c46;
+  --on-camel-3: #383033;
+
+  /* The two colours the page is warmed by, and the cool structural one that
+     sets them off. Dawn light is the primary and carries every interaction,
+     including focus. Clay is the secondary and the hover, and the contact
+     section is painted in it. The pale steel is a border and a wash; it
+     clears 4.5 on the slate, but it is still not asked to carry small text
+     anywhere, because it is the colour that draws the boxes. */
+  --sand: #e3c08d;
+  --camel: #c98a7d;
+  --earth: #8fa1ad;
+
+  /* The dawn light at reading strength, for areas too large to take it neat.
+     A whole section painted in full sand stops being a signal and becomes the
+     wall, and then there is nothing left for the controls standing on it. */
+  --sand-soft: #e6cda7;
+
+  /* The same light deepened until it carries small text on the light grounds.
+     Neat, it is 1.1 on paper-2, which is nothing at all; this is 4.6. */
+  --earth-ink: #605749;
+
+  /* Text sitting directly on sand, and on camel. Both are this palette's own
+     near-black, but each is its own role: two accents are rarely on the same
+     side of the light-or-dark flip, and the contact section is painted in the
+     second one. */
+  --on-accent: #1a1e24;
+  --on-accent-2: #1a1e24;
+
+  /* The accent again, lifted until it reads on the shade. Here the dawn light
+     already does, at 9.5 on the composited nav; a palette whose accent is
+     darker than its page needs a brighter one for the nav, which floats on
+     shade wherever it is. */
+  --accent-shade: var(--sand);
+
+  /* The canopy. The hero paints these onto a canvas rather than into a box, so
+     they are the one set of tokens that has to survive leaving CSS - the hero
+     script reads them back out. Sky runs top to bottom; the three light steps
+     are the core of a patch, its shoulder, and the long skirt; the line is for
+     whatever a variant draws structurally rather than as light. */
+  --hero-sky-0: #232830;
+  --hero-sky-1: #2a313b;
+  --hero-core: #e6cda7;
+  --hero-mid: #e3c08d;
+  --hero-skirt: #c98a7d;
+  --hero-line: #8fa1ad;
+
+  /* Lines are the text colour at low alpha rather than a colour of their own,
+     so a rule on a card is the same family as the words on it. */
+  --line-dark: color-mix(in srgb, var(--on-ink) 16%, transparent);
+  --line-dark-2: color-mix(in srgb, var(--on-ink) 28%, transparent);
+  --line-light: color-mix(in srgb, var(--on-paper) 18%, transparent);
+  --line-light-2: color-mix(in srgb, var(--on-paper) 34%, transparent);
+
+  /* The focus ring, as a token rather than a colour, because the accent
+     cannot be the ring everywhere. It is 8.6 on the page and 1.3 on the
+     paper, 1.6 on the camel and 1.1 on the softened sand - which is not a dim
+     ring, it is no ring at all across four of the six sections. A ground that
+     cannot carry the accent overrides this with its own darkest pole, so
+     focus is always at least 12:1 and the accent keeps hover, selection and
+     active states. */
+  --focus: var(--sand);
+
+  /* The quiet text step for whatever ground is underfoot. Secondary copy used
+     to be muted with `opacity`, which lands wherever the ground happens to
+     be - 4.5 on the darker paper, which is the floor and not a target for a
+     0.68rem uppercase mono. Naming the step instead puts every one of them at
+     6.1 or better and lets a caption ask for "the quiet one" without knowing
+     what it is standing on. */
+  --muted: var(--on-ink-3);
+
+  --max: 1240px;
+  --pad: clamp(1.1rem, 4vw, 3.5rem);
+
+  /* How far anything scrolled to has to clear the top of the window. The nav
+     floats over the page at 71px, and this is what keeps it from landing on
+     top of whatever you just jumped to. */
+  --nav-clear: 5.5rem;
+
+  /* Spacing, on a 4px base. The top two steps are fluid, so a narrow screen
+     compresses the rhythm rather than scrolling for longer at the same one. */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: clamp(1.6rem, 2.6vw, 2.2rem);
+  --s-7: clamp(2.5rem, 3vw, 3.4rem);
+
+  --display: 'Arial Black', 'Arial Narrow Bold', ui-sans-serif, system-ui, sans-serif;
+  --sans: ui-sans-serif, -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
+  --mono: ui-monospace, 'SFMono-Regular', consolas, monospace;
+
+  /* Type, for the label and body sizes that repeat. Display sizes stay local
+     to their rule: each one is fitted to its own line length, so a shared
+     step would only be a number two headings happened to agree on. */
+  --fs-micro: 0.63rem;
+  --fs-label: 0.72rem;
+  --fs-small: 0.86rem;
+  --fs-body: 0.98rem;
+  --fs-lead: 1.08rem;
+
+  /* Radii: two steps and a pill. A panel, a frame inside a panel, and the
+     fully round shape - which is reserved for things you can press, so that
+     the shape itself is the affordance and static metadata cannot borrow it. */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-pill: 999px;
+
+  /* Motion, in three speeds: a control answering a press, a surface or an
+     image changing, and a section arriving. A duration that fits none of the
+     three is usually a duration that was guessed. */
+  --dur-1: 120ms;
+  --dur-2: 280ms;
+  --dur-3: 620ms;
+  --ease: cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+
+/* ── 2. BASE ─────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--ink);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: hidden;
+  color: var(--on-ink);
+  background: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+canvas,
+iframe {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3,
+p {
+  overflow-wrap: anywhere;
+}
+
+::selection {
+  color: var(--on-accent);
+  background: var(--sand);
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: var(--r-xs);
+}
+
+/* Anything the page can be scrolled to has to clear the floating header, and
+   a jump from the nav is not the only way that happens: moving focus with the
+   keyboard scrolls too, and a chip near the top of a section would otherwise
+   take its focus ring in behind the nav and out of sight.
+
+   Named rather than a bare [id], because scroll-margin applies to every kind
+   of scroll and not only the ones that come from the top of the page: the
+   frame switcher walks its tab row with `block: 'nearest'`, and a blanket
+   88px would push each tab most of a header out of the way to reach it. */
+section[id],
+header[id],
+a[href],
+button,
+input,
+select,
+textarea,
+summary,
+[data-place],
+[tabindex] {
+  scroll-margin-top: var(--nav-clear);
+}
+
+/* A reference has to land somewhere the reader can see it landed - the skills
+   index into a card, a footnote marker into its note, the note back up to the
+   sentence. Two selectors because there are two ways of arriving: the page's
+   own anchor handler scrolls to a measured position and pushes the hash, which
+   moves the caret but deliberately never fires `:target`, while a page where
+   nothing ran gets a real fragment navigation and only fires `:target`.
+
+   The mark is currentColor, which is that card's own text colour and so
+   already carries against whatever the card is standing on. One accent cannot:
+   sand reads on the dark chapters and disappears on the sand one. */
+[data-place]:target,
+[data-place]:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 6px;
+}
+
+.earlier li[data-place]:target,
+.earlier li[data-place]:focus {
+  outline-offset: 2px;
+}
+
+/* The one focusable element that cannot know what it is standing on: it is
+   fixed to the top of the window, so the ground behind it is whatever section
+   happens to be scrolled there. So the ring goes inside the button, where the
+   only colour it has to beat is the button's own, and the sand slab arriving
+   out of nowhere does the rest of the announcing. */
+.skip {
+  position: fixed;
+  z-index: 100;
+  top: 0.7rem;
+  left: 0.7rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--r-sm);
+  color: var(--on-accent);
+  background: var(--sand);
+  font-weight: 800;
+  text-decoration: none;
+  transform: translateY(-180%);
+}
+
+.skip:focus {
+  transform: translateY(0);
+}
+
+.skip:focus-visible {
+  outline-color: var(--on-accent);
+  outline-offset: -7px;
+  border-radius: var(--r-sm);
+}
+
+.shell {
+  width: min(var(--max), calc(100% - 2 * var(--pad)));
+  margin-inline: auto;
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── 3. TYPE PRIMITIVES ──────────────────────────────────────────────── */
+.display {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  line-height: 0.88;
+  letter-spacing: -0.075em;
+  text-transform: uppercase;
+}
+
+/* Mono, and only ever as a label. */
+.kicker {
+  margin: 0;
+  font: 800 0.72rem/1.35 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 1rem;
+  font: 750 0.72rem/1 var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 1.8rem;
+  height: 2px;
+  background: currentcolor;
+}
+
+/* ── 4. BUTTONS ──────────────────────────────────────────────────────── */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.8rem 1.05rem;
+  border: 1px solid currentcolor;
+  border-radius: var(--r-pill);
+  color: inherit;
+  background: transparent;
+  text-decoration: none;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    color var(--dur-1) var(--ease),
+    background-color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease);
+}
+
+.btn:hover {
+  color: var(--on-paper);
+  background: var(--paper);
+  border-color: var(--paper);
+}
+
+.btn--sand {
+  color: var(--on-accent);
+  background: var(--sand);
+  border-color: var(--sand);
+}
+
+.btn--sand:hover {
+  color: var(--on-accent-2);
+  background: var(--camel);
+  border-color: var(--camel);
+}
+
+.btn--sm {
+  min-height: 40px;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+/* The year the resume is from, which is a fact about the file and not a second
+   thing to press. It was a filled pill sitting inside a pill, which is the one
+   shape this page reserves for controls, used twice in the space of one. Same
+   hairline the static tags use, so it reads as a note on the button. */
+.btn__tag {
+  margin-left: 0.7rem;
+  padding-left: 0.7rem;
+  border-left: 1px solid color-mix(in srgb, currentcolor 32%, transparent);
+  font: 800 0.62rem/1.4 var(--mono);
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.arrow {
+  display: inline-block;
+  margin-left: 0.55rem;
+  font-size: 1.15em;
+}
+
+/* ── 5. NAV ──────────────────────────────────────────────────────────── */
+.nav {
+  position: fixed;
+  z-index: 50;
+  inset: 0.8rem var(--pad) auto;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 1rem 0.45rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--on-shade) 17%, transparent);
+  border-radius: var(--r-pill);
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--shade) 78%, transparent);
+  box-shadow: 0 14px 45px rgb(0 0 0 / 22%);
+  backdrop-filter: blur(18px) saturate(125%);
+  transition: translate var(--dur-2) var(--ease);
+}
+
+/* Out of the way on the way down, back on the way up. Only past the hero, and
+   only while the panel is shut - a header that vanishes under a reader who is
+   holding it open is a header that ate their tap. Focus pulls it back too,
+   because tabbing scrolls, and the keyboard must never chase it off screen. */
+.nav[data-hidden='true']:not(:focus-within) {
+  translate: 0 calc(-100% - 1.2rem);
+}
+
+.nav__brand {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: inherit;
+  text-decoration: none;
+  font: 900 0.88rem/1 var(--mono);
+  letter-spacing: 0.07em;
+}
+
+.nav__mark {
+  width: 28px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--on-accent);
+  background: var(--sand);
+  font: 900 0.65rem/1 var(--sans);
+}
+
+.nav__links {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.35rem, 1.4vw, 1.2rem);
+}
+
+.nav__links a {
+  padding: 0.4rem 0.3rem;
+  color: var(--on-shade-2);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 750;
+  transition: color var(--dur-1) var(--ease);
+}
+
+.nav__links a:hover,
+.nav__links a:focus-visible {
+  color: var(--on-shade);
+}
+
+.nav__links a[aria-current='true'] {
+  color: var(--accent-shade);
+}
+
+/* Where you are, and how far in that is. One bar rather than a bar plus a
+   meter: it names the section by sitting under it, and its position along the
+   row is the same information a progress meter would have drawn separately.
+   Width and offset come from the live link box, so it fits "Playground" and
+   "Skills" differently and needs no second copy of the label widths. */
+.nav__marker {
+  position: absolute;
+  bottom: 0.05rem;
+  left: 0;
+  height: 2px;
+  width: var(--nav-mw, 0);
+  translate: var(--nav-mx, 0) 0;
+  border-radius: var(--r-pill);
+  background: var(--accent-shade);
+  opacity: 0;
+  transition:
+    translate var(--dur-2) var(--ease),
+    width var(--dur-2) var(--ease),
+    opacity var(--dur-1) var(--ease);
+}
+
+.nav__marker[data-on='true'] {
+  opacity: 1;
+}
+
+/* The narrow-screen disclosure, which is not in the layout until it is. */
+.nav__toggle {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--on-shade) 22%, transparent);
+  border-radius: var(--r-pill);
+  color: var(--on-shade);
+  background: none;
+  font: 750 0.72rem/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.nav__toggle[aria-expanded='true'] {
+  color: var(--on-accent);
+  border-color: var(--sand);
+  background: var(--sand);
+}
+
+/* Two rules that become an x. Drawn rather than shipped as an icon font, and
+   sized in em so it tracks the label beside it. */
+.nav__bars,
+.nav__bars::before {
+  display: block;
+  width: 1.05em;
+  height: 2px;
+  border-radius: var(--r-pill);
+  background: currentcolor;
+  transition:
+    translate var(--dur-1) var(--ease),
+    rotate var(--dur-1) var(--ease);
+}
+
+.nav__bars {
+  position: relative;
+  translate: 0 -3px;
+}
+
+.nav__bars::before {
+  content: '';
+  position: absolute;
+  translate: 0 6px;
+}
+
+.nav__toggle[aria-expanded='true'] .nav__bars {
+  translate: 0 0;
+  rotate: 45deg;
+}
+
+.nav__toggle[aria-expanded='true'] .nav__bars::before {
+  translate: 0 0;
+  rotate: -90deg;
+}
+
+/* Opaque, where the pill above it is not. The pill is small and permanently
+   over moving content, so it has to admit what is behind it; this is a surface
+   you read six labels off, and at 94% the hero copy ghosted straight through
+   the bottom third of it. */
+.nav__panel {
+  position: fixed;
+  z-index: 49;
+  inset: 4.6rem 0.65rem auto;
+  padding: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--on-shade) 17%, transparent);
+  border-radius: var(--r-md);
+  color: var(--on-shade);
+  background: var(--shade);
+  box-shadow: 0 18px 50px rgb(0 0 0 / 42%);
+}
+
+.nav__panel[hidden] {
+  display: none;
+}
+
+.nav__panel a {
+  display: block;
+  padding: 0.7rem 0.75rem;
+  border-radius: var(--r-sm);
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav__panel a + a {
+  border-top: 1px solid color-mix(in srgb, var(--on-shade) 12%, transparent);
+}
+
+.nav__panel a:hover,
+.nav__panel a:focus-visible {
+  background: color-mix(in srgb, var(--on-shade) 8%, transparent);
+}
+
+.nav__panel a[aria-current='true'] b {
+  color: var(--accent-shade);
+}
+
+.nav__panel b {
+  display: block;
+  font: 800 0.95rem/1.3 var(--sans);
+}
+
+.nav__panel span {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--on-shade-2);
+  font: 650 0.7rem/1.4 var(--mono);
+}
+
+/* Doubled up on the class so the shorthand padding above does not win and
+   leave this one link two pixels short of a comfortable tap. */
+.nav__panel a.nav__panel-mail {
+  margin-top: 0.35rem;
+  padding-block: 0.95rem;
+  border-top: 1px solid color-mix(in srgb, var(--on-shade) 12%, transparent);
+  color: var(--accent-shade);
+  font: 700 0.78rem/1.3 var(--mono);
+}
+
+/* Nothing can open it above the breakpoint, but a window dragged wider while
+   it is open would otherwise leave it hanging there over the full-width row. */
+@media (width > 620px) {
+  .nav__panel {
+    display: none;
+  }
+}
+
+/* ── 6. HERO ─────────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 84svh;
+  display: flex;
+  align-items: flex-end;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--ink);
+}
+
+/* The kicker, the display line and the intro all sit straight on the canvas
+   with drifting light underneath them. A vignette at each end holds the ground
+   under the text below the luminance those sizes need, and leaves the middle
+   of the frame - where nothing is written - at full brightness. */
+.hero::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  height: 38%;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--ink) 70%, transparent),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: auto 0 0;
+  height: 44%;
+  background: linear-gradient(to top, color-mix(in srgb, var(--ink) 90%, transparent), transparent);
+  pointer-events: none;
+}
+
+#hero-canvas {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#hero-canvas:focus-visible {
+  outline-offset: -8px;
+}
+
+.hero:has(#hero-canvas:focus-visible) {
+  box-shadow: inset 0 0 0 3px var(--sand);
+}
+
+.hero__in {
+  padding-top: 6.6rem;
+  padding-bottom: clamp(2rem, 3.6vw, 3.4rem);
+}
+
+.hero__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+  color: var(--on-ink);
+  font: 700 clamp(0.68rem, 1vw, 0.78rem) / 1.4 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dot {
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.45rem;
+  border-radius: 50%;
+  background: var(--sand);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--sand) 12%, transparent);
+}
+
+/* The wordmark is turned in space rather than set flat. The axis and the angle
+   are the ones tried by hand in a browser and kept; the lift that came with
+   them was a fixed 69px, which is a third of a line at 1440 and two thirds of
+   one at 390, so it put the A through the meta row on every narrow screen. The
+   rotation on its own reads the same and stays clear of it.
+
+   No perspective on the parent. With one, the block projects smaller and floats
+   up the frame, and the stroke on the second line thins unevenly enough that a
+   bar drops out. Flattened, it reads like a poster, which is the intent.
+
+   The origin is the left edge because everything else on the page starts there:
+   the brand, the meta dot, the paragraph, the button. Spun about its centre the
+   wordmark lands ninety pixels in from all of them. */
+.hero h1 {
+  font-size: clamp(4rem, 13.3vw, 12.5rem);
+  color: var(--on-ink);
+  transform: rotate3d(4, -10, -0.9, 34deg);
+  transform-origin: 0% 50%;
+}
+
+.hero h1 span {
+  display: block;
+}
+
+/* The second line is drawn rather than filled. It is the one moment of pure
+   swagger on the page, and it costs nothing but a stroke. It also carries its
+   own turn on top of the line's, so the two lines fall away at different rates
+   and the pair reads as depth rather than as one sheared block. */
+.hero h1 .out {
+  margin-left: clamp(0rem, 13vw, 11.5rem);
+  color: transparent;
+  -webkit-text-stroke: clamp(1.4px, 0.15vw, 2.4px) var(--on-ink);
+  transform: rotate3d(4, -10, -0.9, 18deg);
+  transform-origin: 0% 50%;
+}
+
+/* The action column's floor is the unwrapped button row. At a 250px floor the
+   two buttons wrapped somewhere around 1100px and stacked ragged-right at two
+   different widths, which reads as two leftovers rather than a pair. */
+.hero__bottom {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(max-content, 0.75fr);
+  gap: clamp(1.5rem, 5vw, 5rem);
+  align-items: end;
+  margin-top: clamp(1.5rem, 3vw, 2.8rem);
+}
+
+.hero__intro {
+  max-width: 46ch;
+  margin: 0;
+  font-size: clamp(1.12rem, 1.85vw, 1.6rem);
+  line-height: 1.28;
+  letter-spacing: -0.03em;
+}
+
+/* The one band where this paragraph is standing in the light rather than under
+   it. At 900 the action row collapses to one column and lifts the intro a
+   hundred and sixteen pixels, out of the bottom vignette that holds the canopy
+   down under the type and into the middle of the frame, which that vignette
+   leaves at full brightness on purpose - nothing is written there at any other
+   width. At 620 the measure narrows to 340 and it clears the gather again. In
+   between it is also at the floor of its clamp, small enough that the bar it
+   has to clear is 4.5 rather than the 3 it gets at reading size.
+
+   With the pointer parked on the line and the light given the nine seconds it
+   takes to finish gathering there, the cream comes in at 3.9. The light is the
+   picture and does not move for the type; the type moves, and the same worst
+   case reads 4.7. Above and below the band it is untouched, at 5.2 and better
+   on the same measurement. */
+@media (width > 620px) and (width <= 900px) {
+  .hero__intro {
+    color: var(--on-ink-hi);
+  }
+}
+
+/* The second line, which says where the first one comes from. Held to two
+   thirds the size of the positioning line and a longer measure, so the two
+   read as a statement and its footnote rather than two competing headlines. */
+.hero__support {
+  max-width: 62ch;
+  margin: 0.85rem 0 0;
+  color: var(--on-ink-2);
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+
+/* A column so the quiet link gets its own line, and so it can shrink to the
+   width of the word. Spanning the row would have given a five-letter link a
+   700px hit box, and a tap nowhere near it would open a mail client. */
+.hero__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 0.2rem;
+}
+
+.hero__btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  justify-content: flex-end;
+}
+
+/* The quiet one. It is a text link on purpose: one button and a link is a
+   hierarchy a reader can see without being told, and two buttons is not. */
+.hero__mail {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 0.15rem;
+  color: var(--on-ink-2);
+  font: 700 0.82rem/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-underline-offset: 5px;
+  transition: color var(--dur-1) var(--ease);
+}
+
+.hero__mail:hover,
+.hero__mail:focus-visible {
+  color: var(--sand);
+}
+
+/* An annotation on the canvas, not a control on it. It wore a bordered pill
+   and it is `pointer-events: none`, which is the shape promising something
+   the element cannot do; the control it describes is the canvas itself. So:
+   a mono caption hung off a rule, with no chrome to press, and now saying
+   what the two ways of working it are rather than only that it exists. */
+.hint {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: var(--pad);
+  padding: 0 0 0 0.75rem;
+  border-left: 2px solid var(--sand);
+  color: var(--on-ink);
+  font: 650 0.66rem/1.5 var(--mono);
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 6px var(--ink);
+  pointer-events: none;
+}
+
+.hint span {
+  display: block;
+  color: var(--on-ink-3);
+  font-weight: 500;
+  text-transform: none;
+}
+
+/* ── 7. SECTIONS ─────────────────────────────────────────────────────── */
+.sec {
+  padding-block: clamp(2.5rem, 3vw, 3.4rem);
+}
+
+/* Each ground names its own text colour and, where the sun would vanish on
+   it, its own focus ring. The muted step travels with the ground too, so a
+   caption can ask for "the quiet one" without knowing what it is standing on. */
+.sec--paper {
+  --muted: var(--on-paper-3);
+  --focus: var(--on-paper);
+
+  color: var(--on-paper);
+  background: var(--paper);
+}
+
+.sec--paper-2 {
+  --muted: var(--on-paper-3);
+  --focus: var(--on-paper);
+
+  color: var(--on-paper);
+  background: var(--paper-2);
+}
+
+/* The floor the project cards stand on. */
+.sec--ink-deep {
+  --muted: var(--on-ink-3);
+
+  color: var(--on-ink);
+  background: var(--ink-deep);
+}
+
+.sec--ink {
+  --muted: var(--on-ink-3);
+
+  color: var(--on-ink);
+  background: var(--ink);
+}
+
+.sec--ink-3 {
+  --muted: var(--on-ink-3);
+
+  color: var(--on-ink);
+  background: var(--ink-3);
+}
+
+.sec--sand {
+  --muted: var(--on-sand-3);
+  --focus: var(--on-accent);
+
+  color: var(--on-accent);
+  background: var(--sand-soft);
+}
+
+.sec--camel {
+  --muted: var(--on-camel-3);
+  --focus: var(--on-accent-2);
+
+  color: var(--on-accent-2);
+  background: var(--camel);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.3fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: clamp(1.5rem, 2.8vw, 2.3rem);
+}
+
+.head__k {
+  display: grid;
+  gap: 0.4rem;
+  align-content: start;
+}
+
+.head__count {
+  color: var(--muted);
+  font: 680 0.68rem/1.4 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.head__t {
+  max-width: 15ch;
+  font-size: clamp(2.8rem, 5.6vw, 5.2rem);
+}
+
+/* Long titles here are his sentences rather than slogans, so they get a
+   smaller size rather than an edit. */
+.head__t--long {
+  max-width: 26ch;
+  font-size: clamp(1.9rem, 3.9vw, 3.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+}
+
+.head__lead {
+  max-width: 74ch;
+  margin: 1.2rem 0 0;
+  font-size: clamp(1rem, 1.3vw, 1.14rem);
+  line-height: 1.5;
+}
+
+.head__lead--big {
+  max-width: 66ch;
+  font-size: clamp(1.1rem, 1.9vw, 1.45rem);
+  line-height: 1.34;
+  letter-spacing: -0.025em;
+}
+
+/* ── 8. ABOUT ────────────────────────────────────────────────────────── */
+/* A masthead strip of four static facts. It was drawn as a filled 1px grid
+   inside an outer box, which is a lot of border for four labels, and the box
+   held the first cell 17px in from the left edge every other line on the page
+   sits on. Two rules and column gaps say the same thing and let it line up. */
+.vitals {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.1rem clamp(1.2rem, 3vw, 2.8rem);
+  margin: 0 0 clamp(1.8rem, 3.2vw, 2.6rem);
+  padding-block: 0.9rem;
+  border-block: 1px solid var(--line-light);
+}
+
+.vitals > div {
+  min-width: 0;
+}
+
+.vitals dt {
+  color: var(--on-paper-3);
+  font: 800 0.64rem/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.vitals dd {
+  margin: 0.45rem 0 0;
+  font-weight: 800;
+  font-size: 0.97rem;
+  line-height: 1.2;
+}
+
+.vitals dd span {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--on-paper-2);
+  font-weight: 500;
+  font-size: 0.81rem;
+}
+
+.about {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+}
+
+.about__copy p {
+  max-width: 72ch;
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.22rem, 1.95vw, 1.62rem);
+  line-height: 1.24;
+  letter-spacing: -0.035em;
+}
+
+.about__copy p + p {
+  font-size: clamp(1rem, 1.35vw, 1.14rem);
+  line-height: 1.55;
+  letter-spacing: -0.012em;
+}
+
+/* Four things that are true about him, wearing a bordered, filled, rounded
+   box each. That is the shape this page uses for something you press, drawn
+   four times in a column beside nothing pressable. A rule separates them just
+   as well, the number still indexes them, and none of it invites a click. */
+.facts {
+  display: grid;
+  margin: 0;
+  border-top: 1px solid var(--line-light);
+}
+
+.fact {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0 0.85rem;
+  align-items: baseline;
+  padding: 0.75rem 0 0.85rem;
+  border-bottom: 1px solid var(--line-light);
+}
+
+/* Nothing follows the list, so the last rule would be drawn against the gap
+   under the section. The rows are separated; the edge of the list is not. */
+.fact:last-child {
+  border-bottom: 0;
+}
+
+.fact dt {
+  grid-area: 1 / 2;
+  font-weight: 800;
+  font-size: 0.94rem;
+  line-height: 1.25;
+}
+
+.fact dd {
+  grid-area: 2 / 2;
+  margin: 0.2rem 0 0;
+  color: var(--on-paper-2);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.fact__i {
+  grid-area: 1 / 1;
+  color: var(--on-paper-3);
+  font: 800 0.72rem/1.25 var(--mono);
+}
+
+/* Full ink against the note's own softer grey, which is the whole emphasis it
+   needs: it is one small link at the end of one line, not a call to action.
+
+   Same geometry as the other inline links on the page - padded for a thumb,
+   negatively margined back out so the row it sits in is the height it was.
+   Unbroken because three words split across a line wrap stop looking like one
+   link and start looking like the sentence stuttered. */
+.fact__reply {
+  display: inline-block;
+  padding: 0.45rem 0;
+  margin: -0.45rem 0;
+  color: var(--on-paper);
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentcolor 35%, transparent);
+  text-underline-offset: 3px;
+}
+
+.fact__reply:hover {
+  text-decoration-color: currentcolor;
+}
+
+/* ── 9. PROJECT CARDS ───────────────────────────────────────────────── */
+.work {
+  position: relative;
+  overflow: hidden;
+}
+
+.work::before {
+  content: '';
+  position: absolute;
+  width: 55vw;
+  aspect-ratio: 1;
+  top: -22vw;
+  left: -20vw;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--earth) 18%, transparent),
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+/* The raised surface. Three things make it read as lifted and none of them
+   is a glow: the section under it drops to the floor colour, the edge is the
+   stronger of the two line steps rather than the whisper, and the shadow is
+   short and dark enough to survive a dark ground - the old one spread 80px
+   at 18% black over near-black, which composites to nothing. */
+.card {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-md);
+  color: var(--on-ink);
+  background: var(--ink-2);
+  transform-style: preserve-3d;
+  box-shadow: 0 10px 26px rgb(0 0 0 / 34%);
+  transition:
+    background var(--dur-2) var(--ease),
+    border-color var(--dur-2) var(--ease);
+}
+
+/* Answering a pointer anywhere on the module, not only on the link in it.
+   Whole-card hover is the cue that the card is a place rather than a
+   decoration; the actions inside it are still what you press. */
+.card:hover,
+.card:focus-within {
+  border-color: color-mix(in srgb, var(--on-ink) 40%, transparent);
+  background: var(--ink-2-hi);
+}
+
+.card--full {
+  grid-column: span 12;
+}
+
+.card--half {
+  grid-column: span 6;
+}
+
+.card__copy {
+  position: relative;
+  z-index: 2;
+  padding: clamp(1.2rem, 2.4vw, 2rem);
+}
+
+/* The two full cards open with the frame beside the title rather than under it.
+   A full-bleed band across the top cost 250px a card, and cropping saltline's
+   dawn frame to that band would have eaten the corner the HUD lives in. */
+.card__hero {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(260px, 1fr);
+  gap: clamp(1rem, 2.2vw, 1.8rem);
+  align-items: center;
+  padding: clamp(1.2rem, 2.4vw, 2rem);
+  border-bottom: 1px solid var(--line-dark);
+}
+
+/* The capture and the line about the capture, as one column. The caption used
+   to sit in the text column between the title and the skim, which put a
+   sentence of HUD readings in front of the three things the skim exists to
+   answer, and made the text column tall enough to set the whole card's
+   height. Beside the picture it describes it costs the card nothing: the
+   image column had the room. */
+.card__plate {
+  min-width: 0;
+}
+
+/* A hairline, and no radius. The card is the object; the plates are printed
+   on it. Rounding a picture inside a rounded card makes it a second card, and
+   the flag chip sitting on the picture would then be a third - a stack of
+   boxes where the section wants one composition. The rule stays because a
+   dark capture on a dark card needs an edge. */
+.card__hero .shot--lead {
+  border: 1px solid var(--line-dark);
+}
+
+.card__hero .card__index {
+  margin-top: 0;
+}
+
+.card__hero .card__sub {
+  margin-bottom: 0;
+}
+
+.card__index {
+  display: block;
+  color: var(--on-ink-3);
+  font: 750 0.67rem/1.4 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.card__copy h3,
+.card__intro h3 {
+  margin: 0.75rem 0 0.45rem;
+  font-size: clamp(2rem, 3.6vw, 3.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+}
+
+.card__copy h3 a,
+.card__intro h3 a {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+.card__sub {
+  max-width: 58ch;
+  margin: 0 0 1rem;
+  color: var(--sand);
+  font: 700 0.75rem/1.5 var(--mono);
+}
+
+.card__body p {
+  max-width: 66ch;
+  margin: 0 0 0.85rem;
+  color: var(--on-ink-2);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+}
+
+.card__body p:last-child {
+  margin-bottom: 0;
+}
+
+.card__cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(240px, 0.75fr);
+  gap: clamp(1.3rem, 3.2vw, 2.8rem);
+  align-items: start;
+}
+
+.card--full .card__cols {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+
+.card--full .specs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(1rem, 2vw, 1.7rem);
+}
+
+.card__aside {
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+}
+
+.card__lede {
+  margin: 1rem 0 0.65rem;
+  color: var(--on-ink-3);
+  font: 680 0.72rem/1.6 var(--mono);
+}
+
+/* What to do with the figure below, in the imperative, once per figure.
+   A caption describes; this instructs, so it takes the accent and the lede
+   above it keeps the grey. Every one of them names the keyboard too: all
+   three figures are operable from it and nothing else on the page says so. */
+.cue {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 0.7rem;
+  color: var(--sand);
+  font: 750 0.65rem/1.5 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.cue::before {
+  content: '';
+  width: 1.1rem;
+  height: 2px;
+  flex: none;
+  background: currentcolor;
+}
+
+.card__lede:has(+ .cue) {
+  margin-bottom: 0.35rem;
+}
+
+/* The shipping state. It used to be a fully round pill, and that was the last
+   place static information wore the shape this page uses for things that can
+   be pressed: a tab, a filter, a skill chip, a call to action. Four labels are
+   not four controls, and lending them the silhouette is what turns one
+   interaction language into general decoration.
+
+   So it joins the metadata row below in plain mono, and keeps exactly two
+   things: the dot, which is what a reader skimming four cards actually reads,
+   and sand on the one state that means you can open it now. Sand is the press
+   colour everywhere else on the page, and live is the only static fact on a
+   card that is genuinely an invitation to act. */
+.state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--on-ink-2);
+  font: 800 0.64rem/1.4 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Filled means open to you, hollow means not yet. The word says it too; this
+   is for the reader who is scanning rather than reading. */
+.state::before {
+  content: '';
+  width: 0.45rem;
+  height: 0.45rem;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+}
+
+.state--live {
+  color: var(--sand);
+}
+
+.state--live::before {
+  background: currentcolor;
+}
+
+.state--off {
+  color: var(--on-ink-3);
+}
+
+/* Everything else the old pill was carrying: a project's number, its shape,
+   the one fact worth putting beside the name. None of it is pressable, so
+   none of it gets the pressable shape. A hairline separates them instead,
+   which also lets three of them sit in the width one pill used to want. */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  font: 800 0.64rem/1.4 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tag:not(:first-child)::before {
+  content: '';
+  align-self: center;
+  width: 1px;
+  height: 0.85em;
+  margin-inline: 0 0.5rem;
+  background: var(--line-dark-2);
+}
+
+.sec--sand .tag:not(:first-child)::before,
+.sec--paper .tag:not(:first-child)::before,
+.sec--paper-2 .tag:not(:first-child)::before,
+.sec--camel .tag:not(:first-child)::before {
+  background: var(--line-light-2);
+}
+
+/* Project facts as a mono key/value list. A value you can check, next to the
+   name of the thing checked - not a row of ticks in a feature grid. */
+.specs {
+  margin: 0;
+  border-top: 1px solid var(--line-dark);
+}
+
+.specs > div {
+  display: grid;
+  grid-template-columns: 6.2rem minmax(0, 1fr);
+  gap: 0.9rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.specs dt {
+  color: var(--on-ink-3);
+  font: 750 0.63rem/1.6 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.specs dd {
+  margin: 0;
+  color: var(--on-ink-2);
+  font: 680 0.71rem/1.6 var(--mono);
+}
+
+/* The Open row is a bare link standing alone in its cell, not a phrase inside a
+   sentence, so nothing excuses it from a 24px target. Mono at this size draws a
+   14px line, and the row already carries the rest of the height as padding: the
+   link takes it over, and gives it back as margin so the row is the same height
+   it was. */
+.specs a {
+  display: inline-block;
+  padding: 0.35rem 0;
+  margin: -0.35rem 0;
+  color: var(--sand);
+}
+
+/* The ten-second version, above the long form. Role, hard part, proof, then
+   the one thing to press.
+
+   Same ruled grammar as the spec list and the about facts, and for the same
+   reason: the card is already the container, and a panel inside it would be
+   the third nesting level in one composition. The label column is the spec
+   list's 6.2rem so the two lists in a card line up rather than nearly line up.
+   The values are sans, not mono - these are sentences, and mono at this size
+   reads as data. */
+.skim {
+  margin: 0.95rem 0 0;
+  border-top: 1px solid var(--line-dark);
+}
+
+.skim > div {
+  display: grid;
+  grid-template-columns: 6.2rem minmax(0, 1fr);
+  gap: 0.9rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.skim dt {
+  color: var(--on-ink-3);
+  font: 750 0.63rem/1.75 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.skim dd {
+  margin: 0;
+  color: var(--on-ink-2);
+  font-size: 0.87rem;
+  line-height: 1.45;
+}
+
+.skim + .card__body {
+  margin-top: 1rem;
+}
+
+.acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+}
+
+/* The spec list, folded. Four of these open at once is around four hundred
+   pixels of key-value mono in a section whose job is now to be skimmable, and
+   the skim above already carries the three things a reader is looking for. So
+   the table is one press away rather than gone: still in the document, still
+   found by search, and still the same list when it opens.
+
+   The summary is the secondary action the skim would otherwise have to link
+   to. Making it the control in place beats a jump link that scrolls three
+   hundred pixels inside the same card. */
+.notes {
+  margin-top: 0.35rem;
+}
+
+.notes > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 40px;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-pill);
+  color: var(--on-ink-2);
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  list-style: none;
+  transition:
+    color var(--dur-1) var(--ease),
+    background-color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease);
+}
+
+.notes > summary::-webkit-details-marker {
+  display: none;
+}
+
+.notes > summary:hover {
+  color: var(--on-paper);
+  background: var(--paper);
+  border-color: var(--paper);
+}
+
+/* Two strokes rotated into a chevron, so the state is legible without reading
+   the label twice. It points down when there is more below and up when the
+   list is already showing. */
+.notes > summary::after {
+  content: '';
+  width: 0.42em;
+  height: 0.42em;
+  margin: -0.22em 0 0 0.1em;
+  border-right: 2px solid currentcolor;
+  border-bottom: 2px solid currentcolor;
+  transform: rotate(45deg);
+  transition: transform var(--dur-1) var(--ease);
+}
+
+.notes[open] > summary::after {
+  margin: 0.14em 0 0 0.1em;
+  transform: rotate(-135deg);
+}
+
+.notes[open] > .specs {
+  margin-top: 0.85rem;
+}
+
+.shot {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--screen);
+}
+
+.shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-3) var(--ease);
+}
+
+.shot--lead {
+  aspect-ratio: 2.15 / 1;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.card--full .shot--lead {
+  aspect-ratio: 2.15 / 1;
+  border-bottom: 0;
+}
+
+.shot--lead::after {
+  content: '';
+  position: absolute;
+  inset: 44% 0 0;
+  background: linear-gradient(transparent, color-mix(in srgb, var(--shade) 76%, transparent));
+  pointer-events: none;
+}
+
+.card:hover .shot--lead img {
+  transform: scale(1.025);
+}
+
+/* A caption on a photograph, which is a fact about the photograph and not a
+   button laid over it. It keeps the wash it needs to stay legible and loses
+   the round ends, which is the only part of it that read as pressable. */
+.flag {
+  position: absolute;
+  z-index: 2;
+  left: clamp(0.8rem, 2vw, 1.5rem);
+  bottom: clamp(0.8rem, 2vw, 1.5rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--on-shade) 30%, transparent);
+  border-radius: var(--r-sm);
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--shade) 72%, transparent);
+  backdrop-filter: blur(10px);
+  font: 750 0.67rem/1 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.flag::before {
+  content: '';
+  width: 0.48rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--sand);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sand) 13%, transparent);
+}
+
+/* The line about the capture, under the capture. */
+.plate-cap {
+  margin: 0.85rem 0 0;
+  padding: 0.85rem 0 0;
+  border-top: 1px solid var(--line-dark);
+  color: var(--on-ink-2);
+  font-size: 0.87rem;
+  line-height: 1.5;
+}
+
+.plate-cap b {
+  color: var(--on-ink);
+}
+
+/* The proof panel. One capture that shows the claim in the card is true, set
+   beside the claim rather than stacked under it. */
+.inset {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(1rem, 2.4vw, 1.7rem);
+  align-items: center;
+  margin-top: clamp(1rem, 1.9vw, 1.5rem);
+  padding-top: clamp(0.95rem, 1.8vw, 1.35rem);
+  border-top: 1px solid var(--line-dark);
+}
+
+.shot--inset {
+  border: 1px solid var(--line-dark);
+}
+
+.shot--inset img {
+  height: auto;
+}
+
+.inset__body h4 {
+  margin: 0 0 0.5rem;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.1rem, 1.9vw, 1.55rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+
+.inset__body p {
+  max-width: 56ch;
+  margin: 0 0 0.7rem;
+  color: var(--on-ink-2);
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
+.inset__body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── 9c. THE HIDAMARI ASSEMBLY ───────────────────────────────────────── */
+/* Four plates that land on each other. Every transform in here is a function
+   of --p, which the driver writes and nothing else touches, so the scroll, the
+   scrub and the reduced-motion still are three ways of setting one number
+   rather than three code paths.
+
+   The four ramps below are the whole timeline, and they are here rather than
+   in the driver because they are a matter of how the figure looks, which is
+   this file's business and not the script's. */
+.asm {
+  --p: 0;
+
+  /* Landed. The four beats do not overlap: an earlier cut had the depth pass
+     rising over sheets that were still moving, and a fanned stack, a
+     transparency checkerboard and a grey depth frame at once is three things
+     asking to be read in the same instant. Each one finishes before the next
+     starts. */
+  --l: clamp(0, calc(var(--p) / 0.45), 1);
+
+  /* The depth pass, over the stack: up once the sheets have landed, held, and
+     away again before anything else is asked of the frame.
+
+     It stops well short of covering, and it is over in an eighth of the scrub
+     rather than a quarter. At full cover it replaced the picture with a grey
+     field for long enough that the first thing a reader asks is whether the
+     figure has broken. Held under the colour it is plainly a second reading of
+     the same frame: the trunks stay where they were and the distances arrive
+     on top of them. */
+  --d: clamp(0, min((var(--p) - 0.46) * 25, (0.58 - var(--p)) * 25), 0.62);
+
+  /* The magnifier, on the assembled bake and nowhere else. It waits for the
+     depth pass to clear: a loupe on a distance map is magnifying the wrong
+     picture, and the thing it is looking for is a colour. */
+  --m: clamp(0, min((var(--p) - 0.6) * 16.67, (0.82 - var(--p)) * 16.67), 1);
+
+  /* The running frame, over the bake, and it stays. This is the one beat with
+     no way back: the figure is an argument that ends at the app, so the end of
+     the scrub is the app and not a stack of pictures of it. */
+  --a: clamp(0, calc((var(--p) - 0.86) * 10), 1);
+
+  margin: 1.4rem 0 0;
+}
+
+.asm__stage {
+  position: relative;
+  aspect-ratio: var(--ar);
+  overflow: hidden;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-sm);
+  background: var(--screen);
+}
+
+/* The fan collapses as --l rises: each sheet walks its offset back to zero and
+   its scale up to one, so at 1 all four occupy the same box and what is left is
+   the four of them composited, which is the finished frame. */
+.asm__plate {
+  position: absolute;
+  inset: 0;
+  translate: calc(var(--x) * (1 - var(--l)) * 1%) calc(var(--y) * (1 - var(--l)) * 1%);
+  scale: calc(0.52 + 0.48 * var(--l));
+}
+
+.asm__sheet {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--on-ink) 22%, transparent);
+  border-radius: var(--r-xs);
+  /* Short and dark. A sheet lifted off the one behind it needs an edge, not a
+     glow, and a glow over near-black composites to nothing anyway. */
+  box-shadow: 0 8px 20px rgb(0 0 0 / 46%);
+}
+
+/* Three of the four plates are mostly holes, which is the point of them and
+   also unreadable while they are apart: a sheet you can see two other sheets
+   through is not a sheet. So each gets a backing until the moment the stack
+   closes, and then loses it, because at that moment the holes stop being holes
+   and start being what the layer behind is for.
+
+   A checker rather than a flat fill, in the two darkest steps this palette
+   has. Flat black behind a cut-out matte reads as black paint, and half of
+   what these plates have to say is how much of each one is nothing. */
+.asm__sheet::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-conic-gradient(
+      color-mix(in srgb, var(--on-ink) 7%, var(--screen)) 0% 25%,
+      var(--screen) 0% 50%
+    )
+    0 0 / 16px 16px;
+  opacity: clamp(0, calc((1 - var(--l)) * 4), 1);
+}
+
+.asm__sheet picture {
+  position: absolute;
+  inset: 0;
+}
+
+/* The depth pass rides over its own colour plate, one fade for all four at
+   once. Opacity only: this runs under a scroll listener and a wipe that made
+   the compositor repaint four full-width sheets a frame would undo the work
+   the rest of the page does to stay smooth.
+
+   And it is drawn in the page's own two colours rather than the file's greys.
+   The plate is a luminance ramp, near white and far black, so screening it
+   over the darkest ink and multiplying the pale steel back through it maps
+   near onto the structure colour and far onto the ground: the same numbers,
+   wearing the palette. Cool on purpose, against a photograph that is entirely
+   golden - a grey sheet over an autumn canopy reads as a channel that failed,
+   and a sepia one reads as the same photograph with something wrong with it,
+   while a blue one is obviously a second thing laid over the first.
+
+   The blend is isolated so it ends at this picture's own edge, and it is a
+   static composite - only the opacity above it moves - so the fade is still
+   one property the compositor can animate on its own. */
+.asm__z {
+  display: block;
+  isolation: isolate;
+  background: var(--ink-deep);
+  opacity: var(--d);
+}
+
+.asm__z img {
+  mix-blend-mode: screen;
+}
+
+.asm__z::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--earth);
+  mix-blend-mode: multiply;
+}
+
+/* Says what the sheet is while the sheet is up, in the frame rather than in
+   the caption under the key, because the caption is four hundred pixels below
+   the stage at 1440 and off the bottom of the screen at 390. Top right: the
+   sheet numbers own the top left, the loupe the bottom right, and the running
+   frame's tag the bottom left. */
+.asm__zt {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0.16rem 0.34rem;
+  background: var(--sand);
+  color: var(--on-accent);
+  font: 800 0.56rem/1.35 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: clamp(0, calc(var(--d) * 1.6), 1);
+  pointer-events: none;
+}
+
+.asm__sheet img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Which sheet this is, in one character, keyed to the list under the stage.
+   A label wide enough to read the layer's name off would cover the sheet in
+   front of it at every width this figure is drawn at; a digit fits in the
+   sliver that is always uncovered, because the fan runs down and to the right
+   and the top left corner is the one part a front sheet never reaches.
+
+   Counter-scaled against the plate: the artwork is what shrinks in the fan, and
+   a number that shrinks with it is a number nobody reads at 6px. */
+.asm__no {
+  position: absolute;
+  inset: 0 auto auto 0;
+  margin: 0;
+  padding: 0.12rem 0.32rem 0.14rem;
+  border-radius: var(--r-xs) 0 var(--r-xs);
+  background: color-mix(in srgb, var(--screen) 86%, transparent);
+  color: var(--sand);
+  font: 800 var(--fs-micro) / 1.3 var(--mono);
+  transform-origin: 0 0;
+  scale: calc(1 / (0.52 + 0.48 * var(--l)));
+  /* Gone well before the sheets overlap, since a digit on a sheet nobody can
+     see any more is a digit sitting on the sheet in front of it. Held at full
+     for the first quarter of the close, which is the only window a reader has
+     to tie a number to a name in the key. */
+  opacity: clamp(0, calc(1.6 - var(--l) * 2.4), 1);
+}
+
+/* The names the digits stand for. Under the stage rather than on it, which
+   also means they are still there once the stack has landed and there is one
+   frame with four layers inside it and nothing left to point at. */
+.asm__key {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem 0.9rem;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.asm__key li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0 0.4rem;
+  align-items: baseline;
+}
+
+.asm__key b {
+  color: var(--sand);
+  font: 800 var(--fs-micro) / 1.5 var(--mono);
+}
+
+.asm__key span {
+  color: var(--on-ink-2);
+  font: 700 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.asm__key em {
+  grid-column: 2;
+  color: var(--on-ink-4);
+  font: 400 var(--fs-micro) / 1.5 var(--mono);
+  font-style: normal;
+}
+
+/* What the loupe is looking at. Without it the magnifier is a second picture
+   in the corner and the reader has to guess which part of the first one it
+   came from, which is the guess the whole figure exists to remove. */
+.asm__mark {
+  position: absolute;
+  left: var(--mx);
+  top: var(--my);
+  width: var(--mw);
+  aspect-ratio: var(--ar);
+  border: 1px solid var(--sand);
+  border-radius: var(--r-xs);
+  /* The plate runs from near black to near white inside one frame, so the
+     marquee carries its own dark edge and is legible on either. */
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 45%),
+    inset 0 0 0 1px rgb(0 0 0 / 30%);
+  opacity: var(--m);
+  pointer-events: none;
+}
+
+/* The loupe holds a second copy of the backing plate, blown up and slid so the
+   focus point lands in the middle. Same aspect ratio as the stage, which is
+   what lets one zoom do both axes. */
+.asm__loupe {
+  position: absolute;
+  right: 3.5%;
+  bottom: 6%;
+  width: 30%;
+  aspect-ratio: var(--ar);
+  overflow: hidden;
+  border: 1px solid var(--sand);
+  border-radius: var(--r-xs);
+  background: var(--screen);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 55%);
+  /* Held back until the seams have actually closed, and gone again before the
+     camera moves. A magnifier on a frame that has not finished being one is
+     magnifying a seam, and a marquee over a frame shot from somewhere else is
+     pointing at nothing. */
+  opacity: var(--m);
+  pointer-events: none;
+}
+
+/* The magnified copy. Percentages against a box that carries the same aspect
+   ratio as the picture, so one number does the width and the height and the
+   focus point arrives in the middle without a second sum. */
+.asm__loupe-in {
+  position: absolute;
+  inset: 0;
+}
+
+.asm__loupe-in picture {
+  position: absolute;
+  left: var(--lx);
+  top: var(--ly);
+  width: var(--lw);
+  height: var(--lw);
+}
+
+.asm__loupe-in img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.asm__loupe-t {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0.16rem 0.34rem;
+  background: var(--sand);
+  color: var(--on-accent);
+  font: 800 0.56rem/1.35 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* The plates, running. It sits over the whole stack and dissolves in from the
+   bake underneath it, which is this same camera at rest, so what changes
+   across the dissolve is only what the reprojection did to it. */
+.asm__alive {
+  position: absolute;
+  inset: 0;
+  opacity: var(--a);
+  pointer-events: none;
+}
+
+.asm__alive img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Left rather than right: the player's own sun glyph is in the bottom right of
+   this capture, and a caption of ours sitting on top of the interface we are
+   claiming is untouched would be an odd place to put it. */
+.asm__alive-t {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 0.16rem 0.34rem;
+  background: var(--sand);
+  color: var(--on-accent);
+  font: 800 0.56rem/1.35 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.asm__scrub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin-top: 2.1rem;
+}
+
+/* The scrub keeps the whole row and the hand-back wraps under it. Sharing a
+   line, the long label and the longest phase word run out of card at the width
+   this figure actually gets, and the thing that then moves is the caption,
+   below the control, not the control under the reader's cursor. */
+.asm__scrub .range {
+  flex: 1 1 100%;
+}
+
+/* Only offered once the scrub has taken it. Nothing to hand back while the
+   scroll still has it, and nothing to hand it to under reduced motion. */
+.asm__hand {
+  display: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--on-ink-3);
+  font: 700 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentcolor 40%, transparent);
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.asm[data-driver='manual'] .asm__hand {
+  display: block;
+}
+
+.asm__hand:hover {
+  color: var(--sand);
+}
+
+.asm__cap {
+  max-width: 62ch;
+  margin: 0.75rem 0 0;
+  color: var(--on-ink-3);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+/* ── 10. FRAME SWITCHER ──────────────────────────────────────────────── */
+/* Stage and readout side by side, tab row across the bottom of both. Seven
+   regions stacked would be seven full-width plates; this is one. */
+.fs {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(230px, 0.85fr);
+  gap: clamp(1rem, 2.2vw, 1.6rem);
+  align-items: start;
+}
+
+.fs__strip {
+  position: relative;
+  grid-column: 1 / -1;
+  min-width: 0;
+  order: 2;
+}
+
+.fs__stage {
+  position: relative;
+  aspect-ratio: var(--fs-ar, 16 / 9);
+  overflow: hidden;
+  border: 1px solid var(--line-dark);
+  background: var(--screen);
+}
+
+.fs__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease);
+}
+
+.fs__slide[data-active='true'] {
+  opacity: 1;
+}
+
+.fs__slide picture,
+.fs__slide img {
+  width: 100%;
+  height: 100%;
+}
+
+.fs__slide img {
+  object-fit: cover;
+}
+
+.fs__side {
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+}
+
+.fs__scroll {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+}
+
+.fs__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.fs__tabs {
+  position: relative;
+  width: max-content;
+  display: flex;
+  gap: 0.35rem;
+  padding: 1px;
+}
+
+/* The sand pill is one element driven by a live spring, not seven CSS
+   transitions. Clicking through tabs quickly carries velocity across the
+   interruption instead of restarting from the new tab. */
+.fs__ind {
+  position: absolute;
+  z-index: 0;
+  inset: 1px auto 1px 0;
+  width: 0;
+  border-radius: var(--r-pill);
+  background: var(--sand);
+  transform-origin: left center;
+  will-change: transform, width;
+}
+
+.fs__tab {
+  position: relative;
+  z-index: 1;
+  min-height: 34px;
+  padding: 0.4rem 0.68rem;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--r-pill);
+  color: var(--on-ink-2);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  font: 750 0.64rem/1 var(--mono);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition:
+    color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease);
+}
+
+.fs__tab:hover {
+  color: var(--sand);
+  border-color: color-mix(in srgb, var(--sand) 45%, transparent);
+}
+
+.fs__tab[aria-selected='true'] {
+  color: var(--on-accent);
+  border-color: transparent;
+}
+
+/* The pill is placed by measuring, so until something measures it, it is a
+   zero-width sliver at the left edge and the selected tab is dark ink on a dark
+   card: 1.5 to 1, and the only tab in the strip a reader cannot read. The strip
+   says whether it has been placed, and until it has, the selected tab carries
+   its own fill. This is not a flash to be lived with - the placement runs in a
+   layout effect, before the browser paints - so the only page that ever sees
+   this rule is a page where the island never arrived. */
+.fs__tabs:not([data-placed]) .fs__ind {
+  display: none;
+}
+
+.fs__tabs:not([data-placed]) .fs__tab[aria-selected='true'] {
+  background: var(--sand);
+}
+
+/* An edge that scrolls without saying so is a tab nobody finds. */
+.fs__strip[data-of-end='true']::after,
+.fs__strip[data-of-start='true']::before {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  width: 2rem;
+  pointer-events: none;
+}
+
+.fs__strip[data-of-start='true']::before {
+  left: 0;
+  background: linear-gradient(to right, var(--ink-2), transparent);
+}
+
+.fs__strip[data-of-end='true']::after {
+  right: 0;
+  background: linear-gradient(to left, var(--ink-2), transparent);
+}
+
+.fs__read {
+  margin: 0;
+}
+
+.fs__read > div {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.42rem 0;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.fs__read dt {
+  color: var(--on-ink-3);
+  font: 750 0.62rem/1.6 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fs__read dd {
+  margin: 0;
+  color: var(--sand);
+  font: 700 0.72rem/1.6 var(--mono);
+}
+
+.fs__note {
+  margin: 0;
+  color: var(--on-ink-2);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+/* A half-width card is too narrow to put a stage and a readout side by side,
+   so Elderwood's switcher stacks and keeps the full width for the capture. */
+.card--half .fs {
+  grid-template-columns: 1fr;
+}
+
+/* ── 11b. THE SALTLINE CLOCK ─────────────────────────────────────────── */
+/* Six captures of one seed, in clock order. Six paragraphs about light is
+   reading; dragging from 04:36 to 18:02 is not. */
+.arc__clock {
+  position: absolute;
+  z-index: 2;
+  right: clamp(0.6rem, 1.6vw, 1rem);
+  top: clamp(0.6rem, 1.6vw, 1rem);
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--on-shade) 26%, transparent);
+  border-radius: var(--r-sm);
+  color: var(--on-shade-2);
+  background: color-mix(in srgb, var(--shade) 72%, transparent);
+  backdrop-filter: blur(10px);
+  font: 700 0.62rem/1.3 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.arc__clock b {
+  color: var(--sand);
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+
+.arc__scrub {
+  grid-column: 1 / -1;
+  order: 2;
+  display: grid;
+  gap: 0.7rem;
+}
+
+/* A labelled slider with its value read back beside the label. The saltline
+   clock is the only one left now that the deviation card runs the real 2015
+   app instead of a recreation of it. */
+.range {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--on-ink-2);
+  font: 680 0.62rem/1.3 var(--mono);
+}
+
+/* Wraps rather than runs off. The state names are as long as they need to be
+   to be honest about the state, and at 390 the longest of them plus its label
+   is wider than the card it sits in. */
+.range span {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.range output {
+  color: var(--sand);
+}
+
+/* Drawn rather than native. `accent-color` gave a 14px handle on a 4px line,
+   which is a control you have to aim at - and on the two touch platforms the
+   whole thing was under the 44px the rest of the page keeps to. The input's
+   own box stays 36px so the hit area is the full strip and not the handle.
+
+   The track carries how far through the day you are as well as where the
+   handle is, so the filled half is drawn from the value. WebKit has no
+   ::-moz-range-progress, so both engines take the same gradient and the value
+   arrives as --at from the component. */
+.range input {
+  width: 100%;
+  height: 36px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+}
+
+.range input::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: linear-gradient(
+    to right,
+    var(--sand) 0 var(--at, 0%),
+    var(--line-dark-2) var(--at, 0%) 100%
+  );
+}
+
+.range input::-moz-range-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: linear-gradient(
+    to right,
+    var(--sand) 0 var(--at, 0%),
+    var(--line-dark-2) var(--at, 0%) 100%
+  );
+}
+
+/* The ring is the card's own ground, so the handle reads as sitting on the
+   track rather than being threaded onto it. */
+.range input::-webkit-slider-thumb {
+  width: 22px;
+  height: 22px;
+  margin-top: -8px;
+  border: 3px solid var(--ink-2);
+  border-radius: 50%;
+  background: var(--sand);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 45%);
+  appearance: none;
+  transition: transform var(--dur-1) var(--ease);
+}
+
+.range input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--ink-2);
+  border-radius: 50%;
+  background: var(--sand);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 45%);
+  transition: transform var(--dur-1) var(--ease);
+}
+
+.range input:hover::-webkit-slider-thumb,
+.range input:active::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
+.range input:hover::-moz-range-thumb,
+.range input:active::-moz-range-thumb {
+  transform: scale(1.12);
+}
+
+/* The focus ring goes on the handle, not on the 36px strip: the strip is
+   mostly empty and a rectangle around it does not say what has focus. */
+.range input:focus-visible {
+  outline: 0;
+}
+
+.range input:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--sand-soft);
+}
+
+.range input:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px var(--sand-soft);
+}
+
+.arc__scrub .range {
+  color: var(--on-ink-3);
+}
+
+.arc__ticks {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line-dark);
+  background: var(--line-dark);
+}
+
+.arc__ticks li {
+  min-width: 0;
+}
+
+/* The caption strip idiom from the card system, made into a control. */
+.arc__tick {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  color: var(--on-ink-3);
+  background: var(--ink-2);
+  cursor: pointer;
+}
+
+.arc__tick img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2.3 / 1;
+  object-fit: cover;
+  opacity: 0.55;
+  transition: opacity var(--dur-2) var(--ease);
+}
+
+.arc__tick span {
+  display: block;
+  padding: 0.35rem 0.3rem 0.4rem;
+  border-top: 1px solid var(--line-dark);
+  font: 750 0.6rem/1.2 var(--mono);
+  letter-spacing: 0.02em;
+}
+
+.arc__tick:hover img,
+.arc__tick[aria-pressed='true'] img {
+  opacity: 1;
+}
+
+.arc__tick[aria-pressed='true'] {
+  color: var(--on-accent);
+  background: var(--sand);
+}
+
+/* ── 11c. THE WIND TUNNEL ────────────────────────────────────────────── */
+/* An instrument, not an illustration: mono everywhere, one accent, and the
+   only thing that moves is the thing the reader is holding. */
+.wt {
+  margin: 0;
+}
+
+/* Wrapping flex, not a grid with a breakpoint: this figure lives in a card
+   aside whose width has nothing to do with the viewport's, so the only honest
+   trigger for stacking is whether the two halves still fit side by side. */
+.wt__body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem 1.4rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.1rem;
+}
+
+/* 15rem is the viewBox at 1:1. Past that the strokes thin out and it stops
+   looking like an instrument. */
+.wt__dial {
+  flex: 1 1 10rem;
+  max-width: 15rem;
+}
+
+/* touch-action, or the first drag on a phone scrolls the page instead of
+   turning the boat and the figure reads as broken. */
+.wt__dial {
+  touch-action: none;
+  cursor: grab;
+}
+
+.wt__read {
+  flex: 1 1 13rem;
+}
+
+.wt__dial:active {
+  cursor: grabbing;
+}
+
+.wt__dial svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.wt__ring {
+  fill: color-mix(in srgb, var(--on-ink) 3%, transparent);
+  stroke: var(--line-dark-2);
+}
+
+/* The wedge the sails do not work in. Dashed edge and the faintest wash the
+   accent will hold: it is an absence of thrust, and anything solid enough to
+   read as a shape reads as a thing that is there. */
+.wt__nogo {
+  fill: color-mix(in srgb, var(--sand) 11%, transparent);
+  stroke: color-mix(in srgb, var(--sand) 40%, transparent);
+  stroke-dasharray: 3 3;
+}
+
+.wt__tick {
+  stroke: var(--line-dark-2);
+  stroke-width: 1;
+}
+
+.wt__wind line {
+  stroke: var(--on-ink-3);
+  stroke-width: 1.6;
+}
+
+.wt__wind path {
+  fill: var(--on-ink-3);
+}
+
+/* Made good along the wind axis. Thin and behind everything: it is a reading,
+   not a part of the boat. */
+.wt__vmg line {
+  stroke: var(--camel);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  paint-order: stroke;
+  filter: drop-shadow(0 0 1.4px rgb(0 0 0 / 85%));
+}
+
+.wt__hull {
+  fill: var(--on-ink-4);
+  stroke: var(--ink-deep);
+  stroke-width: 1.2;
+}
+
+.wt__mast {
+  fill: var(--ink-deep);
+}
+
+.wt__boom {
+  stroke: var(--ink-deep);
+  stroke-width: 1.4;
+}
+
+.wt__sail {
+  fill: var(--on-ink);
+  stroke: var(--ink-deep);
+  stroke-width: 1;
+}
+
+/* Flogging. A sail with no wind in it holds no shape, so it loses its belly
+   and goes to an outline, which is the state the readout is naming. */
+.wt__sail[data-wt-luff] {
+  fill: none;
+  stroke: var(--on-ink-4);
+  stroke-dasharray: 3 2.5;
+}
+
+.wt__thrust line {
+  stroke: var(--sand);
+  stroke-width: 2.4;
+}
+
+.wt__thrust path {
+  fill: var(--sand);
+}
+
+.wt__thrust[data-wt-dead] {
+  display: none;
+}
+
+.wt__read {
+  display: grid;
+  gap: 0.42rem;
+  margin: 0;
+  align-content: center;
+}
+
+.wt__read > div {
+  display: grid;
+  /* Thirteen characters is POINT OF SAIL, the longest of the five. Any less
+     and two of the labels wrap and the column stops reading as a column. */
+  grid-template-columns: minmax(0, 13ch) minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: baseline;
+  padding-bottom: 0.36rem;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.wt__read dt {
+  color: var(--on-ink-4);
+  font: 700 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Tabular figures, or the numbers jitter sideways under the reader's own drag
+   and the whole thing stops reading as an instrument. */
+.wt__read dd {
+  margin: 0;
+  color: var(--sand);
+  font: 700 0.86rem/1.4 var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.wt__cap {
+  max-width: 62ch;
+  margin: 0.8rem 0 0;
+  color: var(--on-ink-3);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+/* ── 11. WORK LOG ────────────────────────────────────────────────────── */
+.log {
+  display: grid;
+  grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr);
+  gap: clamp(2rem, 5.5vw, 4.5rem);
+  align-items: start;
+}
+
+.log__intro {
+  position: sticky;
+  top: 6rem;
+  align-self: start;
+}
+
+/* Smaller than the other section headings, because this one is a sentence
+   rather than a label and it has to set "through-line" on one line inside a
+   360px rail. Any bigger and the compound breaks at its own hyphen. */
+.log__intro h2 {
+  font-size: clamp(2.1rem, 2.9vw, 2.62rem);
+  text-wrap: balance;
+}
+
+.log__intro p {
+  max-width: 42ch;
+  margin: 1.2rem 0 0;
+  color: var(--on-paper-2);
+  font-size: 0.98rem;
+}
+
+/* Eight stacks is a wall of mono nobody reads top to bottom. Picking one and
+   watching four jobs light up is the same information as a control. */
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.9rem;
+  margin-bottom: 1.1rem;
+}
+
+.filter__count {
+  flex: 1 0 auto;
+  margin: 0;
+  color: var(--on-paper-3);
+  font: 750 0.65rem/1.4 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.filter__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.filter .choice {
+  min-height: 34px;
+  padding: 0.4rem 0.62rem;
+  border-color: var(--line-light-2);
+  color: var(--on-paper-2);
+  font-size: 0.63rem;
+}
+
+.filter .choice:hover,
+.filter .choice[aria-pressed='true'] {
+  color: var(--on-ink);
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.roles {
+  border-top: 1px solid var(--line-light);
+}
+
+/* The filter hides rows with the hidden attribute, and a grid display would
+   otherwise beat it. */
+.role[hidden] {
+  display: none;
+}
+
+.role {
+  display: grid;
+  /* Wide enough that "Jul 2021 - Jan 2022" sets on one line. A wrapped date
+     next to a one-line job title reads as the wrong thing being important. */
+  grid-template-columns: 8.6rem minmax(0, 1fr);
+  gap: 1.4rem;
+  padding: 0.7rem 0 0.8rem;
+  border-bottom: 1px solid var(--line-light);
+}
+
+/* Scoped to .role because `.role p` below is more specific than a bare class
+   and would otherwise take the size out of this shorthand. */
+.role .role__when {
+  padding-top: 0.2rem;
+  color: var(--on-paper-3);
+  font: 750 0.7rem/1.5 var(--mono);
+  text-transform: uppercase;
+}
+
+/* One spine, eight nodes, drawn in the gutter the two-column row already
+   leaves between the date and the job. The rule that used to separate each
+   row is the line that now connects them, and the node on the current role
+   is the only one inked, so the eye starts at now and reads backwards. */
+.roles {
+  --tl-x: 9.3rem;
+}
+
+.tl {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.role--now,
+.tl .role {
+  position: relative;
+}
+
+.role--now::before,
+.tl .role::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--tl-x) - 3.5px);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--line-light-2);
+}
+
+/* Each row draws the segment down to the next row's node rather than the list
+   drawing one line behind all of them, so the spine ends on the last node
+   instead of running past it. */
+.role--now::after,
+.tl .role:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 1.35rem;
+  bottom: -0.9rem;
+  left: calc(var(--tl-x) - 0.5px);
+  width: 1px;
+  background: var(--line-light);
+}
+
+.tl .role::after {
+  top: 0.9rem;
+}
+
+.role--now::before {
+  top: 1.35rem;
+  background: var(--earth-ink);
+}
+
+.tl .role {
+  padding: 0.46rem 0 0.54rem;
+  border-bottom: 0;
+}
+
+/* Side B stands the log the other way up: seven compact rows oldest first, the
+   current role at the foot. The spine follows, because every rule above draws
+   a segment pointing at the row below it. The last of the seven now has a row
+   to point at, so it grows one; the current role has nothing below it, so it
+   loses one. And the rule that divides the big block from the compact list
+   goes over the top of it rather than under.
+
+   The reach is 1.35rem rather than 0.9rem because the current role's node sits
+   lower in its row than a compact one does in its. */
+.roles--fwd .tl .role:last-child::after {
+  content: '';
+  position: absolute;
+  top: 0.9rem;
+  bottom: -1.35rem;
+  left: calc(var(--tl-x) - 0.5px);
+  width: 1px;
+  background: var(--line-light);
+}
+
+.roles--fwd .role--now {
+  border-top: 1px solid var(--line-light);
+  border-bottom: 0;
+}
+
+.roles--fwd .role--now::after {
+  content: none;
+}
+
+.tl .role::before {
+  top: 0.9rem;
+}
+
+/* Smaller than the current role's, which is the point of the section. */
+.tl .role h3 {
+  font-size: 1.07rem;
+}
+
+.role h3 {
+  margin: 0 0 0.1rem;
+  font-size: clamp(1.02rem, 1.5vw, 1.24rem);
+  line-height: 1.2;
+  letter-spacing: -0.028em;
+}
+
+.role h3 b {
+  font-weight: 900;
+}
+
+.role p {
+  max-width: 88ch;
+  margin: 0.3rem 0 0;
+  color: var(--on-paper-2);
+  font-size: 0.87rem;
+  line-height: 1.5;
+}
+
+.role .stack {
+  color: var(--on-paper-3);
+  font: 650 0.69rem/1.45 var(--mono);
+}
+
+/* The job I am doing now is the one being asked about, so it gets the room
+   the other seven do not: a summary that leads with the outcome, the four
+   ownership points, and where the role stands today. */
+.role--now {
+  padding-bottom: 0.95rem;
+}
+
+.role--now h3 {
+  font-size: clamp(1.3rem, 2.1vw, 1.66rem);
+}
+
+.role--now .role__flag {
+  margin: 0 0 0.3rem;
+  color: var(--earth-ink);
+  font: 800 0.63rem/1.5 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* Wider and darker than the rows below it: this is the sentence the section
+   exists to deliver, and it used to have a band of its own to deliver it in. */
+.role--now .role__lede {
+  max-width: 74ch;
+  margin-top: 0.5rem;
+  color: var(--on-paper);
+  font-size: 0.96rem;
+}
+
+/* Unrendered today, and here anyway: the gated "lately" line ships the moment
+   its flag flips, and a sentence that arrives unstyled is a sentence that
+   arrives twice. */
+.role--now .role__lately {
+  max-width: 74ch;
+  margin-top: 0.7rem;
+  color: var(--on-paper);
+  font-style: italic;
+}
+
+.role--now .role__status {
+  max-width: 74ch;
+  margin-top: 0.95rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--line-light);
+  font-size: 0.85rem;
+}
+
+/* Numbered in mono, the same marker the About facts use. A disc would be the
+   only bullet on the page; a two-digit index is already the house idiom. */
+.role__pts {
+  margin: 0.55rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: pt;
+}
+
+.role__pts li {
+  position: relative;
+  max-width: 88ch;
+  margin-top: 0.4rem;
+  padding-left: 2rem;
+  color: var(--on-paper-2);
+  font-size: 0.87rem;
+  line-height: 1.5;
+}
+
+.role__pts li::before {
+  content: counter(pt, decimal-leading-zero);
+  counter-increment: pt;
+  position: absolute;
+  top: 0.1em;
+  left: 0;
+  color: var(--on-paper-3);
+  font: 800 0.72rem/1.5 var(--mono);
+}
+
+.edu {
+  margin-top: 1.2rem;
+  padding: 1.15rem;
+  border: 1px solid var(--line-light);
+  border-radius: var(--r-md);
+  background: var(--paper);
+}
+
+.edu h3 {
+  margin: 0.45rem 0 0.15rem;
+  font-size: 1.32rem;
+  letter-spacing: -0.03em;
+}
+
+.edu__deg {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin: 0.85rem 0 0;
+}
+
+.edu__deg dt {
+  font-weight: 800;
+  font-size: 0.96rem;
+}
+
+.edu__deg dd {
+  margin: 0.15rem 0 0;
+  color: var(--on-paper-2);
+  font-size: 0.84rem;
+}
+
+.edu__note {
+  max-width: 92ch;
+  margin: 0.8rem 0 0;
+  color: var(--on-paper-2);
+  font-size: 0.86rem;
+}
+
+.courses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Coursework, which is a list of things taken and not a row of filters. It
+   used to be thirteen bordered pills, which is thirteen invitations to click
+   on a course code. A hairline between entries says list, and says it in
+   less space. */
+.courses li {
+  padding: 0.28rem 0;
+  font: 680 0.68rem/1.2 var(--mono);
+}
+
+.courses li:not(:first-child) {
+  padding-left: 0.55rem;
+  border-left: 1px solid var(--line-light-2);
+}
+
+.courses li b {
+  margin-right: 0.35rem;
+  color: var(--on-paper-3);
+  font-weight: 800;
+}
+
+.courses li i {
+  color: var(--on-paper-3);
+}
+
+/* ── 12. PLAYGROUND ──────────────────────────────────────────────────── */
+/* Not two equal halves. The deviation card runs the 2015 file at a scale of
+   the 1330px it hardcodes, and every pixel the column gives back is a pixel
+   off its axis labels; the typer is a text field and four chips and does not
+   care. So the row is split in the frame's favour, and the two cards stay on
+   one row rather than costing the page a third. */
+.labs {
+  display: grid;
+  grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr);
+  gap: 1.1rem;
+}
+
+/* The split is worth having only while the wider column can still feed the
+   frame the 665px it refuses to go below. Under that the row is costing the
+   frame more than it saves the page, so it stops being a row. */
+@media (width <= 1260px) {
+  .labs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The break before the game. Two demos, then a rule, then the one thing on the
+   page still in someone else's colours - so the rule is the section's heaviest
+   and the strip states what changes. It is a grid item, spanning whatever the
+   row currently is rather than a fixed two, for the same reason .lab--wide is. */
+.play__break {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 0.7rem;
+  margin: 0.55rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 2px solid var(--on-accent);
+  color: var(--on-paper-2);
+  font: 680 0.7rem/1.4 var(--mono);
+}
+
+.play__break span {
+  color: var(--on-accent);
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* A dark card standing in a light section, which means the two things a
+   ground carries - the quiet text step and the focus ring - both have to be
+   handed back. The section's ring is its darkest pole, and a near-black ring
+   on a near-black card is not a ring. */
+.lab {
+  --muted: var(--on-ink-3);
+  --focus: var(--accent-shade);
+
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  border-radius: var(--r-md);
+  color: var(--on-ink);
+  background: var(--ink);
+  box-shadow: 8px 8px 0 color-mix(in srgb, var(--on-accent) 18%, transparent);
+}
+
+/* Edge to edge of whatever the row currently is, rather than two columns
+   wide. `span 2` would conjure a second track back out of the implicit grid
+   the moment the row narrowed to one, and hand most of it to the span. */
+.lab--wide {
+  grid-column: 1 / -1;
+  display: grid;
+  /* 0.6 rather than 0.42: the head was leaving 367px of its column empty
+     while the frame, sized off the other column by ratio, set the card's whole
+     height. Handing the width to the side that has something to put in it
+     costs the game nothing it was using and the page 53px it was not. */
+  grid-template-columns: minmax(260px, 0.6fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.lab--wide .playframe {
+  aspect-ratio: 16 / 9;
+}
+
+.lab--wide .lab__head {
+  grid-row: 1 / 3;
+  align-content: center;
+  display: grid;
+  border-right: 1px solid var(--line-dark);
+  border-bottom: 0;
+}
+
+.lab__head {
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.lab__date {
+  display: block;
+  margin-bottom: 0.65rem;
+  color: var(--sand);
+  font: 750 0.64rem/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The year. These run a decade behind the flagship work and the cards give
+   no other sign of it, so it rides the name rather than sitting in a
+   metadata line above it that reads as chrome. It is a date, so it is set
+   like one: no border, no round ends, just the quieter colour and a space. */
+.era {
+  display: inline-block;
+  vertical-align: 0.34em;
+  margin-left: 0.55rem;
+  color: var(--muted);
+  font: 750 0.6rem/1 var(--mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.lab .era {
+  color: var(--sand);
+}
+
+.lab__head h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 2.5vw, 2.1rem);
+  line-height: 1;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+}
+
+.lab__head p {
+  max-width: 68ch;
+  margin: 0.5rem 0 0;
+  color: var(--on-ink-3);
+  font-size: var(--fs-small);
+  line-height: 1.55;
+}
+
+/* What the game answers to, said before it takes the keyboard rather than
+   discovered by pressing things. It lives in the card's own head, which is
+   already the column that describes the artifact, so the instructions cost the
+   page no height and the frame keeps all of its own. */
+.keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.9rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--on-ink-2);
+  font: 700 var(--fs-micro) / 1.7 var(--mono);
+}
+
+.keys li {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.keys kbd {
+  min-width: 1.5em;
+  padding: 0.1rem 0.32rem;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-xs);
+  font: inherit;
+  text-align: center;
+}
+
+/* Only where there is a thumb and no keyboard. Hidden rather than dimmed, so
+   a pointer reader is not told about a control they do not have. Both rules
+   are scoped past `.keys li`, which is a class and a type and outranks a bare
+   class either way it is written. */
+.keys .keys--touch {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .keys .keys--touch {
+    display: flex;
+  }
+}
+
+/* Specific enough to beat `.lab__head p`, which is a class and a type. */
+.lab__head .keys__note {
+  margin-top: 0.5rem;
+  color: var(--on-ink-3);
+  font-size: 0.78rem;
+}
+
+.stage {
+  flex: 1;
+  color: var(--on-shade);
+  padding: clamp(0.8rem, 1.6vw, 1.1rem);
+  background: var(--screen);
+}
+
+.stage__label {
+  display: block;
+  margin-bottom: 0.6rem;
+  color: var(--on-ink-4);
+  font: 700 0.61rem/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.stage--typer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.term {
+  min-height: 104px;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 1.05rem;
+  border: 1px solid color-mix(in srgb, var(--sand) 28%, transparent);
+  border-radius: var(--r-sm);
+  color: var(--on-shade);
+  background: var(--screen);
+  font: 760 clamp(0.96rem, 1.6vw, 1.24rem) / 1.45 var(--mono);
+}
+
+.term__p {
+  color: var(--sand);
+}
+
+.term__out {
+  min-width: 0;
+}
+
+.caret {
+  flex: 0 0 auto;
+  width: 0.55em;
+  height: 1.35em;
+  border-right: 2px solid var(--sand);
+  animation: caret 0.8s steps(1) infinite;
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.choice {
+  min-height: 40px;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--r-pill);
+  color: var(--on-ink-2);
+  background: transparent;
+  cursor: pointer;
+  font: 700 0.66rem/1 var(--mono);
+}
+
+.choice[aria-pressed='true'],
+.choice:hover {
+  color: var(--on-accent);
+  background: var(--sand);
+  border-color: var(--sand);
+}
+
+.choice:disabled {
+  border-style: dashed;
+  color: var(--on-ink-4);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+/* The two arguments the 2019 library takes and the port used to hard-code:
+   the string, and the milliseconds between characters. They are controls
+   rather than decoration, so they get the page's control sizes - 40px of
+   press, the drawn slider the saltline clock uses, and a real submit. */
+.typer {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 0.9rem;
+}
+
+.typer__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem 0.5rem;
+}
+
+.typer__lab {
+  grid-column: 1 / -1;
+  color: var(--on-ink-3);
+  font: 700 0.61rem/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.typer__in {
+  min-width: 0;
+  min-height: 40px;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-sm);
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--on-shade) 5%, transparent);
+  font: 680 0.78rem/1.3 var(--mono);
+}
+
+.typer__in::placeholder {
+  color: var(--on-ink-4);
+}
+
+.typer__in:hover {
+  border-color: color-mix(in srgb, var(--sand) 45%, transparent);
+}
+
+.choice--go {
+  border-color: var(--sand);
+  color: var(--on-accent);
+  background: var(--sand);
+  font-weight: 800;
+}
+
+.choice--go:hover {
+  background: var(--sand-soft);
+  border-color: var(--sand-soft);
+}
+
+/* The handle's ring is the card's own ground, and this card is ink rather
+   than the ink-2 the clock sits on. */
+.typer__rate {
+  color: var(--on-ink-3);
+}
+
+.typer__rate input::-webkit-slider-thumb {
+  border-color: var(--ink);
+}
+
+.typer__rate input::-moz-range-thumb {
+  border-color: var(--ink);
+}
+
+.typer .choices {
+  margin-top: 0;
+}
+
+.stage--dev {
+  display: grid;
+  align-content: center;
+  gap: 0.95rem;
+}
+
+/* ── The pan window ──────────────────────────────────────────────────────
+   Below 765 the frame stops shrinking and scrolls sideways instead, and until
+   now nothing said so: the reader got half a chart and a hairline scrollbar to
+   infer the rest from. Two things fix that, and neither touches the 2015 file.
+
+   The fades are drawn on this wrapper rather than on the scroller, because a
+   box positioned inside a scroller travels with the content and an edge that
+   scrolls away is not an edge. Each side appears only when there is really
+   more chart behind it, which the component reads off the scroll position: at
+   rest the left edge is the chart's own left edge and keeps its axis labels,
+   which are the smallest thing in the picture and the first thing a decorative
+   fade would eat. `overflow: hidden` is here so they take the frame's corners
+   instead of squaring them off. */
+.devpan {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-sm);
+}
+
+.devpan::before,
+.devpan::after {
+  content: '';
+  position: absolute;
+  inset-block: 1px;
+  width: 2.75rem;
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease);
+  pointer-events: none;
+}
+
+.devpan::before {
+  left: 1px;
+  background: linear-gradient(to right, var(--screen), transparent);
+}
+
+.devpan::after {
+  right: 1px;
+  background: linear-gradient(to left, var(--screen), transparent);
+}
+
+.devpan[data-l]::before,
+.devpan[data-r]::after {
+  opacity: 1;
+}
+
+/* The instruction, and it names the payoff rather than the gesture, because
+   what a reader needs to know is not that the box moves but that a second
+   distribution is the reason to move it. Hidden wherever the whole chart is
+   already on screen: at those widths it would be telling the reader to swipe
+   at something that does not go anywhere.
+
+   It stands on the stage's own dark screen rather than the section's sand, so
+   it takes the ink family the label above it takes. `--muted` here would be
+   the sand ground's quiet step, which is a dark grey on a dark box. */
+.devpan__cue {
+  display: none;
+  margin: 0;
+  color: var(--on-ink-3);
+  font: 750 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* A window onto a document that is a fixed size, not a box that document
+   responds to. deviation.html hardcodes a 1280px chart canvas, so the frame is
+   laid out at the width the file wants and scaled from the outside.
+
+   The height is the scale restated, and it is stated here rather than inline
+   because the scale is measured and measuring needs JavaScript. The component
+   cannot know the card's width until it hydrates, so anything it computes
+   arrives late, and a box two thirds down the page that gains 25px after first
+   paint moves every anchor below it - which is what was landing the nav's
+   scroll-spy on the wrong section. The ratio is the document's own 1330x595
+   and the floor is the half-scale clamp the component stops shrinking at, so
+   CSS reaches the same number at first paint and JavaScript changes nothing.
+
+   Two regimes, and each is exact rather than close. While the frame is being
+   shrunk to fit, its height is its width through the document's own 1330x595,
+   which is what `aspect-ratio` says. Once the shrinking stops at half scale and
+   the card scrolls sideways instead, the height stops with it at half of 595,
+   the same number at every width below. Stating the floor as `min-height`
+   instead would be shorter and wrong: a ratio and a minimum height are also a
+   minimum width, and a grid item honours it, so the card demanded 666px on a
+   390 phone. */
+.devframe {
+  aspect-ratio: 1330 / 595;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid color-mix(in srgb, var(--sand) 28%, transparent);
+  border-radius: var(--r-sm);
+  background: var(--screen);
+  overscroll-behavior-x: contain;
+}
+
+/* The scaled size, stated as a box, because a transform does not change the
+   one it is on and the scroller above measures boxes. Without this the frame
+   claims 1330 of overflow whatever it is drawn at and carries a scrollbar it
+   has no use for. The width is the measured one and has to come from the
+   component; the height is the frame's height by construction. */
+/* Below this the card is narrower than half the document and the component
+   stops shrinking, so the drawn height stops changing too. 765 is where the
+   card crosses 665, measured rather than guessed. */
+@media (width <= 765px) {
+  .devframe {
+    aspect-ratio: auto;
+    height: 298px;
+  }
+
+  /* The same crossing, said once. This is exactly where the shrinking stops
+     and the sideways scroll starts, so it is exactly where the instruction
+     becomes true. */
+  .devpan__cue {
+    display: block;
+  }
+}
+
+/* The drawn width comes from the component, but the floor is the card. With no
+   script the scale never leaves its minimum, so the box would be 665 inside a
+   715 card and the poster would sit against a 50px gutter. Wherever the
+   component's own number is the larger one - which is every width a live frame
+   is scaled at - this does nothing. */
+.devframe__fit {
+  min-width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* The poster is the same document at the same seed, so it fills the same box
+   the frame will, and scrolls sideways on a phone for the same reason. `contain`
+   rather than `cover`: the axis labels are the smallest thing in the picture and
+   cropping them is how a chart stops being one. It is a still of a page, not a
+   photograph, so it gets no radius of its own - the scroller around it already
+   has the corners. */
+.devframe__fit img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 0 0;
+}
+
+/* The width and height attributes are the size the document wants and the
+   component owns those numbers. The page-wide `max-width: 100%` on frames
+   would otherwise squeeze this one back down to the card, which is exactly
+   the thing the 2015 file cannot survive. */
+.devframe iframe {
+  display: block;
+  max-width: none;
+  border: 0;
+  transform-origin: 0 0;
+}
+
+/* GrinchJump boots on request rather than on sight. It is a real three.js
+   build, and a page that quietly starts a game nobody asked for is exactly
+   the kind of thing this archive exists to complain about. */
+.playframe {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--r-sm);
+  background: var(--screen);
+}
+
+.playframe img,
+.playframe iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+
+.playframe img {
+  opacity: 0.4;
+}
+
+/* The game reads the keyboard off its own document, so which element holds the
+   caret is the difference between steering and scrolling the page. That has to
+   be visible, and the frame is the element that has it. */
+.playframe:focus-within {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* Steering by thumb, on a screen with no keyboard behind it. Overlaid on the
+   frame's own bottom corners rather than added below it, because a game's
+   controls belong on the game and because the card has no height to spare. */
+.playframe__thumbs {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  inset: auto 0 0;
+  justify-content: space-between;
+  padding: 0.7rem;
+  pointer-events: none;
+}
+
+@media (pointer: coarse) {
+  .playframe__thumbs {
+    display: flex;
+  }
+}
+
+.playframe__steer {
+  width: 58px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--on-shade) 45%, transparent);
+  border-radius: 50%;
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--shade) 55%, transparent);
+  font: 800 1.2rem/1 var(--mono);
+  cursor: pointer;
+  /* The buttons take the thumb; the rest of the frame keeps scrolling the page
+     under it, which is what stops a game two thirds down a phone being a trap. */
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+.playframe__steer:active {
+  color: var(--on-accent);
+  background: var(--sand);
+  border-color: var(--sand);
+}
+
+/* Stated on the frame, because a frozen game and a broken one look identical
+   and the reader who pressed pause is owed the difference. */
+.playframe__held {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 1rem;
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--shade) 58%, transparent);
+  text-align: center;
+}
+
+.playframe__held b {
+  font: 800 0.8rem/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.playframe__held span {
+  color: var(--on-ink-2);
+  font: 650 0.68rem/1.45 var(--mono);
+}
+
+.playframe__go {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 1rem;
+  border: 0;
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--shade) 38%, transparent);
+  cursor: pointer;
+  text-align: center;
+}
+
+.playframe__go b {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  color: var(--on-accent);
+  background: var(--sand);
+  font-size: 1.35rem;
+  transition: transform var(--dur-2) var(--ease);
+}
+
+.playframe__go:hover b {
+  transform: scale(1.08);
+}
+
+.playframe__go em {
+  font: 750 0.68rem/1.4 var(--mono);
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.playframe__go small {
+  color: var(--on-ink-3);
+  font: 650 0.64rem/1.4 var(--mono);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--line-dark);
+  color: var(--on-ink-2);
+  font: 680 0.68rem/1.35 var(--mono);
+}
+
+.toolbar__group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbar__link {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--r-pill);
+  text-decoration: none;
+  font-weight: 800;
+}
+
+/* Restart is a button sitting in a row of links, so it has to be told the
+   things a link gets for nothing. */
+button.toolbar__link {
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.toolbar__link kbd {
+  padding: 0.08rem 0.34rem;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-xs);
+  font: inherit;
+  font-size: 0.92em;
+}
+
+.toolbar__link:hover {
+  color: var(--on-accent);
+  background: var(--sand);
+  border-color: var(--sand);
+}
+
+.toolbar__link:hover kbd {
+  border-color: color-mix(in srgb, var(--on-accent) 38%, transparent);
+}
+
+/* Earlier work has no demo and no link, so it gets rows rather than cards.
+   It still needs a name of its own: unlabelled, the list arrived after the
+   three cards as five untitled rows, and its own entries were the only thing
+   telling a reader what they had reached. */
+/* ── Rendezvous ─────────────────────────────────────────────────────────
+   Not a lab, and it does not wear the dark card the three above it wear.
+   Nothing here runs, so there is no stage to frame; what it has is three
+   captures, and the captures should be the loudest thing in the block.
+
+   The text sits beside the lead rather than above it, which makes the first
+   row one image tall instead of an image plus a paragraph. The pair takes the
+   full measure underneath, because two dashboards at a third of the page each
+   are two dashboards nobody can read. */
+.rz {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.58fr) minmax(0, 1fr);
+  gap: 1.15rem;
+  margin-top: 1.7rem;
+}
+
+/* Centred against the lead, which is the taller of the two. Left at the top it
+   would hang a paragraph off the ceiling of a 460px image. */
+.rz__head {
+  align-content: center;
+  min-width: 0;
+}
+
+.rz__date {
+  display: block;
+  margin-bottom: 0.6rem;
+  color: var(--muted);
+  font: 750 0.64rem/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rz__head h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 2.5vw, 2.1rem);
+  line-height: 1;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+}
+
+.rz__head p {
+  max-width: 62ch;
+  margin: 0.55rem 0 0;
+  font-size: var(--fs-small);
+  line-height: 1.55;
+}
+
+.rz .stack {
+  color: var(--muted);
+  font: 650 0.69rem/1.45 var(--mono);
+}
+
+.rz figure {
+  min-width: 0;
+  margin: 0;
+}
+
+.rz img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 2px solid var(--ink);
+  border-radius: var(--r-sm);
+  background: var(--screen);
+}
+
+.rz figcaption {
+  margin-top: 0.55rem;
+  color: var(--muted);
+  font: 650 0.72rem/1.55 var(--mono);
+}
+
+.rz__pair {
+  grid-column: 1 / -1;
+}
+
+.rz__two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.rz__shot {
+  position: relative;
+  min-width: 0;
+}
+
+/* Which theme, on the theme. The pair is only an argument if a reader can tell
+   at a glance that these are the same screen and not two screens, and the
+   labels are what let the caption underneath be one sentence instead of three.
+   Inside the frame, so the row stays two images tall rather than two images
+   and two lines.
+
+   Opaque, not the 84% it started at. A chip that lets the capture through is
+   a chip whose contrast is decided by whatever pixels happen to be under it,
+   which on the light half of a light/dark pair is not a bet worth taking. */
+.rz__theme {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--r-xs);
+  color: var(--on-ink);
+  background: var(--ink-deep);
+  font: 800 var(--fs-micro) / 1 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* Under 900 the text column has stopped being a column: it is 240px of
+   minimum next to an image that wants the rest, and the paragraph breaks
+   every four words. Stack it and give the lead the whole measure. */
+@media (width <= 900px) {
+  .rz {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Two dashboards side by side stop being readable long before the layout
+   stops fitting them. Below 620 they go one above the other, full width. */
+@media (width <= 620px) {
+  .rz__two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* A rule's worth of air after a figure caption, which is already small grey
+   type and reads as the end of nothing in particular. */
+.rz + .earlier__h {
+  margin-top: 2rem;
+}
+
+.earlier__h {
+  margin: 1.05rem 0 0;
+  font: 800 var(--fs-label) / 1.4 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.earlier {
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--ink);
+}
+
+.earlier li {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr) minmax(0, 0.62fr);
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--line-light-2);
+}
+
+/* Scoped past `.earlier p`, which is a class and a type and would otherwise
+   take the size and the margin straight back out of this rule. */
+.earlier .earlier__n {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.12rem;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.earlier p {
+  max-width: 78ch;
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+}
+
+/* The same chip in the column this list already gives the year. It is a grid
+   item here, so it stretches to the row unless both axes are pinned. */
+.earlier .era {
+  justify-self: start;
+  align-self: start;
+  margin: 0.2rem 0 0;
+  vertical-align: baseline;
+}
+
+.earlier .stack {
+  align-self: center;
+  font: 650 0.69rem/1.55 var(--mono);
+}
+
+/* ── 13. SKILLS ──────────────────────────────────────────────────────── */
+/* Five groups as five rows rather than five columns. The old grid gave every
+   group the same width and Backend nine entries to Languages' five, so four
+   columns ran out of content a third of the way down and the row stood as tall
+   as the longest one. Rows spend the width where the entries are, and they
+   leave the full measure free underneath a group for its references. */
+.skills {
+  display: grid;
+  gap: 1px;
+  border: 1px solid var(--line-dark);
+  background: var(--line-dark);
+}
+
+.skg {
+  display: grid;
+  grid-template-columns: 10.5rem minmax(0, 1fr);
+  gap: 0.4rem 1.4rem;
+  padding: 0.85rem 1.2rem;
+  background: var(--ink-3);
+}
+
+.skg h3 {
+  margin: 0;
+  color: var(--sand);
+  font: 800 0.7rem/2.1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Positioned, so the radios park inside their own group: they are absolute to
+   keep the flex gap between chips honest, and a focus scroll has to land here
+   rather than wherever the nearest positioned ancestor happened to be. */
+.skg__set {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* The control is a radio and the chip is its label, so the whole reveal below
+   is one `:checked + label + p` rule and none of it needs script. Hidden by
+   opacity and size rather than by `display`, which would take it out of the
+   group and off the keyboard. */
+.sk__r {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sk {
+  padding: 0.28rem 0.72rem;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-pill);
+  color: var(--on-ink-2);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  cursor: pointer;
+  transition:
+    color var(--dur-1) var(--ease),
+    background-color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease);
+}
+
+.sk:hover {
+  color: var(--on-ink);
+  border-color: var(--on-ink-3);
+}
+
+/* No weight change on selection: the chip would resize and shove the rest of
+   the row sideways every time the reader arrowed through the group. */
+.sk__r:checked + .sk {
+  color: var(--on-accent);
+  border-color: var(--sand);
+  background: var(--sand);
+}
+
+.sk__r:focus-visible + .sk {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Laid out here, revealed by the one rule below: `order` and a full basis put
+   it under its own group's chips however far along the row its chip sits. */
+.sk__ev {
+  display: none;
+  order: 1;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.1rem 0.85rem;
+  margin: 0.35rem 0 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--line-dark-2);
+  font: 700 var(--fs-micro) / 1.6 var(--mono);
+}
+
+.sk__r:checked + .sk + .sk__ev {
+  display: flex;
+}
+
+.sk__ev > span {
+  color: var(--on-ink-3);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.sk__ev a {
+  padding: 0.15rem 0;
+  color: var(--sand);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--sand) 45%, transparent);
+  text-underline-offset: 3px;
+}
+
+.sk__ev a:hover {
+  text-decoration-color: var(--sand);
+}
+
+/* The four entries the page cannot show. Stated once, in the same register as
+   the references it stands in for, and not dressed up as one. */
+.sk__ev .sk__ev--none {
+  color: var(--on-ink-2);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ── 14. CONTACT ─────────────────────────────────────────────────────── */
+.contact {
+  position: relative;
+  overflow: hidden;
+}
+
+.contact::before {
+  content: 'TALK';
+  position: absolute;
+  right: -1vw;
+  bottom: -9vw;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--on-accent) 24%, transparent);
+  font: 900 min(32vw, 28rem) / 1 var(--display);
+  letter-spacing: -0.09em;
+  pointer-events: none;
+}
+
+.contact__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  gap: clamp(1.8rem, 4vw, 3rem);
+  align-items: start;
+}
+
+.contact h2 {
+  max-width: 11ch;
+  font-size: clamp(3.4rem, 7vw, 6.4rem);
+}
+
+.contact__copy {
+  max-width: 52ch;
+  margin: 1.1rem 0 0;
+  font-size: clamp(1.02rem, 1.6vw, 1.28rem);
+  line-height: 1.36;
+  letter-spacing: -0.02em;
+}
+
+/* The primary action, built as one. It was display type with an underline,
+   which is a link that happens to be large; a filled pill on a ground that
+   carries nothing else filled is the only thing here a reader can mistake for
+   the point. Sized to the address rather than to the column, because a slab
+   run to the full measure is a banner and this is a target.
+
+   Ink rather than the sun: the sun is 1.1 on camel, so the loudest shape in
+   this section has to be cut from the ground's own dark pole, which is also
+   exactly the ink the heading above it is drawn in. */
+.contact__mail {
+  display: inline-flex;
+  align-items: center;
+  min-height: 64px;
+  margin-top: 1.15rem;
+  padding: 0.5rem 1.35rem;
+  border: 1px solid var(--on-accent-2);
+  border-radius: var(--r-pill);
+  color: var(--camel);
+  background: var(--on-accent-2);
+  text-decoration: none;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.05rem, 2.2vw, 2rem);
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  transition:
+    color var(--dur-1) var(--ease),
+    background-color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease);
+}
+
+.contact__mail:hover {
+  color: var(--on-accent);
+  background: var(--sand);
+  border-color: var(--on-accent-2);
+}
+
+/* The other column, and it says which one it is. Without the label the list
+   sits level with the heading and reads as a second offer of equal weight. */
+.contact__more {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+}
+
+.contact__lbl {
+  margin: 0;
+  color: var(--muted);
+  font: 800 var(--fs-micro) / 1.6 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.links {
+  display: grid;
+  align-content: start;
+  margin: 0;
+  border-top: 2px solid var(--ink);
+}
+
+.links a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  min-height: 48px;
+  padding: 0.78rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
+  text-decoration: none;
+  font-weight: 800;
+  transition: padding-left var(--dur-1) var(--ease);
+}
+
+.links a:hover {
+  padding-left: 0.55rem;
+}
+
+.links a span:last-child {
+  font: 700 0.78rem/1.6 var(--mono);
+}
+
+.resume {
+  margin-top: 0.75rem;
+}
+
+.foot {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.8rem 1.5rem;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line-light-2);
+  font: 700 0.7rem/1.55 var(--mono);
+}
+
+.foot p {
+  max-width: 60ch;
+  margin: 0;
+}
+
+/* The other running order. It takes its own row at the foot rather than a slot
+   in the flex run, because it is the only line down here that goes anywhere
+   and it should not be mistaken for another colophon note. The row break is
+   the whole separation: a second hairline inside the footer would only reach
+   as far as the 60ch the paragraphs are held to, and a rule that stops in the
+   middle of the page reads as a mistake. Muted, and the two words that are the
+   link are the only ink in the footer.
+
+   A full row and nothing else on it. `.foot p` caps every paragraph at 60ch,
+   and a flex item clamped to 60ch leaves room for the next one beside it - the
+   receipts switch below has the same basis and the two of them packed into one
+   line and read as a pair, which they are not. Both drop the cap; both are one
+   short sentence rather than a paragraph, so the cap was not holding anything.
+
+   Two classes on the override, because `.foot p` is a class and a type and
+   outranks a bare class however far down the file it sits. */
+.foot .foot__flip,
+.foot .foot__rec {
+  max-width: none;
+}
+
+.foot__flip {
+  flex: 0 0 100%;
+  margin-top: 0.5rem;
+  color: var(--on-camel-3);
+}
+
+.foot__flip a {
+  color: var(--on-paper);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.foot__flip a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ── 14b. THE 404 ────────────────────────────────────────────────────── */
+/* A maintenance buoy, not a joke. Somebody arrived here by following a link
+   that used to work, and the only useful thing to hand them is the address
+   they asked for, whether anything on the site is near it, and one place to
+   go. Everything below the fold is the audited manifest behind a disclosure,
+   because it answers the second question and not the first.
+
+   Plain fragments in the nav would point at nothing from here, so this page
+   asks the layout for `elsewhere` and the six links grow a path. */
+.buoy {
+  display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding-block: calc(0.8rem + 58px + clamp(1.6rem, 5vw, 3rem)) clamp(2.5rem, 6vw, 4rem);
+}
+
+.buoy__label {
+  color: var(--sand);
+}
+
+/* Mono and large, because it is a machine's answer to a machine-shaped
+   question and the reader's own eye needs to find the typo in it. Any address
+   at all can land here, so it wraps mid-token rather than pushing the page
+   sideways. */
+.buoy__path {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--on-ink);
+  font: 800 clamp(1.5rem, 5.5vw, 2.8rem) / 1.15 var(--mono);
+  letter-spacing: -0.02em;
+}
+
+.buoy__say {
+  max-width: 54ch;
+  margin: 1.1rem 0 0;
+  color: var(--on-ink-2);
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+.buoy__go {
+  margin: 1.5rem 0 0;
+}
+
+.buoy__notes {
+  margin-top: 2.2rem;
+}
+
+.buoy__list {
+  margin-top: 1.2rem;
+  max-width: 74ch;
+}
+
+.buoy__how {
+  margin: 0 0 1.6rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.buoy__grp + .buoy__grp {
+  margin-top: 1.9rem;
+}
+
+/* The count is the group's own, read off the manifest at build time, so the
+   heading cannot promise eight and list seven. */
+.buoy__gt {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font: 800 0.72rem/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.buoy__gt span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.buoy__gn {
+  max-width: 62ch;
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.buoy__rows {
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Address, name, reason. The address leads because it is what was typed, and
+   the reason is the quiet one because it only matters once the name has been
+   recognised. */
+.buoy__rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  gap: 0.2rem 1.4rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--line-dark);
+}
+
+/* Closed at the bottom as well as the top, so a group of eight reads as a
+   bounded set rather than a list that ran out. */
+.buoy__rows li:last-child {
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.buoy__rows b {
+  font-size: 0.92rem;
+}
+
+.buoy__p {
+  overflow-wrap: anywhere;
+  color: var(--on-ink-2);
+  font: 700 0.8rem/1.5 var(--mono);
+}
+
+a.buoy__p {
+  color: var(--sand);
+  text-decoration-color: color-mix(in srgb, currentcolor 40%, transparent);
+  text-underline-offset: 3px;
+}
+
+/* Stopped rows are printed, not linked, so the address needs to read as text
+   that happens to be an address. */
+span.buoy__p {
+  color: var(--on-ink-4);
+}
+
+.buoy__w {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.buoy__close {
+  margin: 2.4rem 0 0;
+  color: var(--muted);
+  font: 750 0.72rem/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ── 14c. INSPECTION MODE ────────────────────────────────────────────── */
+/* `?seed=4193`. Off by default and off in the markup's own layout: the blocks
+   are display:none, so nothing on the page moves by a pixel for a reader who
+   did not ask. Asked for, they open underneath the artifact and push the page
+   down rather than lying over it.
+
+   Mono at the micro size, because this is instrumentation reading rather than
+   page copy and should not be mistaken for it.
+
+   Both rules are struck off `currentcolor` rather than the `--line-*` pair.
+   These blocks hang under artifacts on six grounds, and two of them are dark
+   cards standing on a light section - a ground-named line would be picked from
+   the section and come out invisible on the card. The text colour is already
+   right everywhere, so the line follows it. */
+.ins {
+  display: none;
+}
+
+.inspect .ins {
+  display: block;
+  margin-top: 0.7rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px dashed color-mix(in srgb, currentcolor 30%, transparent);
+  border-radius: var(--r-sm);
+  font: 600 var(--fs-micro) / 1.6 var(--mono);
+}
+
+/* The proof panels sit in a two-column grid beside their prose. The block
+   belongs under the whole pair, not in the picture's column. */
+.inset .ins {
+  grid-column: 1 / -1;
+}
+
+.ins__by {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.6rem;
+  margin: 0;
+}
+
+.ins__by span {
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ins__by b {
+  font-weight: 800;
+}
+
+.ins__a {
+  margin-top: 0.7rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid color-mix(in srgb, currentcolor 16%, transparent);
+}
+
+.ins__n {
+  margin: 0 0 0.3rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.ins__d {
+  display: grid;
+  gap: 0.1rem 1rem;
+  margin: 0;
+}
+
+/* The label column is exactly as wide as its longest label and no wider, so
+   the numbers line up and the block stays as narrow as it reads. */
+.ins__d > div {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 0 1rem;
+}
+
+.ins__d dt {
+  color: var(--muted);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.ins__d dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.ins__none {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Says which mode you are in and how to leave it, because a page that has
+   grown twenty label blocks owes you both. */
+.inspect-bar {
+  display: none;
+}
+
+.inspect .inspect-bar {
+  position: fixed;
+  z-index: 40;
+  bottom: 0.8rem;
+  left: var(--pad);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--on-shade) 17%, transparent);
+  border-radius: var(--r-pill);
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--shade) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(125%);
+  font: 750 var(--fs-micro) / 1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.inspect-bar a {
+  color: var(--sand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (width <= 620px) {
+  .ins__d > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .ins__d dd {
+    margin-bottom: 0.35rem;
+  }
+}
+
+/* ── 14d. SHOW RECEIPTS ──────────────────────────────────────────────── */
+/* `?receipts`, or the switch in the footer. Same shape as inspection mode and
+   for the same reason: the annotations are display:none until asked for, so a
+   reader who never presses the switch gets a page that is not one pixel
+   different from the page without this feature in it.
+
+   Dashed hairline, mono, micro. That is already this page's handwriting for
+   instrumentation - `.ins` uses it - and it is the one outline shape here that
+   A5's rule cannot mistake for something you press, which matters because
+   these tags sit inside running prose.
+
+   Struck off `currentcolor` rather than the `--line-*` pair, for the reason
+   the inspection blocks are: claims hang on six grounds and two of them are
+   dark cards standing in a light section, where a ground-named line comes out
+   invisible. */
+.clm__ev {
+  display: none;
+}
+
+/* The claim itself only declares what it is once somebody is reading the
+   annotations. An underline under every number all the time would be the
+   feature arguing before it was asked. */
+.receipts .clm {
+  text-decoration: underline dotted color-mix(in srgb, currentcolor 42%, transparent);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+
+.receipts .clm__ev {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25em 0.45em;
+  margin-left: 0.5em;
+  color: var(--muted);
+  font: 700 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  vertical-align: baseline;
+}
+
+.receipts .clm__src {
+  padding: 0.1em 0.45em;
+  border: 1px dashed color-mix(in srgb, currentcolor 32%, transparent);
+  border-radius: var(--r-xs);
+  white-space: nowrap;
+}
+
+/* The class is the label and the date is the value, the same split the
+   inspection blocks make. */
+.receipts .clm__on {
+  color: currentcolor;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+/* The switch. A real control, so it takes the round outline the page reserves
+   for things you press, and it says which state it is in with a fill rather
+   than only with its label - a reader who has just pressed it is looking at
+   the annotations, not back at the button. */
+.foot__rec {
+  flex: 0 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.5rem;
+  color: var(--on-camel-3);
+}
+
+/* A real control, so it takes the pill and the 34px the rest of them take.
+   Micro mono type on its own is a 22px box, which is a thumb's problem. */
+.foot__btn {
+  min-height: 34px;
+  padding: 0.32rem 0.8rem;
+  border: 1px solid var(--line-light-2);
+  border-radius: var(--r-pill);
+  color: var(--on-paper);
+  background: none;
+  font: 750 var(--fs-micro) / 1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-1) var(--ease),
+    background var(--dur-1) var(--ease);
+}
+
+.foot__rec span {
+  max-width: 60ch;
+}
+
+.foot__btn:hover {
+  border-color: var(--on-paper);
+}
+
+.foot__btn[aria-pressed='true'] {
+  border-color: transparent;
+  color: var(--on-accent);
+  background: var(--sand);
+}
+
+/* No switch without the script that drives it, and no offer of one either. */
+.no-js .foot__rec {
+  display: none;
+}
+
+/* ── 15. MOTION ──────────────────────────────────────────────────────── */
+/* Only hidden once the reveal script is running, so a page without
+   JavaScript never hides something it then cannot show. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px) scale(0.985);
+  will-change: transform, opacity;
+}
+
+.js [data-reveal].in {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* ── 16. BREAKPOINTS ─────────────────────────────────────────────────── */
+@media (width <= 1000px) {
+  .fs,
+  .card__cols,
+  .card--full .card__cols,
+  .card--full .specs {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (width <= 900px) {
+  .hero__bottom,
+  .about,
+  .log,
+  .contact__grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* One column means the secondary list gets the whole measure, and at this
+     width that is eight hundred pixels between a name and the handle it
+     belongs to. Capped to something a reader can pair across. */
+  .contact__more {
+    max-width: 34rem;
+  }
+
+  .hero__actions {
+    align-items: flex-start;
+  }
+
+  .hero__btns {
+    justify-content: flex-start;
+  }
+
+  .hint {
+    top: 37%;
+  }
+
+  .log__intro {
+    position: static;
+  }
+
+  .card--half {
+    grid-column: span 12;
+  }
+
+  .vitals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .labs {
+    grid-template-columns: 1fr;
+  }
+
+  .lab--wide {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .lab--wide .lab__head {
+    grid-row: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line-dark);
+  }
+
+  .earlier li {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}
+
+@media (width <= 620px) {
+  :root {
+    --pad: 1rem;
+  }
+
+  /* The label stops holding a tenth of the row. Below this the chips need the
+     whole measure more than the group name needs to sit beside them. */
+  .skg {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.15rem;
+  }
+
+  /* Thirty percent of a phone-width stage is a loupe the caption does not fit
+     in, and a magnifier you cannot read the magnification off is decoration.
+     It takes more of the frame instead, which it can afford: by the time it
+     appears there are no sheets behind it left to hide. */
+  .asm__loupe {
+    width: 42%;
+  }
+
+  /* Four layer names across a phone is four words a column. Two by two. */
+  .asm__key {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* /socket-canvas/public/index.html is thirty-two characters, and next to it
+     a name gets three. The address takes the row and everything else stacks
+     under it. */
+  .buoy__rows li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.28rem;
+  }
+
+  .buoy__w {
+    grid-column: 1;
+  }
+
+  .skg h3 {
+    line-height: 1.6;
+  }
+
+  .nav {
+    inset: 0.65rem 0.65rem auto;
+    height: 52px;
+    gap: 0.35rem;
+    padding-left: 0.65rem;
+  }
+
+  .nav__brand {
+    gap: 0;
+  }
+
+  .nav__name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .nav__mark {
+    width: 30px;
+  }
+
+  /* Six labels in 358px is 0.63rem type with negative tracking and 40px
+     targets, which is a row you squint at and miss. The disclosure takes its
+     place: one 44px control, and behind it the same six with room to say what
+     each one is. */
+  .nav__links {
+    display: none;
+  }
+
+  .nav__toggle {
+    display: inline-flex;
+  }
+
+  .hero__in {
+    padding-top: 6.2rem;
+    padding-bottom: 1.6rem;
+  }
+
+  /* The narrow layout drops the kicker to about a third of the way down, past
+     where the desktop vignette has faded out. The scrim follows the text. */
+  .hero::before {
+    height: 52%;
+  }
+
+  /* And the same argument at the other end. The narrow hero is tall and its
+     text is stacked, so the intro sits from 48% to 61% of the frame - above
+     the top edge of the desktop bottom vignette, in the one band the two
+     scrims both leave alone. At 1440 that paragraph is 25.6px and only owes
+     3:1; here it is 18.6px and owes 4.5, and it was landing at 4.46 over the
+     brightest light the canopy makes. Reaching the scrim up to meet the text
+     is the fix the vignette exists for, and it takes the same paragraph to
+     5.1. The upper 38% of the frame, where nothing is written, is untouched. */
+  .hero::after {
+    height: 62%;
+  }
+
+  /* Two items pushed to opposite edges need room between them to read as two
+     items. At 390 there is none, so both wrapped, and the role line's second
+     word landed under the dot rather than under its own first word. Stacked,
+     each gets the full measure and neither wraps at all. */
+  .hero__meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+    font-size: 0.59rem;
+  }
+
+  /* Indented past the dot so the two lines share a left edge and the dot
+     hangs, rather than the second line starting half a character early. */
+  .hero__meta span:last-child {
+    padding-left: 1rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(3.9rem, 23vw, 6.3rem);
+  }
+
+  .hero h1 .out {
+    margin-left: 0;
+  }
+
+  .hero__bottom {
+    gap: 1.3rem;
+  }
+
+  .hero__intro {
+    max-width: 340px;
+    font-size: 1.16rem;
+  }
+
+  /* The one action takes the whole measure. Sized to its label it would sit
+     as a short tab in a wide empty row and stop reading as the way in. */
+  .hero__btns {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .btn {
+    min-height: 46px;
+    padding-inline: 0.7rem;
+    font-size: 0.79rem;
+  }
+
+  /* Fixed, not a percentage. A short hero puts 28% straight through the
+     location line in the eyebrow row, so the hint sits in the empty field
+     between the nav and that row instead. */
+  .hint {
+    top: 4.9rem;
+    right: 1rem;
+    padding-left: 0.55rem;
+    font-size: 0.57rem;
+  }
+
+  /* The second line names a pointer and the arrow keys, and a phone has
+     neither. Touch moves the light too, but a caption on a canvas is not
+     where you teach someone to touch a screen. */
+  .hint span {
+    display: none;
+  }
+
+  .sec {
+    padding-block: 3.2rem;
+  }
+
+  .head {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    margin-bottom: 2.2rem;
+  }
+
+  .head__t {
+    font-size: clamp(2.9rem, 15vw, 4.6rem);
+  }
+
+  .head__t--long {
+    font-size: clamp(1.7rem, 7.4vw, 2.4rem);
+  }
+
+  .vitals {
+    grid-template-columns: 1fr;
+  }
+
+  .about__copy p {
+    font-size: 1.4rem;
+  }
+
+  .grid {
+    gap: 0.8rem;
+  }
+
+  .card__copy {
+    padding: 1.1rem;
+  }
+
+  .card__copy h3,
+  .card__intro h3 {
+    font-size: 2.05rem;
+  }
+
+  .shot--lead {
+    aspect-ratio: 1.5 / 1;
+  }
+
+  /* Six ticks at 390 would be 60px wide. Three across keeps the thumbnail
+     readable and the slider still reaches all six. */
+  .arc__ticks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .inset,
+  .card__hero {
+    grid-template-columns: 1fr;
+  }
+
+  .card__hero {
+    padding: 1.1rem;
+  }
+
+  /* Stacked, the plate column would put a sentence about the capture between
+     the capture and the project's own name. The caption stays with the
+     picture in the reading order that has room for it, and steps behind the
+     title in the one that does not. */
+  .card__plate {
+    display: contents;
+  }
+
+  .card__hero .plate-cap {
+    order: 1;
+  }
+
+  .specs > div,
+  .fs__read > div {
+    grid-template-columns: 5.6rem minmax(0, 1fr);
+  }
+
+  .role {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    padding-block: 1.05rem;
+  }
+
+  .role .role__when {
+    font-size: 0.65rem;
+  }
+
+  /* One column leaves no gutter to hang the spine in, so the rows go back to
+     being ruled and the timeline reads as the order it is printed in. */
+  .role--now::before,
+  .role--now::after,
+  .tl .role::before,
+  .tl .role::after {
+    display: none;
+  }
+
+  .tl .role {
+    padding-block: 1.05rem;
+    border-bottom: 1px solid var(--line-light);
+  }
+
+  .tl .role:last-child {
+    border-bottom: 0;
+  }
+
+  .edu {
+    padding: 1.05rem;
+  }
+
+  .edu__deg {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .lab {
+    box-shadow: 5px 5px 0 color-mix(in srgb, var(--on-accent) 20%, transparent);
+  }
+
+  .stage {
+    padding: 0.8rem;
+  }
+
+  .term {
+    min-height: 126px;
+    padding: 0.9rem;
+  }
+
+  .contact h2 {
+    font-size: 20vw;
+  }
+}
+
+/* Phones only, and one rule. Everywhere wider, the skim's label column leaves
+   the sentence beside it four hundred pixels or more and the alignment down
+   the column is worth having. On a 390 handset it leaves two hundred and
+   forty, which is four words a line, so the label steps above the sentence
+   and both take the full width - the same shape the about-page facts use for
+   the same reason. Costs about 130px of page and buys back a readable
+   measure, which on the one device that is all measure is the better trade. */
+@media (width <= 470px) {
+  .skim > div {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+  }
+}
+
+/* ── 17. REDUCED MOTION ──────────────────────────────────────────────── */
+/* A different path, not a shorter one. The hero canvas draws one frame and
+   shuts down, the caret stops blinking, and nothing is left mid-reveal. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+    scroll-behavior: auto !important;
+  }
+
+  .hint,
+  .caret {
+    display: none;
+  }
+
+  .js [data-reveal],
+  .js [data-reveal].in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* The assembled still, from the first paint rather than from whenever the
+     script lands. The driver agrees with this and then writes --p inline, so
+     the scrub still comes apart for a reader who asks it to. */
+  .asm {
+    --p: 1;
+  }
+}

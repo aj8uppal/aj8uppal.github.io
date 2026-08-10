@@ -1,0 +1,63 @@
+---
+/**
+ * The current role, rendered on its own with the room the other seven do not
+ * get. It keeps the .role class and the stack key, so the work-log filter
+ * counts it as one of eight.
+ *
+ * It opens on the outcome and then gives the points of ownership under it.
+ * That summary used to live in a band of its own up by About, back when
+ * the log sat below the projects and a reader met eight jobs late; the whole
+ * section is second on the page now, so the band would be the same sentence
+ * twice within a screen of itself. One telling, in the record.
+ */
+import Claim from '../components/Claim.astro';
+import { notableBrowser, places } from '../data/content';
+import { current, stackKey, stackLine } from '../lib/roles';
+---
+
+{
+  current && (
+    <article
+      class="role role--now"
+      id={places[current.key].at}
+      data-place
+      data-stack={stackKey(current.stack)}
+    >
+      {/* No dot after the date: the inked node on the spine and the
+          "Current role" flag already say it, twice over. */}
+      <p class="role__when">{current.when}</p>
+      <div>
+        <p class="role__flag">Current role</p>
+        <h3>
+          <b>{current.org}</b>
+          {current.where && <span> &middot; {current.where}</span>}
+        </h3>
+        <p class="stack">{stackLine(current)}</p>
+        {current.body && (
+          <p class="role__lede">
+            {current.ev ? <Claim of={current.ev}>{current.body}</Claim> : current.body}
+          </p>
+        )}
+        {current.bullets && (
+          <ul class="role__pts">
+            {current.bullets.map((pt) => (
+              <li>{pt}</li>
+            ))}
+          </ul>
+        )}
+        {/* The one thread still held. The browser-automation line is not
+            signed off, and does not render until it is. */}
+        {notableBrowser.approved && <p class="role__lately">{notableBrowser.text}</p>}
+        {current.status && (
+          <p class="role__status">
+            {current.statusEv ? (
+              <Claim of={current.statusEv}>{current.status}</Claim>
+            ) : (
+              current.status
+            )}
+          </p>
+        )}
+      </div>
+    </article>
+  )
+}

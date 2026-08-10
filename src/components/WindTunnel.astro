@@ -1,0 +1,156 @@
+---
+/**
+ * A palm-sized boat you can point, beside the paragraph about pointing boats.
+ *
+ * saltline's whole model is that the angle between where you want to go and
+ * where the wind is coming from decides everything else, and that is one of
+ * those things a sentence describes and a dial explains. So: a wind that does
+ * not move, a boat that does, and the four numbers the game's own HUD shows
+ * changing as you swing it, including the wedge at the top where the sails
+ * stop working and you stop with them.
+ *
+ * The curve is saltline's own point-of-sail function, sampled, and built in
+ * data/polar.ts. The six captures above are the check that it is: verify reads
+ * their HUD numbers off the arc and puts them back through the shipped curve.
+ *
+ * The server renders the whole thing at the opening heading, so the figure is
+ * correct and readable before any script runs and there is nothing to flash.
+ * The script re-runs the same functions on the same table; the table travels
+ * to it as JSON on the element rather than as an import, which keeps saltline's
+ * prose and the model that built the table out of a bundle that only needs the
+ * pairs of numbers it came out as.
+ */
+import { polar, polarSaid } from '../data/polar';
+import { bestVmg, kn, said, sail, saidVmg, sailPath } from '../lib/polar';
+
+/* Beam reach: the fastest thing the boat does, and far enough from the no-go
+   wedge that the first drag in either direction shows something changing. */
+const OPEN = 105;
+
+const C = 120;
+const R = 92;
+const best = bestVmg(polar);
+const now = sail(polar, OPEN);
+
+/** Degrees clockwise from straight up, which is where the wind comes from. */
+const at = (deg: number, r: number): [number, number] => {
+  const t = (deg * Math.PI) / 180;
+  return [+(C + r * Math.sin(t)).toFixed(2), +(C - r * Math.cos(t)).toFixed(2)];
+};
+
+const wedge = `M${C} ${C} L${at(-polar.noGo, R).join(' ')} A${R} ${R} 0 0 1 ${at(polar.noGo, R).join(' ')} Z`;
+
+const TICKS = [30, 60, 90, 120, 150, 180, -30, -60, -90, -120, -150];
+
+const rows: Array<[string, string]> = [
+  ['Off the wind', `${Math.abs(now.rel)}°`],
+  ['Point of sail', now.point],
+  ['Thrust', `${Math.round(now.thrust * 100)}%`],
+  ['Boat speed', `${kn(now.speed)} kn`],
+  ['VMG', saidVmg(now.vmg)],
+];
+---
+
+<figure
+  class="wt"
+  data-wt
+  data-polar={JSON.stringify({ noGo: polar.noGo, hull: polar.hull, rows: polar.rows })}
+  data-best={best.toFixed(3)}
+>
+  <div class="wt__body">
+    <div class="wt__dial" data-wt-dial>
+      <svg
+        viewBox="0 0 240 240"
+        role="img"
+        aria-label="A boat on a dial, with the wind coming from the top and a wedge marking the angles too close to it to sail."
+      >
+        <circle class="wt__ring" cx={C} cy={C} r={R}></circle>
+        <path class="wt__nogo" d={wedge}></path>
+
+        {
+          TICKS.map((t) => {
+            const [x1, y1] = at(t, R);
+            const [x2, y2] = at(t, t % 90 === 0 ? R - 11 : R - 6);
+            return <line class="wt__tick" x1={x1} y1={y1} x2={x2} y2={y2} />;
+          })
+        }
+
+        {/* The wind, which never moves. Everything on the dial is read off it. */}
+        <g class="wt__wind">
+          <line x1={C} y1="6" x2={C} y2="22"></line>
+          <path d={`M${C - 4} 19 L${C} 27 L${C + 4} 19 Z`}></path>
+        </g>
+
+        <g class="wt__boat" data-wt-boat transform={`rotate(${OPEN} ${C} ${C})`}>
+          {
+            /* Thrust, off the bow, as long as the polar says it is. At nothing
+              it is not a short arrow, it is no arrow. */
+          }
+          <g class="wt__thrust" data-wt-thrust data-wt-dead={now.thrust < 0.005 ? 'yes' : null}>
+            <line x1={C} y1="76" x2={C} y2={+(76 - now.thrust * 40).toFixed(2)}></line>
+            <path
+              d={`M${C - 4} ${(80 - now.thrust * 40).toFixed(2)} L${C} ${(72 - now.thrust * 40).toFixed(2)} L${C + 4} ${(80 - now.thrust * 40).toFixed(2)} Z`}
+            ></path>
+          </g>
+
+          <path
+            class="wt__hull"
+            d={`M${C} 80 L${C + 9} 108 L${C + 6} 140 L${C - 6} 140 L${C - 9} 108 Z`}></path>
+
+          <g class="wt__rig" data-wt-sail transform={`rotate(${now.sheet.toFixed(1)} ${C} 100)`}>
+            <path
+              class="wt__sail"
+              data-wt-luff={now.luffing ? 'yes' : null}
+              d={sailPath(now.lee, C)}></path>
+            <line class="wt__boom" x1={C} y1="100" x2={C} y2="143"></line>
+          </g>
+          <circle class="wt__mast" cx={C} cy="100" r="2.4"></circle>
+        </g>
+
+        {
+          (
+            /* Made good along the wind axis: how much of the boat's speed is
+             going the way the wind is not. Up is to windward.
+
+             Over the boat rather than under it. It is a reading rather than a
+             part of the hull, which argued for putting it behind, but on a
+             beam reach the hull lies across the axis and a reading you cannot
+             see is not one. It carries its own dark edge instead. */
+            <g class="wt__vmg" data-wt-vmg>
+              <line x1={C} y1={C} x2={C} y2={+(C - (now.vmg / best) * (R - 14)).toFixed(2)} />
+            </g>
+          )
+        }
+      </svg>
+    </div>
+
+    <dl class="wt__read" data-wt-read>
+      {
+        rows.map(([k, v]) => (
+          <div>
+            <dt>{k}</dt>
+            <dd>{v}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+
+  <label class="range" for="wt-heading">
+    <span>
+      Heading <output for="wt-heading" data-wt-out aria-hidden="true">{now.point}</output>
+    </span>
+    <input
+      id="wt-heading"
+      type="range"
+      min="-180"
+      max="180"
+      step="1"
+      value={OPEN}
+      data-wt-range
+      aria-valuetext={said(now)}
+    />
+  </label>
+
+  <figcaption class="wt__cap">{polarSaid}</figcaption>
+</figure>

@@ -1,0 +1,493 @@
+---
+/**
+ * The design lab. A review tool, not part of the site.
+ *
+ * A row of palettes and a row of hero variants, both driven off the same
+ * registries the page itself is built from, so a new palette or a new hero
+ * appears here for free, plus a row for the light-scheme pairing.
+ *
+ * It is rendered only on a dev build, or on one made with `npm run build:lab`,
+ * and on the second of those it stays out of the way until the URL asks for it
+ * with `?lab` (`?palettes` still works, from when this was only a palette
+ * switcher). A default production build does not contain this markup, this
+ * script, or these styles at all: the gate is in Base.astro, so nothing here is
+ * ever reached.
+ *
+ * Palettes are pure CSS custom properties, so switching one needs nothing but
+ * `:root`. Canvases cannot inherit a custom property and cannot be swapped by
+ * one either, so the hero runtime listens for `palettechange` and `herochange`.
+ */
+import { palettes, swatch, defaultPalette, pairings, pairingLabel } from '../data/palettes';
+import { heroes, defaultHero } from '../data/heroes';
+import type { HeroVariant } from '../heroes/types';
+
+interface Props {
+  /** Dev builds show it unasked. A flagged production build waits for ?lab. */
+  alwaysOn: boolean;
+}
+
+const { alwaysOn } = Astro.props;
+
+/**
+ * Heroes in runs of the same family.
+ *
+ * Four of the twelve variants are one canopy answering the hand four different
+ * ways, and the point of having them is comparing them against each other. A
+ * flat grid of twelve buries that; a labelled run of five says it. The registry
+ * keeps families contiguous, so this is a fold rather than a sort - which also
+ * means the switcher never reorders what the registry declared.
+ */
+const rows: { family?: string; items: HeroVariant[] }[] = [];
+for (const v of heroes) {
+  const last = rows[rows.length - 1];
+  if (last && last.family === v.family) last.items.push(v);
+  else rows.push({ family: v.family, items: [v] });
+}
+
+/** True of every pairing, so it is said once rather than three times. */
+const SCOPE =
+  'Only while no palette is picked above: picking one is an explicit answer and overrides the pairing.';
+
+/** The first entry is the off switch, and the panel opens on it. */
+const noPairing = pairings[0]!;
+---
+
+<aside
+  class="dlab"
+  data-lab
+  data-always={alwaysOn ? 'on' : 'off'}
+  data-pal-default={defaultPalette.id}
+  data-hero-default={defaultHero.id}
+  hidden
+  aria-label="Design lab"
+>
+  {
+    /* A disclosure rather than a button and a state class. A summary is already
+      focusable, already toggles on Enter and Space, and already reports
+      expanded to a screen reader, and none of that is worth reimplementing on
+      a review tool. Rendered closed: the panel is hidden until the script
+      decides it belongs here at all, so the width rule below is applied before
+      anything is painted and there is nothing to flash. */
+  }
+  <details class="dlab__d">
+    <summary class="dlab__t">Design lab · review only</summary>
+    <div class="dlab__body">
+      <p class="dlab__h" id="lab-pal">Palette</p>
+      <div class="dlab__pal" role="group" aria-labelledby="lab-pal">
+        {
+          palettes.map((p) => (
+            <button
+              class="dlab__b"
+              type="button"
+              data-pal={p.id}
+              aria-pressed={p.id === defaultPalette.id}
+              title={`${p.name} · ${p.by}${p.scheme === 'light' ? ' · light' : ''}`}
+            >
+              <span class="dlab__sw" aria-hidden="true">
+                {swatch(p).map((c) => (
+                  <i style={`background:${c}`} />
+                ))}
+              </span>
+              <span class="dlab__id" aria-hidden="true">
+                {p.id}
+              </span>
+              <span class="sr">{p.name}</span>
+            </button>
+          ))
+        }
+      </div>
+
+      <p class="dlab__h" id="lab-scheme">Scheme</p>
+      <div class="dlab__two" role="group" aria-labelledby="lab-scheme">
+        {
+          pairings.map((x) => (
+            <button
+              class="dlab__b dlab__b--wide"
+              type="button"
+              data-scheme={x.id}
+              aria-pressed={x.id === noPairing.id}
+              title={x.light === null ? x.note : `${x.note} ${SCOPE}`}
+            >
+              {pairingLabel(x)}
+            </button>
+          ))
+        }
+      </div>
+
+      <p class="dlab__h" id="lab-hero">Hero</p>
+      {
+        rows.map((row) => (
+          <Fragment>
+            {row.family && <p class="dlab__fam">{row.family} family</p>}
+            <div
+              class="dlab__hero"
+              role="group"
+              aria-label={row.family ? `${row.family} family` : undefined}
+              aria-labelledby={row.family ? undefined : 'lab-hero'}
+            >
+              {row.items.map((v) => (
+                <button
+                  class="dlab__b dlab__b--wide"
+                  type="button"
+                  data-hero={v.id}
+                  aria-pressed={v.id === defaultHero.id}
+                  title={v.blurb}
+                >
+                  {v.name}
+                </button>
+              ))}
+            </div>
+          </Fragment>
+        ))
+      }
+    </div>
+  </details>
+</aside>
+
+<script>
+  import { palettes, defaultPalette, pairings } from '../data/palettes';
+  import { heroes, defaultHero } from '../data/heroes';
+
+  const PAL_KEY = 'p6-palette';
+  const HERO_KEY = 'p6-hero';
+  const SCHEME_KEY = 'p6-scheme';
+  const OPEN_KEY = 'p6-lab-open';
+  /** Above this the panel has margin to sit in; at or below it is on top of the
+      page. 1260 is where the page's own layout starts narrowing. */
+  const WIDE = 1260;
+  const box = document.querySelector<HTMLElement>('[data-lab]');
+
+  const asked = (): boolean => {
+    const q = new URLSearchParams(location.search);
+    return q.has('lab') || q.has('palettes');
+  };
+
+  if (box && (box.dataset.always === 'on' || asked())) {
+    const panel = box.querySelector('details');
+    if (panel) {
+      const head = panel.querySelector('summary');
+      const fits = (): boolean => window.innerWidth > WIDE;
+      const stored = localStorage.getItem(OPEN_KEY);
+      panel.open = stored === null ? fits() : stored === 'y';
+      /* Written as a click on the summary rather than the toggle event, because
+         setting `open` above fires toggle too and storing that would freeze a
+         default nobody chose. Activating a summary from the keyboard dispatches
+         a click as well, so this misses nothing a reader really did; the
+         default action has not run yet, so the state being stored is the
+         opposite of the one being read. */
+      head?.addEventListener('click', () => {
+        localStorage.setItem(OPEN_KEY, panel.open ? 'n' : 'y');
+      });
+      /* Until the reader says otherwise the width keeps deciding, so narrowing
+         the window to check the page at 390 puts the panel away instead of
+         leaving it over the thing being checked. */
+      window.addEventListener('resize', () => {
+        if (localStorage.getItem(OPEN_KEY) === null) panel.open = fits();
+      });
+    }
+    box.hidden = false;
+
+    const root = document.documentElement;
+    /* Every property any palette can set, so switching away from one clears
+       what it wrote rather than leaving it under the next. */
+    const owned = new Set(palettes.flatMap((p) => Object.keys(p.vars)));
+
+    const press = (attr: 'pal' | 'hero' | 'scheme' | 'par', id: string): void => {
+      for (const b of box.querySelectorAll<HTMLButtonElement>(`[data-${attr}]`)) {
+        b.setAttribute('aria-pressed', String(b.dataset[attr] === id));
+      }
+    };
+
+    const applyPalette = (id: string): void => {
+      const p = palettes.find((x) => x.id === id) ?? defaultPalette;
+      for (const name of owned) root.style.removeProperty(name);
+      for (const [name, value] of Object.entries(p.vars)) root.style.setProperty(name, value);
+      if (p.isDefault) root.style.removeProperty('color-scheme');
+      else root.style.setProperty('color-scheme', p.scheme);
+      press('pal', p.id);
+      window.dispatchEvent(new Event('palettechange'));
+    };
+
+    const applyHero = (id: string): void => {
+      const v = heroes.find((x) => x.id === id) ?? defaultHero;
+      root.dataset.hero = v.id;
+      press('hero', v.id);
+      window.dispatchEvent(new Event('herochange'));
+    };
+
+    /**
+     * Hand a client that asks for a light scheme a different palette, or stop.
+     *
+     * A real `prefers-color-scheme` block rather than another override, because
+     * the question being prototyped is what a client that asks for light should
+     * be handed, and an override answers it for everyone. Which also settles
+     * what happens when a palette is picked here at the same time: the picked
+     * one is written inline, inline beats a stylesheet, and the explicit answer
+     * wins over the conditional one.
+     *
+     * Both halves are built from their own registry entries, so a pairing
+     * cannot drift from the swatches two rows up.
+     */
+    let pairing: HTMLStyleElement | null = null;
+
+    /* The dark half goes in unwrapped rather than inside a `prefers-color-
+       scheme: dark` block, because a client with no preference at all is one of
+       the clients it is for. Both halves are `:root` and a media query adds no
+       specificity, so what makes light win when light is asked for is that it
+       is written second. */
+    const half = (id: string | null, ask?: 'light'): string => {
+      const p = id === null ? undefined : palettes.find((x) => x.id === id);
+      if (!p) return '';
+      const body =
+        ':root{' +
+        Object.entries(p.vars)
+          .map(([n, v]) => `${n}:${v};`)
+          .join('') +
+        `color-scheme:${p.scheme};}`;
+      return ask ? `@media (prefers-color-scheme: ${ask}){${body}}` : body;
+    };
+
+    const applyScheme = (id: string): void => {
+      const x = pairings.find((p) => p.id === id) ?? pairings[0]!;
+      const css = half(x.dark) + half(x.light, 'light');
+      if (!css) {
+        pairing?.remove();
+        pairing = null;
+      } else {
+        if (!pairing) {
+          pairing = document.createElement('style');
+          document.head.append(pairing);
+        }
+        pairing.textContent = css;
+      }
+      press('scheme', x.id);
+      window.dispatchEvent(new Event('palettechange'));
+    };
+
+    /* A canvas cannot see a media query. When the client's own preference flips
+       under a live pairing every token beneath the hero has changed and nothing
+       else on the page would tell it so. */
+    matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+      if (pairing) window.dispatchEvent(new Event('palettechange'));
+    });
+
+    box.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>(
+        '[data-pal],[data-hero],[data-scheme]',
+      );
+      if (!b) return;
+      if (b.dataset.pal) {
+        localStorage.setItem(PAL_KEY, b.dataset.pal);
+        applyPalette(b.dataset.pal);
+      } else if (b.dataset.hero) {
+        localStorage.setItem(HERO_KEY, b.dataset.hero);
+        applyHero(b.dataset.hero);
+      } else if (b.dataset.scheme) {
+        localStorage.setItem(SCHEME_KEY, b.dataset.scheme);
+        applyScheme(b.dataset.scheme);
+      }
+    });
+
+    /* Only depart from the default when the stored choice is something else.
+       The runtime has already mounted the default hero and the stylesheet is
+       already the default palette, so agreeing with them costs nothing. */
+    const pal = localStorage.getItem(PAL_KEY);
+    if (pal && pal !== box.dataset.palDefault) applyPalette(pal);
+    const hero = localStorage.getItem(HERO_KEY);
+    if (hero && hero !== box.dataset.heroDefault) applyHero(hero);
+    const scheme = localStorage.getItem(SCHEME_KEY);
+    if (scheme && scheme !== pairings[0]!.id) applyScheme(scheme);
+  }
+</script>
+
+<style>
+  /* `dlab`, not `lab`: the playground cards took `.lab` first, and a panel
+     that exists to review the page must not inherit the page's styling by
+     accident. Scoping alone was not enough - global `.lab` was still handing
+     this one a flex column and a hard-edged card border. */
+  .dlab {
+    position: fixed;
+    z-index: 90;
+    right: 0.8rem;
+    bottom: 0.8rem;
+    max-width: min(370px, calc(100vw - 1.6rem));
+    /* Five palettes and eight heroes outgrow a short viewport, and the
+       panel losing its last row off the bottom of the screen is worse than the
+       panel scrolling. */
+    max-height: calc(100vh - 1.6rem);
+    /* Flex, and hidden rather than auto, so the scrolling happens one level in.
+       The thing that must never scroll away is the control that puts the panel
+       away: on a short screen the old panel took its own title out of reach and
+       there was nothing to press. */
+    display: flex;
+    overflow: hidden;
+    padding: 0.6rem 0.7rem 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--on-shade) 22%, transparent);
+    border-radius: 14px;
+    color: var(--on-shade);
+    background: color-mix(in srgb, var(--shade) 88%, transparent);
+    box-shadow: 0 14px 45px rgb(0 0 0 / 30%);
+    backdrop-filter: blur(18px) saturate(125%);
+  }
+
+  .dlab[hidden] {
+    display: none;
+  }
+
+  .dlab__d {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* A flex item will not shrink below its content without this, which would
+       hand the max-height back to the panel and undo the line above. */
+    min-height: 0;
+  }
+
+  .dlab__body {
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* The tab. Collapsed, this is the whole panel: a mono line and a chevron in
+     the corner, which is small enough to leave the artifact it judges alone and
+     legible enough to still say what it is. */
+  .dlab__t {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    /* `list-item` is the display a summary needs for the default marker, so
+       taking the marker off means saying what it is instead. */
+    list-style: none;
+    color: var(--on-shade-2);
+    font: 800 0.6rem/1 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .dlab__t::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Points right when closed and down when open, which is the one thing a
+     collapsed panel has to communicate: that there is more behind it. */
+  .dlab__t::after {
+    content: '';
+    width: 0.4rem;
+    height: 0.4rem;
+    /* Half a step of the rotation, so the arrowhead reads as centred on the
+       line at both ends of the turn rather than sitting low when it is down. */
+    margin-bottom: 0.14rem;
+    border-right: 2px solid currentcolor;
+    border-bottom: 2px solid currentcolor;
+    transform: rotate(-45deg);
+    transition: transform var(--dur-1) var(--ease);
+  }
+
+  /* No margin under the tab. Open, the first heading's own 0.6rem top margin is
+     the gap - the same one it used to collapse into. Closed, the body is not
+     rendered, so the tab ends where its text ends. */
+  .dlab__d[open] .dlab__t::after {
+    transform: rotate(45deg);
+  }
+
+  .dlab__h {
+    margin: 0.6rem 0 0.35rem;
+    color: color-mix(in srgb, var(--on-shade) 60%, transparent);
+    font: 800 0.55rem/1 var(--mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .dlab__pal {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.35rem;
+  }
+
+  .dlab__hero,
+  .dlab__two {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.35rem;
+  }
+
+  /* Three pairings do not divide by two, and the one that turns pairing off is
+     not a pairing anyway. It takes the whole row, and the two real ones sit
+     side by side underneath, which is the comparison being asked for. */
+  .dlab__two > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  /* Quieter than a section heading and tighter to its row: this labels a run
+     inside the hero list rather than opening a new list. */
+  .dlab__fam {
+    margin: 0.5rem 0 0.3rem;
+    color: color-mix(in srgb, var(--on-shade) 45%, transparent);
+    font: 700 0.55rem/1 var(--mono);
+    letter-spacing: 0.1em;
+  }
+
+  .dlab__hero + .dlab__fam {
+    margin-top: 0.45rem;
+  }
+
+  /* A run with no family label of its own, straight after one that had a
+     label. Without a rule the family looks like it swallowed everything below
+     it, because the only thing marking the boundary is a grid gap. */
+  .dlab__hero + .dlab__hero {
+    margin-top: 0.55rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid color-mix(in srgb, var(--on-shade) 14%, transparent);
+  }
+
+  .dlab__b {
+    min-height: 44px;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.3rem;
+    border: 1px solid color-mix(in srgb, var(--on-shade) 20%, transparent);
+    border-radius: 9px;
+    color: inherit;
+    background: transparent;
+    font: 700 0.7rem/1.2 var(--sans);
+    cursor: pointer;
+  }
+
+  .dlab__b--wide {
+    font: 800 0.62rem/1 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .dlab__b:hover {
+    border-color: color-mix(in srgb, var(--on-shade) 55%, transparent);
+  }
+
+  .dlab__b[aria-pressed='true'] {
+    border-color: var(--on-shade);
+    background: color-mix(in srgb, var(--on-shade) 14%, transparent);
+  }
+
+  /* Four bars rather than one swatch: the pair of grounds and the pair of
+     accents are the four decisions a palette actually makes. */
+  .dlab__sw {
+    display: flex;
+    width: 100%;
+    height: 12px;
+    overflow: hidden;
+    border-radius: 3px;
+  }
+
+  .dlab__sw i {
+    flex: 1;
+  }
+
+  .dlab__id {
+    font: 800 0.58rem/1 var(--mono);
+  }
+</style>

@@ -1,0 +1,30 @@
+{
+  "runs": [
+    {
+      "key": "saltline",
+      "name": "saltline",
+      "url": "https://saltline.app",
+      "at": "2026-08-08T04:12:58.604Z",
+      "by": "local",
+      "reached": "sea up, splash cleared, HUD live, frames advancing",
+      "ms": 5968,
+      "outcome": "pass",
+      "build": "d31f39f9",
+      "why": "",
+      "attempts": 1
+    },
+    {
+      "key": "ember",
+      "name": "Ember Wilds",
+      "url": "https://emberwilds-web.fly.dev",
+      "at": "2026-08-08T04:13:04.632Z",
+      "by": "local",
+      "reached": "boot cleared, title screen up over the drawn realm, frames advancing",
+      "ms": 3555,
+      "outcome": "pass",
+      "build": "da090f27",
+      "why": "",
+      "attempts": 1
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+---
+import '../styles/global.css';
+import { site, contact } from '../data/content';
+import { sideA } from '../lib/route';
+import type { NavItem } from '../lib/route';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /**
+   * True on any page that is not the index.
+   *
+   * The six section links are bare fragments, which is what lets motion.ts
+   * intercept them and scroll to a measured position. On a page that has no
+   * sections a bare fragment points at nothing, so it grows a path and becomes
+   * a real navigation - which is also why the interceptor stops matching it.
+   */
+  elsewhere?: boolean;
+  /** The six, in the order this route runs them. */
+  nav?: NavItem[];
+  /**
+   * Side B is the same six sections as the index, so it is a duplicate of the
+   * home page to a crawler and a deliberate second reading to a person. It
+   * asks not to be indexed and keeps its links followed, which is the honest
+   * description of what it is.
+   */
+  index?: boolean;
+}
+
+const {
+  title = `${site.title} · ${site.tagline}`,
+  description = site.description,
+  elsewhere = false,
+  nav = sideA.nav,
+  index = true,
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+
+const to = (id: string): string => (elsewhere ? `/#${id}` : `#${id}`);
+
+/* The design lab is review furniture. A dev server always has it; a build only
+   has it when the build was asked for it by name, with `npm run build:lab`,
+   and even then it waits for ?lab. `npm run build` on its own emits none of
+   it. The older `palettes` name is still accepted at both ends. */
+const devTools = import.meta.env.DEV;
+const labFlag = import.meta.env.MODE === 'lab' || import.meta.env.MODE === 'palettes';
+
+/* Imported here rather than at the top, because a static import puts the
+   panel's client script through Astro's build-time hoisting and a plain
+   production build then writes it into _astro as a chunk nothing loads:
+   unreachable from the page, but still a file on the site. Both operands fold
+   to constants at build time, so the branch and the component go with them. */
+const Lab = devTools || labFlag ? (await import('../components/Lab.astro')).default : null;
+---
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#232830" />
+    <link rel="canonical" href={canonical} />
+    {!index && <meta name="robots" content="noindex, follow" />}
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {
+      /* Reveals are hidden by CSS only once this has run, so a page without
+        JavaScript never hides something it then has no way to show. */
+    }
+    <script is:inline>
+      document.documentElement.classList.remove('no-js');
+      document.documentElement.classList.add('js');
+      /* Inspection mode, here rather than in motion.ts because adding the
+         class after the first paint would open twenty label blocks under a
+         reader who is already looking at the page. */
+      if (new URLSearchParams(location.search).get('seed') === '4193')
+        document.documentElement.classList.add('inspect');
+      /* Same reason for show receipts mode. Arriving on a shared ?receipts
+         link should look like the page was always annotated, not like the
+         annotations were bolted on a moment after it loaded. */
+      if (new URLSearchParams(location.search).has('receipts'))
+        document.documentElement.classList.add('receipts');
+    </script>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    {
+      /* The header is navigation and nothing else. It used to carry a Contact
+        link and an Email button side by side, which is one destination wearing
+        two hats; email is the whole point of the contact section and it is
+        unmistakable there, so the button goes and the section link stays.
+
+        Narrow screens get the same six links behind a disclosure rather than
+        squeezed to 0.63rem. The panel is in the DOM at every width and CSS
+        decides which of the two shapes is showing, so there is one list of
+        links and one place they can go out of date. */
+    }
+    <header class="nav" id="site-nav">
+      <a class="nav__brand" href={to('top')}>
+        <span class="nav__mark" aria-hidden="true">AJ</span>
+        <span class="nav__name">UPPAL</span>
+      </a>
+
+      <nav class="nav__links" id="nav" aria-label="Sections">
+        {nav.map((s) => <a href={to(s.id)}>{s.name}</a>)}
+        <span class="nav__marker" aria-hidden="true"></span>
+      </nav>
+
+      <button
+        class="nav__toggle"
+        id="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="nav-panel"
+      >
+        <span class="nav__bars" aria-hidden="true"></span>
+        <span class="nav__toggle-t">Menu</span>
+      </button>
+    </header>
+
+    <div class="nav__panel" id="nav-panel" hidden>
+      <nav aria-label="Sections, expanded">
+        {
+          nav.map((s) => (
+            <a href={to(s.id)}>
+              <b>{s.name}</b>
+              <span>{s.desc}</span>
+            </a>
+          ))
+        }
+      </nav>
+      <a class="nav__panel-mail" href={`mailto:${contact.email}`}>{contact.email}</a>
+    </div>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <p class="inspect-bar">
+      Inspection mode &middot; <code>?seed=4193</code>
+      <a href={Astro.url.pathname}>Leave</a>
+    </p>
+
+    {Lab && <Lab alwaysOn={devTools} />}
+
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>

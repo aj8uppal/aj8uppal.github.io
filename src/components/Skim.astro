@@ -1,0 +1,76 @@
+---
+/**
+ * The ten-second version of a project, above its long form.
+ *
+ * Three rows and, where the project is public, one thing to press. Ruled
+ * rather than boxed, because the card it sits in is already a container and
+ * the section's grammar is rules and alignment rather than another panel
+ * inside a panel.
+ *
+ * Every value here comes out of the project's own record. Nothing is written
+ * for the skim that is not already claimed further down the card.
+ *
+ * The Proof row is the one line on a card that exists to be checked, so it is
+ * where show receipts mode has the most to say and the only row that takes an
+ * evidence key.
+ */
+import Claim from './Claim.astro';
+
+interface Action {
+  href: string;
+  label: string;
+  /** Leaves the site. Gets the mark and the rel. */
+  out?: boolean;
+}
+
+interface Props {
+  role: string;
+  hard: string;
+  proof: string;
+  /** A key in the evidence map, for what the Proof row rests on. */
+  ev: string;
+  /** Absent where the project is not public, and then there is nothing to press. */
+  cta?: Action;
+}
+
+const { role, hard, proof, ev, cta } = Astro.props;
+const rows: Array<[string, string]> = [
+  ['My role', role],
+  ['Hard part', hard],
+];
+---
+
+<dl class="skim">
+  {
+    rows.map(([k, v]) => (
+      <div>
+        <dt>{k}</dt>
+        <dd>{v}</dd>
+      </div>
+    ))
+  }
+  <div>
+    <dt>Proof</dt>
+    <dd><Claim of={ev}>{proof}</Claim></dd>
+  </div>
+</dl>
+
+{
+  cta && (
+    <div class="acts">
+      <a
+        class="btn btn--sand btn--sm"
+        href={cta.href}
+        target={cta.out ? '_blank' : undefined}
+        rel={cta.out ? 'noopener' : undefined}
+      >
+        {cta.label}
+        {cta.out && (
+          <span class="arrow" aria-hidden="true">
+            &#8599;
+          </span>
+        )}
+      </a>
+    </div>
+  )
+}

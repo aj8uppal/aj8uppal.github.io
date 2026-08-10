@@ -1,0 +1,30 @@
+---
+/**
+ * Which ground a section stands on. Exported because the sections themselves
+ * take it as a prop now, and two spellings of the same list is one spelling
+ * too many.
+ */
+export type Tone = 'ink' | 'ink-deep' | 'paper' | 'paper-2' | 'ink-3' | 'sand' | 'camel';
+
+interface Props {
+  n: string;
+  id: string;
+  name: string;
+  tone: Tone;
+  cls?: string;
+}
+
+const { n, id, name, tone, cls } = Astro.props;
+---
+
+<section
+  class:list={['sec', `sec--${tone}`, cls]}
+  id={id}
+  data-sec={n}
+  data-name={name}
+  data-tone={tone}
+>
+  <div class="shell">
+    <slot />
+  </div>
+</section>
