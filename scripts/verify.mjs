@@ -896,6 +896,101 @@ await run(
   },
 );
 
+/* ── the phone band ──────────────────────────────────────────────────────
+   390 is one phone. The device report that opened batch 10 came from a 430,
+   and everything it found had gone untested because 390 was the only width
+   anyone measured. So the band is checked at both ends and at the boundary,
+   and the three things that broke are the three things asserted: nothing
+   escapes the viewport, no section sits a rail beside its content, and no two
+   halves of a label/value pair are ever painted on top of each other. */
+for (const width of [390, 430, 620]) {
+  await run(
+    `phone band ${width}`,
+    { viewport: { width, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
+    async (page) => {
+      await settle(page);
+      const m = await page.evaluate(() => {
+        const de = document.documentElement;
+        const wide = [];
+        for (const e of document.querySelectorAll('body *')) {
+          const b = e.getBoundingClientRect();
+          if (b.width === 0) continue;
+          /* Wider than the viewport on purpose, under its own overflow: the
+             frame switcher, the swipe row, and the 2015 file at a size it will
+             not bend. */
+          if (e.closest('.fs__scroll, .swipe__row, .devframe, .asm__loupe')) continue;
+          if (b.right > de.clientWidth + 0.5 || b.left < -0.5)
+            wide.push(`${e.tagName}.${e.className}`.trim().slice(0, 48));
+        }
+
+        /* A rail is a grid whose first track is a fraction of its second. One
+           track means it collapsed; the numeral gutters (.fact, .vitals) are
+           two-track by design and are named rather than inferred. */
+        const rails = [];
+        for (const sel of ['.head', '.about', '.card__hero', '.card__cols', '.role', '.skg']) {
+          for (const e of document.querySelectorAll(sel)) {
+            if (!e.getBoundingClientRect().width) continue;
+            const tracks = getComputedStyle(e).gridTemplateColumns.split(/\s+/).length;
+            if (tracks > 1) rails.push(`${sel} -> ${getComputedStyle(e).gridTemplateColumns}`);
+          }
+        }
+
+        /* The label/value component, everywhere it is used. Two boxes from one
+           dl sharing pixels is the failure the device report led with. */
+        const hits = [];
+        for (const dl of document.querySelectorAll('dl')) {
+          const kids = [...dl.querySelectorAll('dt, dd')].filter(
+            (e) => e.getBoundingClientRect().width > 0,
+          );
+          for (let i = 0; i < kids.length; i++)
+            for (let j = i + 1; j < kids.length; j++) {
+              const A = kids[i].getBoundingClientRect();
+              const B = kids[j].getBoundingClientRect();
+              const ox = Math.min(A.right, B.right) - Math.max(A.left, B.left);
+              const oy = Math.min(A.bottom, B.bottom) - Math.max(A.top, B.top);
+              if (ox > 1 && oy > 1)
+                hits.push(
+                  `${dl.className || 'dl'}: "${kids[i].textContent.trim().slice(0, 18)}" x "${kids[j].textContent.trim().slice(0, 18)}"`,
+                );
+            }
+        }
+
+        return {
+          docW: de.scrollWidth,
+          clientW: de.clientWidth,
+          height: de.scrollHeight,
+          wide: [...new Set(wide)].slice(0, 6),
+          rails: [...new Set(rails)].slice(0, 6),
+          hits: [...new Set(hits)].slice(0, 6),
+        };
+      });
+
+      note(
+        m.docW <= m.clientW,
+        `${width} the document is no wider than the viewport`,
+        `scrollWidth ${m.docW} vs ${m.clientW}`,
+      );
+      note(m.wide.length === 0, `${width} nothing escapes the viewport`, m.wide.join(', '));
+      note(
+        m.rails.length === 0,
+        `${width} no section sits a rail beside its content`,
+        m.rails.join(' | '),
+      );
+      note(
+        m.hits.length === 0,
+        `${width} no label prints on top of its neighbour`,
+        m.hits.join(' | '),
+      );
+      console.log(`       page height ${m.height}px at ${width}`);
+
+      if (width === 430) {
+        await page.screenshot({ path: `${OUT}/full-430.png`, fullPage: true });
+        console.log(`       wrote ${OUT}/full-430.png`);
+      }
+    },
+  );
+}
+
 /* ── 1440, prefers-reduced-motion: reduce ────────────────────────────── */
 await run(
   'reduced-motion',
