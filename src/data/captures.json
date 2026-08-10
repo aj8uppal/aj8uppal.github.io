@@ -514,6 +514,222 @@
     "dated": "2026-08-06"
   },
   {
+    "out": "hidamari-plate-0-sky",
+    "from": "hidamari-layer0_sky_far.png",
+    "src": {
+      "w": 5376,
+      "h": 3168
+    },
+    "asset": {
+      "w": 1240,
+      "h": 531,
+      "bytes": 223550
+    },
+    "dated": "2026-08-04",
+    "crop": {
+      "left": 1008,
+      "top": 864,
+      "width": 3360,
+      "height": 1440
+    },
+    "trim": {
+      "left": 1008,
+      "top": 864,
+      "right": 1008,
+      "bottom": 864
+    },
+    "omits": "the 1.6x overscan margin the reprojection pans into, which the camera never shows at rest"
+  },
+  {
+    "out": "hidamari-depth-0-sky",
+    "from": "hidamari-layer0_sky_far_depth.png",
+    "src": {
+      "w": 5376,
+      "h": 3168
+    },
+    "asset": {
+      "w": 1240,
+      "h": 531,
+      "bytes": 5472
+    },
+    "dated": "2026-08-04",
+    "crop": {
+      "left": 1008,
+      "top": 864,
+      "width": 3360,
+      "height": 1440
+    },
+    "trim": {
+      "left": 1008,
+      "top": 864,
+      "right": 1008,
+      "bottom": 864
+    },
+    "omits": "the 1.6x overscan margin the reprojection pans into, which the camera never shows at rest"
+  },
+  {
+    "out": "hidamari-plate-1-trees",
+    "from": "hidamari-layer1_background_trees.png",
+    "src": {
+      "w": 5376,
+      "h": 3168
+    },
+    "asset": {
+      "w": 1240,
+      "h": 531,
+      "bytes": 370618
+    },
+    "dated": "2026-08-04",
+    "crop": {
+      "left": 1008,
+      "top": 864,
+      "width": 3360,
+      "height": 1440
+    },
+    "trim": {
+      "left": 1008,
+      "top": 864,
+      "right": 1008,
+      "bottom": 864
+    },
+    "omits": "the 1.6x overscan margin the reprojection pans into, which the camera never shows at rest"
+  },
+  {
+    "out": "hidamari-depth-1-trees",
+    "from": "hidamari-layer1_background_trees_depth.png",
+    "src": {
+      "w": 5376,
+      "h": 3168
+    },
+    "asset": {
+      "w": 1240,
+      "h": 531,
+      "bytes": 116006
+    },
+    "dated": "2026-08-04",
+    "crop": {
+      "left": 1008,
+      "top": 864,
+      "width": 3360,
+      "height": 1440
+    },
+    "trim": {
+      "left": 1008,
+      "top": 864,
+      "right": 1008,
+      "bottom": 864
+    },
+    "omits": "the 1.6x overscan margin the reprojection pans into, which the camera never shows at rest"
+  },
+  {
+    "out": "hidamari-plate-2-arch",
+    "from": "hidamari-layer2_midground_arch.png",
+    "src": {
+      "w": 5376,
+      "h": 3168
+    },
+    "asset": {
+      "w": 1240,
+      "h": 531,
+      "bytes": 326678
+    },
+    "dated": "2026-08-04",
+    "crop": {
+      "left": 1008,
+      "top": 864,
+      "width": 3360,
+      "height": 1440
+    },
+    "trim": {
+      "left": 1008,
+      "top": 864,
+      "right": 1008,
+      "bottom": 864
+    },
+    "omits": "the 1.6x overscan margin the reprojection pans into, which the camera never shows at rest"
+  },
+  {
+    "out": "hidamari-depth-2-arch",
+    "from": "hidamari-layer2_midground_arch_depth.png",
+    "src": {
+      "w": 5376,
+      "h": 3168
+    },
+    "asset": {
+      "w": 1240,
+      "h": 531,
+      "bytes": 120096
+    },
+    "dated": "2026-08-04",
+    "crop": {
+      "left": 1008,
+      "top": 864,
+      "width": 3360,
+      "height": 1440
+    },
+    "trim": {
+      "left": 1008,
+      "top": 864,
+      "right": 1008,
+      "bottom": 864
+    },
+    "omits": "the 1.6x overscan margin the reprojection pans into, which the camera never shows at rest"
+  },
+  {
+    "out": "hidamari-plate-3-canopy",
+    "from": "hidamari-layer3_foreground.png",
+    "src": {
+      "w": 5376,
+      "h": 3168
+    },
+    "asset": {
+      "w": 1240,
+      "h": 531,
+      "bytes": 124402
+    },
+    "dated": "2026-08-04",
+    "crop": {
+      "left": 1008,
+      "top": 864,
+      "width": 3360,
+      "height": 1440
+    },
+    "trim": {
+      "left": 1008,
+      "top": 864,
+      "right": 1008,
+      "bottom": 864
+    },
+    "omits": "the 1.6x overscan margin the reprojection pans into, which the camera never shows at rest"
+  },
+  {
+    "out": "hidamari-depth-3-canopy",
+    "from": "hidamari-layer3_foreground_depth.png",
+    "src": {
+      "w": 5376,
+      "h": 3168
+    },
+    "asset": {
+      "w": 1240,
+      "h": 531,
+      "bytes": 53170
+    },
+    "dated": "2026-08-04",
+    "crop": {
+      "left": 1008,
+      "top": 864,
+      "width": 3360,
+      "height": 1440
+    },
+    "trim": {
+      "left": 1008,
+      "top": 864,
+      "right": 1008,
+      "bottom": 864
+    },
+    "omits": "the 1.6x overscan margin the reprojection pans into, which the camera never shows at rest"
+  },
+  {
     "out": "elderwood-default",
     "from": "elderwood-vale-default-1280x720.png",
     "src": {
