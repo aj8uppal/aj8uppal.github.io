@@ -27,12 +27,12 @@ const PHASES: Array<[number, string]> = [
   [0.24, 'Four plates, apart'],
   [0.46, 'Compositing, back to front'],
   /* Not "assembled" until it is. The fan closes at 0.45 and the depth pass is
-     over the stack until 0.70, and a caption claiming a finished frame over a
-     frame with a grey sheet on it is the small kind of lie this page argues
-     against. The names are the CSS ramps in section 9c of global.css, in
-     words; if one moves, the other has to. */
-  [0.7, 'Depth pass, over the stack'],
-  [0.92, 'One frame, assembled'],
+     over the stack until 0.58, and a caption claiming a finished frame over a
+     frame that still has the distances on it says the wrong thing. The names
+     are the CSS ramps in section 9c of global.css, in words; if one moves, the
+     other has to. */
+  [0.58, 'Depth pass, over the stack'],
+  [0.86, 'One frame, assembled'],
   [1.01, 'Reprojected, alive'],
 ];
 

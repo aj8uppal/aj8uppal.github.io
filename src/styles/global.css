@@ -1879,18 +1879,25 @@ summary,
   --l: clamp(0, calc(var(--p) / 0.45), 1);
 
   /* The depth pass, over the stack: up once the sheets have landed, held, and
-     away again before anything else is asked of the frame. */
-  --d: clamp(0, min((var(--p) - 0.46) * 10, (0.7 - var(--p)) * 12.5), 1);
+     away again before anything else is asked of the frame.
+
+     It stops well short of covering, and it is over in an eighth of the scrub
+     rather than a quarter. At full cover it replaced the picture with a grey
+     field for long enough that the first thing a reader asks is whether the
+     figure has broken. Held under the colour it is plainly a second reading of
+     the same frame: the trunks stay where they were and the distances arrive
+     on top of them. */
+  --d: clamp(0, min((var(--p) - 0.46) * 25, (0.58 - var(--p)) * 25), 0.62);
 
   /* The magnifier, on the assembled bake and nowhere else. It waits for the
-     depth pass to clear: a loupe on a grey slab is magnifying the wrong
+     depth pass to clear: a loupe on a distance map is magnifying the wrong
      picture, and the thing it is looking for is a colour. */
-  --m: clamp(0, min((var(--p) - 0.72) * 16.67, (0.88 - var(--p)) * 25), 1);
+  --m: clamp(0, min((var(--p) - 0.6) * 16.67, (0.82 - var(--p)) * 16.67), 1);
 
   /* The running frame, over the bake, and it stays. This is the one beat with
      no way back: the figure is an argument that ends at the app, so the end of
      the scrub is the app and not a stack of pictures of it. */
-  --a: clamp(0, calc((var(--p) - 0.9) * 10), 1);
+  --a: clamp(0, calc((var(--p) - 0.86) * 10), 1);
 
   margin: 1.4rem 0 0;
 }
@@ -1954,9 +1961,58 @@ summary,
 /* The depth pass rides over its own colour plate, one fade for all four at
    once. Opacity only: this runs under a scroll listener and a wipe that made
    the compositor repaint four full-width sheets a frame would undo the work
-   the rest of the page does to stay smooth. */
+   the rest of the page does to stay smooth.
+
+   And it is drawn in the page's own two colours rather than the file's greys.
+   The plate is a luminance ramp, near white and far black, so screening it
+   over the darkest ink and multiplying the pale steel back through it maps
+   near onto the structure colour and far onto the ground: the same numbers,
+   wearing the palette. Cool on purpose, against a photograph that is entirely
+   golden - a grey sheet over an autumn canopy reads as a channel that failed,
+   and a sepia one reads as the same photograph with something wrong with it,
+   while a blue one is obviously a second thing laid over the first.
+
+   The blend is isolated so it ends at this picture's own edge, and it is a
+   static composite - only the opacity above it moves - so the fade is still
+   one property the compositor can animate on its own. */
 .asm__z {
+  display: block;
+  isolation: isolate;
+  background: var(--ink-deep);
   opacity: var(--d);
+}
+
+.asm__z img {
+  mix-blend-mode: screen;
+}
+
+.asm__z::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--earth);
+  mix-blend-mode: multiply;
+}
+
+/* Says what the sheet is while the sheet is up, in the frame rather than in
+   the caption under the key, because the caption is four hundred pixels below
+   the stage at 1440 and off the bottom of the screen at 390. Top right: the
+   sheet numbers own the top left, the loupe the bottom right, and the running
+   frame's tag the bottom left. */
+.asm__zt {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0.16rem 0.34rem;
+  background: var(--sand);
+  color: var(--on-accent);
+  font: 800 0.56rem/1.35 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: clamp(0, calc(var(--d) * 1.6), 1);
+  pointer-events: none;
 }
 
 .asm__sheet img {

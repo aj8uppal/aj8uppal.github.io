@@ -108,6 +108,14 @@ export const assembly = {
   edge: { x: 0.2, y: 0.5, zoom: 3.4 },
 
   /**
+   * The label the depth pass wears while it is up.
+   *
+   * The window, not the plates' own range, because the window is what the greys
+   * on screen are a picture of.
+   */
+  depthTag: 'Depth pass, 4 to 300 m',
+
+  /**
    * The last beat: the same four plates, running.
    *
    * A frame off hidamari's own player at simultaneous maximum gaze and lean,
