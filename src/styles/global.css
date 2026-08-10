@@ -5077,14 +5077,19 @@ span.buoy__p {
     display: none;
   }
 
+  /* 3.2rem is more than the wide layout's own floor, and it was buying air a
+     phone does not need to be sold: every section here changes ground colour,
+     so the join is already unmissable and the padding on both sides of it is
+     only how long the reader waits at it. Seven sections, two edges each, and
+     it was 717px of the page. */
   .sec {
-    padding-block: 3.2rem;
+    padding-block: 2.2rem;
   }
 
   .head {
     grid-template-columns: 1fr;
     gap: 0.8rem;
-    margin-bottom: 2.2rem;
+    margin-bottom: 1.6rem;
   }
 
   .head__t {
@@ -5095,8 +5100,12 @@ span.buoy__p {
     font-size: clamp(1.7rem, 7.4vw, 2.4rem);
   }
 
+  /* Four columns became one, so the rule under the last row is no longer the
+     rule under all of them, and the clamp's floor was sized for the wide
+     version's single band. */
   .vitals {
     grid-template-columns: 1fr;
+    margin-bottom: 1.2rem;
   }
 
   .about__copy p {
@@ -5265,6 +5274,19 @@ span.buoy__p {
 
   .contact h2 {
     font-size: 20vw;
+  }
+
+  /* Both clamps bottom out well above what a phone needs. The rule under the
+     colophon already separates it from the links, and 2rem of nothing above a
+     sub-heading is a gap a thumb has to travel rather than a distinction it
+     can see. */
+  .foot {
+    margin-top: 1.6rem;
+    padding-top: 1rem;
+  }
+
+  .rz + .earlier__h {
+    margin-top: 1.3rem;
   }
 }
 
