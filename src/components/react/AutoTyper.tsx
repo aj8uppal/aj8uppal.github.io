@@ -36,6 +36,11 @@ const START_MS = 25;
    finishes inside half a minute. */
 const LIMIT = 140;
 
+/* Where the two controls stop being worth 191px of a phone. Below it the card
+   opens as its own finished output and one press, and the field, the slider and
+   the presets arrive when a thumb asks for them. */
+const NARROW = '(width <= 620px)';
+
 export default function AutoTyper() {
   const [source, setSource] = useState(PRESETS[0]?.[1] ?? '');
   const [preset, setPreset] = useState(0);
@@ -56,6 +61,17 @@ export default function AutoTyper() {
      does not disturb a finished run until you ask for one. */
   const running = useRef(PRESETS[0]?.[1] ?? '');
   const uid = useId();
+  /* Folded is a state the script arrives at, not one the markup ships in. The
+     island is server-rendered, and with no script a card whose controls are
+     hidden behind a press that cannot answer is worse than a card whose
+     controls are merely inert. So the attribute is written on mount, which is
+     the same moment the press starts working.
+     Unasked, the run is skipped rather than hidden - forty timers writing a
+     line into a box the reader has not opened is the work without the demo. */
+  const [fold, setFold] = useState(false);
+  const narrow = useRef(false);
+  const asked = useRef(false);
+  const goRef = useRef<HTMLButtonElement>(null);
 
   const type = useCallback((phrase: string) => {
     running.current = phrase;
@@ -63,7 +79,12 @@ export default function AutoTyper() {
     window.clearTimeout(timer.current);
     setSaid('');
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !visible.current) {
+    const still = narrow.current && !asked.current;
+    if (
+      still ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      !visible.current
+    ) {
       setText(phrase);
       setSaid(phrase);
       return;
@@ -80,6 +101,20 @@ export default function AutoTyper() {
       else setSaid(phrase);
     };
     step();
+  }, []);
+
+  /* Read before the observer below asks for a run, and kept current, because a
+     phone turned on its side crosses this and the run it is about to start
+     should be the one the new width wants. */
+  useEffect(() => {
+    const mq = window.matchMedia(NARROW);
+    const read = (): void => {
+      narrow.current = mq.matches;
+      setFold(mq.matches && !asked.current);
+    };
+    read();
+    mq.addEventListener('change', read);
+    return () => mq.removeEventListener('change', read);
   }, []);
 
   // Nothing types until the panel is on screen, and scrolling away mid-phrase
@@ -107,11 +142,20 @@ export default function AutoTyper() {
     };
   }, [type]);
 
+  /* The press that opened the card is gone by the time the controls are drawn,
+     so focus would land on the body and the next tab would start at the top of
+     the page. It goes to the run button, which is the same press again. Only
+     after a press: unfolding by rotating the phone is not a press, and the
+     first paint is not one either. */
+  useEffect(() => {
+    if (!fold && asked.current) goRef.current?.focus();
+  }, [fold]);
+
   const phrase = source.trim();
 
   return (
     <>
-      <div className="stage stage--typer">
+      <div className="stage stage--typer" data-fold={fold || undefined}>
         <span className="stage__label">Live output</span>
         <p className="term">
           <span className="term__p" aria-hidden="true">
@@ -125,6 +169,22 @@ export default function AutoTyper() {
         <p className="sr" aria-live="polite">
           {said}
         </p>
+
+        {/* In the document at every width and drawn at none of them until the
+            card says it is folded. `asked` is written before the run rather
+            than left to the re-render, because `type` reads it in the same tick
+            and would otherwise skip the very run being asked for. */}
+        <button
+          className="choice typer__go"
+          type="button"
+          onClick={() => {
+            asked.current = true;
+            setFold(false);
+            type(running.current);
+          }}
+        >
+          Try it
+        </button>
 
         <form
           className="typer"
@@ -151,7 +211,7 @@ export default function AutoTyper() {
                 setPreset(-1);
               }}
             />
-            <button className="choice choice--go" type="submit" disabled={!phrase}>
+            <button className="choice choice--go" type="submit" disabled={!phrase} ref={goRef}>
               Type it
             </button>
           </div>

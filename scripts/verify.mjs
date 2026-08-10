@@ -11,6 +11,7 @@
 import { chromium } from 'playwright';
 import sharp from 'sharp';
 import { mkdir, readFile } from 'node:fs/promises';
+import { CONTRAST } from './lib/audit.mjs';
 
 const BASE = process.argv[2] ?? 'http://127.0.0.1:4321/';
 const OUT = process.argv[3] ?? '/tmp/p6shots';
@@ -21,6 +22,11 @@ const OUT = process.argv[3] ?? '/tmp/p6shots';
    worth: enough that adding a project does not trip it, tight enough that
    quietly growing a section back does. */
 const HEIGHT_BUDGET = 13000;
+
+/* The same number for the phone, which used to be twice it. 12,708px after the
+   swipe rows, the ledger and the card fold; the margin is one folded card, on
+   the same reasoning as the line above. */
+const MOBILE_BUDGET = 13200;
 
 const fail = [];
 const note = (ok, label, detail) => {
@@ -38,7 +44,14 @@ async function settle(page) {
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
     await Promise.all(
-      [...document.images].filter((i) => !i.complete).map((i) => i.decode().catch(() => {})),
+      [...document.images]
+        .filter((i) => !i.complete)
+        /* A lazy image inside a folded card is not being rendered, so it is not
+           being fetched either, and its decode never settles rather than
+           failing. Waiting on that forever is how a pass hangs at 390. */
+        .map((i) =>
+          Promise.race([i.decode().catch(() => {}), new Promise((r) => setTimeout(r, 2000))]),
+        ),
     );
     await document.fonts.ready;
   });
@@ -78,86 +91,7 @@ async function run(name, opts, body, url = BASE) {
   await browser.close();
 }
 
-/* Relative luminance and the WCAG ratio, so the palette is checked rather than
-   asserted. A dawn light on slate is not automatically safe. */
-const CONTRAST = `(() => {
-  const lin = (c) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
-  const lum = ([r, g, b]) => 0.2126 * lin(r / 255) + 0.7152 * lin(g / 255) + 0.0722 * lin(b / 255);
-  const parse = (s) => (s.match(/[\\d.]+/g) ?? []).slice(0, 4).map(Number);
-  const over = (fg, bg) => {
-    const a = fg.length > 3 ? fg[3] : 1;
-    return [0, 1, 2].map((i) => fg[i] * a + bg[i] * (1 - a));
-  };
-  const opaque = (c) => (c.length > 3 ? c[3] > 0.92 : c.length === 3);
-  // An ancestor walk cannot see a layer that is not an ancestor. The selected
-  // tab's sand pill is an absolutely positioned sibling painted underneath it,
-  // so walking up from the label finds the dark card and reports ink on ink.
-  const beneath = (el) => {
-    const r = el.getBoundingClientRect();
-    for (let n = el.parentElement; n; n = n.parentElement) {
-      for (const sib of n.children) {
-        if (sib === el || sib.contains(el)) continue;
-        const cs = getComputedStyle(sib);
-        if (cs.position !== 'absolute' && cs.position !== 'fixed') continue;
-        const c = parse(cs.backgroundColor);
-        if (!opaque(c)) continue;
-        const s = sib.getBoundingClientRect();
-        if (s.left <= r.left + 1 && s.right >= r.right - 1 && s.top <= r.top + 1 && s.bottom >= r.bottom - 1)
-          return c.slice(0, 3);
-      }
-    }
-    return null;
-  };
-  const ground = (el) => {
-    const layer = beneath(el);
-    if (layer) return layer;
-    for (let n = el; n; n = n.parentElement) {
-      const c = parse(getComputedStyle(n).backgroundColor);
-      if (opaque(c)) return c.slice(0, 3);
-    }
-    return [255, 255, 255];
-  };
-  const out = [];
-  const seen = new Set();
-  for (const el of document.querySelectorAll('body *')) {
-    const text = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
-    if (!text) continue;
-    const cs = getComputedStyle(el);
-    if (cs.visibility === 'hidden' || cs.display === 'none' || cs.opacity === '0') continue;
-    const r = el.getBoundingClientRect();
-    if (!r.width || !r.height) continue;
-    const bg = ground(el);
-    // Transparent fill with a stroke is drawn type, not invisible type: the
-    // outlined second name line is painted entirely by -webkit-text-stroke, so
-    // that is the colour a reader sees and the colour worth measuring.
-    let col = parse(cs.color);
-    const strokeW = parseFloat(cs.webkitTextStrokeWidth) || 0;
-    if ((col.length > 3 ? col[3] : 1) === 0) {
-      if (strokeW <= 0) continue;
-      col = parse(cs.webkitTextStrokeColor);
-    }
-    const fg = over(col, bg);
-    const key = col.join(',') + '|' + bg.join(',');
-    if (seen.has(key)) continue;
-    seen.add(key);
-    const l1 = lum(fg);
-    const l2 = lum(bg);
-    const ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
-    const px = parseFloat(cs.fontSize);
-    const bold = parseInt(cs.fontWeight, 10) >= 700;
-    const large = px >= 24 || (bold && px >= 18.66);
-    out.push({
-      sel: el.tagName.toLowerCase() + '.' + String(el.className).trim().split(/\\s+/)[0],
-      ratio: Math.round(ratio * 100) / 100,
-      need: large ? 3 : 4.5,
-      fg: 'rgb(' + fg.map(Math.round).join(', ') + ')',
-      bg: 'rgb(' + bg.map(Math.round).join(', ') + ')',
-    });
-  }
-  return out.filter((r) => r.ratio < r.need);
-})()`;
-
-/* The walk above cannot check the hero, and quietly reports it as passing.
+/* The shared walk cannot check the hero, and quietly reports it as passing.
    Every ancestor of the hero's type is transparent down to a canvas, so a
    computed-style ground is the page colour rather than the drifting light that
    is actually behind the letters. The only honest ground there is the pixel
@@ -302,8 +236,9 @@ await run(
           const r = e.getBoundingClientRect();
           if (!(r.width > 0) || getComputedStyle(e).position === 'fixed') return false;
           // Wider than the viewport on purpose, under its own overflow: the
-          // frame switcher, and the 2015 file at a size it will not bend.
-          if (e.closest('.fs__scroll, .devframe, .asm__loupe')) return false;
+          // frame switcher, the swipe row, and the 2015 file at a size it will
+          // not bend.
+          if (e.closest('.fs__scroll, .swipe__row, .devframe, .asm__loupe')) return false;
           return r.right > de.clientWidth + 1;
         })
         .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
@@ -745,8 +680,9 @@ await run(
           const r = e.getBoundingClientRect();
           if (!(r.width > 0) || getComputedStyle(e).position === 'fixed') return false;
           // Wider than the viewport on purpose, under its own overflow: the
-          // frame switcher, and the 2015 file at a size it will not bend.
-          if (e.closest('.fs__scroll, .devframe, .asm__loupe')) return false;
+          // frame switcher, the swipe row, and the 2015 file at a size it will
+          // not bend.
+          if (e.closest('.fs__scroll, .swipe__row, .devframe, .asm__loupe')) return false;
           return r.right > de.clientWidth + 1;
         })
         .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));
@@ -855,6 +791,93 @@ await run(
       `${m.mail.w} of ${m.mail.rowW}`,
     );
     note(m.tap.length === 0, '390 every control clears a 34px tap target', m.tap.join(', '));
+
+    /* The three mechanisms this width is built out of, each checked where it
+       can actually be wrong: a set that does not scroll, a ledger that shipped
+       already open, a fold that swallowed the text it was meant to hold. */
+    const mob = await page.evaluate(() => {
+      const vw = document.documentElement.clientWidth;
+      const rows = [...document.querySelectorAll('.swipe__row')];
+      const folds = [...document.querySelectorAll('.tl .fold')];
+      const deeps = [...document.querySelectorAll('.deep')];
+      const held = document.activeElement;
+      const reach = rows.every((r) => {
+        r.focus();
+        return (
+          document.activeElement === r ||
+          r.contains(document.activeElement) ||
+          !!r.querySelector('a[href], button')
+        );
+      });
+      if (held instanceof HTMLElement) held.focus();
+      return {
+        rows: rows.length,
+        scrolls: rows.filter((r) => r.scrollWidth > r.clientWidth + 2).length,
+        snaps: rows.filter((r) => getComputedStyle(r).scrollSnapType === 'x mandatory').length,
+        peek: rows.every((r) =>
+          [...r.children].every((c) => {
+            const w = c.getBoundingClientRect().width;
+            return w > vw * 0.7 && w < vw * 0.86;
+          }),
+        ),
+        reach,
+        ledger: folds.length,
+        shut: folds.every((d) => !d.open),
+        kept: folds.every((d) => !!d.querySelector(':scope > div > *')),
+        deeps: deeps.length,
+        untilFound: deeps.every((d) => d.getAttribute('hidden') === 'until-found'),
+        /* content-visibility, not display: none. The difference is whether
+           find-in-page can reach the four cards' whole argument. */
+        reachable: deeps.every((d) => getComputedStyle(d).contentVisibility === 'hidden'),
+      };
+    });
+
+    /* One row, because it was the only set left stacked: the arc, the region
+       switcher and the deviation card each carry a horizontal grammar of their
+       own, and the pattern was lifted out of the last of them. */
+    note(
+      mob.rows === 1 && mob.scrolls === 1 && mob.snaps === 1,
+      '390 the stacked set is a snapping swipe row',
+      `${mob.rows} rows, ${mob.scrolls} scroll, ${mob.snaps} snap`,
+    );
+    note(mob.peek, '390 a swipe card is ~78vw, so the next one peeks', '');
+    note(mob.reach, '390 a swipe row is reachable without a thumb', '');
+    note(
+      mob.ledger === 7 && mob.shut && mob.kept,
+      '390 the finished jobs are a shut ledger with their entries still in it',
+      `${mob.ledger} rows, all shut ${mob.shut}, entries kept ${mob.kept}`,
+    );
+    note(
+      mob.deeps === 4 && mob.untilFound && mob.reachable,
+      '390 each project folds to hidden="until-found", not out of the document',
+      `${mob.deeps} folds, until-found ${mob.untilFound}, findable ${mob.reachable}`,
+    );
+
+    /* One press, opened, because everything above is true of a fold that does
+       not open either. */
+    const opened = await page.evaluate(async () => {
+      const card = document.getElementById('p-elderwood');
+      card.querySelector('.deep__go').click();
+      await new Promise((r) => setTimeout(r, 200));
+      const deep = card.querySelector('.deep');
+      return {
+        shown: !deep.hasAttribute('hidden'),
+        gone: getComputedStyle(card.querySelector('.deep__go')).display === 'none',
+        focus: document.activeElement?.className,
+        rest: document.querySelectorAll('.card[data-fold]').length,
+      };
+    });
+    note(
+      opened.shown && opened.gone && opened.focus === 'deep' && opened.rest === 3,
+      '390 the press opens its own card and hands over the focus it held',
+      `shown ${opened.shown}, press gone ${opened.gone}, focus ${opened.focus}, ${opened.rest} still shut`,
+    );
+
+    note(
+      m.height <= MOBILE_BUDGET,
+      `390 page fits the ${MOBILE_BUDGET}px budget`,
+      `measured ${m.height}px`,
+    );
     console.log(`       page height ${m.height}px at 390`);
 
     /* The narrow hero stacks the type lower into the frame, past where the
@@ -1032,7 +1055,7 @@ await run(
                and are clipped to it; a rect is the wrong instrument for them,
                because getBoundingClientRect reports geometry the reader never
                sees. Everything else on the page still has to fit. */
-            if (e.closest('.fs__scroll, .devframe, .asm__loupe')) return false;
+            if (e.closest('.fs__scroll, .swipe__row, .devframe, .asm__loupe')) return false;
             return r.right > de.clientWidth + 1;
           })
           .map((e) => `${e.tagName}.${e.className}`.slice(0, 40));

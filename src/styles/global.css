@@ -206,6 +206,8 @@ html {
 }
 
 body {
+  --ground: var(--ink);
+
   margin: 0;
   min-width: 320px;
   overflow-x: hidden;
@@ -917,10 +919,16 @@ summary,
 
 /* Each ground names its own text colour and, where the sun would vanish on
    it, its own focus ring. The muted step travels with the ground too, so a
-   caption can ask for "the quiet one" without knowing what it is standing on. */
+   caption can ask for "the quiet one" without knowing what it is standing on.
+
+   `--ground` is the ground said back as a colour. Anything that has to fade
+   something out to nothing - the edge of a swipe row, a scrim over a capture -
+   needs the colour underneath it and has no business knowing which section it
+   is in. */
 .sec--paper {
   --muted: var(--on-paper-3);
   --focus: var(--on-paper);
+  --ground: var(--paper);
 
   color: var(--on-paper);
   background: var(--paper);
@@ -929,6 +937,7 @@ summary,
 .sec--paper-2 {
   --muted: var(--on-paper-3);
   --focus: var(--on-paper);
+  --ground: var(--paper-2);
 
   color: var(--on-paper);
   background: var(--paper-2);
@@ -937,6 +946,7 @@ summary,
 /* The floor the project cards stand on. */
 .sec--ink-deep {
   --muted: var(--on-ink-3);
+  --ground: var(--ink-deep);
 
   color: var(--on-ink);
   background: var(--ink-deep);
@@ -944,6 +954,7 @@ summary,
 
 .sec--ink {
   --muted: var(--on-ink-3);
+  --ground: var(--ink);
 
   color: var(--on-ink);
   background: var(--ink);
@@ -951,6 +962,7 @@ summary,
 
 .sec--ink-3 {
   --muted: var(--on-ink-3);
+  --ground: var(--ink-3);
 
   color: var(--on-ink);
   background: var(--ink-3);
@@ -959,6 +971,7 @@ summary,
 .sec--sand {
   --muted: var(--on-sand-3);
   --focus: var(--on-accent);
+  --ground: var(--sand-soft);
 
   color: var(--on-accent);
   background: var(--sand-soft);
@@ -967,6 +980,7 @@ summary,
 .sec--camel {
   --muted: var(--on-camel-3);
   --focus: var(--on-accent-2);
+  --ground: var(--camel);
 
   color: var(--on-accent-2);
   background: var(--camel);
@@ -1517,7 +1531,10 @@ summary,
   line-height: 1.45;
 }
 
-.skim + .card__body {
+.skim + .card__body,
+/* Same gap with the fold wrapper in between. It is not a box on a wide screen,
+   so it cannot carry the margin itself, and it breaks the adjacency. */
+.skim ~ .deep > .card__body:first-child {
   margin-top: 1rem;
 }
 
@@ -1541,7 +1558,8 @@ summary,
   margin-top: 0.35rem;
 }
 
-.notes > summary {
+.notes > summary,
+.deep__go {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -1564,7 +1582,8 @@ summary,
   display: none;
 }
 
-.notes > summary:hover {
+.notes > summary:hover,
+.deep__go:hover {
   color: var(--on-paper);
   background: var(--paper);
   border-color: var(--paper);
@@ -1573,7 +1592,8 @@ summary,
 /* Two strokes rotated into a chevron, so the state is legible without reading
    the label twice. It points down when there is more below and up when the
    list is already showing. */
-.notes > summary::after {
+.notes > summary::after,
+.deep__go::after {
   content: '';
   width: 0.42em;
   height: 0.42em;
@@ -1591,6 +1611,29 @@ summary,
 
 .notes[open] > .specs {
   margin-top: 0.85rem;
+}
+
+/* ── 8b. THE FOLD ────────────────────────────────────────────────────────
+   See Deep.astro. Above the breakpoint the wrapper is not a box at all, so
+   the four cards lay out exactly as they did and the press is not drawn.
+   Below it the wrapper is a real box whether it is open or shut, because a
+   box is both the only thing `hidden="until-found"` can hide and the only
+   thing that can hold the focus the press hands over. */
+.deep {
+  display: contents;
+}
+
+.deep__go {
+  display: none;
+  /* The pill it borrows is worn by a summary, which has no fill of its own. A
+     button does: the UA grey underneath took the label from 8.2:1 to 3.1:1. */
+  background: none;
+  margin-top: 0.9rem;
+}
+
+.deep:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
 }
 
 .shot {
@@ -3353,14 +3396,19 @@ summary,
   border-color: color-mix(in srgb, var(--sand) 45%, transparent);
 }
 
-.choice--go {
+/* The fold's press is the same offer one size up, so it wears the same accent
+   - by name rather than by taking the modifier, which is how the run button
+   stays the only `.choice--go` in the card. */
+.choice--go,
+.typer__go {
   border-color: var(--sand);
   color: var(--on-accent);
   background: var(--sand);
   font-weight: 800;
 }
 
-.choice--go:hover {
+.choice--go:hover,
+.typer__go:hover {
   background: var(--sand-soft);
   border-color: var(--sand-soft);
 }
@@ -3381,6 +3429,35 @@ summary,
 
 .typer .choices {
   margin-top: 0;
+}
+
+/* The press that unfolds the controls. Same rule as the deviation card's: in
+   the document at every width, drawn only where the controls start folded, and
+   gone once they are open - wide, it would be a button for something already on
+   screen. The base has to stand above the query, or `display: none` wins the
+   cascade on source order and the button is never drawn at all. */
+.typer__go {
+  display: none;
+  align-self: start;
+  align-items: center;
+  margin-top: 0.9rem;
+}
+
+/* A field, a slider and three presets are 191px, which on a 390 screen is the
+   card's whole second half spent on controls nobody has reached for. The line
+   the card exists to show is already finished above them.
+
+   The component only ever folds below this width, so the query is a second
+   lock rather than the condition: whatever the script does, the wide layout
+   keeps every control it has. */
+@media (width <= 620px) {
+  .stage--typer[data-fold] .typer {
+    display: none;
+  }
+
+  .stage--typer[data-fold] .typer__go {
+    display: inline-flex;
+  }
 }
 
 .stage--dev {
@@ -3432,6 +3509,33 @@ summary,
 .devpan[data-l]::before,
 .devpan[data-r]::after {
   opacity: 1;
+}
+
+/* The press that boots the chart, in the document at every width and drawn at
+   none of them until the media query above says the frame is waiting to be
+   asked. Wide, the frame starts itself and this would be a button for
+   something that already happened. */
+.devgo {
+  position: absolute;
+  z-index: 2;
+  right: 0.55rem;
+  bottom: 0.55rem;
+  display: none;
+  align-items: center;
+  min-height: 40px;
+  padding: 0.5rem 0.85rem;
+  border: 0;
+  border-radius: var(--r-pill);
+  color: var(--on-accent);
+  background: var(--sand);
+  font: 800 0.66rem/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.devgo:hover {
+  background: var(--sand-soft);
 }
 
 /* The instruction, and it names the payoff rather than the gesture, because
@@ -3502,6 +3606,26 @@ summary,
      becomes true. */
   .devpan__cue {
     display: block;
+  }
+
+  /* Which is also exactly where half a chart at half scale stops being the
+     better offer than the whole of one. Below the crossing the poster is the
+     same seed drawn end to end at the card's width, so the box takes the
+     document's own ratio again and there is nothing to swipe at and nothing
+     to say about swiping. The live file is one press away, and pressing it is
+     what puts the box back to the height it scrolls at. */
+  .stage--dev:not([data-live]) .devframe {
+    aspect-ratio: 1330 / 595;
+    height: auto;
+    overflow-x: hidden;
+  }
+
+  .stage--dev:not([data-live]) .devpan__cue {
+    display: none;
+  }
+
+  .devgo {
+    display: inline-flex;
   }
 }
 
@@ -3870,11 +3994,114 @@ button.toolbar__link {
   }
 }
 
-/* Two dashboards side by side stop being readable long before the layout
-   stops fitting them. Below 620 they go one above the other, full width. */
+/* This used to stack the pair below 620, on the reasoning that two dashboards
+   side by side stop being readable long before the layout stops fitting them.
+   The swipe row answers that differently. Stacked inside a 78vw card the pair
+   is twice the height of the lead beside it, and a row is only as short as its
+   tallest card: 243px of empty ground under the dashboard, which is the first
+   thing a thumb meets. Side by side the three cards are 253, 155 and 190, and
+   the argument the pair exists to make - same screen, one toggle apart - is
+   the one thing a shot this small still carries, better adjacent than
+   separated by a scroll. */
 @media (width <= 620px) {
-  .rz__two {
-    grid-template-columns: minmax(0, 1fr);
+  /* Sized for a 605px frame, and a third of the width of a 143px one. The
+     type is already at the floor, so the room comes out of the padding. */
+  .rz__theme {
+    top: 0.35rem;
+    left: 0.35rem;
+    padding: 0.15rem 0.32rem;
+    letter-spacing: 0.03em;
+  }
+}
+
+/* ── 12b. SWIPE ROWS ─────────────────────────────────────────────────────
+   A set of captures that stacks on a phone is a set nobody reaches the end of.
+   The rendezvous block is five dashboards one above the next: 1,361px of
+   scrolling to look at an argument that is one glance wide. Below 620 a set
+   turns on its side and becomes one row a thumb pushes.
+
+   The mechanism is the deviation card's, promoted to a pattern. Native
+   overflow with snap points - no library, no autoplay, no dots, and no
+   listener between the finger and the scroll. It works with the script off,
+   and browsers make an overflowing box a keyboard scroll region on their own,
+   so arrow keys reach it without a tabindex that would be a dead focus stop
+   at every other width.
+
+   Cards are 78vw, which is the point: the next frame is always half in view,
+   and a row that visibly continues does not need to be labelled as one.
+
+   Above the breakpoint the wrapper and the row are `display: contents`, so the
+   set lays out exactly as it did - the pattern adds two elements to the
+   document and not one box to the page. */
+.swipe,
+.swipe__row {
+  display: contents;
+}
+
+@media (width <= 620px) {
+  .swipe {
+    position: relative;
+    display: block;
+    grid-column: 1 / -1;
+  }
+
+  /* Each card is its own height. Stretched to the tallest they would all be
+     boxes the length of the longest one, which costs nothing today because a
+     frame has no ground of its own, and costs a row of empty panels the first
+     time one does. */
+  .swipe__row {
+    display: flex;
+    align-items: start;
+    gap: 0.9rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .swipe__row::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Whatever the set was made of, in the row it is a card: the frames keep
+     their own internals and only their width is decided here. */
+  .swipe__row > * {
+    flex: 0 0 78vw;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  /* The fades are on the wrapper rather than the scroller, because a box
+     inside a scroller travels with the content and an edge that scrolls away
+     is not an edge. Each side is drawn only when there is really more row
+     behind it, which the script reads off the scroll position - so the first
+     card keeps its own left edge until the reader has moved it, and with no
+     script there is no fade rather than a fade that lies. */
+  .swipe::before,
+  .swipe::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset-block: 0;
+    width: 2rem;
+    opacity: 0;
+    transition: opacity var(--dur-2) var(--ease);
+    pointer-events: none;
+  }
+
+  .swipe::before {
+    left: 0;
+    background: linear-gradient(to right, var(--ground), transparent);
+  }
+
+  .swipe::after {
+    right: 0;
+    background: linear-gradient(to left, var(--ground), transparent);
+  }
+
+  .swipe[data-l]::before,
+  .swipe[data-r]::after {
+    opacity: 1;
   }
 }
 
@@ -4750,6 +4977,13 @@ span.buoy__p {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* 2.1rem is the gap under a one-line key on a wide card. Under a two-row key
+     on a phone it is a hole, and the control it separates is the one thing in
+     the figure a thumb is meant to find. */
+  .asm__scrub {
+    margin-top: 1.1rem;
+  }
+
   /* /socket-canvas/public/index.html is thirty-two characters, and next to it
      a name gets three. The address takes the row and everything else stacks
      under it. */
@@ -4889,14 +5123,19 @@ span.buoy__p {
     display: none;
   }
 
+  /* 3.2rem is more than the wide layout's own floor, and it was buying air a
+     phone does not need to be sold: every section here changes ground colour,
+     so the join is already unmissable and the padding on both sides of it is
+     only how long the reader waits at it. Seven sections, two edges each, and
+     it was 717px of the page. */
   .sec {
-    padding-block: 3.2rem;
+    padding-block: 2.2rem;
   }
 
   .head {
     grid-template-columns: 1fr;
     gap: 0.8rem;
-    margin-bottom: 2.2rem;
+    margin-bottom: 1.6rem;
   }
 
   .head__t {
@@ -4907,8 +5146,12 @@ span.buoy__p {
     font-size: clamp(1.7rem, 7.4vw, 2.4rem);
   }
 
+  /* Four columns became one, so the rule under the last row is no longer the
+     rule under all of them, and the clamp's floor was sized for the wide
+     version's single band. */
   .vitals {
     grid-template-columns: 1fr;
+    margin-bottom: 1.2rem;
   }
 
   .about__copy p {
@@ -4992,6 +5235,67 @@ span.buoy__p {
     border-bottom: 0;
   }
 
+  /* The finished jobs, folded into a ledger: dates, employer, job title, and
+     the entry itself one tap away. The disclosure is assembled by script - see
+     ledger.ts for why it is not in the markup - so `data-fold` is the row
+     saying the shape below actually got built. Without it the log stays whole
+     and these rules describe nothing. */
+  .tl[data-fold] .role {
+    padding-block: 0;
+  }
+
+  .fold__sum {
+    position: relative;
+    padding: 0.72rem 1.5rem 0.72rem 0;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .fold__sum::-webkit-details-marker {
+    display: none;
+  }
+
+  /* The same two strokes the spec lists fold behind, so a fold reads as a fold
+     wherever the page puts one. */
+  .fold__sum::after {
+    content: '';
+    position: absolute;
+    top: 1.15rem;
+    right: 0.3rem;
+    width: 0.42rem;
+    height: 0.42rem;
+    border-right: 2px solid var(--on-paper-3);
+    border-bottom: 2px solid var(--on-paper-3);
+    transform: rotate(45deg);
+    transition: transform var(--dur-1) var(--ease);
+  }
+
+  .fold[open] > .fold__sum::after {
+    margin-top: 0.16rem;
+    transform: rotate(-135deg);
+  }
+
+  /* The date leads the line rather than sitting in a column that no longer
+     exists, so it loses the offsets that were holding it level with one. */
+  .fold__sum .role__when {
+    margin: 0;
+    padding: 0;
+  }
+
+  .fold__hd {
+    margin-top: 0.16rem;
+  }
+
+  /* Shut, the line is the job title and stops. Opening it lets the stack back
+     onto the end of its own sentence. */
+  .fold:not([open]) .role__tail {
+    display: none;
+  }
+
+  .fold > div {
+    padding-bottom: 0.85rem;
+  }
+
   .edu {
     padding: 1.05rem;
   }
@@ -5016,6 +5320,30 @@ span.buoy__p {
 
   .contact h2 {
     font-size: 20vw;
+  }
+
+  /* Both clamps bottom out well above what a phone needs. The rule under the
+     colophon already separates it from the links, and 2rem of nothing above a
+     sub-heading is a gap a thumb has to travel rather than a distinction it
+     can see. */
+  .foot {
+    margin-top: 1.6rem;
+    padding-top: 1rem;
+  }
+
+  .rz + .earlier__h {
+    margin-top: 1.3rem;
+  }
+
+  /* Content visibility does nothing to an element that generates no box of its
+     own, and neither does focus. Both are needed here, so on a phone the
+     wrapper is a box the whole time rather than only while it is shut. */
+  .deep {
+    display: block;
+  }
+
+  .card[data-fold] .deep__go {
+    display: inline-flex;
   }
 }
 

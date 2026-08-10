@@ -1,6 +1,7 @@
 ---
 import { Picture } from 'astro:assets';
 import Claim from '../components/Claim.astro';
+import Deep from '../components/Deep.astro';
 import Assembly from '../components/Assembly.astro';
 import Inspect from '../components/Inspect.astro';
 import Section from '../components/Section.astro';
@@ -153,60 +154,66 @@ const elderFrames: SwitchFrame[] = await Promise.all(
       </div>
 
       <div class="card__copy">
-        <div class="card__cols">
-          <div class="card__body">
-            {saltline.prose.map((p) => <p>{p}</p>)}
+        <Deep label="Read on · wind tunnel, six frames">
+          <div class="card__cols">
+            <div class="card__body">
+              {saltline.prose.map((p) => <p>{p}</p>)}
+            </div>
+            <div class="card__aside">
+              <WindTunnel />
+              <details class="notes">
+                <summary>Technical notes</summary>
+                <dl class="specs">
+                  {
+                    saltline.plate.map(([k, v]) => (
+                      <div>
+                        <dt>{k}</dt>
+                        <dd>{v}</dd>
+                      </div>
+                    ))
+                  }
+                  <div>
+                    <dt>Open</dt>
+                    <dd><a href={saltline.href} target="_blank" rel="noopener">saltline.app</a></dd>
+                  </div>
+                </dl>
+              </details>
+            </div>
           </div>
-          <div class="card__aside">
-            <WindTunnel />
-            <details class="notes">
-              <summary>Technical notes</summary>
-              <dl class="specs">
-                {
-                  saltline.plate.map(([k, v]) => (
-                    <div>
-                      <dt>{k}</dt>
-                      <dd>{v}</dd>
-                    </div>
-                  ))
-                }
-                <div>
-                  <dt>Open</dt>
-                  <dd><a href={saltline.href} target="_blank" rel="noopener">saltline.app</a></dd>
-                </div>
-              </dl>
-            </details>
-          </div>
-        </div>
 
-        <p class="card__lede">{saltline.framesLede}</p>
-        <p class="cue">{saltline.framesCue}</p>
-        {
-          /* Hydrated a screenful early, like every island below the fold, so
+          <p class="card__lede">{saltline.framesLede}</p>
+          <p class="cue">{saltline.framesCue}</p>
+          {
+            /* Hydrated a screenful early, like every island below the fold, so
             the mount is finished before the reader gets here. */
-        }
-        <Arc client:visible={{ rootMargin: '600px' }} frames={arcFrames} note={saltline.arcNote} />
-        <Inspect by="Arc.tsx" assets={arcFrames.map((f) => `saltline-arc-${f.key}`)} />
+          }
+          <Arc
+            client:visible={{ rootMargin: '600px' }}
+            frames={arcFrames}
+            note={saltline.arcNote}
+          />
+          <Inspect by="Arc.tsx" assets={arcFrames.map((f) => `saltline-arc-${f.key}`)} />
 
-        <div class="inset">
-          <div class="shot shot--inset">
-            <Picture
-              src={asset('saltline-proof-panel')}
-              alt="The same 16:46 frame uncropped, with the development panel down the left edge: time of day, sea state, wind angle, crest sharpness and seed. Three raider contacts are marked on the nav chart."
-              widths={INSET_W}
-              sizes={INSET_S}
-              formats={['avif']}
-              fallbackFormat="webp"
-              loading="lazy"
-              decoding="async"
-            />
+          <div class="inset">
+            <div class="shot shot--inset">
+              <Picture
+                src={asset('saltline-proof-panel')}
+                alt="The same 16:46 frame uncropped, with the development panel down the left edge: time of day, sea state, wind angle, crest sharpness and seed. Three raider contacts are marked on the nav chart."
+                widths={INSET_W}
+                sizes={INSET_S}
+                formats={['avif']}
+                fallbackFormat="webp"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <Inspect by="astro:assets Picture" assets="saltline-proof-panel" />
+            <div class="inset__body">
+              <h4>{saltline.proof.t}</h4>
+              {saltline.proof.body.map((p) => <p>{p}</p>)}
+            </div>
           </div>
-          <Inspect by="astro:assets Picture" assets="saltline-proof-panel" />
-          <div class="inset__body">
-            <h4>{saltline.proof.t}</h4>
-            {saltline.proof.body.map((p) => <p>{p}</p>)}
-          </div>
-        </div>
+        </Deep>
       </div>
     </article>
 
@@ -251,65 +258,70 @@ const elderFrames: SwitchFrame[] = await Promise.all(
       </div>
 
       <div class="card__copy">
-        <div class="card__cols">
-          <div class="card__body">
-            {ember.prose.map((p) => <p>{p}</p>)}
+        <Deep label="Read on · seven regions, two clients">
+          <div class="card__cols">
+            <div class="card__body">
+              {ember.prose.map((p) => <p>{p}</p>)}
+            </div>
+            <div class="card__aside">
+              <details class="notes">
+                <summary>Technical notes</summary>
+                <dl class="specs">
+                  {
+                    ember.plate.map(([k, v]) => (
+                      <div>
+                        <dt>{k}</dt>
+                        <dd>{v}</dd>
+                      </div>
+                    ))
+                  }
+                  <div>
+                    <dt>Open</dt>
+                    <dd>
+                      <a href={ember.href} target="_blank" rel="noopener">emberwilds-web.fly.dev</a>
+                    </dd>
+                  </div>
+                </dl>
+              </details>
+            </div>
           </div>
-          <div class="card__aside">
-            <details class="notes">
-              <summary>Technical notes</summary>
-              <dl class="specs">
-                {
-                  ember.plate.map(([k, v]) => (
-                    <div>
-                      <dt>{k}</dt>
-                      <dd>{v}</dd>
-                    </div>
-                  ))
-                }
-                <div>
-                  <dt>Open</dt>
-                  <dd>
-                    <a href={ember.href} target="_blank" rel="noopener">emberwilds-web.fly.dev</a>
-                  </dd>
-                </div>
-              </dl>
-            </details>
-          </div>
-        </div>
 
-        <p class="card__lede">{ember.framesLede}</p>
-        <p class="cue">{ember.framesCue}</p>
-        <FrameSwitcher
-          client:visible={{ rootMargin: '600px' }}
-          label="Ember Wilds regions"
-          frames={emberFrames}
-        />
-        <Inspect by="FrameSwitcher.tsx" assets={emberFrames.map((f) => emberAsset[f.key] ?? '')} />
+          <p class="card__lede">{ember.framesLede}</p>
+          <p class="cue">{ember.framesCue}</p>
+          <FrameSwitcher
+            client:visible={{ rootMargin: '600px' }}
+            label="Ember Wilds regions"
+            frames={emberFrames}
+          />
+          <Inspect
+            by="FrameSwitcher.tsx"
+            assets={emberFrames.map((f) => emberAsset[f.key] ?? '')}
+          />
 
-        <div class="inset">
-          <div class="shot shot--inset">
-            <Picture
-              src={asset('ember-proof-two-players')}
-              alt="Two Ember Wilds clients side by side in the Hearthvale. Each character has a speech bubble above it and the same two lines appear in the chat log at bottom left."
-              widths={INSET_W}
-              sizes={INSET_S}
-              formats={['avif']}
-              fallbackFormat="webp"
-              loading="lazy"
-              decoding="async"
-            />
+          <div class="inset">
+            <div class="shot shot--inset">
+              <Picture
+                src={asset('ember-proof-two-players')}
+                alt="Two Ember Wilds clients side by side in the Hearthvale. Each character has a speech bubble above it and the same two lines appear in the chat log at bottom left."
+                widths={INSET_W}
+                sizes={INSET_S}
+                formats={['avif']}
+                fallbackFormat="webp"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <Inspect by="astro:assets Picture" assets="ember-proof-two-players" />
+            <div class="inset__body">
+              <h4>{ember.proof.t}</h4>
+              {
+                ember.proof.body.map((p, i) => (
+                  <p>{i === 0 ? <Claim of="ember.two">{p}</Claim> : p}</p>
+                ))
+              }
+            </div>
           </div>
-          <Inspect by="astro:assets Picture" assets="ember-proof-two-players" />
-          <div class="inset__body">
-            <h4>{ember.proof.t}</h4>
-            {
-              ember.proof.body.map((p, i) => (
-                <p>{i === 0 ? <Claim of="ember.two">{p}</Claim> : p}</p>
-              ))
-            }
-          </div>
-        </div>
+        </Deep>
       </div>
     </article>
 
@@ -342,25 +354,27 @@ const elderFrames: SwitchFrame[] = await Promise.all(
 
         <Skim {...hidamari.skim} ev="hidamari.proof" />
 
-        <div class="card__body">
-          {hidamari.prose.map((p) => <p>{p}</p>)}
-        </div>
+        <Deep label="Read on · four plates, one frame">
+          <div class="card__body">
+            {hidamari.prose.map((p) => <p>{p}</p>)}
+          </div>
 
-        <Assembly />
+          <Assembly />
 
-        <details class="notes">
-          <summary>Technical notes</summary>
-          <dl class="specs">
-            {
-              hidamari.plate.map(([k, v]) => (
-                <div>
-                  <dt>{k}</dt>
-                  <dd>{v}</dd>
-                </div>
-              ))
-            }
-          </dl>
-        </details>
+          <details class="notes">
+            <summary>Technical notes</summary>
+            <dl class="specs">
+              {
+                hidamari.plate.map(([k, v]) => (
+                  <div>
+                    <dt>{k}</dt>
+                    <dd>{v}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </details>
+        </Deep>
       </div>
     </article>
 
@@ -378,32 +392,34 @@ const elderFrames: SwitchFrame[] = await Promise.all(
 
         <Skim {...elderwood.skim} ev="elderwood.proof" />
 
-        <div class="card__body">
-          {elderwood.prose.map((p) => <p>{p}</p>)}
-        </div>
+        <Deep label="Read on · three captures">
+          <div class="card__body">
+            {elderwood.prose.map((p) => <p>{p}</p>)}
+          </div>
 
-        <details class="notes">
-          <summary>Technical notes</summary>
-          <dl class="specs">
-            {
-              elderwood.plate.map(([k, v]) => (
-                <div>
-                  <dt>{k}</dt>
-                  <dd>{v}</dd>
-                </div>
-              ))
-            }
-          </dl>
-        </details>
+          <details class="notes">
+            <summary>Technical notes</summary>
+            <dl class="specs">
+              {
+                elderwood.plate.map(([k, v]) => (
+                  <div>
+                    <dt>{k}</dt>
+                    <dd>{v}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </details>
 
-        <p class="card__lede">{elderwood.framesLede}</p>
-        <p class="cue">{elderwood.framesCue}</p>
-        <FrameSwitcher
-          client:visible={{ rootMargin: '600px' }}
-          label="Elderwood Vale captures"
-          frames={elderFrames}
-        />
-        <Inspect by="FrameSwitcher.tsx" assets={elderFrames.map((f) => `elderwood-${f.key}`)} />
+          <p class="card__lede">{elderwood.framesLede}</p>
+          <p class="cue">{elderwood.framesCue}</p>
+          <FrameSwitcher
+            client:visible={{ rootMargin: '600px' }}
+            label="Elderwood Vale captures"
+            frames={elderFrames}
+          />
+          <Inspect by="FrameSwitcher.tsx" assets={elderFrames.map((f) => `elderwood-${f.key}`)} />
+        </Deep>
       </div>
     </article>
   </div>
