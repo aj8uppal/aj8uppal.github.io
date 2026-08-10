@@ -1,0 +1,39 @@
+---
+/**
+ * The part of a project card a phone has to ask for.
+ *
+ * Four cards carry their whole argument inline: the prose, the interactive
+ * figure, the proof panel and the technical notes. On a wide screen that is
+ * the point of them. At 390 it is 7,400px of Projects, and a reader who wants
+ * the fourth card scrolls past three arguments to reach its name.
+ *
+ * So below 620 everything under the skim folds behind one press, and the card
+ * on a phone is what a phone can hold: the frame, the name, the numbers and a
+ * way in. Nothing is removed. The whole card is in the served markup, and the
+ * fold is `hidden="until-found"`, so find-in-page opens it, a fragment link
+ * opens it, and a crawler never sees it shut.
+ *
+ * The wrapper is `display: contents` above the breakpoint, so the wide layout
+ * gets exactly the boxes it had. The attribute that folds it is written by the
+ * script rather than served, for the same two reasons as the work log's
+ * ledger: a fold in the markup is one a desktop reader could meet, and a
+ * scriptless phone should get the card whole rather than a press that cannot
+ * answer.
+ */
+interface Props {
+  /** What opens, named. A press that says "more" is a press nobody makes. */
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+{
+  /* Same pill, same chevron as the technical notes it usually sits above. The
+    fold is the same offer one size up, so it should not look like a new one. */
+}
+<button class="deep__go" type="button" data-deep-go>{label}</button>
+
+<div class="deep" data-deep>
+  <slot />
+</div>

@@ -1531,7 +1531,10 @@ summary,
   line-height: 1.45;
 }
 
-.skim + .card__body {
+.skim + .card__body,
+/* Same gap with the fold wrapper in between. It is not a box on a wide screen,
+   so it cannot carry the margin itself, and it breaks the adjacency. */
+.skim ~ .deep > .card__body:first-child {
   margin-top: 1rem;
 }
 
@@ -1555,7 +1558,8 @@ summary,
   margin-top: 0.35rem;
 }
 
-.notes > summary {
+.notes > summary,
+.deep__go {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -1578,7 +1582,8 @@ summary,
   display: none;
 }
 
-.notes > summary:hover {
+.notes > summary:hover,
+.deep__go:hover {
   color: var(--on-paper);
   background: var(--paper);
   border-color: var(--paper);
@@ -1587,7 +1592,8 @@ summary,
 /* Two strokes rotated into a chevron, so the state is legible without reading
    the label twice. It points down when there is more below and up when the
    list is already showing. */
-.notes > summary::after {
+.notes > summary::after,
+.deep__go::after {
   content: '';
   width: 0.42em;
   height: 0.42em;
@@ -1605,6 +1611,29 @@ summary,
 
 .notes[open] > .specs {
   margin-top: 0.85rem;
+}
+
+/* ── 8b. THE FOLD ────────────────────────────────────────────────────────
+   See Deep.astro. Above the breakpoint the wrapper is not a box at all, so
+   the four cards lay out exactly as they did and the press is not drawn.
+   Below it the wrapper is a real box whether it is open or shut, because a
+   box is both the only thing `hidden="until-found"` can hide and the only
+   thing that can hold the focus the press hands over. */
+.deep {
+  display: contents;
+}
+
+.deep__go {
+  display: none;
+  /* The pill it borrows is worn by a summary, which has no fill of its own. A
+     button does: the UA grey underneath took the label from 8.2:1 to 3.1:1. */
+  background: none;
+  margin-top: 0.9rem;
+}
+
+.deep:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
 }
 
 .shot {
@@ -5287,6 +5316,17 @@ span.buoy__p {
 
   .rz + .earlier__h {
     margin-top: 1.3rem;
+  }
+
+  /* Content visibility does nothing to an element that generates no box of its
+     own, and neither does focus. Both are needed here, so on a phone the
+     wrapper is a box the whole time rather than only while it is shut. */
+  .deep {
+    display: block;
+  }
+
+  .card[data-fold] .deep__go {
+    display: inline-flex;
   }
 }
 

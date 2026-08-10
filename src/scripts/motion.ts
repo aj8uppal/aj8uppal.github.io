@@ -1,4 +1,5 @@
 import { installAssembly } from './assembly';
+import { installDeep } from './deep';
 import { installLedger } from './ledger';
 import { installSwipe } from './swipe';
 import { installTunnel } from './tunnel';
@@ -507,3 +508,4 @@ installAssembly();
 installTunnel();
 installSwipe();
 installLedger();
+installDeep();
