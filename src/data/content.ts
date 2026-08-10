@@ -204,8 +204,6 @@ export const about = {
       v: 'Cosmology and Consciousness. An independent study, and I had to ask for it.',
     },
   ] as AboutNote[],
-  method:
-    'Every screenshot on this page is a real capture of the project it belongs to. Nothing is mocked up.',
 } as const;
 
 /* ── Ember Wilds ─────────────────────────────────────────────────────── */

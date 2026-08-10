@@ -974,36 +974,6 @@ summary,
   letter-spacing: -0.025em;
 }
 
-.method {
-  display: grid;
-  grid-template-columns: 5.5rem minmax(0, 1fr);
-  gap: 1rem;
-  margin-top: 1.8rem;
-  padding-top: 0.85rem;
-  border-top: 1px solid var(--line-light);
-  font-size: 0.85rem;
-}
-
-.method p {
-  max-width: 92ch;
-  margin: 0;
-}
-
-.method .kicker {
-  color: var(--muted);
-}
-
-.sec--ink .method,
-.sec--ink-deep .method,
-.sec--ink-3 .method {
-  border-top-color: var(--line-dark);
-  color: var(--on-ink-2);
-}
-
-.sec--sand .method {
-  border-top-color: var(--line-light-2);
-}
-
 /* ── 8. ABOUT ────────────────────────────────────────────────────────── */
 /* A masthead strip of four static facts. It was drawn as a filled 1px grid
    inside an outer box, which is a lot of border for four labels, and the box
@@ -1084,9 +1054,8 @@ summary,
   border-bottom: 1px solid var(--line-light);
 }
 
-/* The method note draws its own rule a few dozen pixels below this one, and
-   two parallel rules with nothing between them read as a mistake. The list is
-   topped and separated; the note's rule closes it. */
+/* Nothing follows the list, so the last rule would be drawn against the gap
+   under the section. The rows are separated; the edge of the list is not. */
 .fact:last-child {
   border-bottom: 0;
 }
@@ -5153,11 +5122,6 @@ span.buoy__p {
 
   .head__t--long {
     font-size: clamp(1.7rem, 7.4vw, 2.4rem);
-  }
-
-  .method {
-    grid-template-columns: 1fr;
-    gap: 0.35rem;
   }
 
   .vitals {
