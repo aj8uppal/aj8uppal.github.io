@@ -83,6 +83,16 @@ const CAM_G = 0.55;
    arriving at six thousand pixels a second and hitting a wall. */
 const CAM_BRAKE = 2.2;
 
+/* Where on the screen the page comes apart, as a fraction of its height.
+   Letting the whole document go at once is a fall the reader misses: it all
+   falls at the same rate, so it never moves relative to itself, and after the
+   first second there is nothing left above the pile - the ride is two seconds
+   of empty page. Instead the floor gives way at a line two thirds down the
+   screen, and holds together below it. Everything the reader has already
+   passed is falling, everything ahead is still a page, and the wave travels
+   down the document as fast as they do. */
+const WAKE = 0.66;
+
 /* How much of the impact speed a letter keeps. A third gets three bounces out
    of a fall the length of the page and none out of a letter that started near
    the bottom, which is the right answer to both. */
@@ -162,7 +172,9 @@ interface Particle {
   vy: number;
   rot: number;
   vr: number;
-  /* ms after the trigger before this one lets go. */
+  /* The document y this one waits for the reader to reach, then a few ms of
+     scatter on top so a line does not let go as one bar. -1 once it is off. */
+  wake: number;
   hold: number;
   /* Down and done. A resting letter is skipped by the loop, and the loop ends
      when there is nothing left that is not resting. */
@@ -284,14 +296,14 @@ export function drop(): void {
   /* Biggest type first, so the budget is spent on the wordmark and the section
      headings before it reaches the body copy. Everything the budget does not
      reach is still leaving, just by fading. */
-  const blocks: Array<{ el: HTMLElement; size: number }> = [];
+  const blocks: Array<{ el: HTMLElement; size: number; y: number }> = [];
   for (const el of document.querySelectorAll<HTMLElement>(TYPE)) {
     if (el.closest(NOT)) continue;
     if (!el.textContent?.trim()) continue;
     if (blocks.some((b) => b.el.contains(el))) continue;
     const box = el.getBoundingClientRect();
     if (box.width < 2 || box.height < 2) continue;
-    blocks.push({ el, size: parseFloat(getComputedStyle(el).fontSize) || 0 });
+    blocks.push({ el, size: parseFloat(getComputedStyle(el).fontSize) || 0, y: box.top + sy });
   }
   if (!blocks.length) return;
   blocks.sort((a, b) => b.size - a.size);
@@ -301,16 +313,16 @@ export function drop(): void {
   const sprites = new Map<string, Sprite | null>();
   const parts: Particle[] = [];
   const hidden: HTMLElement[] = [];
-  const faded: HTMLElement[] = [];
+  const faded: Array<{ el: HTMLElement; y: number }> = [];
 
-  for (const { el, size } of blocks) {
+  for (const { el, size, y } of blocks) {
     if (parts.length >= CAP) {
-      faded.push(el);
+      faded.push({ el, y });
       continue;
     }
     const cut = pieces(el, size >= LETTERS_ABOVE);
     if (!cut.length || parts.length + cut.length > CAP) {
-      faded.push(el);
+      faded.push({ el, y });
       continue;
     }
     /* The angle the block was already showing, off its own matrix. Type inside
@@ -338,7 +350,8 @@ export function drop(): void {
         vy: rand(-40, 40),
         rot: lean,
         vr: rand(-SPIN, SPIN),
-        hold: rand(0, HOLD),
+        wake: r.top + sy,
+        hold: 0,
         rest: false,
         sp: null,
       });
@@ -368,19 +381,27 @@ export function drop(): void {
   document.documentElement.setAttribute('data-fell', '');
 
   for (const el of hidden) el.style.visibility = 'hidden';
-  for (const el of faded) {
+
+  /* The type the budget did not reach leaves at the same moment the letters
+     beside it do, or the page ahead of the wave has holes in it. */
+  faded.sort((a, b) => a.y - b.y);
+  const seals: number[] = [];
+  let dissolved = 0;
+  const dissolve = (el: HTMLElement): void => {
     /* Typing the code scrolls the page, so some of these are still mid-reveal,
        and a running animation outranks an inline declaration. Whatever they
        were in the middle of arriving from, they have arrived. */
     for (const a of el.getAnimations()) a.cancel();
     el.style.transition = 'opacity 260ms linear';
     el.style.opacity = '0';
-  }
-  /* Once faded, gone for good: opacity is a property animations can win back
-     and visibility, here, is not. */
-  const seal = setTimeout(() => {
-    for (const el of faded) el.style.visibility = 'hidden';
-  }, 300);
+    /* Once faded, gone for good: opacity is a property animations can win back
+       and visibility, here, is not. */
+    seals.push(
+      window.setTimeout(() => {
+        el.style.visibility = 'hidden';
+      }, 300),
+    );
+  };
 
   /* A letter that has stopped never moves again, so it is stamped once into a
      layer of its own and every later frame blits that. Without it the whole
@@ -530,10 +551,27 @@ export function drop(): void {
     last = now;
     clock += dt * 1000;
 
+    /* The line the floor is giving way along, in document coordinates. Once
+       the ride is over it is the bottom of the document, so the last of the
+       type lets go rather than standing there over the heap. */
+    const edge = cam >= bottom ? floor : cam + window.innerHeight * WAKE;
+
+    while (dissolved < faded.length) {
+      const f = faded[dissolved];
+      if (f && f.y > edge) break;
+      dissolved++;
+      if (f) dissolve(f.el);
+    }
+
     let awake = 0;
     for (const q of parts) {
       if (q.rest) continue;
       awake++;
+      if (q.wake >= 0) {
+        if (q.wake > edge) continue;
+        q.wake = -1;
+        q.hold = clock + rand(0, HOLD);
+      }
       if (clock < q.hold) continue;
       q.vy += G * dt;
       q.x += q.vx * dt;
@@ -617,9 +655,9 @@ export function drop(): void {
     if (!live) return;
     live = false;
     if (raf) cancelAnimationFrame(raf);
-    clearTimeout(seal);
+    for (const t of seals) clearTimeout(t);
     canvas.remove();
-    for (const el of [...hidden, ...faded]) {
+    for (const el of [...hidden, ...faded.map((f) => f.el)]) {
       el.style.removeProperty('visibility');
       el.style.removeProperty('transition');
       el.style.removeProperty('opacity');
