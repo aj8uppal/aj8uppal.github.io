@@ -991,6 +991,87 @@ for (const width of [390, 430, 620]) {
   );
 }
 
+/* ── the wordmark's turn ─────────────────────────────────────────────────
+   Scroll-linked, so both ways it can go wrong are silent. It can stop agreeing
+   with the stylesheet at the top of the page, which is a change to the poster
+   and the one thing this was not allowed to touch. And it can turn the wrong
+   way: the rotation is mostly about Y, so deepening it foreshortens the block
+   and flattening it un-foreshortens it, which grows "UPPAL" toward an edge a
+   phone does not have to spare. Down is the only direction with no overflow
+   in it, and this is what keeps it pointing down. */
+for (const width of [430, 1440]) {
+  const phone = width < 700;
+  await run(
+    `wordmark ${width}`,
+    {
+      viewport: { width, height: phone ? 932 : 900 },
+      deviceScaleFactor: 2,
+      isMobile: phone,
+      hasTouch: phone,
+    },
+    async (page) => {
+      await settle(page);
+      const m = await page.evaluate(async () => {
+        const h1 = document.querySelector('.hero h1');
+        let top = 0;
+        for (let n = h1; n; n = n.offsetParent) top += n.offsetTop;
+        const end = top + h1.offsetHeight;
+
+        /* Instant, because the document scrolls smoothly and a smooth scroll
+           is still on its way three frames later - which reads as a driver
+           that never moved. Two frames after it lands, because the driver
+           coalesces into one rAF and the box is read after the browser has
+           drawn what it wrote. */
+        const at = async (y) => {
+          window.scrollTo({ top: y, behavior: 'instant' });
+          await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+          const b = h1.getBoundingClientRect();
+          return { w: +b.width.toFixed(1), right: +b.right.toFixed(1) };
+        };
+
+        const rest = await at(0);
+        const live = getComputedStyle(h1).transform;
+        /* What the stylesheet alone would have drawn, asked of the same
+           element rather than compared against a matrix copied into this
+           file, which would be a second place the angle lives. */
+        const inline = h1.style.transform;
+        h1.style.removeProperty('transform');
+        const stylesheet = getComputedStyle(h1).transform;
+        h1.style.transform = inline;
+
+        const mid = await at(Math.round(end / 2));
+        const far = await at(end);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        return {
+          rest,
+          mid,
+          far,
+          live,
+          stylesheet,
+          end,
+          vw: document.documentElement.clientWidth,
+        };
+      });
+
+      note(
+        m.live === m.stylesheet,
+        `${width} the poster is untouched at the top of the page`,
+        `driver ${m.live.slice(0, 40)} vs stylesheet ${m.stylesheet.slice(0, 40)}`,
+      );
+      note(
+        m.rest.w > m.mid.w && m.mid.w > m.far.w,
+        `${width} the turn deepens on the way out, never flattens`,
+        `${m.rest.w} -> ${m.mid.w} -> ${m.far.w} over ${m.end}px of scroll`,
+      );
+      note(
+        m.rest.right <= m.vw && m.mid.right <= m.vw && m.far.right <= m.vw,
+        `${width} and never reaches the right edge doing it`,
+        `${m.rest.right} / ${m.mid.right} / ${m.far.right} vs ${m.vw}`,
+      );
+    },
+  );
+}
+
 /* ── 1440, prefers-reduced-motion: reduce ────────────────────────────── */
 await run(
   'reduced-motion',
@@ -1017,6 +1098,28 @@ await run(
           .slice(0, 6),
       };
     });
+    /* The wordmark's turn is the one piece of motion on this page tied to the
+       scroll rather than to a moment, so "no motion" has to mean it never
+       writes an angle at all - not that it writes a slower one. Scrolled and
+       asked again, because installing nothing and stopping after the first
+       frame look identical from the top of the page. */
+    const still = await page.evaluate(async () => {
+      const h1 = document.querySelector('.hero h1');
+      const seen = new Set();
+      for (const y of [0, 200, 600]) {
+        window.scrollTo({ top: y, behavior: 'instant' });
+        await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+        seen.add(getComputedStyle(h1).transform);
+      }
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      return { angles: seen.size, inline: h1.style.transform };
+    });
+    note(
+      still.angles === 1 && still.inline === '',
+      'the wordmark holds the static tilt at every scroll position',
+      `${still.angles} angles, inline "${still.inline}"`,
+    );
+
     note(m.q, 'reduced-motion is actually on', '');
     note(m.btnTransition === '0.001s', 'transitions clamped to 1ms', m.btnTransition);
     note(m.caretHidden, 'the typer caret stops blinking', '');

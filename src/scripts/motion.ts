@@ -3,6 +3,7 @@ import { installDeep } from './deep';
 import { installLedger } from './ledger';
 import { installSwipe } from './swipe';
 import { installTunnel } from './tunnel';
+import { installWordmark } from './wordmark';
 import { springKeyframes } from './spring';
 import { installHero } from '../heroes/runtime';
 /* Type only, so the chunk itself still arrives on the tenth key and not before. */
@@ -504,6 +505,7 @@ installLongTab();
 installReceipts();
 installKonami();
 installHeroCanvas();
+installWordmark();
 installAssembly();
 installTunnel();
 installSwipe();

@@ -785,11 +785,23 @@ summary,
 
    The origin is the left edge because everything else on the page starts there:
    the brand, the meta dot, the paragraph, the button. Spun about its centre the
-   wordmark lands ninety pixels in from all of them. */
+   wordmark lands ninety pixels in from all of them.
+
+   The axis and the two angles are custom properties because the scroll driver
+   in `wordmark.ts` reads them back rather than keeping a second copy: `--far`
+   is where the turn arrives once the wordmark has scrolled out of the frame,
+   and the value written here is the only place either number lives. Nothing
+   but this stylesheet decides how the wordmark is turned, at rest or moving.
+   With the script absent, disabled, or refused by reduced motion, `--tilt` is
+   what stands, which is the poster exactly as it shipped. */
 .hero h1 {
+  --axis: 4, -10, -0.9;
+  --tilt: 34deg;
+  --far: 47deg;
+
   font-size: clamp(4rem, 13.3vw, 12.5rem);
   color: var(--on-ink);
-  transform: rotate3d(4, -10, -0.9, 34deg);
+  transform: rotate3d(var(--axis), var(--tilt));
   transform-origin: 0% 50%;
 }
 
@@ -800,12 +812,19 @@ summary,
 /* The second line is drawn rather than filled. It is the one moment of pure
    swagger on the page, and it costs nothing but a stroke. It also carries its
    own turn on top of the line's, so the two lines fall away at different rates
-   and the pair reads as depth rather than as one sheared block. */
+   and the pair reads as depth rather than as one sheared block.
+
+   It travels the same thirteen degrees as the line above it. Giving it more
+   would close the gap between the two turns as the page scrolls, and the gap
+   is the whole reason there are two of them. */
 .hero h1 .out {
+  --tilt: 18deg;
+  --far: 31deg;
+
   margin-left: clamp(0rem, 13vw, 11.5rem);
   color: transparent;
   -webkit-text-stroke: clamp(1.4px, 0.15vw, 2.4px) var(--on-ink);
-  transform: rotate3d(4, -10, -0.9, 18deg);
+  transform: rotate3d(var(--axis), var(--tilt));
   transform-origin: 0% 50%;
 }
 
