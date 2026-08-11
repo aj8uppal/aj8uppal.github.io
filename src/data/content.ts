@@ -757,7 +757,9 @@ export const earlier = [
 
 export const skills = [
   { group: 'Languages', items: ['Python', 'TypeScript', 'JavaScript', 'SQL', 'C'] },
-  { group: 'Frontend', items: ['React', 'Redux', 'three.js / WebGL', 'HTML / CSS', 'PWAs'] },
+  /* The two renderers sit together: one is the library saltline draws with,
+     the other is the standard it draws against. */
+  { group: 'Frontend', items: ['React', 'three.js / WebGL', 'babylon.js', 'HTML / CSS', 'PWAs'] },
   {
     group: 'Backend',
     items: [
@@ -767,16 +769,18 @@ export const skills = [
       'PostgreSQL',
       'BigQuery',
       'Socket.io',
+      /* A room server is a real-time transport with opinions, so it files with
+         the transports rather than with the runtimes. */
+      'colyseus.js',
       /* Telephony sits with the other real-time transports rather than with the
          hosted platforms: what he owns is the call routing, not the account. */
       'Twilio / SIP',
       'Temporal',
-      'Microservices',
     ],
   },
   {
     group: 'Infrastructure',
-    items: ['GCP', 'Kubernetes', 'Terraform', 'Fly.io', 'AWS', 'Linux', 'CI/CD'],
+    items: ['GCP', 'Kubernetes', 'Helm', 'Terraform', 'Fly.io', 'AWS', 'CI/CD'],
   },
   {
     group: 'Data and scientific',
@@ -793,7 +797,7 @@ export const skills = [
  * is not evidence: Ember Wilds is live multiplayer and names no transport, so
  * Socket.io does not get to claim it.
  *
- * Four skills have nothing that clears that bar. They are on the resume and
+ * Five skills have nothing that clears that bar. They are on the resume and
  * they stay in the list, with an empty array, and the page says so rather than
  * borrowing something that nearly fits. Every skill needs a key here, so a
  * genuine blank can never be confused with one that was forgotten - the page
@@ -811,10 +815,13 @@ export const evidence = {
   C: ['baaqmd', 'pickle'],
 
   React: ['elderwood', 'notable', 'harvest', 'umassDev', 'arena', 'rendezvous'],
-  Redux: ['rendezvous'],
   /* saltline's renderer is Babylon.js, which is WebGL - a fact about the
      library, not a claim about the work, and the notes name the library. */
   'three.js / WebGL': ['saltline', 'elderwood', 'grinch'],
+  /* The same row of saltline's technical notes, read for what it actually
+     says rather than for the standard underneath it: "Renderer, Babylon.js on
+     Fly.io". This is the one of the three additions the page can back up. */
+  'babylon.js': ['saltline'],
   /* The three demos are hand-written HTML files still served at their own
      URLs. Every other project is a browser app that never says so. */
   'HTML / CSS': ['autotyper', 'deviation', 'grinch'],
@@ -826,17 +833,22 @@ export const evidence = {
   PostgreSQL: ['notable', 'harvest', 'umassDev', 'rendezvous'],
   BigQuery: ['notable'],
   'Socket.io': [],
+  /* Ember Wilds is the room server this would be evidence for, and its card
+     names no transport - the same reason Socket.io claims nothing. Naming one
+     in the notes to earn the chip would be writing the evidence to fit. */
+  'colyseus.js': [],
   'Twilio / SIP': ['notable'],
   Temporal: [],
-  /* Both of these say the word in their own description of the job. */
-  Microservices: ['harvest', 'gotit'],
 
   GCP: ['notable', 'arena', 'rendezvous'],
   Kubernetes: ['notable'],
+  /* The current role's deploy tooling is named as deploy tooling. Kubernetes
+     is on the page by name and Helm is not, and standing next to something
+     that is named is not the same as being named. */
+  Helm: [],
   Terraform: ['notable'],
   'Fly.io': ['saltline', 'ember'],
   AWS: [],
-  Linux: [],
   /* "Deploy tooling", in the first bullet of the current role. */
   'CI/CD': ['notable'],
 
