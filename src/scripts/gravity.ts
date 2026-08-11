@@ -26,7 +26,8 @@
 /* Blocks of type, not their containers: a paragraph inside a list item is
    collected through the item rather than twice. */
 const TYPE =
-  'h1, h2, h3, h4, p, li, figcaption, blockquote, dt, dd, .tag, .choice, .nav__links a, .btn';
+  'h1, h2, h3, h4, p, li, figcaption, blockquote, dt, dd, .tag, .choice, ' +
+  '.nav__links a, .nav__brand, .hero__mail, .btn';
 
 /* Review furniture and things that are only there for a screen reader. The
    design lab is not part of the page and the skip link is not on it yet. */
@@ -59,6 +60,17 @@ const HOLD = 150;
 /* A page has a bottom, and the ink stops just short of it rather than
    straddling it. */
 const FLOOR_GAP = 8;
+
+/* The camera is a falling body of its own, not a tracker bolted to the lowest
+   letter. Following the front would put the reader at the bottom of the
+   document inside half a second, because the type down there starts almost on
+   the floor and gets there first; falling with the letters, and slower than
+   they do, is what makes them stream past and away instead. */
+const CAM_G = 0.55;
+
+/* Braked harder than it accelerates, so the ride stops on the pile instead of
+   arriving at six thousand pixels a second and hitting a wall. */
+const CAM_BRAKE = 2.2;
 
 const rand = (lo: number, hi: number): number => lo + Math.random() * (hi - lo);
 
@@ -348,10 +360,13 @@ export function drop(): void {
      not moved and is not going to - every block that left is still holding
      its own box - so this is measured once and stays true. */
   const floor = document.documentElement.scrollHeight - FLOOR_GAP;
+  const bottom = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
 
   let raf = 0;
   let last = 0;
   let clock = 0;
+  let cam = sy;
+  let camV = 0;
 
   const step = (now: number): void => {
     if (!live) return;
@@ -376,6 +391,19 @@ export function drop(): void {
         q.rest = true;
         awake--;
       }
+    }
+
+    if (cam < bottom) {
+      camV += G * CAM_G * dt;
+      /* The fastest the page can still be going and stop exactly on the
+         bottom. Capping to it turns a free fall into an arrival, with no
+         easing curve to pick and no distance left over. */
+      const brake = Math.sqrt(2 * G * CAM_BRAKE * (bottom - cam));
+      cam = Math.min(bottom, cam + Math.min(camV, brake) * dt);
+      /* Instant, because the stylesheet asks for smooth scrolling and a
+         smoothed scroll inside a per-frame loop is a fight, not a fall. */
+      window.scrollTo({ top: cam, left: sx, behavior: 'instant' });
+      awake++;
     }
 
     paint();
