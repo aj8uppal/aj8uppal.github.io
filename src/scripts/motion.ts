@@ -57,6 +57,11 @@ function installReveals(): void {
     (entries) => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
+        /* The egg drags the viewport down the whole document in three seconds.
+           Everything it sweeps past would arrive to an empty room and stay
+           marked as arrived, so for as long as it is running nothing counts as
+           seen and these elements keep their first look for later. */
+        if (document.documentElement.hasAttribute('data-fell')) continue;
         const el = entry.target as HTMLElement;
         io.unobserve(el);
         el.classList.add('in');

@@ -44,6 +44,24 @@ const CAP = 240;
    as the letters would. */
 const LETTERS_ABOVE = 26;
 
+/* px/s². Nothing here is metric - the unit is the page, and this is the
+   number that takes a letter the length of the document in about three
+   seconds: long enough to be a fall and short enough to sit through. */
+const G = 2800;
+
+/* Every letter leaves slightly differently, or two hundred of them move like
+   one sheet. Sideways in px/s, spin in rad/s, and a few frames of stagger so
+   the release is a ripple rather than a switch. */
+const DRIFT = 46;
+const SPIN = 2.6;
+const HOLD = 150;
+
+/* A page has a bottom, and the ink stops just short of it rather than
+   straddling it. */
+const FLOOR_GAP = 8;
+
+const rand = (lo: number, hi: number): number => lo + Math.random() * (hi - lo);
+
 /* A letter never drawn is a bitmap never made, so the raster happens the first
    frame a letter is on screen rather than all at once behind the keystroke. */
 interface Sprite {
@@ -79,6 +97,11 @@ interface Particle {
   vy: number;
   rot: number;
   vr: number;
+  /* ms after the trigger before this one lets go. */
+  hold: number;
+  /* Down and done. A resting letter is skipped by the loop, and the loop ends
+     when there is nothing left that is not resting. */
+  rest: boolean;
   sp: Sprite | null;
 }
 
@@ -239,10 +262,12 @@ export function drop(): void {
         y: r.top + sy + r.height / 2,
         rw: r.width,
         rh: r.height,
-        vx: 0,
-        vy: 0,
+        vx: rand(-DRIFT, DRIFT),
+        vy: rand(-40, 40),
         rot: lean,
-        vr: 0,
+        vr: rand(-SPIN, SPIN),
+        hold: rand(0, HOLD),
+        rest: false,
         sp: null,
       });
     }
@@ -266,11 +291,24 @@ export function drop(): void {
   canvas.height = Math.ceil(window.innerHeight * dpr);
   document.body.appendChild(canvas);
 
+  /* Nothing counts as scrolled into view while this runs, or the fall marks
+     half the page as already seen and the reader never gets its first look. */
+  document.documentElement.setAttribute('data-fell', '');
+
   for (const el of hidden) el.style.visibility = 'hidden';
   for (const el of faded) {
+    /* Typing the code scrolls the page, so some of these are still mid-reveal,
+       and a running animation outranks an inline declaration. Whatever they
+       were in the middle of arriving from, they have arrived. */
+    for (const a of el.getAnimations()) a.cancel();
     el.style.transition = 'opacity 260ms linear';
     el.style.opacity = '0';
   }
+  /* Once faded, gone for good: opacity is a property animations can win back
+     and visibility, here, is not. */
+  const seal = setTimeout(() => {
+    for (const el of faded) el.style.visibility = 'hidden';
+  }, 300);
 
   const paint = (): void => {
     const vw = window.innerWidth;
@@ -306,17 +344,56 @@ export function drop(): void {
     }
   };
 
+  /* The bottom of the document, which is where the fall ends. The page has
+     not moved and is not going to - every block that left is still holding
+     its own box - so this is measured once and stays true. */
+  const floor = document.documentElement.scrollHeight - FLOOR_GAP;
+
+  let raf = 0;
+  let last = 0;
+  let clock = 0;
+
+  const step = (now: number): void => {
+    if (!live) return;
+    /* Clamped, because a tab that was in the background hands back a delta of
+       several seconds and every letter would arrive already buried. */
+    const dt = last ? Math.min(1 / 30, (now - last) / 1000) : 1 / 60;
+    last = now;
+    clock += dt * 1000;
+
+    let awake = 0;
+    for (const q of parts) {
+      if (q.rest) continue;
+      awake++;
+      if (clock < q.hold) continue;
+      q.vy += G * dt;
+      q.x += q.vx * dt;
+      q.y += q.vy * dt;
+      q.rot += q.vr * dt;
+      const low = floor - q.rh / 2;
+      if (q.y >= low) {
+        q.y = low;
+        q.rest = true;
+        awake--;
+      }
+    }
+
+    paint();
+    raf = awake ? requestAnimationFrame(step) : 0;
+  };
+
   paint();
+  raf = requestAnimationFrame(step);
 
   const undo = (): void => {
     if (!live) return;
     live = false;
+    if (raf) cancelAnimationFrame(raf);
+    clearTimeout(seal);
     canvas.remove();
-    for (const el of hidden) {
+    document.documentElement.removeAttribute('data-fell');
+    for (const el of [...hidden, ...faded]) {
       el.style.removeProperty('visibility');
-      if (el.getAttribute('style') === '') el.removeAttribute('style');
-    }
-    for (const el of faded) {
       el.style.removeProperty('transition');
       el.style.removeProperty('opacity');
       if (el.getAttribute('style') === '') el.removeAttribute('style');
