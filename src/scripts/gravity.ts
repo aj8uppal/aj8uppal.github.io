@@ -626,12 +626,21 @@ export function drop(): void {
       if (el.getAttribute('style') === '') el.removeAttribute('style');
     }
     window.scrollTo({ top: sy, left: sx, behavior: 'instant' });
-    /* The nav bar and the reveal observer both watch scrolling, and the events
-       for the jump home arrive after this returns. The flag stays up one more
-       frame so neither of them reads the snap back as the reader moving. */
-    requestAnimationFrame(() => {
-      if (!live) document.documentElement.removeAttribute('data-fell');
-    });
+    /* The nav bar watches scrolling, and the events for the jump home arrive
+       after this returns - as can a second one, because a click that cancels
+       the egg also does whatever a click does, and focusing something scrolls
+       it into view. So the flag comes down on the page going quiet rather than
+       on the next frame, and none of it reads as the reader moving. */
+    let quiet = 0;
+    const rest = (): void => {
+      clearTimeout(quiet);
+      quiet = window.setTimeout(() => {
+        window.removeEventListener('scroll', rest, true);
+        if (!live) document.documentElement.removeAttribute('data-fell');
+      }, 160);
+    };
+    window.addEventListener('scroll', rest, { capture: true, passive: true });
+    rest();
     for (const type of ENDS) window.removeEventListener(type, undo, true);
   };
 

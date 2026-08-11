@@ -53,6 +53,11 @@ function installReveals(): void {
 
   const ms = duration('--dur-3', 620);
 
+  /* Arrived while the egg had the page. An observer does not repeat itself for
+     something that never stopped intersecting, so these are held and offered
+     again once it lets go, or they keep their first look forever. */
+  const missed = new Set<Element>();
+
   const io = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
@@ -61,9 +66,13 @@ function installReveals(): void {
            Everything it sweeps past would arrive to an empty room and stay
            marked as arrived, so for as long as it is running nothing counts as
            seen and these elements keep their first look for later. */
-        if (document.documentElement.hasAttribute('data-fell')) continue;
+        if (document.documentElement.hasAttribute('data-fell')) {
+          missed.add(entry.target);
+          continue;
+        }
         const el = entry.target as HTMLElement;
         io.unobserve(el);
+        missed.delete(el);
         el.classList.add('in');
         el.animate(frames, { duration: ms, easing: 'linear', fill: 'none' });
       }
@@ -72,6 +81,16 @@ function installReveals(): void {
   );
 
   targets.forEach((el) => io.observe(el));
+
+  new MutationObserver(() => {
+    if (document.documentElement.hasAttribute('data-fell') || !missed.size) return;
+    // Re-observing re-delivers, which is the only way to ask an observer again.
+    for (const el of missed) {
+      io.unobserve(el);
+      io.observe(el);
+    }
+    missed.clear();
+  }).observe(document.documentElement, { attributeFilter: ['data-fell'] });
 }
 
 /* ── Nav: current section ────────────────────────────────────────────── */
