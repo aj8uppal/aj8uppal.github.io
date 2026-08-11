@@ -526,11 +526,24 @@ export function drop(): void {
     wasY1 = y1;
   };
 
-  /* The bottom of the document, which is where the fall ends. The page has
-     not moved and is not going to - every block that left is still holding
-     its own box - so this is measured once and stays true. */
-  const floor = document.documentElement.scrollHeight - FLOOR_GAP;
-  const bottom = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  /* The bottom of the document, which is where the fall ends.
+   *
+   * Read live, because the page is not the constant it looks like. Hiding the
+   * type moves nothing - every block keeps its box - but the ride scrolls the
+   * whole document past the viewport in four seconds, and that hydrates every
+   * `client:visible` island on the way down. One of them, the autotyper lab,
+   * renders its terminal in place of the form the server sent and takes 137px
+   * out of a 430 phone as it does. A floor measured once at the keystroke then
+   * sits below the bottom the reader can actually reach, and the heap standing
+   * on it is built partly out of view: measured 138px of it unreachable at 430
+   * and 390, and none at 1440, which is the width where that island is already
+   * hydrated before the egg is armed.
+   *
+   * So the floor is whatever the bottom edge of the document is this frame,
+   * and the heap it is holding up moves with it. */
+  let docWas = document.documentElement.scrollHeight;
+  let floor = docWas - FLOOR_GAP;
+  let bottom = Math.max(0, docWas - window.innerHeight);
   const wall = document.documentElement.clientWidth;
   const cols = Math.max(1, Math.ceil(wall / COL));
   /* Height of the heap above the floor, one entry per column. */
@@ -550,6 +563,20 @@ export function drop(): void {
     const dt = last ? Math.min(1 / 30, (now - last) / 1000) : 1 / 60;
     last = now;
     clock += dt * 1000;
+
+    const docH = document.documentElement.scrollHeight;
+    if (docH !== docWas) {
+      /* Letters in mid-air are debris and a hundred px of drift on the way
+         down is not observable. The heap is: it has a floor under it and the
+         floor has moved, so it goes with it, and the layer holding its pixels
+         is no longer true. */
+      const shift = docH - docWas;
+      docWas = docH;
+      floor += shift;
+      bottom = Math.max(0, docH - window.innerHeight);
+      for (const q of still) q.y += shift;
+      heapY = NaN;
+    }
 
     /* The line the floor is giving way along, in document coordinates. Once
        the ride is over it is the bottom of the document, so the last of the
