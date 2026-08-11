@@ -512,7 +512,6 @@ export function drop(): void {
     if (raf) cancelAnimationFrame(raf);
     clearTimeout(seal);
     canvas.remove();
-    document.documentElement.removeAttribute('data-fell');
     for (const el of [...hidden, ...faded]) {
       el.style.removeProperty('visibility');
       el.style.removeProperty('transition');
@@ -520,6 +519,12 @@ export function drop(): void {
       if (el.getAttribute('style') === '') el.removeAttribute('style');
     }
     window.scrollTo({ top: sy, left: sx, behavior: 'instant' });
+    /* The nav bar and the reveal observer both watch scrolling, and the events
+       for the jump home arrive after this returns. The flag stays up one more
+       frame so neither of them reads the snap back as the reader moving. */
+    requestAnimationFrame(() => {
+      if (!live) document.documentElement.removeAttribute('data-fell');
+    });
     for (const type of ENDS) window.removeEventListener(type, undo, true);
   };
 

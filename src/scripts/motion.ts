@@ -157,6 +157,10 @@ function installNav(): void {
     if (Math.abs(dy) < 4) return;
     lastY = y;
 
+    /* The egg drives the viewport the length of the document and then snaps it
+       back. None of that is the reader scrolling, so the bar keeps the state
+       they left it in and picks up again from wherever the snap put them. */
+    if (document.documentElement.hasAttribute('data-fell')) return;
     if (holding) {
       hold();
       header.dataset.hidden = 'false';
