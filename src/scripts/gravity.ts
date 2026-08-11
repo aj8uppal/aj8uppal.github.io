@@ -33,12 +33,22 @@ const TYPE =
    design lab is not part of the page and the skip link is not on it yet. */
 const NOT = '[data-lab], .inspect-bar, .sr, .skip, [hidden]';
 
-/* The whole document's type is far more than this. What the cap buys is a
-   per-frame draw count that a 4x-throttled phone can hold at 60, so the type
-   that does not fit the budget leaves by fading rather than by janking. The
-   sort below spends the budget on the biggest type on the page, which is the
-   type worth watching fall. */
+/* The whole document's type is far more than this. The cap bounds the one-off
+   work behind the keystroke - cutting the page up and rastering it - and the
+   memory the sprites take; the type it does not reach leaves by fading rather
+   than by janking. The sort below spends it on the biggest type on the page,
+   which is the type worth watching fall. */
 const CAP = 240;
+
+/* Pixels the overlay is allowed to be. This, not the letter count, is what a
+   phone pays for a canvas it redraws every frame: at 430 on a 4x-throttled
+   phone the same fall runs 43fps at device resolution and 86fps at half of it,
+   while going from 240 letters to 120 bought two frames a second and landing
+   them sooner bought four. So the canvas takes a pixel budget rather than the
+   device ratio. It costs nothing below a 2x screen and buys phones the frame
+   rate; tumbling type does not need the sharpness, the page underneath keeps
+   its own, and the moment the heap sleeps this is gone. */
+const FILL = 700_000;
 
 /* Above this, a block comes apart into letters; below it, into words. Word
    pieces of body copy read as debris at a distance and cost a fifth as much
@@ -257,7 +267,14 @@ function pieces(el: HTMLElement, byLetter: boolean): Array<{ t: string; r: DOMRe
 export function drop(): void {
   if (live) return;
 
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const dpr = Math.max(
+    1,
+    Math.min(
+      2,
+      window.devicePixelRatio || 1,
+      Math.sqrt(FILL / (window.innerWidth * window.innerHeight)),
+    ),
+  );
   const sx = window.scrollX;
   const sy = window.scrollY;
 
@@ -365,38 +382,127 @@ export function drop(): void {
     for (const el of faded) el.style.visibility = 'hidden';
   }, 300);
 
+  /* A letter that has stopped never moves again, so it is stamped once into a
+     layer of its own and every later frame blits that. Without it the whole
+     heap is redrawn per frame from the moment it lands, which is where a slow
+     phone gives out: 240 turned sprites, all on screen at once, forever. */
+  const heap = document.createElement('canvas');
+  heap.width = canvas.width;
+  heap.height = canvas.height;
+  const hctx = heap.getContext('2d');
+  const still: Particle[] = [];
+  let baked = 0;
+  let heapX = NaN;
+  let heapY = NaN;
+  /* Screen box the moving letters filled last frame: the ink this frame has to
+     clean up after. Empty until something is in it. */
+  let wasX0 = Infinity;
+  let wasY0 = Infinity;
+  let wasX1 = -Infinity;
+  let wasY1 = -Infinity;
+
+  const stamp = (g: CanvasRenderingContext2D, q: Particle, px: number, py: number): void => {
+    if (!q.sp) {
+      const key = `${q.s}:${q.t}`;
+      let sp = sprites.get(key);
+      if (sp === undefined) {
+        const st = styles[q.s];
+        sp = st ? raster(q.t, st, q.rw, q.rh, dpr) : null;
+        sprites.set(key, sp);
+      }
+      if (!sp) return;
+      q.sp = sp;
+    }
+    const { c, w, h } = q.sp;
+    const cos = Math.cos(q.rot);
+    const sin = Math.sin(q.rot);
+    g.setTransform(cos * dpr, sin * dpr, -sin * dpr, cos * dpr, px * dpr, py * dpr);
+    g.drawImage(c, -w / 2, -h / 2, w, h);
+  };
+
   const paint = (): void => {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const ox = window.scrollX;
     const oy = window.scrollY;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    /* Culled against the screen rather than against its own box, which is not
+       known until the bitmap exists. The margin is generous enough to cover
+       the biggest letter on the page turned on its corner. */
+    const off = (px: number, py: number): boolean =>
+      px < -400 || px > vw + 400 || py < -400 || py > vh + 400;
 
+    /* Where the letters that are still moving are, this frame. */
+    let x0 = Infinity;
+    let y0 = Infinity;
+    let x1 = -Infinity;
+    let y1 = -Infinity;
     for (const q of parts) {
+      if (q.rest) continue;
       const px = q.x - ox;
       const py = q.y - oy;
-      /* Culled against the screen rather than against its own box, which is
-         not known until the bitmap exists. The margin is generous enough to
-         cover the biggest letter on the page turned on its corner. */
-      if (px < -400 || px > vw + 400 || py < -400 || py > vh + 400) continue;
-      if (!q.sp) {
-        const key = `${q.s}:${q.t}`;
-        let sp = sprites.get(key);
-        if (sp === undefined) {
-          const st = styles[q.s];
-          sp = st ? raster(q.t, st, q.rw, q.rh, dpr) : null;
-          sprites.set(key, sp);
-        }
-        if (!sp) continue;
-        q.sp = sp;
-      }
-      const { c, w, h } = q.sp;
-      const cos = Math.cos(q.rot);
-      const sin = Math.sin(q.rot);
-      ctx.setTransform(cos * dpr, sin * dpr, -sin * dpr, cos * dpr, px * dpr, py * dpr);
-      ctx.drawImage(c, -w / 2, -h / 2, w, h);
+      if (off(px, py)) continue;
+      const r = (q.rw + q.rh) / 2 + 4;
+      if (px - r < x0) x0 = px - r;
+      if (py - r < y0) y0 = py - r;
+      if (px + r > x1) x1 = px + r;
+      if (py + r > y1) y1 = py + r;
     }
+
+    // The layer holds screen positions, so a scroll invalidates all of it.
+    const rode = ox !== heapX || oy !== heapY;
+    if (rode && hctx) {
+      hctx.setTransform(1, 0, 0, 1, 0, 0);
+      hctx.clearRect(0, 0, heap.width, heap.height);
+      baked = 0;
+      heapX = ox;
+      heapY = oy;
+    }
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    if (rode || !hctx) {
+      /* The page is moving under the letters, so every pixel is wrong anyway
+         and a settled layer would be rebuilt from nothing for one frame's use.
+         Straight draw. Little has landed this early to make it worth more. */
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const q of parts) {
+        const px = q.x - ox;
+        const py = q.y - oy;
+        if (off(px, py)) continue;
+        stamp(ctx, q, px, py);
+      }
+    } else {
+      for (; baked < still.length; baked++) {
+        const q = still[baked];
+        if (!q || off(q.x - ox, q.y - oy)) continue;
+        stamp(hctx, q, q.x - ox, q.y - oy);
+      }
+      /* Everything outside this box is heap that has not changed since it was
+         drawn, so the frame only repairs where the bouncing is: clearing and
+         re-blitting the whole screen every frame costs three megapixels of fill
+         on a phone, and that alone was holding the settle to thirty. */
+      const bx0 = Math.max(0, Math.floor(Math.min(x0, wasX0)));
+      const by0 = Math.max(0, Math.floor(Math.min(y0, wasY0)));
+      const bx1 = Math.min(vw, Math.ceil(Math.max(x1, wasX1)));
+      const by1 = Math.min(vh, Math.ceil(Math.max(y1, wasY1)));
+      if (bx1 > bx0 && by1 > by0) {
+        const w = (bx1 - bx0) * dpr;
+        const h = (by1 - by0) * dpr;
+        ctx.clearRect(bx0 * dpr, by0 * dpr, w, h);
+        ctx.drawImage(heap, bx0 * dpr, by0 * dpr, w, h, bx0 * dpr, by0 * dpr, w, h);
+      }
+      for (const q of parts) {
+        if (q.rest) continue;
+        const px = q.x - ox;
+        const py = q.y - oy;
+        if (off(px, py)) continue;
+        stamp(ctx, q, px, py);
+      }
+    }
+
+    wasX0 = x0;
+    wasY0 = y0;
+    wasX1 = x1;
+    wasY1 = y1;
   };
 
   /* The bottom of the document, which is where the fall ends. The page has
@@ -469,6 +575,7 @@ export function drop(): void {
         q.rest = true;
         q.vr = 0;
         awake--;
+        still.push(q);
         /* What this letter adds to the columns beneath it: its ink spread over
            the width it actually covers, so a word lying flat raises a wide
            strip by a little and the same word on its end raises a narrow one
