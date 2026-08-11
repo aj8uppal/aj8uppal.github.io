@@ -57,9 +57,10 @@ const DRIFT = 46;
 const SPIN = 2.6;
 const HOLD = 150;
 
-/* A page has a bottom, and the ink stops just short of it rather than
-   straddling it. */
-const FLOOR_GAP = 8;
+/* A page has a bottom, and the ink stops short of it rather than straddling
+   it. Wide enough to cover the padding a sprite carries for its stroke and
+   for the ink round letters push past their own line box. */
+const FLOOR_GAP = 22;
 
 /* The camera is a falling body of its own, not a tracker bolted to the lowest
    letter. Following the front would put the reader at the bottom of the
@@ -71,6 +72,48 @@ const CAM_G = 0.55;
 /* Braked harder than it accelerates, so the ride stops on the pile instead of
    arriving at six thousand pixels a second and hitting a wall. */
 const CAM_BRAKE = 2.2;
+
+/* How much of the impact speed a letter keeps. A third gets three bounces out
+   of a fall the length of the page and none out of a letter that started near
+   the bottom, which is the right answer to both. */
+const REST = 0.3;
+
+/* Sideways speed kept through an impact, and the share of the landing speed
+   thrown sideways by it. A hard landing scattering outward is most of what a
+   heap of type settling actually looks like. */
+const DRAG = 0.72;
+const SPLASH = 0.18;
+
+/* The page has edges. Letters that drift off them are letters the reader
+   paid for and did not get to watch land. */
+const WALL = 0.5;
+
+/* Below this, the next bounce would not clear the letter's own height, so it
+   has not bounced - it has landed. */
+const LAND_V = 200;
+
+/* The heap is a height per column of the page rather than letter against
+   letter: two hundred bodies is twenty thousand pairs and this is a hundred
+   and twenty numbers. A letter lands on what the columns it covers are
+   standing at, then raises them by rather less than its own height, because
+   type in a pile interlocks instead of stacking.
+ *
+ * Landing on the highest of those columns is the obvious rule and the wrong
+ * one. It ratchets: one tall column drags every neighbour it touches up with
+ * it, wide pieces couple columns that are nowhere near each other, and two
+ * hundred letters build a tower several screens tall - measured at 3858px on
+ * a 430 phone, where a heap has no business being deeper than a screen. So
+ * the surface is halfway between the highest column and their average, which
+ * lets a letter sink into the dip beside a tall one, and the whole heap is
+ * capped at rather less than a screen. Past the cap the letters pack in
+ * rather than stack up, which is what a heap of paper does anyway. */
+const COL = 12;
+const INK = 0.3;
+const PILE_MAX = 0.3;
+
+/* A backstop, not a design. Nothing should still be moving by here; if
+   something is, it stops being interesting long before it stops moving. */
+const MAX_MS = 9000;
 
 const rand = (lo: number, hi: number): number => lo + Math.random() * (hi - lo);
 
@@ -361,6 +404,11 @@ export function drop(): void {
      its own box - so this is measured once and stays true. */
   const floor = document.documentElement.scrollHeight - FLOOR_GAP;
   const bottom = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  const wall = document.documentElement.clientWidth;
+  const cols = Math.max(1, Math.ceil(wall / COL));
+  /* Height of the heap above the floor, one entry per column. */
+  const pile = new Float32Array(cols);
+  const deepest = window.innerHeight * PILE_MAX;
 
   let raf = 0;
   let last = 0;
@@ -385,12 +433,57 @@ export function drop(): void {
       q.x += q.vx * dt;
       q.y += q.vy * dt;
       q.rot += q.vr * dt;
-      const low = floor - q.rh / 2;
-      if (q.y >= low) {
-        q.y = low;
-        q.rest = true;
-        awake--;
+
+      /* The box the letter covers at the angle it is turning through, which is
+         what has to clear the walls and the heap. A rest computed off the
+         upright box buries a letter that lands on its corner. */
+      const c = Math.abs(Math.cos(q.rot));
+      const s = Math.abs(Math.sin(q.rot));
+      const hw = (q.rw * c + q.rh * s) / 2;
+      const hh = (q.rw * s + q.rh * c) / 2;
+
+      if (q.x < hw) {
+        q.x = hw;
+        q.vx = -q.vx * WALL;
+      } else if (q.x > wall - hw) {
+        q.x = wall - hw;
+        q.vx = -q.vx * WALL;
       }
+
+      const c0 = Math.max(0, ((q.x - hw) / COL) | 0);
+      const c1 = Math.min(cols - 1, ((q.x + hw) / COL) | 0);
+      let high = 0;
+      let sum = 0;
+      for (let i = c0; i <= c1; i++) {
+        const h = pile[i] ?? 0;
+        sum += h;
+        if (h > high) high = h;
+      }
+      const top = (high + sum / (c1 - c0 + 1)) / 2;
+
+      const surface = floor - top - hh;
+      if (q.y < surface) continue;
+      q.y = surface;
+
+      if (q.vy < LAND_V || clock > MAX_MS) {
+        q.rest = true;
+        q.vr = 0;
+        awake--;
+        /* What this letter adds to the columns beneath it: its ink spread over
+           the width it actually covers, so a word lying flat raises a wide
+           strip by a little and the same word on its end raises a narrow one
+           by a lot. Raising by its height instead builds a heap of mostly air,
+           because a turned letter's box is mostly air - and the air stacks
+           into a plane of type with open ground underneath it. */
+        const spread = Math.min(q.rh, (q.rw * q.rh * INK) / Math.max(2 * hw, 1));
+        const lift = Math.min(deepest, top + spread);
+        for (let i = c0; i <= c1; i++) if ((pile[i] ?? 0) < lift) pile[i] = lift;
+        continue;
+      }
+
+      q.vx = q.vx * DRAG + rand(-1, 1) * q.vy * SPLASH;
+      q.vr = -q.vr * 0.45 + rand(-1.2, 1.2);
+      q.vy = -q.vy * REST;
     }
 
     if (cam < bottom) {
