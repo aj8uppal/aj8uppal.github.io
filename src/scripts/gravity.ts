@@ -99,14 +99,20 @@ const WAKE = 0.66;
    next bounce would not clear its own height, so it has landed rather than
    bounced.
  *
- * These are the frame rate, not the feel. A letter costs nothing on the page
- * and costs a draw every frame from the moment it lets go until the moment it
- * stops, and eight thousand letters all arrive at the floor inside the same
- * two seconds. A third of the impact speed kept is three bounces and about a
- * second and a half of them, which put seven thousand letters on the screen at
- * once and the fall at 19.8fps on a 4x-throttled phone. A sixth is one clear
- * bounce and a settle, which is what a letter of ink landing in a heap of
- * other letters looks like anyway, and it is 30.6fps. */
+ * These are how long it goes on for, not the feel. A letter costs nothing on
+ * the page and costs a draw every frame from the moment it lets go until the
+ * moment it stops, and eight thousand letters all arrive at the floor inside
+ * the same two seconds - so the end of the fall is the expensive part, with
+ * every letter on the page in the same few screens, and the way to pay less
+ * for it is to be in it for less time.
+ *
+ * Measured at 430 with 8904 letters on a 4x-throttled phone, both settings
+ * average about the same through the fall itself - 18fps against 17.4 - but a
+ * sixth of the impact speed kept is one clear bounce and a settle, and it is
+ * over and asleep inside eleven seconds. A third is three bounces, and it is
+ * still putting letters down at fourteen: three more seconds of the part that
+ * runs at six. It also happens to be what a letter of ink landing in a heap of
+ * other letters looks like. */
 const REST = 0.16;
 const LAND_V = 300;
 
@@ -253,8 +259,10 @@ function readStyle(el: Element): Style {
  * back, and frame zero of the fall is the page. And a sprite cut to the line
  * box instead is mostly nothing: a 15px letter in a line of 1.6 leading is a
  * quarter ink and three quarters air, and the air is resampled through the
- * rotation on every frame like anything else. Cutting it out took the fall on
- * a phone at 4x throttle from 15.8fps to 19.8.
+ * rotation on every frame like anything else. Measured at 430 with 8904
+ * letters on a phone at 4x throttle, cutting it out took the whole fall from
+ * 16.1fps to 18, and the first seven seconds of it - before the heap is the
+ * only thing left moving - from 19.4 to 25.1.
  */
 function raster(t: string, st: Style, rw: number, rh: number, dpr: number): Sprite | null {
   if (!gauge) return null;
