@@ -53,9 +53,11 @@ function installReveals(): void {
 
   const ms = duration('--dur-3', 620);
 
-  /* Arrived while the egg had the page. An observer does not repeat itself for
-     something that never stopped intersecting, so these are held and offered
-     again once it lets go, or they keep their first look forever. */
+  /* Arrived while the ride had the page. An observer does not repeat itself
+     for something that never stopped intersecting, so these are held and
+     offered again once it lets go, or they keep their first look forever -
+     which matters more now that the reader is left down in the wreckage with
+     the whole page still to scroll back through. */
   const missed = new Set<Element>();
 
   const io = new IntersectionObserver(
@@ -176,9 +178,9 @@ function installNav(): void {
     if (Math.abs(dy) < 4) return;
     lastY = y;
 
-    /* The egg drives the viewport the length of the document and then snaps it
-       back. None of that is the reader scrolling, so the bar keeps the state
-       they left it in and picks up again from wherever the snap put them. */
+    /* The egg drives the viewport the length of the document. None of that is
+       the reader scrolling, so the bar keeps the state they left it in and
+       picks up again from wherever the ride ended. */
     if (document.documentElement.hasAttribute('data-fell')) return;
     if (holding) {
       hold();

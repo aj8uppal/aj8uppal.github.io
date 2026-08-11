@@ -4,8 +4,14 @@
  * Every piece of type on the page comes apart into letters, the letters fall
  * the whole height of the document, and the page falls after them to watch
  * them land. It is not on a control and it is not advertised; it is behind ten
- * keys nobody types by accident, and the next thing the reader does puts the
- * page back exactly as it was, including where they were standing.
+ * keys nobody types by accident.
+ *
+ * It does not undo. The ride hands the viewport back the moment the reader
+ * disagrees with it, and after that they are free to scroll the wreckage as
+ * far as it goes - type the wave has not reached yet comes apart as they
+ * arrive at it - but nothing they can do puts a letter back. A reload does,
+ * and only a reload. An egg that tidies itself up the instant it is touched is
+ * an egg nobody gets to look at.
  *
  * ── why a canvas and not the elements themselves
  *
@@ -19,8 +25,9 @@
  * being about how much of it is on the screen, which is bounded by the screen.
  *
  * Nothing in the document moves. The type is hidden where it stands, so every
- * box keeps its size and the page keeps its height and its scroll range, and
- * putting it back is dropping two inline properties and one canvas.
+ * box keeps its size and the page keeps its height and its scroll range - the
+ * reader is scrolling the same document afterwards, with the same anchors and
+ * the same bottom, and only the ink has left it.
  */
 
 /* Blocks of type, not their containers: a paragraph inside a list item is
@@ -72,6 +79,11 @@ const CAM_G = 0.55;
 /* Braked harder than it accelerates, so the ride stops on the pile instead of
    arriving at six thousand pixels a second and hitting a wall. */
 const CAM_BRAKE = 2.2;
+
+/* ms at the start during which the page moving under the camera is the
+   incantation's own doing and not the reader's. The smooth scroll two arrow
+   keys leave running was measured at 220ms; this is that with room. */
+const HANDOFF = 400;
 
 /* Where on the screen the page comes apart, as a fraction of its height.
    Letting the whole document go at once is a fall the reader misses: it all
@@ -174,11 +186,6 @@ interface Style {
   sw: number;
 }
 
-/* Anything the reader does, and it is over. `scroll` is not in the list
-   because the page is about to be scrolled by this file, and a run that
-   cancels itself on its own first frame is not a run. */
-const ENDS = ['keydown', 'pointerdown', 'touchstart', 'wheel', 'resize'] as const;
-
 interface Particle {
   t: string;
   s: number;
@@ -212,6 +219,8 @@ interface Block {
   parts: Particle[];
 }
 
+/* Set once and never cleared, because the floor only gives way once. A second
+   ten keys does nothing; the reload is the way back. */
 let live = false;
 
 /* One measuring context for the whole run, because `measureText` needs a
@@ -421,8 +430,8 @@ export function drop(): void {
     return;
   }
 
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
+  let vw = window.innerWidth;
+  let vh = window.innerHeight;
   const wall = document.documentElement.clientWidth;
   canvas.width = Math.ceil(vw * dpr);
   canvas.height = Math.ceil(vh * dpr);
@@ -450,6 +459,9 @@ export function drop(): void {
   let bottom = Math.max(0, docNow - vh);
   const watch = new ResizeObserver(() => {
     docNow = document.documentElement.scrollHeight;
+    /* The heap stands on the floor whether or not anything is still moving,
+       so a page that grows under a sleeping loop still has to be answered. */
+    wake();
   });
   watch.observe(document.body);
 
@@ -481,16 +493,31 @@ export function drop(): void {
     }
   };
 
-  /* Nothing counts as scrolled into view while this runs, or the fall marks
-     half the page as already seen and the reader never gets its first look. */
+  /* Nothing counts as scrolled into view while the ride has the viewport, or
+     the fall marks half the page as already seen and the reader never gets
+     their first look at it. */
   document.documentElement.setAttribute('data-fell', '');
+
+  /* Down the moment the ride stops driving - by arriving, or by the reader
+     taking the page off it - because everything after that is the reader
+     moving and the bar and the reveals should read it as such.
+   *
+   * A beat late, not on the frame: the scroll event for the last frame the
+   * ride drove arrives after that frame, and the bar would read the tail of
+   * the ride as the reader. Sections that scrolled past underneath the flag
+   * are held by the observer and offered again the moment it comes down. */
+  let held = true;
+  const release = (): void => {
+    if (!held) return;
+    held = false;
+    window.setTimeout(() => document.documentElement.removeAttribute('data-fell'), 160);
+  };
 
   /* Released and still moving, compacted: a letter that lands is swapped off
      the end of this and never costs a frame again. The alternative is a
      `rest` test against every letter on the page, which at this count is the
      per-frame budget spent on deciding to do nothing. */
   const active: Particle[] = [];
-  const shown: HTMLElement[] = [];
   let opened = 0;
 
   /* A letter that is not moving is stamped once into a layer of its own and
@@ -653,9 +680,41 @@ export function drop(): void {
   let cam = sy;
   let camV = 0;
   let edge = -Infinity;
+  /* Where this loop last put the page, and whether it is still entitled to. */
+  let drove = sy;
+  let driving = true;
+
+  const wake = (): void => {
+    if (!raf) raf = requestAnimationFrame(step);
+  };
+
+  /* The reader has said so out loud. Not a cancel and nothing is read off it
+     but the fact that they want the page back - the same handover the loop
+     makes when it notices the page has moved.
+   *
+   * Both are needed. A wheel is applied whole on the frame it arrives and this
+   * loop writes the position on that same frame, so half the time the write
+   * lands second and the reader's scroll is gone before anything can notice
+   * it - measured at about one flick in two. An event cannot be overwritten.
+   * The other way round, a scrollbar drag and a find bar move the page without
+   * an event this could hear, which is what the position check is for. */
+  const asked = (e: Event): void => {
+    /* Of the keys, only the ones that move a page: someone reaching for a
+       screenshot in the middle of the fall has not asked for anything. */
+    if (e.type === 'keydown') {
+      const k = (e as KeyboardEvent).key;
+      if (!/^(Arrow|Page)/.test(k) && k !== 'Home' && k !== 'End' && k !== ' ') return;
+    }
+    if (!driving) return;
+    driving = false;
+    release();
+  };
+  for (const ev of ['wheel', 'touchstart', 'keydown']) {
+    window.addEventListener(ev, asked, { passive: true, capture: true });
+  }
 
   const step = (now: number): void => {
-    if (!live) return;
+    raf = 0;
     /* Clamped, because a tab that was in the background hands back a delta of
        several seconds and every letter would arrive already buried. */
     const dt = last ? Math.min(1 / 30, (now - last) / 1000) : 1 / 60;
@@ -664,6 +723,30 @@ export function drop(): void {
 
     /* One read of where the page is, taken before this frame writes to it. */
     const view = window.scrollY;
+
+    /* The other half of the handover, and the one that catches the ways of
+       moving a page that fire nothing: the loop knows where it put the page
+       last frame, so the page being anywhere else is the reader, whatever they
+       used to get there. The letters go on falling either way.
+     *
+     * Except at the very start, where the page is somewhere else because of
+     * the incantation. Four of its ten keys are arrows, an arrow key scrolls,
+     * and the stylesheet asks for that scroll to be smooth - so a page typed
+     * at faster than reading speed is still gliding downwards when the last
+     * two keys land, and the ride would read its own summons as a reader who
+     * had changed their mind. The glide cannot be called off: an instant
+     * scrollTo, a smooth one retargeted at the current position, clearing
+     * scroll-behavior and a synthetic wheel event were all measured, and it
+     * runs on to its own target through every one of them. So for the first
+     * fraction of a second the ride goes along with the page instead of
+     * arguing with it, and only then starts holding it to account. */
+    if (driving && Math.abs(view - drove) > 1) {
+      if (clock < HANDOFF) cam = Math.max(cam, view);
+      else {
+        driving = false;
+        release();
+      }
+    }
 
     if (docNow !== docWas) {
       /* Letters in mid-air are debris and a hundred px of drift on the way
@@ -708,7 +791,6 @@ export function drop(): void {
          stops being drawn - the sprites are cut to the boxes the browser laid
          out, so the swap is pixel for pixel and there is nothing to see. */
       b.el.style.visibility = 'hidden';
-      shown.push(b.el);
       for (const q of b.parts) {
         /* Down the block as well as across the page, so a twelve-line
            paragraph peels off its own top line first instead of dropping out
@@ -791,57 +873,61 @@ export function drop(): void {
     slump();
 
     let at = view;
-    if (cam < bottom) {
-      camV += G * CAM_G * dt;
-      /* The fastest the page can still be going and stop exactly on the
-         bottom. Capping to it turns a free fall into an arrival, with no
-         easing curve to pick and no distance left over. */
-      const brake = Math.sqrt(2 * G * CAM_BRAKE * (bottom - cam));
-      cam = Math.min(bottom, cam + Math.min(camV, brake) * dt);
-      /* Instant, because the stylesheet asks for smooth scrolling and a
-         smoothed scroll inside a per-frame loop is a fight, not a fall. */
-      window.scrollTo({ top: cam, left: sx, behavior: 'instant' });
-      at = cam;
+    if (driving) {
+      if (cam >= bottom) {
+        release();
+        driving = false;
+      } else {
+        camV += G * CAM_G * dt;
+        /* The fastest the page can still be going and stop exactly on the
+           bottom. Capping to it turns a free fall into an arrival, with no
+           easing curve to pick and no distance left over. */
+        const brake = Math.sqrt(2 * G * CAM_BRAKE * (bottom - cam));
+        cam = Math.min(bottom, cam + Math.min(camV, brake) * dt);
+        /* Instant, because the stylesheet asks for smooth scrolling and a
+           smoothed scroll inside a per-frame loop is a fight, not a fall. */
+        window.scrollTo({ top: cam, left: sx, behavior: 'instant' });
+        drove = cam;
+        at = cam;
+      }
     }
 
     paint(sx, at);
-    const busy = active.length > 0 || opened < blocks.length || cam < bottom;
-    raf = busy ? requestAnimationFrame(step) : 0;
+
+    /* Asleep is not over. Nothing puts this page back but a reload, so the
+       loop has to be able to stop costing a frame and still be there: the
+       wreckage is on a fixed canvas, so a scroll with nobody drawing would
+       carry the heap along with the screen, and type the wave has not reached
+       yet still has to come apart when the reader scrolls down to it. Both
+       are one woken frame. */
+    const next = blocks[opened];
+    if (active.length > 0 || driving || (next && next.y <= edge)) wake();
+    else release();
   };
+
+  window.addEventListener('scroll', wake, { passive: true });
+
+  /* A resize does not put the page back either, but the overlay is a bitmap
+     cut to the screen it was made for and the browser would stretch the
+     wreckage to fit a new one. The backing store follows the viewport and the
+     frame is drawn again. The heap keeps the width it fell into: a window
+     pulled wider gets bare floor at the edge rather than type dragged
+     sideways to cover it. */
+  window.addEventListener(
+    'resize',
+    () => {
+      vw = window.innerWidth;
+      vh = window.innerHeight;
+      bottom = Math.max(0, docNow - vh);
+      canvas.width = Math.ceil(vw * dpr);
+      canvas.height = Math.ceil(vh * dpr);
+      heapX = NaN;
+      heapY = NaN;
+      wake();
+    },
+    { passive: true },
+  );
 
   paint(sx, sy);
-  raf = requestAnimationFrame(step);
-
-  const undo = (): void => {
-    if (!live) return;
-    live = false;
-    if (raf) cancelAnimationFrame(raf);
-    watch.disconnect();
-    canvas.remove();
-    for (const el of shown) {
-      el.style.removeProperty('visibility');
-      if (el.getAttribute('style') === '') el.removeAttribute('style');
-    }
-    window.scrollTo({ top: sy, left: sx, behavior: 'instant' });
-    /* The nav bar watches scrolling, and the events for the jump home arrive
-       after this returns - as can a second one, because a click that cancels
-       the egg also does whatever a click does, and focusing something scrolls
-       it into view. So the flag comes down on the page going quiet rather than
-       on the next frame, and none of it reads as the reader moving. */
-    let quiet = 0;
-    const rest = (): void => {
-      clearTimeout(quiet);
-      quiet = window.setTimeout(() => {
-        window.removeEventListener('scroll', rest, true);
-        if (!live) document.documentElement.removeAttribute('data-fell');
-      }, 160);
-    };
-    window.addEventListener('scroll', rest, { capture: true, passive: true });
-    rest();
-    for (const type of ENDS) window.removeEventListener(type, undo, true);
-  };
-
-  setTimeout(() => {
-    for (const type of ENDS) window.addEventListener(type, undo, { capture: true, passive: true });
-  }, 0);
+  wake();
 }
