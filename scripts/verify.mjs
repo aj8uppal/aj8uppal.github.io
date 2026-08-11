@@ -122,41 +122,43 @@ const ratioOf = (a, b) => {
 const SWEEP = [0.12, 0.4, 0.65, 0.9].flatMap((fx) => [0.18, 0.45, 0.8].map((fy) => [fx, fy]));
 
 async function heroContrast(page, width, height, spots = SWEEP) {
-  const hero = await page.evaluate(() => {
+  /* The hero frame and the type inside it in one read. Taken as two, an
+     earlier check that left the focus deep in the page can have the browser
+     scroll it back down in between, and every box then measures below the
+     clip the screenshot is cut to - nothing lands in it and there is no worst
+     case to report. */
+  const { hero, all } = await page.evaluate((sels) => {
     window.scrollTo({ top: 0, behavior: 'instant' });
-    const r = document.querySelector('.hero').getBoundingClientRect();
-    return { y: r.y, w: r.width, h: r.height };
-  });
-  const boxes = (
-    await page.evaluate(
-      (sels) =>
-        sels.map((s) => {
-          const el = document.querySelector(s);
-          if (!el) return null;
-          const r = el.getBoundingClientRect();
-          const cs = getComputedStyle(el);
-          // Same rule as the CSS walk: an unfilled glyph is drawn by its stroke.
-          const col = (cs.color.match(/[\d.]+/g) ?? []).map(Number);
-          const stroked =
-            col.length === 4 && col[3] === 0 && parseFloat(cs.webkitTextStrokeWidth) > 0;
-          return {
-            s,
-            x: r.x,
-            y: r.y,
-            w: r.width,
-            h: r.height,
-            col: (stroked ? cs.webkitTextStrokeColor : cs.color)
-              .match(/[\d.]+/g)
-              .slice(0, 3)
-              .map(Number),
-            own: cs.backgroundColor,
-            px: parseFloat(cs.fontSize),
-            wt: parseInt(cs.fontWeight, 10),
-          };
-        }),
-      HERO_TEXT,
-    )
-  ).filter((b) => b && b.w >= 1);
+    const f = document.querySelector('.hero').getBoundingClientRect();
+    return {
+      hero: { y: f.y, w: f.width, h: f.height },
+      all: sels.map((s) => {
+        const el = document.querySelector(s);
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        const cs = getComputedStyle(el);
+        // Same rule as the CSS walk: an unfilled glyph is drawn by its stroke.
+        const col = (cs.color.match(/[\d.]+/g) ?? []).map(Number);
+        const stroked =
+          col.length === 4 && col[3] === 0 && parseFloat(cs.webkitTextStrokeWidth) > 0;
+        return {
+          s,
+          x: r.x,
+          y: r.y,
+          w: r.width,
+          h: r.height,
+          col: (stroked ? cs.webkitTextStrokeColor : cs.color)
+            .match(/[\d.]+/g)
+            .slice(0, 3)
+            .map(Number),
+          own: cs.backgroundColor,
+          px: parseFloat(cs.fontSize),
+          wt: parseInt(cs.fontWeight, 10),
+        };
+      }),
+    };
+  }, HERO_TEXT);
+  const boxes = all.filter((b) => b && b.w >= 1);
 
   const worst = new Map();
   for (const [fx, fy] of spots) {
@@ -216,9 +218,18 @@ async function heroContrast(page, width, height, spots = SWEEP) {
   await page.mouse.move(width / 2, hero.y + hero.h * 0.5);
 
   return boxes.map((b) => {
-    const { got, ground, at } = worst.get(b.s);
     const need = b.px >= 24 || (b.px >= 18.66 && b.wt >= 700) ? 3 : 4.5;
-    return { sel: b.s, need, got: Math.round(got * 100) / 100, ground: ground.join(','), at };
+    // Fails loudly rather than throwing: a box that never landed in the clip
+    // has not been checked, and unchecked is not the same as passing.
+    const w = worst.get(b.s);
+    if (!w) return { sel: b.s, need, got: 0, ground: 'never on the hero frame', at: '-' };
+    return {
+      sel: b.s,
+      need,
+      got: Math.round(w.got * 100) / 100,
+      ground: w.ground.join(','),
+      at: w.at,
+    };
   });
 }
 
@@ -1482,7 +1493,14 @@ await run(
             }),
           ms,
         );
-      note((await frames(700)) > 20, 'the framed game animates while it is watched');
+      /* Running against parked, not against a frame rate. The game's own loop
+         was measured between 13 and 93fps in a headless frame that was fully
+         on screen the whole time, so 20 frames in 700ms - 29fps - fails as
+         though the loop were broken. Counted over long enough that the slowest
+         of those still clears the bar by a wide margin, and the bar is set
+         where it means something: the offscreen half below allows 1. */
+      const on = await frames(2000);
+      note(on > 8, 'the framed game animates while it is watched', `${on} frames on screen`);
       await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
       await page.waitForTimeout(1000);
       const off = await frames(900);
