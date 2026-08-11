@@ -3,10 +3,9 @@ import { installDeep } from './deep';
 import { installLedger } from './ledger';
 import { installSwipe } from './swipe';
 import { installTunnel } from './tunnel';
+import { installWordmark } from './wordmark';
 import { springKeyframes } from './spring';
 import { installHero } from '../heroes/runtime';
-/* Type only, so the chunk itself still arrives on the tenth key and not before. */
-import type * as gravity from './gravity';
 
 /**
  * Page-level behaviour. Four things: reveal on first sight, the nav's current
@@ -424,19 +423,19 @@ function installReceipts(): void {
   btn.addEventListener('click', () => apply(!root.classList.contains('receipts')));
 }
 
-/* ── Ten keys ────────────────────────────────────────────────────────── */
+/* ── Typed sequences ─────────────────────────────────────────────────── */
 /**
- * The one thing on this page that is not explained anywhere on it.
+ * The two things on this page that are not explained anywhere on it.
  *
- * What it does lives in its own module and is fetched once the first four keys
- * are in, so a page that is only ever read carries this listener and nothing
- * else, and a page that is not only read has the code in hand by the time the
- * tenth key lands rather than waiting on a request for it.
+ * What each one does lives in its own module and is fetched once a prefix of
+ * its code is in, so a page that is only ever read carries these listeners and
+ * nothing else, and a page that is not only read has the code in hand by the
+ * time the last key lands rather than waiting on a request for it.
  *
- * The arrow keys already do two things here - they scroll, and they move the
- * light around the hero when the canvas has focus - and both keep doing them.
- * Nothing is swallowed on the way past; entering this is meant to look like
- * nothing until it is not.
+ * Nothing is swallowed on the way past. The arrow keys already do two things
+ * here - they scroll, and they move the light around the hero when the canvas
+ * has focus - and both keep doing them while the code is being entered. Typing
+ * either of these is meant to look like nothing until it is not.
  */
 const KONAMI = [
   'arrowup',
@@ -451,15 +450,27 @@ const KONAMI = [
   'a',
 ];
 
-function installKonami(): void {
+const SONIA = ['s', 'o', 'n', 'i', 'a'];
+
+/**
+ * A hidden key sequence. `warmAt` is how much of the code has to be in before
+ * the payload is worth fetching, and `allowed` is asked at the end rather than
+ * at the start so a refused egg is still a silent one.
+ */
+function installSequence(
+  code: string[],
+  warmAt: number,
+  load: () => Promise<() => void>,
+  allowed: () => boolean = () => true,
+): void {
   const seen: string[] = [];
-  let warm: Promise<typeof gravity> | null = null;
+  let warm: Promise<() => void> | null = null;
 
   /* The trailing n keys against the first n of the code, so a false start on a
      repeated key - up, up, up - carries the match it has rather than dropping
      to nothing and needing the whole thing typed again. */
   const ran = (n: number): boolean =>
-    seen.length >= n && KONAMI.slice(0, n).every((k, i) => k === seen[seen.length - n + i]);
+    seen.length >= n && code.slice(0, n).every((k, i) => k === seen[seen.length - n + i]);
 
   document.addEventListener('keydown', (e) => {
     const on = document.activeElement as HTMLElement | null;
@@ -477,17 +488,28 @@ function installKonami(): void {
     }
 
     seen.push(e.key.toLowerCase());
-    if (seen.length > KONAMI.length) seen.shift();
+    if (seen.length > code.length) seen.shift();
 
-    if (!warm && ran(4)) warm = import('./gravity');
-    if (!ran(KONAMI.length)) return;
+    if (!warm && ran(warmAt)) warm = load();
+    if (!ran(code.length)) return;
 
     seen.length = 0;
-    // Flying text is the exact thing that setting is asking not to happen, so
-    // under it there is no egg at all rather than a still one.
-    if (reduced.matches) return;
-    void (warm ?? import('./gravity')).then((m) => m.drop());
+    if (!allowed()) return;
+    void (warm ?? load()).then((run) => run());
   });
+}
+
+function installEggs(): void {
+  // Flying text is the exact thing that setting is asking not to happen, so
+  // under it there is no egg at all rather than a still one.
+  installSequence(
+    KONAMI,
+    4,
+    () => import('./gravity').then((m) => m.drop),
+    () => !reduced.matches,
+  );
+  /* The name swap moves nothing, so it is the same egg under either setting. */
+  installSequence(SONIA, 3, () => import('./sonia').then((m) => m.toggle));
 }
 
 /* ── Hero ────────────────────────────────────────────────────────────── */
@@ -502,8 +524,9 @@ installNavPanel();
 installThemeColor();
 installLongTab();
 installReceipts();
-installKonami();
+installEggs();
 installHeroCanvas();
+installWordmark();
 installAssembly();
 installTunnel();
 installSwipe();

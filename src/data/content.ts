@@ -317,6 +317,11 @@ export const ember = {
     ['Status', 'Live, no install'],
     ['Shape', 'Web tier plus realm service'],
     ['Realm cap', '64 players in one realm'],
+    /* The two rows the skills index points at. A chip that says a technology
+       turns up here has to land on a card that names it, so the card names it
+       rather than the index asking to be believed. */
+    ['Transport', 'Colyseus rooms over WebSocket'],
+    ['Renderer', 'three.js in the browser tab'],
     ['Host', 'Fly.io'],
     ['World', 'Seven regions, harder as you travel outward'],
     ['Classes', 'Unlocked by beast lore and study, not a skill tree'],
@@ -437,6 +442,7 @@ export const saltline = {
     /* The 20 is read off the server, not off the HUD: a room holds 40 boats and
        the NPC fleet is capped at 20, so 20 hulls are left for people. */
     ['Multiplayer', 'Live, sail together, up to 20 players a sea'],
+    ['Transport', 'Colyseus rooms over WebSocket'],
     ['Model', 'Point of sail sets thrust; thrust and heading set VMG'],
     ['Luffing', 'Point too close to the wind and you stop'],
     ['HUD', 'Relative wind, heel angle, thrust percent, VMG in knots'],
@@ -757,7 +763,9 @@ export const earlier = [
 
 export const skills = [
   { group: 'Languages', items: ['Python', 'TypeScript', 'JavaScript', 'SQL', 'C'] },
-  { group: 'Frontend', items: ['React', 'Redux', 'three.js / WebGL', 'HTML / CSS', 'PWAs'] },
+  /* The two renderers sit together: one is the library saltline draws with,
+     the other is the standard it draws against. */
+  { group: 'Frontend', items: ['React', 'three.js / WebGL', 'babylon.js', 'HTML / CSS', 'PWAs'] },
   {
     group: 'Backend',
     items: [
@@ -767,16 +775,18 @@ export const skills = [
       'PostgreSQL',
       'BigQuery',
       'Socket.io',
+      /* A room server is a real-time transport with opinions, so it files with
+         the transports rather than with the runtimes. */
+      'colyseus.js',
       /* Telephony sits with the other real-time transports rather than with the
          hosted platforms: what he owns is the call routing, not the account. */
       'Twilio / SIP',
       'Temporal',
-      'Microservices',
     ],
   },
   {
     group: 'Infrastructure',
-    items: ['GCP', 'Kubernetes', 'Terraform', 'Fly.io', 'AWS', 'Linux', 'CI/CD'],
+    items: ['GCP', 'Kubernetes', 'Helm', 'Terraform', 'Fly.io', 'AWS', 'CI/CD'],
   },
   {
     group: 'Data and scientific',
@@ -790,8 +800,15 @@ export const skills = [
  * One rule decides every entry. A place counts only if the reader can confirm
  * it without taking my word for anything - a stack line under a job, a row in
  * a project's technical notes, or a demo that runs a few sections up. Adjacent
- * is not evidence: Ember Wilds is live multiplayer and names no transport, so
- * Socket.io does not get to claim it.
+ * is not evidence: both room servers name Colyseus as their transport, and
+ * naming one transport is exactly what stops Socket.io claiming them.
+ *
+ * The rule runs the other way too. When a chip is true of a project and the
+ * card says nothing about it, the fix is the card, not the index - a reference
+ * that lands somewhere the reader cannot see the thing is a dead promise, and
+ * an index full of those is worth less than no index. Ember Wilds and saltline
+ * each gained a technical note this way, and each note is a fact about the
+ * build that was already true.
  *
  * Four skills have nothing that clears that bar. They are on the resume and
  * they stay in the list, with an empty array, and the page says so rather than
@@ -811,10 +828,13 @@ export const evidence = {
   C: ['baaqmd', 'pickle'],
 
   React: ['elderwood', 'notable', 'harvest', 'umassDev', 'arena', 'rendezvous'],
-  Redux: ['rendezvous'],
-  /* saltline's renderer is Babylon.js, which is WebGL - a fact about the
-     library, not a claim about the work, and the notes name the library. */
-  'three.js / WebGL': ['saltline', 'elderwood', 'grinch'],
+  /* Three cards name three.js in their own notes. saltline is not one of them
+     and does not belong here: its renderer is Babylon, which is WebGL, and the
+     chip next door is the one that says so. */
+  'three.js / WebGL': ['elderwood', 'ember', 'grinch'],
+  /* One row of saltline's technical notes, read for what it says rather than
+     for the standard underneath it: "Renderer, Babylon.js on Fly.io". */
+  'babylon.js': ['saltline'],
   /* The three demos are hand-written HTML files still served at their own
      URLs. Every other project is a browser app that never says so. */
   'HTML / CSS': ['autotyper', 'deviation', 'grinch'],
@@ -826,17 +846,21 @@ export const evidence = {
   PostgreSQL: ['notable', 'harvest', 'umassDev', 'rendezvous'],
   BigQuery: ['notable'],
   'Socket.io': [],
+  /* Both room servers run on Colyseus, and both cards now say which transport
+     they run on - which is also why Socket.io above still claims nothing. */
+  'colyseus.js': ['saltline', 'ember'],
   'Twilio / SIP': ['notable'],
   Temporal: [],
-  /* Both of these say the word in their own description of the job. */
-  Microservices: ['harvest', 'gotit'],
 
   GCP: ['notable', 'arena', 'rendezvous'],
   Kubernetes: ['notable'],
+  /* The current role's deploy tooling is named as deploy tooling. Kubernetes
+     is on the page by name and Helm is not, and standing next to something
+     that is named is not the same as being named. */
+  Helm: [],
   Terraform: ['notable'],
   'Fly.io': ['saltline', 'ember'],
   AWS: [],
-  Linux: [],
   /* "Deploy tooling", in the first bullet of the current role. */
   'CI/CD': ['notable'],
 

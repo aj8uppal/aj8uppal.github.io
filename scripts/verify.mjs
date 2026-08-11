@@ -896,6 +896,278 @@ await run(
   },
 );
 
+/* ── the phone band ──────────────────────────────────────────────────────
+   390 is one phone. The device report that opened batch 10 came from a 430,
+   and everything it found had gone untested because 390 was the only width
+   anyone measured. So the band is checked at both ends and at the boundary,
+   and the three things that broke are the three things asserted: nothing
+   escapes the viewport, no section sits a rail beside its content, and no two
+   halves of a label/value pair are ever painted on top of each other. */
+for (const width of [390, 430, 620]) {
+  await run(
+    `phone band ${width}`,
+    { viewport: { width, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
+    async (page) => {
+      await settle(page);
+      const m = await page.evaluate(() => {
+        const de = document.documentElement;
+        const wide = [];
+        for (const e of document.querySelectorAll('body *')) {
+          const b = e.getBoundingClientRect();
+          if (b.width === 0) continue;
+          /* Wider than the viewport on purpose, under its own overflow: the
+             frame switcher, the swipe row, and the 2015 file at a size it will
+             not bend. */
+          if (e.closest('.fs__scroll, .swipe__row, .devframe, .asm__loupe')) continue;
+          if (b.right > de.clientWidth + 0.5 || b.left < -0.5)
+            wide.push(`${e.tagName}.${e.className}`.trim().slice(0, 48));
+        }
+
+        /* A rail is a grid whose first track is a fraction of its second. One
+           track means it collapsed; the numeral gutters (.fact, .vitals) are
+           two-track by design and are named rather than inferred. */
+        const rails = [];
+        for (const sel of ['.head', '.about', '.card__hero', '.card__cols', '.role', '.skg']) {
+          for (const e of document.querySelectorAll(sel)) {
+            if (!e.getBoundingClientRect().width) continue;
+            const tracks = getComputedStyle(e).gridTemplateColumns.split(/\s+/).length;
+            if (tracks > 1) rails.push(`${sel} -> ${getComputedStyle(e).gridTemplateColumns}`);
+          }
+        }
+
+        /* The label/value component, everywhere it is used. Two boxes from one
+           dl sharing pixels is the failure the device report led with. */
+        const hits = [];
+        for (const dl of document.querySelectorAll('dl')) {
+          const kids = [...dl.querySelectorAll('dt, dd')].filter(
+            (e) => e.getBoundingClientRect().width > 0,
+          );
+          for (let i = 0; i < kids.length; i++)
+            for (let j = i + 1; j < kids.length; j++) {
+              const A = kids[i].getBoundingClientRect();
+              const B = kids[j].getBoundingClientRect();
+              const ox = Math.min(A.right, B.right) - Math.max(A.left, B.left);
+              const oy = Math.min(A.bottom, B.bottom) - Math.max(A.top, B.top);
+              if (ox > 1 && oy > 1)
+                hits.push(
+                  `${dl.className || 'dl'}: "${kids[i].textContent.trim().slice(0, 18)}" x "${kids[j].textContent.trim().slice(0, 18)}"`,
+                );
+            }
+        }
+
+        return {
+          docW: de.scrollWidth,
+          clientW: de.clientWidth,
+          height: de.scrollHeight,
+          wide: [...new Set(wide)].slice(0, 6),
+          rails: [...new Set(rails)].slice(0, 6),
+          hits: [...new Set(hits)].slice(0, 6),
+        };
+      });
+
+      note(
+        m.docW <= m.clientW,
+        `${width} the document is no wider than the viewport`,
+        `scrollWidth ${m.docW} vs ${m.clientW}`,
+      );
+      note(m.wide.length === 0, `${width} nothing escapes the viewport`, m.wide.join(', '));
+      note(
+        m.rails.length === 0,
+        `${width} no section sits a rail beside its content`,
+        m.rails.join(' | '),
+      );
+      note(
+        m.hits.length === 0,
+        `${width} no label prints on top of its neighbour`,
+        m.hits.join(' | '),
+      );
+      console.log(`       page height ${m.height}px at ${width}`);
+
+      if (width === 430) {
+        await page.screenshot({ path: `${OUT}/full-430.png`, fullPage: true });
+        console.log(`       wrote ${OUT}/full-430.png`);
+      }
+    },
+  );
+}
+
+/* ── the wordmark's turn ─────────────────────────────────────────────────
+   Scroll-linked, so both ways it can go wrong are silent. It can stop agreeing
+   with the stylesheet at the top of the page, which is a change to the poster
+   and the one thing this was not allowed to touch. And it can turn the wrong
+   way: the rotation is mostly about Y, so deepening it foreshortens the block
+   and flattening it un-foreshortens it, which grows "UPPAL" toward an edge a
+   phone does not have to spare. Down is the only direction with no overflow
+   in it, and this is what keeps it pointing down. */
+for (const width of [430, 1440]) {
+  const phone = width < 700;
+  await run(
+    `wordmark ${width}`,
+    {
+      viewport: { width, height: phone ? 932 : 900 },
+      deviceScaleFactor: 2,
+      isMobile: phone,
+      hasTouch: phone,
+    },
+    async (page) => {
+      await settle(page);
+      const m = await page.evaluate(async () => {
+        const h1 = document.querySelector('.hero h1');
+        let top = 0;
+        for (let n = h1; n; n = n.offsetParent) top += n.offsetTop;
+        const end = top + h1.offsetHeight;
+
+        /* Instant, because the document scrolls smoothly and a smooth scroll
+           is still on its way three frames later - which reads as a driver
+           that never moved. Two frames after it lands, because the driver
+           coalesces into one rAF and the box is read after the browser has
+           drawn what it wrote. */
+        const at = async (y) => {
+          window.scrollTo({ top: y, behavior: 'instant' });
+          await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+          const b = h1.getBoundingClientRect();
+          return { w: +b.width.toFixed(1), right: +b.right.toFixed(1) };
+        };
+
+        const rest = await at(0);
+        const live = getComputedStyle(h1).transform;
+        /* What the stylesheet alone would have drawn, asked of the same
+           element rather than compared against a matrix copied into this
+           file, which would be a second place the angle lives. */
+        const inline = h1.style.transform;
+        h1.style.removeProperty('transform');
+        const stylesheet = getComputedStyle(h1).transform;
+        h1.style.transform = inline;
+
+        const mid = await at(Math.round(end / 2));
+        const far = await at(end);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        return {
+          rest,
+          mid,
+          far,
+          live,
+          stylesheet,
+          end,
+          vw: document.documentElement.clientWidth,
+        };
+      });
+
+      note(
+        m.live === m.stylesheet,
+        `${width} the poster is untouched at the top of the page`,
+        `driver ${m.live.slice(0, 40)} vs stylesheet ${m.stylesheet.slice(0, 40)}`,
+      );
+      note(
+        m.rest.w > m.mid.w && m.mid.w > m.far.w,
+        `${width} the turn deepens on the way out, never flattens`,
+        `${m.rest.w} -> ${m.mid.w} -> ${m.far.w} over ${m.end}px of scroll`,
+      );
+      note(
+        m.rest.right <= m.vw && m.mid.right <= m.vw && m.far.right <= m.vw,
+        `${width} and never reaches the right edge doing it`,
+        `${m.rest.right} / ${m.mid.right} / ${m.far.right} vs ${m.vw}`,
+      );
+    },
+  );
+}
+
+/* ── the name swap ───────────────────────────────────────────────────────
+   Five letters replace a two-letter first line with a five-letter one, on the
+   one element on the page that is turned in three dimensions and sized off the
+   viewport. The failure it is worth checking for is geometric: a longer name
+   reaching an edge the short one never did, or the turn coming off the line
+   while its text is being rewritten. Then back, exactly, because an egg that
+   does not put the page down is a bug with a bow on it. */
+for (const width of [390, 430, 1440]) {
+  const phone = width < 700;
+  await run(
+    `name swap ${width}`,
+    {
+      viewport: { width, height: phone ? 932 : 900 },
+      deviceScaleFactor: 2,
+      isMobile: phone,
+      hasTouch: phone,
+    },
+    async (page) => {
+      await settle(page);
+
+      const read = () =>
+        page.evaluate(() => {
+          const h1 = document.querySelector('.hero h1');
+          const cta = document.querySelector('.hero__btns .btn');
+          /* The ink, not the box: the h1 is a full-width block whose own edges
+             say nothing about how far the letters reach. */
+          const ink = (el) => {
+            const r = document.createRange();
+            r.selectNodeContents(el);
+            const b = r.getBoundingClientRect();
+            r.detach();
+            return +b.right.toFixed(1);
+          };
+          return {
+            name: h1.querySelector('span:first-child').textContent,
+            out: h1.querySelector('.out').textContent,
+            label: cta.textContent,
+            href: cta.getAttribute('href'),
+            target: cta.getAttribute('target'),
+            rel: cta.getAttribute('rel'),
+            tilt: getComputedStyle(h1).transform,
+            outTilt: getComputedStyle(h1.querySelector('.out')).transform,
+            reach: Math.max(
+              ink(h1.querySelector('span:first-child')),
+              ink(h1.querySelector('.out')),
+            ),
+            docW: document.documentElement.scrollWidth,
+            vw: document.documentElement.clientWidth,
+            h: Math.round(h1.getBoundingClientRect().height),
+          };
+        });
+
+      const before = await read();
+      await page.keyboard.type('sonia');
+      await page.waitForTimeout(120);
+      const on = await read();
+      await page.keyboard.type('sonia');
+      await page.waitForTimeout(120);
+      const off = await read();
+
+      note(
+        on.name === 'Sonia' && on.out === before.out,
+        `${width} five letters and the wordmark reads Sonia Uppal`,
+        `${on.name} ${on.out}`,
+      );
+      note(
+        on.label === 'Sonia’s LinkedIn' &&
+          on.href === 'https://www.linkedin.com/in/soniau/' &&
+          on.target === '_blank' &&
+          (on.rel ?? '').includes('noopener'),
+        `${width} and the one action goes to her profile`,
+        `${on.label} -> ${on.href} ${on.target} ${on.rel}`,
+      );
+      note(
+        on.tilt === before.tilt && on.outTilt === before.outTilt && on.h === before.h,
+        `${width} the turn and the line box are the same as before it`,
+        `${on.tilt.slice(0, 40)} / ${on.h}px vs ${before.h}px`,
+      );
+      note(
+        on.reach <= on.vw && on.docW <= on.vw,
+        `${width} the longer name stays inside the viewport`,
+        `ink ${on.reach}, document ${on.docW}, viewport ${on.vw}`,
+      );
+      note(
+        off.name === before.name &&
+          off.label === before.label &&
+          off.href === before.href &&
+          off.target === null &&
+          off.rel === null,
+        `${width} typing it again hands the page back whole`,
+        `${off.name} / ${off.label} -> ${off.href} ${off.target} ${off.rel}`,
+      );
+    },
+  );
+}
+
 /* ── 1440, prefers-reduced-motion: reduce ────────────────────────────── */
 await run(
   'reduced-motion',
@@ -922,6 +1194,28 @@ await run(
           .slice(0, 6),
       };
     });
+    /* The wordmark's turn is the one piece of motion on this page tied to the
+       scroll rather than to a moment, so "no motion" has to mean it never
+       writes an angle at all - not that it writes a slower one. Scrolled and
+       asked again, because installing nothing and stopping after the first
+       frame look identical from the top of the page. */
+    const still = await page.evaluate(async () => {
+      const h1 = document.querySelector('.hero h1');
+      const seen = new Set();
+      for (const y of [0, 200, 600]) {
+        window.scrollTo({ top: y, behavior: 'instant' });
+        await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+        seen.add(getComputedStyle(h1).transform);
+      }
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      return { angles: seen.size, inline: h1.style.transform };
+    });
+    note(
+      still.angles === 1 && still.inline === '',
+      'the wordmark holds the static tilt at every scroll position',
+      `${still.angles} angles, inline "${still.inline}"`,
+    );
+
     note(m.q, 'reduced-motion is actually on', '');
     note(m.btnTransition === '0.001s', 'transitions clamped to 1ms', m.btnTransition);
     note(m.caretHidden, 'the typer caret stops blinking', '');
