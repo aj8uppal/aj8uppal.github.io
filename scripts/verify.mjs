@@ -1072,6 +1072,102 @@ for (const width of [430, 1440]) {
   );
 }
 
+/* ── the name swap ───────────────────────────────────────────────────────
+   Five letters replace a two-letter first line with a five-letter one, on the
+   one element on the page that is turned in three dimensions and sized off the
+   viewport. The failure it is worth checking for is geometric: a longer name
+   reaching an edge the short one never did, or the turn coming off the line
+   while its text is being rewritten. Then back, exactly, because an egg that
+   does not put the page down is a bug with a bow on it. */
+for (const width of [390, 430, 1440]) {
+  const phone = width < 700;
+  await run(
+    `name swap ${width}`,
+    {
+      viewport: { width, height: phone ? 932 : 900 },
+      deviceScaleFactor: 2,
+      isMobile: phone,
+      hasTouch: phone,
+    },
+    async (page) => {
+      await settle(page);
+
+      const read = () =>
+        page.evaluate(() => {
+          const h1 = document.querySelector('.hero h1');
+          const cta = document.querySelector('.hero__btns .btn');
+          /* The ink, not the box: the h1 is a full-width block whose own edges
+             say nothing about how far the letters reach. */
+          const ink = (el) => {
+            const r = document.createRange();
+            r.selectNodeContents(el);
+            const b = r.getBoundingClientRect();
+            r.detach();
+            return +b.right.toFixed(1);
+          };
+          return {
+            name: h1.querySelector('span:first-child').textContent,
+            out: h1.querySelector('.out').textContent,
+            label: cta.textContent,
+            href: cta.getAttribute('href'),
+            target: cta.getAttribute('target'),
+            rel: cta.getAttribute('rel'),
+            tilt: getComputedStyle(h1).transform,
+            outTilt: getComputedStyle(h1.querySelector('.out')).transform,
+            reach: Math.max(
+              ink(h1.querySelector('span:first-child')),
+              ink(h1.querySelector('.out')),
+            ),
+            docW: document.documentElement.scrollWidth,
+            vw: document.documentElement.clientWidth,
+            h: Math.round(h1.getBoundingClientRect().height),
+          };
+        });
+
+      const before = await read();
+      await page.keyboard.type('sonia');
+      await page.waitForTimeout(120);
+      const on = await read();
+      await page.keyboard.type('sonia');
+      await page.waitForTimeout(120);
+      const off = await read();
+
+      note(
+        on.name === 'Sonia' && on.out === before.out,
+        `${width} five letters and the wordmark reads Sonia Uppal`,
+        `${on.name} ${on.out}`,
+      );
+      note(
+        on.label === 'Sonia’s LinkedIn' &&
+          on.href === 'https://www.linkedin.com/in/soniau/' &&
+          on.target === '_blank' &&
+          (on.rel ?? '').includes('noopener'),
+        `${width} and the one action goes to her profile`,
+        `${on.label} -> ${on.href} ${on.target} ${on.rel}`,
+      );
+      note(
+        on.tilt === before.tilt && on.outTilt === before.outTilt && on.h === before.h,
+        `${width} the turn and the line box are the same as before it`,
+        `${on.tilt.slice(0, 40)} / ${on.h}px vs ${before.h}px`,
+      );
+      note(
+        on.reach <= on.vw && on.docW <= on.vw,
+        `${width} the longer name stays inside the viewport`,
+        `ink ${on.reach}, document ${on.docW}, viewport ${on.vw}`,
+      );
+      note(
+        off.name === before.name &&
+          off.label === before.label &&
+          off.href === before.href &&
+          off.target === null &&
+          off.rel === null,
+        `${width} typing it again hands the page back whole`,
+        `${off.name} / ${off.label} -> ${off.href} ${off.target} ${off.rel}`,
+      );
+    },
+  );
+}
+
 /* ── 1440, prefers-reduced-motion: reduce ────────────────────────────── */
 await run(
   'reduced-motion',
