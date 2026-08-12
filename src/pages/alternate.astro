@@ -1,0 +1,642 @@
+---
+/**
+ * The scroll narrative, served at /alternate.
+ *
+ * Same facts as the index, told as a sequence rather than as a document: black
+ * and near-white full-bleed grounds, three pinned stages, and one product
+ * walked through frame by frame. A second reading of the same site, not a
+ * replacement - the index is untouched and this route adds itself beside it.
+ *
+ * Every string comes off src/data/content.ts. Nothing is written here.
+ *
+ * It loads src/styles/apple.css and not global.css - the two are different
+ * designs, and side-b.astro still runs the section components on the old one.
+ */
+import { Image } from 'astro:assets';
+import AutoTyper from '../components/react/AutoTyper';
+import DeviationFrame from '../components/react/DeviationFrame';
+import GameFrame from '../components/react/GameFrame';
+import '../styles/apple.css';
+import '../styles/ports.css';
+import {
+  about,
+  emberRegions,
+  contact,
+  cover,
+  education,
+  elderwood,
+  ember,
+  hidamari,
+  playground,
+  roles,
+  saltline,
+  rendezvous,
+  saltlineArc,
+  site,
+  skills,
+} from '../data/content';
+import { asset, sources } from '../lib/images';
+
+const nav = [
+  { id: 'about', name: 'About' },
+  { id: 'work', name: 'Experience' },
+  { id: 'building', name: 'Projects' },
+  { id: 'playground', name: 'Playground' },
+  { id: 'skills', name: 'Skills' },
+  { id: 'contact', name: 'Contact' },
+];
+
+/* saltline's six captures are one place at six times of day, which is the one
+   thing on this page that is already a sequence. It gets the pinned walk. */
+const arc = saltlineArc.map((f) => ({
+  img: asset(`saltline-arc-${f.key}`),
+  time: f.time,
+  light: f.light,
+  alt: f.alt,
+  read: `${f.speed} · ${f.rel} off the wind · VMG ${f.vmg}`,
+}));
+
+/* Ember Wilds is seven regions, and which one you are looking at is a choice
+   rather than a position in a sequence - so it gets tabs, not a pin.
+
+   Three of the seven keys are shorter than their file names, so the mapping is
+   explicit rather than derived. Same table Projects.astro keeps. */
+const emberAsset: Record<string, string> = {
+  hearthvale: 'ember-region-hearthvale',
+  fallowmere: 'ember-region-fallowmere',
+  greenmarch: 'ember-region-greenmarch',
+  fenmarch: 'ember-region-fenmarch',
+  ashen: 'ember-region-ashen-waste',
+  greywall: 'ember-region-greywall-peaks',
+  plateau: 'ember-region-black-plateau',
+};
+
+const regions = emberRegions.map((r) => ({ ...r, img: asset(emberAsset[r.key] ?? '') }));
+
+/* The other two get a card each, led by their own spread capture. */
+const others = [
+  { p: hidamari, img: asset('hidamari-spread-canopy'), href: undefined },
+  { p: elderwood, img: asset('elderwood-default'), href: undefined },
+];
+
+/* The two legacy ports take a poster as a full source set rather than an
+   ImageMetadata: they render their own <picture> behind the play button. Same
+   widths the other route uses. */
+const POSTER_W = [560, 860, 1200];
+const POSTER_S = '(min-width: 900px) 52vw, 92vw';
+const deviationPoster = await sources('legacy-deviation', POSTER_W, POSTER_S);
+const grinchPoster = await sources('legacy-grinchjump', POSTER_W, POSTER_S);
+
+const canonical = new URL('/alternate/', site.url).href;
+---
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{site.title} · {site.tagline}</title>
+    <meta name="description" content={site.description} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="noindex, follow" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={`${site.title} · ${site.tagline}`} />
+    <meta property="og:description" content={site.description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>
+      /* Reveals are hidden by CSS only once this has run, so a page without
+         JavaScript never hides something it then has no way to show. */
+      document.documentElement.classList.remove('no-js');
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="nav" id="site-nav" data-nav>
+      <div class="nav__in">
+        <a class="nav__brand" href="#top">AJ&nbsp;Uppal</a>
+        <nav class="nav__links" aria-label="Sections">
+          {nav.map((s) => <a href={`#${s.id}`}>{s.name}</a>)}
+        </nav>
+        <a class="btn btn--pill nav__cta" href={contact.resume}>Résumé</a>
+        <button
+          class="nav__toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="nav-sheet"
+          aria-label="Open menu"
+          data-nav-toggle
+        >
+          <span></span><span></span>
+        </button>
+      </div>
+      <div class="nav__sheet" id="nav-sheet" data-nav-sheet hidden>
+        {nav.map((s) => <a href={`#${s.id}`}>{s.name}</a>)}
+        <a href={contact.resume}>Résumé, {contact.resumeYear}</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- ── Hero ───────────────────────────────────────────────────── -->
+      <header class="hero" id="top">
+        <canvas
+          class="hero__sky"
+          id="hero-canvas"
+          tabindex="0"
+          role="img"
+          aria-label="Soft patches of golden light drifting behind the name. Move the pointer or press the arrow keys and the light gathers where you point."
+        ></canvas>
+        <div class="hero__veil" aria-hidden="true"></div>
+
+        <p class="hero__where">{cover.kicker[0]}</p>
+
+        <div class="hero__in" data-hero-in>
+          <p class="hero__eyebrow">{cover.kicker[1]}</p>
+          <h1 class="hero__title" data-split>AJ Uppal</h1>
+          <p class="hero__lead">{cover.lead}</p>
+          <div class="hero__cta">
+            <a class="btn btn--fill" href="#building">Explore selected work</a>
+            <a class="btn btn--text" href={`mailto:${contact.email}`}>Email</a>
+          </div>
+        </div>
+
+        <div class="hero__scroll" aria-hidden="true" data-hero-hint>
+          <span>Scroll</span><i></i>
+        </div>
+      </header>
+
+      <!-- ── About ──────────────────────────────────────────────────── -->
+      <section class="band band--paper on-paper" id="about">
+        <div class="shell">
+          <div class="lit" data-lit-track>
+            <div class="lit__stage">
+              <p class="kicker">01 / About</p>
+              <h2 class="lit__t" data-lit>{about.statement}</h2>
+              {
+                /* The statement alone left most of a viewport empty. The four
+                  vitals are the shortest true answer to who is saying it, and
+                  they sit under it rather than in a section of their own. */
+              }
+              <dl class="vitals">
+                {
+                  cover.strip.map((c) => (
+                    <div>
+                      <dt>{c.dt}</dt>
+                      <dd>
+                        {c.dd}
+                        <span>{c.sub}</span>
+                      </dd>
+                    </div>
+                  ))
+                }
+              </dl>
+            </div>
+          </div>
+
+          <div class="head" data-reveal>
+            {about.prose.map((p) => <p>{p}</p>)}
+            <p>
+              {about.sim[0]}<a class="btn--text" href={saltline.href} target="_blank" rel="noopener"
+                >{about.sim[1]}</a
+              >{about.sim[2]}
+            </p>
+          </div>
+
+          <dl class="spec-list">
+            {
+              about.notes.map((note) => (
+                <div class="spec" data-reveal>
+                  <dt>{note.k}</dt>
+                  <dd>{note.v}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+      </section>
+
+      <!-- ── Experience ─────────────────────────────────────────────── -->
+      <section class="band band--paper-2 on-paper" id="work">
+        <div class="rail" data-rail-track>
+          <div class="rail__stage">
+            <div class="rail__head">
+              <p class="kicker">02 / Experience</p>
+              <h2 style="font-size: var(--t-h1); letter-spacing: -0.038em;">
+                Eight roles,<br />one through-line
+              </h2>
+              <div class="rail__bar" aria-hidden="true"><span data-rail-bar></span></div>
+            </div>
+
+            <ol class="rail__list" data-rail>
+              {
+                roles.map((r) => (
+                  <li class="card">
+                    <p class="card__when">{r.when}</p>
+                    <h3>{r.org}</h3>
+                    <p class="card__stack">
+                      {r.title}
+                      {r.where && ` · ${r.where}`}
+                    </p>
+                    {r.body && <p class="card__body">{r.body}</p>}
+                    {r.stack && <p class="card__when">{r.stack}</p>}
+                  </li>
+                ))
+              }
+            </ol>
+          </div>
+        </div>
+
+        <div class="shell">
+          <div class="head" data-reveal style="margin-block: clamp(48px, 6vw, 90px) 0;">
+            <p class="kicker">Education · {education.when}</p>
+            <h2 style="font-size: var(--t-h2);">{education.school}</h2>
+            <p>{education.note}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── saltline, walked through ───────────────────────────────── -->
+      <section class="band band--ink" id="building" style="padding-block: 0;">
+        <div class="proj" data-proj-track>
+          <div class="proj__stage">
+            <div class="proj__copy">
+              <p class="kicker">03 / Projects</p>
+              <h2 class="proj__name">{saltline.name}</h2>
+              <div class="proj__caps">
+                {
+                  arc.map((f, i) => (
+                    <p class:list={['proj__cap', i === 0 && 'on']} data-proj-cap={i}>
+                      <b>{f.time}</b> · {f.light}. {f.read}
+                    </p>
+                  ))
+                }
+              </div>
+              <p class="proj__meta">{saltline.skim.role}</p>
+              <a class="btn btn--fill" href={saltline.href} target="_blank" rel="noopener">
+                Play saltline
+              </a>
+            </div>
+
+            <div>
+              <div class="proj__frame">
+                {
+                  arc.map((f, i) => (
+                    <Image
+                      class:list={['proj__shot', i === 0 && 'on']}
+                      data-proj-shot={i}
+                      src={f.img}
+                      alt={f.alt}
+                      widths={[720, 1080, 1440]}
+                      sizes="(min-width: 1080px) 640px, 92vw"
+                      loading="eager"
+                      decoding={i === 0 ? 'sync' : 'async'}
+                    />
+                  ))
+                }
+              </div>
+              {
+                /* Real controls, not decoration. Each one moves the page to the
+                  scroll offset that produces its frame, so scroll position
+                  stays the only state the scene has. */
+              }
+              <div class="proj__controls">
+                <label class="proj__scrub">
+                  <span class="vh">Time of day</span>
+                  <input
+                    type="range"
+                    min="0"
+                    max={arc.length - 1}
+                    step="1"
+                    value="0"
+                    data-proj-range
+                    list="saltline-times"
+                  />
+                </label>
+                <datalist id="saltline-times">
+                  {arc.map((f, i) => <option value={i} label={f.time} />)}
+                </datalist>
+                <ol class="proj__ticks">
+                  {
+                    arc.map((f, i) => (
+                      <li>
+                        <button
+                          type="button"
+                          class:list={[i === 0 && 'on']}
+                          data-proj-tick={i}
+                          aria-current={i === 0 ? 'true' : 'false'}
+                        >
+                          <span class="vh">Show </span>
+                          {f.time}
+                        </button>
+                      </li>
+                    ))
+                  }
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Ember Wilds, seven regions ─────────────────────────────── -->
+      <section class="band band--ink">
+        <div class="shell">
+          <div class="head head--mid" data-reveal>
+            <h2>{ember.name}</h2>
+            <p>{ember.sub}</p>
+          </div>
+
+          <div class="regions" data-reveal>
+            <div class="regions__tabs" role="tablist" aria-label="Ember Wilds regions">
+              {
+                regions.map((r, i) => (
+                  <button
+                    type="button"
+                    role="tab"
+                    id={`rt-${r.key}`}
+                    aria-controls={`rp-${r.key}`}
+                    aria-selected={i === 0 ? 'true' : 'false'}
+                    tabindex={i === 0 ? 0 : -1}
+                    class:list={[i === 0 && 'on']}
+                    data-region-tab={i}
+                  >
+                    {r.tab}
+                  </button>
+                ))
+              }
+            </div>
+
+            <div class="regions__stage">
+              {
+                regions.map((r, i) => (
+                  <div
+                    class:list={['regions__panel', i === 0 && 'on']}
+                    role="tabpanel"
+                    id={`rp-${r.key}`}
+                    aria-labelledby={`rt-${r.key}`}
+                    hidden={i !== 0}
+                    data-region-panel={i}
+                  >
+                    <Image
+                      src={r.img}
+                      alt={r.alt}
+                      widths={[560, 860, 1200]}
+                      sizes="(min-width: 900px) 62vw, 92vw"
+                      loading={i === 0 ? 'eager' : 'lazy'}
+                    />
+                    <div class="regions__note">
+                      <dl>
+                        {r.readout.map(([k, v]) => (
+                          <div>
+                            <dt>{k}</dt>
+                            <dd>{v}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                      <p>{r.note}</p>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
+          <p class="regions__proof" data-reveal>{ember.skim.proof}</p>
+        </div>
+      </section>
+
+      <!-- ── The other two ──────────────────────────────────────────── -->
+      <section class="band band--ink">
+        <div class="shell">
+          <div class="head head--mid" data-reveal>
+            <h2>Two more,<br />in various states of done.</h2>
+          </div>
+
+          <div class="proj-grid">
+            {
+              others.map(({ p, img, href }) => (
+                <article class="tile" data-reveal>
+                  <Image
+                    class="tile__shot"
+                    src={img}
+                    alt={'spread' in p ? p.spread.s : p.sub}
+                    widths={[560, 860, 1200]}
+                    sizes="(min-width: 900px) 48vw, 92vw"
+                    loading="lazy"
+                  />
+                  <div class="tile__body">
+                    <h3>{p.name}</h3>
+                    <p class="tile__sub">{p.sub}</p>
+                    <p class="tile__what">{p.prose[0]}</p>
+                    <dl class="tile__plate">
+                      {p.plate.slice(0, 3).map(([k, v]) => (
+                        <div>
+                          <dt>{k}</dt>
+                          <dd>{v}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    {href && (
+                      <a class="btn btn--text" href={href} target="_blank" rel="noopener">
+                        Open {p.name}
+                      </a>
+                    )}
+                  </div>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Playground ─────────────────────────────────────────────── -->
+      <section class="band band--paper-2 on-paper" id="playground">
+        <div class="shell">
+          <div class="head head--mid" data-reveal>
+            <p class="kicker">04 / Playground</p>
+            <h2>{playground.statement}</h2>
+            {playground.prose.map((p) => <p>{p}</p>)}
+          </div>
+
+          {
+            /* The same three islands the other route runs. They are real ports
+              rather than screenshots - the typewriter types, the histogram
+              samples, the game takes the keyboard - and rebuilding them here
+              would only be a second copy to keep true. */
+          }
+          <div class="labs">
+            <article class="lab2" data-reveal>
+              <div class="lab2__head">
+                <p class="lab2__meta">
+                  {playground.items[0]?.statusLabel} · {playground.items[0]?.yr} ·{' '}
+                  {playground.items[0]?.k}
+                </p>
+                <h3>{playground.items[0]?.name}</h3>
+                <p>{playground.items[0]?.what}</p>
+              </div>
+              <AutoTyper client:visible={{ rootMargin: '600px' }} />
+            </article>
+
+            <article class="lab2" data-reveal>
+              <div class="lab2__head">
+                <p class="lab2__meta">
+                  {playground.items[1]?.statusLabel} · {playground.items[1]?.yr} ·{' '}
+                  {playground.items[1]?.k}
+                </p>
+                <h3>{playground.items[1]?.name}</h3>
+                <p>{playground.items[1]?.what}</p>
+              </div>
+              <DeviationFrame
+                client:visible={{ rootMargin: '600px' }}
+                src="/deviation.html?reps=1000&mean=-4&stdev=2&reps2=1000&mean2=6&stdev2=3"
+                href="/deviation.html"
+                title="deviation.html"
+                poster={deviationPoster}
+                posterAlt="The deviation.html chart at this seed: two overlapping bell curves of a thousand samples each, a dark green one centred near -4 and a pale green one centred near 6, over a table holding the six numbers that made them."
+                note="The 2015 file itself, unmodified, seeded from its query string"
+              />
+            </article>
+
+            <article class="lab2 lab2--wide" data-reveal>
+              <div class="lab2__head">
+                <p class="lab2__meta">
+                  {playground.items[2]?.statusLabel} · {playground.items[2]?.yr} ·{' '}
+                  {playground.items[2]?.k}
+                </p>
+                <h3>{playground.items[2]?.name}</h3>
+                <p>{playground.items[2]?.what}</p>
+                <ul class="keys">
+                  <li><kbd>&larr;</kbd><kbd>&rarr;</kbd> Steer</li>
+                  <li><kbd>P</kbd> Pause</li>
+                  <li><kbd>Esc</kbd> Exit</li>
+                  <li><kbd>R</kbd> Restart</li>
+                </ul>
+              </div>
+              <GameFrame
+                client:visible={{ rootMargin: '600px' }}
+                src="/grinchjump.html"
+                title="GrinchJump"
+                poster={grinchPoster}
+                posterAlt="GrinchJump running in a browser: a low-poly figure on a stack of green platforms against a pale sky, score counter in the corner."
+                note="Vendored three.js r70, served from its original URL"
+              />
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Rendezvous ─────────────────────────────────────────────── -->
+      <section class="band band--paper on-paper">
+        <div class="shell">
+          <div class="head head--mid" data-reveal>
+            <p class="kicker">Nothing left to run · {rendezvous.yr}</p>
+            <h2>{rendezvous.name}</h2>
+            <p>{rendezvous.what}</p>
+            <p class="rdv__stack">{rendezvous.k}</p>
+          </div>
+
+          <figure class="rdv__lead" data-reveal>
+            <Image
+              src={asset(rendezvous.lead.asset)}
+              alt={rendezvous.lead.alt}
+              widths={[720, 1080, 1440]}
+              sizes="(min-width: 1200px) 1100px, 92vw"
+              loading="lazy"
+            />
+            <figcaption>{rendezvous.lead.cap}</figcaption>
+          </figure>
+
+          {
+            rendezvous.pairs.map((pair) => (
+              <figure class="rdv__pair" data-reveal>
+                <div>
+                  {pair.shots.map((shot) => (
+                    <div class="rdv__shot">
+                      <span class="rdv__tag">{shot.label}</span>
+                      <Image
+                        src={asset(shot.asset)}
+                        alt={shot.alt}
+                        widths={[520, 780, 1040]}
+                        sizes="(min-width: 900px) 46vw, 92vw"
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <figcaption>{pair.cap}</figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- ── Skills ─────────────────────────────────────────────────── -->
+      <section class="band band--paper on-paper" id="skills">
+        <div class="shell">
+          <div class="head head--mid" data-reveal>
+            <p class="kicker">05 / Skills</p>
+            <h2>What I reach for.</h2>
+          </div>
+          <dl>
+            {
+              skills.map((g) => (
+                <div class="spec" data-reveal>
+                  <dt>{g.group}</dt>
+                  <dd>
+                    <ul class="chips">
+                      {g.items.map((s) => (
+                        <li>{s}</li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+      </section>
+
+      <!-- ── Contact ────────────────────────────────────────────────── -->
+      <section class="band band--ink contact" id="contact">
+        <div class="shell">
+          <p class="kicker">06 / Contact</p>
+          <h2 data-reveal>Let&rsquo;s build<br />something.</h2>
+          <a class="contact__mail" data-reveal href={`mailto:${contact.email}`}>{contact.email}</a>
+          <div class="contact__links" data-reveal>
+            <a class="btn btn--fill" href={contact.resume}>Résumé, {contact.resumeYear}</a>
+            <a class="btn btn--text" href={contact.github} target="_blank" rel="noopener">GitHub</a>
+            <a class="btn btn--text" href={contact.linkedin} target="_blank" rel="noopener">
+              LinkedIn
+            </a>
+            <a class="btn btn--text" href={contact.stackoverflow} target="_blank" rel="noopener">
+              Stack Overflow
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="shell">
+        <div class="foot__bar">
+          <p>Copyright © {new Date().getFullYear()} A.J. Uppal. All rights reserved.</p>
+          <ul class="foot__links">
+            <li><a href="#top">Back to top</a></li>
+            <li><a href="/">The main site</a></li>
+            <li><a href={contact.resume}>Résumé</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      import '../scripts/page';
+    </script>
+  </body>
+</html>

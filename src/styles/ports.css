@@ -1,0 +1,745 @@
+/* ==========================================================================
+   Styles for the three shared React ports: AutoTyper, DeviationFrame and
+   GameFrame.
+
+   Lifted out of global.css because both designs render the same three
+   components, and the scroll narrative loads apple.css instead. Leaving
+   them where they were meant one route rendered the islands unstyled.
+   Colours come from tokens, so each stylesheet dresses them in its own.
+   ========================================================================== */
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The scrub keeps the whole row and the hand-back wraps under it. Sharing a
+   line, the long label and the longest phase word run out of card at the width
+   this figure actually gets, and the thing that then moves is the caption,
+   below the control, not the control under the reader's cursor. */
+.asm__scrub .range {
+  flex: 1 1 100%;
+}
+
+/* A labelled slider with its value read back beside the label. The saltline
+   clock is the only one left now that the deviation card runs the real 2015
+   app instead of a recreation of it. */
+.range {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--on-ink-2);
+  font: 680 0.62rem/1.3 var(--mono);
+}
+
+/* Wraps rather than runs off. The state names are as long as they need to be
+   to be honest about the state, and at 390 the longest of them plus its label
+   is wider than the card it sits in. */
+.range span {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.range output {
+  color: var(--sand);
+}
+
+/* Drawn rather than native. `accent-color` gave a 14px handle on a 4px line,
+   which is a control you have to aim at - and on the two touch platforms the
+   whole thing was under the 44px the rest of the page keeps to. The input's
+   own box stays 36px so the hit area is the full strip and not the handle.
+
+   The track carries how far through the day you are as well as where the
+   handle is, so the filled half is drawn from the value. WebKit has no
+   ::-moz-range-progress, so both engines take the same gradient and the value
+   arrives as --at from the component. */
+.range input {
+  width: 100%;
+  height: 36px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+}
+
+.range input::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: linear-gradient(
+    to right,
+    var(--sand) 0 var(--at, 0%),
+    var(--line-dark-2) var(--at, 0%) 100%
+  );
+}
+
+.range input::-moz-range-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: linear-gradient(
+    to right,
+    var(--sand) 0 var(--at, 0%),
+    var(--line-dark-2) var(--at, 0%) 100%
+  );
+}
+
+/* The ring is the card's own ground, so the handle reads as sitting on the
+   track rather than being threaded onto it. */
+.range input::-webkit-slider-thumb {
+  width: 22px;
+  height: 22px;
+  margin-top: -8px;
+  border: 3px solid var(--ink-2);
+  border-radius: 50%;
+  background: var(--sand);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 45%);
+  appearance: none;
+  transition: transform var(--dur-1) var(--ease);
+}
+
+.range input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--ink-2);
+  border-radius: 50%;
+  background: var(--sand);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 45%);
+  transition: transform var(--dur-1) var(--ease);
+}
+
+.range input:hover::-webkit-slider-thumb,
+.range input:active::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
+.range input:hover::-moz-range-thumb,
+.range input:active::-moz-range-thumb {
+  transform: scale(1.12);
+}
+
+/* The focus ring goes on the handle, not on the 36px strip: the strip is
+   mostly empty and a rectangle around it does not say what has focus. */
+.range input:focus-visible {
+  outline: 0;
+}
+
+.range input:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--sand-soft);
+}
+
+.range input:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px var(--sand-soft);
+}
+
+.arc__scrub .range {
+  color: var(--on-ink-3);
+}
+
+.filter .choice {
+  min-height: 34px;
+  padding: 0.4rem 0.62rem;
+  border-color: var(--line-light-2);
+  color: var(--on-paper-2);
+  font-size: 0.63rem;
+}
+
+.filter .choice:hover,
+.filter .choice[aria-pressed='true'] {
+  color: var(--on-ink);
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.lab--wide .playframe {
+  aspect-ratio: 16 / 9;
+}
+
+.stage {
+  flex: 1;
+  color: var(--on-shade);
+  padding: clamp(0.8rem, 1.6vw, 1.1rem);
+  background: var(--screen);
+}
+
+.stage__label {
+  display: block;
+  margin-bottom: 0.6rem;
+  color: var(--on-ink-4);
+  font: 700 0.61rem/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.stage--typer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.term {
+  min-height: 104px;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 1.05rem;
+  border: 1px solid color-mix(in srgb, var(--sand) 28%, transparent);
+  border-radius: var(--r-sm);
+  color: var(--on-shade);
+  background: var(--screen);
+  font: 760 clamp(0.96rem, 1.6vw, 1.24rem) / 1.45 var(--mono);
+}
+
+.term__p {
+  color: var(--sand);
+}
+
+.term__out {
+  min-width: 0;
+}
+
+.caret {
+  flex: 0 0 auto;
+  width: 0.55em;
+  height: 1.35em;
+  border-right: 2px solid var(--sand);
+  animation: caret 0.8s steps(1) infinite;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.choice {
+  min-height: 40px;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--r-pill);
+  color: var(--on-ink-2);
+  background: transparent;
+  cursor: pointer;
+  font: 700 0.66rem/1 var(--mono);
+}
+
+.choice[aria-pressed='true'],
+.choice:hover {
+  color: var(--on-accent);
+  background: var(--sand);
+  border-color: var(--sand);
+}
+
+.choice:disabled {
+  border-style: dashed;
+  color: var(--on-ink-4);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+/* The two arguments the 2019 library takes and the port used to hard-code:
+   the string, and the milliseconds between characters. They are controls
+   rather than decoration, so they get the page's control sizes - 40px of
+   press, the drawn slider the saltline clock uses, and a real submit. */
+.typer {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 0.9rem;
+}
+
+.typer__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem 0.5rem;
+}
+
+.typer__lab {
+  grid-column: 1 / -1;
+  color: var(--on-ink-3);
+  font: 700 0.61rem/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.typer__in {
+  min-width: 0;
+  min-height: 40px;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-sm);
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--on-shade) 5%, transparent);
+  font: 680 0.78rem/1.3 var(--mono);
+}
+
+.typer__in::placeholder {
+  color: var(--on-ink-4);
+}
+
+.typer__in:hover {
+  border-color: color-mix(in srgb, var(--sand) 45%, transparent);
+}
+
+/* The fold's press is the same offer one size up, so it wears the same accent
+   - by name rather than by taking the modifier, which is how the run button
+   stays the only `.choice--go` in the card. */
+.choice--go,
+.typer__go {
+  border-color: var(--sand);
+  color: var(--on-accent);
+  background: var(--sand);
+  font-weight: 800;
+}
+
+.choice--go:hover,
+.typer__go:hover {
+  background: var(--sand-soft);
+  border-color: var(--sand-soft);
+}
+
+/* The handle's ring is the card's own ground, and this card is ink rather
+   than the ink-2 the clock sits on. */
+.typer__rate {
+  color: var(--on-ink-3);
+}
+
+.typer__rate input::-webkit-slider-thumb {
+  border-color: var(--ink);
+}
+
+.typer__rate input::-moz-range-thumb {
+  border-color: var(--ink);
+}
+
+.typer .choices {
+  margin-top: 0;
+}
+
+/* The press that unfolds the controls. Same rule as the deviation card's: in
+   the document at every width, drawn only where the controls start folded, and
+   gone once they are open - wide, it would be a button for something already on
+   screen. The base has to stand above the query, or `display: none` wins the
+   cascade on source order and the button is never drawn at all. */
+.typer__go {
+  display: none;
+  align-self: start;
+  align-items: center;
+  margin-top: 0.9rem;
+}
+
+.stage--typer[data-fold] .typer__go {
+  display: inline-flex;
+}
+
+.stage--dev {
+  display: grid;
+  align-content: center;
+  gap: 0.95rem;
+}
+
+/* ── The pan window ──────────────────────────────────────────────────────
+   Below 765 the frame stops shrinking and scrolls sideways instead, and until
+   now nothing said so: the reader got half a chart and a hairline scrollbar to
+   infer the rest from. Two things fix that, and neither touches the 2015 file.
+
+   The fades are drawn on this wrapper rather than on the scroller, because a
+   box positioned inside a scroller travels with the content and an edge that
+   scrolls away is not an edge. Each side appears only when there is really
+   more chart behind it, which the component reads off the scroll position: at
+   rest the left edge is the chart's own left edge and keeps its axis labels,
+   which are the smallest thing in the picture and the first thing a decorative
+   fade would eat. `overflow: hidden` is here so they take the frame's corners
+   instead of squaring them off. */
+.devpan {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-sm);
+}
+
+.devpan::before,
+.devpan::after {
+  content: '';
+  position: absolute;
+  inset-block: 1px;
+  width: 2.75rem;
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease);
+  pointer-events: none;
+}
+
+.devpan::before {
+  left: 1px;
+  background: linear-gradient(to right, var(--screen), transparent);
+}
+
+.devpan::after {
+  right: 1px;
+  background: linear-gradient(to left, var(--screen), transparent);
+}
+
+.devpan[data-l]::before,
+.devpan[data-r]::after {
+  opacity: 1;
+}
+
+/* The press that boots the chart, in the document at every width and drawn at
+   none of them until the media query above says the frame is waiting to be
+   asked. Wide, the frame starts itself and this would be a button for
+   something that already happened. */
+.devgo {
+  position: absolute;
+  z-index: 2;
+  right: 0.55rem;
+  bottom: 0.55rem;
+  display: none;
+  align-items: center;
+  min-height: 40px;
+  padding: 0.5rem 0.85rem;
+  border: 0;
+  border-radius: var(--r-pill);
+  color: var(--on-accent);
+  background: var(--sand);
+  font: 800 0.66rem/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.devgo:hover {
+  background: var(--sand-soft);
+}
+
+/* The instruction, and it names the payoff rather than the gesture, because
+   what a reader needs to know is not that the box moves but that a second
+   distribution is the reason to move it. Hidden wherever the whole chart is
+   already on screen: at those widths it would be telling the reader to swipe
+   at something that does not go anywhere.
+
+   It stands on the stage's own dark screen rather than the section's sand, so
+   it takes the ink family the label above it takes. `--muted` here would be
+   the sand ground's quiet step, which is a dark grey on a dark box. */
+.devpan__cue {
+  display: none;
+  margin: 0;
+  color: var(--on-ink-3);
+  font: 750 var(--fs-micro) / 1.5 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* A window onto a document that is a fixed size, not a box that document
+   responds to. deviation.html hardcodes a 1280px chart canvas, so the frame is
+   laid out at the width the file wants and scaled from the outside.
+
+   The height is the scale restated, and it is stated here rather than inline
+   because the scale is measured and measuring needs JavaScript. The component
+   cannot know the card's width until it hydrates, so anything it computes
+   arrives late, and a box two thirds down the page that gains 25px after first
+   paint moves every anchor below it - which is what was landing the nav's
+   scroll-spy on the wrong section. The ratio is the document's own 1330x595
+   and the floor is the half-scale clamp the component stops shrinking at, so
+   CSS reaches the same number at first paint and JavaScript changes nothing.
+
+   Two regimes, and each is exact rather than close. While the frame is being
+   shrunk to fit, its height is its width through the document's own 1330x595,
+   which is what `aspect-ratio` says. Once the shrinking stops at half scale and
+   the card scrolls sideways instead, the height stops with it at half of 595,
+   the same number at every width below. Stating the floor as `min-height`
+   instead would be shorter and wrong: a ratio and a minimum height are also a
+   minimum width, and a grid item honours it, so the card demanded 666px on a
+   390 phone. */
+.devframe {
+  aspect-ratio: 1330 / 595;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid color-mix(in srgb, var(--sand) 28%, transparent);
+  border-radius: var(--r-sm);
+  background: var(--screen);
+  overscroll-behavior-x: contain;
+}
+
+/* The same crossing, said once. This is exactly where the shrinking stops
+     and the sideways scroll starts, so it is exactly where the instruction
+     becomes true. */
+.devpan__cue {
+  display: block;
+}
+
+/* Which is also exactly where half a chart at half scale stops being the
+     better offer than the whole of one. Below the crossing the poster is the
+     same seed drawn end to end at the card's width, so the box takes the
+     document's own ratio again and there is nothing to swipe at and nothing
+     to say about swiping. The live file is one press away, and pressing it is
+     what puts the box back to the height it scrolls at. */
+.stage--dev:not([data-live]) .devframe {
+  aspect-ratio: 1330 / 595;
+  height: auto;
+  overflow-x: hidden;
+}
+
+.stage--dev:not([data-live]) .devpan__cue {
+  display: none;
+}
+
+.devgo {
+  display: inline-flex;
+}
+
+/* The drawn width comes from the component, but the floor is the card. With no
+   script the scale never leaves its minimum, so the box would be 665 inside a
+   715 card and the poster would sit against a 50px gutter. Wherever the
+   component's own number is the larger one - which is every width a live frame
+   is scaled at - this does nothing. */
+.devframe__fit {
+  min-width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* The poster is the same document at the same seed, so it fills the same box
+   the frame will, and scrolls sideways on a phone for the same reason. `contain`
+   rather than `cover`: the axis labels are the smallest thing in the picture and
+   cropping them is how a chart stops being one. It is a still of a page, not a
+   photograph, so it gets no radius of its own - the scroller around it already
+   has the corners. */
+.devframe__fit img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 0 0;
+}
+
+/* The width and height attributes are the size the document wants and the
+   component owns those numbers. The page-wide `max-width: 100%` on frames
+   would otherwise squeeze this one back down to the card, which is exactly
+   the thing the 2015 file cannot survive. */
+.devframe iframe {
+  display: block;
+  max-width: none;
+  border: 0;
+  transform-origin: 0 0;
+}
+
+/* GrinchJump boots on request rather than on sight. It is a real three.js
+   build, and a page that quietly starts a game nobody asked for is exactly
+   the kind of thing this archive exists to complain about. */
+.playframe {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--r-sm);
+  background: var(--screen);
+}
+
+.playframe img,
+.playframe iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+
+.playframe img {
+  opacity: 0.4;
+}
+
+/* The game reads the keyboard off its own document, so which element holds the
+   caret is the difference between steering and scrolling the page. That has to
+   be visible, and the frame is the element that has it. */
+.playframe:focus-within {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* Steering by thumb, on a screen with no keyboard behind it. Overlaid on the
+   frame's own bottom corners rather than added below it, because a game's
+   controls belong on the game and because the card has no height to spare. */
+.playframe__thumbs {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  inset: auto 0 0;
+  justify-content: space-between;
+  padding: 0.7rem;
+  pointer-events: none;
+}
+
+.playframe__steer {
+  width: 58px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--on-shade) 45%, transparent);
+  border-radius: 50%;
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--shade) 55%, transparent);
+  font: 800 1.2rem/1 var(--mono);
+  cursor: pointer;
+  /* The buttons take the thumb; the rest of the frame keeps scrolling the page
+     under it, which is what stops a game two thirds down a phone being a trap. */
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+.playframe__steer:active {
+  color: var(--on-accent);
+  background: var(--sand);
+  border-color: var(--sand);
+}
+
+/* Stated on the frame, because a frozen game and a broken one look identical
+   and the reader who pressed pause is owed the difference. */
+.playframe__held {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 1rem;
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--shade) 58%, transparent);
+  text-align: center;
+}
+
+.playframe__held b {
+  font: 800 0.8rem/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.playframe__held span {
+  color: var(--on-ink-2);
+  font: 650 0.68rem/1.45 var(--mono);
+}
+
+.playframe__go {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 1rem;
+  border: 0;
+  color: var(--on-shade);
+  background: color-mix(in srgb, var(--shade) 38%, transparent);
+  cursor: pointer;
+  text-align: center;
+}
+
+.playframe__go b {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  color: var(--on-accent);
+  background: var(--sand);
+  font-size: 1.35rem;
+  transition: transform var(--dur-2) var(--ease);
+}
+
+.playframe__go:hover b {
+  transform: scale(1.08);
+}
+
+.playframe__go em {
+  font: 750 0.68rem/1.4 var(--mono);
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.playframe__go small {
+  color: var(--on-ink-3);
+  font: 650 0.64rem/1.4 var(--mono);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--line-dark);
+  color: var(--on-ink-2);
+  font: 680 0.68rem/1.35 var(--mono);
+}
+
+.toolbar__group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbar__link {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--r-pill);
+  text-decoration: none;
+  font-weight: 800;
+}
+
+/* Restart is a button sitting in a row of links, so it has to be told the
+   things a link gets for nothing. */
+button.toolbar__link {
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.toolbar__link kbd {
+  padding: 0.08rem 0.34rem;
+  border: 1px solid var(--line-dark-2);
+  border-radius: var(--r-xs);
+  font: inherit;
+  font-size: 0.92em;
+}
+
+.toolbar__link:hover {
+  color: var(--on-accent);
+  background: var(--sand);
+  border-color: var(--sand);
+}
+
+.toolbar__link:hover kbd {
+  border-color: color-mix(in srgb, var(--on-accent) 38%, transparent);
+}
+
+.stage {
+  padding: 0.8rem;
+}
+
+.term {
+  min-height: 126px;
+  padding: 0.9rem;
+}
+
+.hint,
+.caret {
+  display: none;
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
