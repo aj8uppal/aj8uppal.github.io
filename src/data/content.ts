@@ -86,8 +86,8 @@ export const sections = [
     n: '02',
     id: 'building',
     name: 'Projects',
-    desc: 'Four projects, in various states of done',
-    count: '4 entries',
+    desc: 'Six projects, in various states of done',
+    count: '6 entries',
   },
   { n: '03', id: 'work', name: 'Experience', desc: 'Eight jobs, reverse order', count: '8 rows' },
   {
@@ -114,6 +114,8 @@ export const places = {
   ember: { name: 'Ember Wilds', at: 'p-ember' },
   hidamari: { name: 'hidamari', at: 'p-hidamari' },
   elderwood: { name: 'Elderwood Vale', at: 'p-elderwood' },
+  blockhold: { name: 'Blockhold', at: 'p-blockhold' },
+  cubit: { name: 'Cubit', at: 'p-cubit' },
   notable: { name: 'Notable Health', at: 'r-notable' },
   harvest: { name: 'Harvest Fintech', at: 'r-harvest' },
   umassDev: { name: 'UMass Physics, software', at: 'r-umass-software' },
@@ -152,12 +154,12 @@ export const cover = {
   /* This used to name all four projects in a 57-word run-on, immediately above
      four cards that name themselves. What is left is the only thing the cards
      cannot say from inside one card: which half of them you can open. */
-  second: 'Two are live today. Two aren’t finished yet.',
+  second: 'Four are live today. Two aren’t finished yet.',
   strip: [
     { dt: 'Place', dd: 'Bay Area', sub: 'California' },
     { dt: 'Work', dd: 'Software engineer', sub: 'Notable Health, since Aug 2022' },
     { dt: 'Studied', dd: 'B.S. Computer Science', sub: 'B.S. Astrophysics' },
-    { dt: 'Building', dd: 'Four things', sub: 'two live, two not yet' },
+    { dt: 'Building', dd: 'Six things', sub: 'four live, two not yet' },
   ],
 } as const;
 
@@ -512,6 +514,88 @@ export const elderwood = {
     { key: 'coverage', tab: 'Coverage', cap: 'Placement overlay, showing tower reach.' },
     { key: 'stress', tab: 'Stress', cap: 'Stress burst; the tick rate holds.' },
   ],
+} as const;
+
+/* ── Blockhold ───────────────────────────────────────────────────────── */
+
+export const blockhold = {
+  name: 'Blockhold',
+  status: 'live' as Status,
+  href: 'https://aj8uppal.github.io/blockhold/',
+  sub: 'Voxel tower defense. Five maps, three heroes, road traps, a shard economy, an endless mode.',
+  skim: {
+    role: 'All of it: the voxel modeler, the fixed-step sim, five maps, the balance.',
+    hard: 'Shipping a finished game with no asset files. Every model is colored boxes placed in code; every sound is synthesized the moment it plays.',
+    proof: 'Playable right now: five maps, three difficulties, an endless mode with saved records.',
+  },
+  spread: {
+    n: 'Plate 05 / Blockhold',
+    t: 'The one that shipped',
+    s: 'A wave crashing into the soldier line on Greenhollow, the castle up the road.',
+  },
+  framesLede: 'Three battles, three climates.',
+  framesCue: 'Click a tab, or use the arrow keys',
+  prose: [
+    'Elderwood Vale, one row up, is a tower defense as an architecture argument. This is the one that shipped: five maps, four tower families with elite branches, road traps, a shard economy, three heroes taking real move orders, surge waves under a violet sky, and an endless mode with a per-map record to chase.',
+    'There is no asset file anywhere in it. Every model is colored voxel boxes placed in code, and every sound is synthesized by WebAudio the moment it plays. I built it this August, working with agents: one writing under direction, one reviewing adversarially. Six review rounds, sixty-three findings, all of them closed before launch.',
+  ],
+  plate: [
+    ['Status', 'Live, saves locally'],
+    ['Maps', 'Five, each with an endless mode'],
+    ['Towers', '4 families · 3 tiers · elite branches · shard ascensions'],
+    ['Heroes', 'Three, with A* move orders'],
+    ['Assets', 'None. Models are code, audio is synthesized'],
+    ['Sim', 'Fixed 60 Hz tick behind an accumulator'],
+    ['Review', 'Six adversarial rounds, 63 findings closed'],
+  ] as Array<[string, string]>,
+  figures: [
+    {
+      key: 'greenhollow',
+      tab: 'Greenhollow',
+      cap: 'A wave 8 push meeting the soldier line at the barracks choke.',
+    },
+    {
+      key: 'veiltide',
+      tab: 'Veiltide surge',
+      cap: 'Frostmere Pass under a surge: empowered waves, violet sky, gargoyles over the snow.',
+    },
+    {
+      key: 'crown',
+      tab: 'The finale',
+      cap: 'The Shattered Crown: Mistwalkers phasing between the void portals.',
+    },
+  ],
+} as const;
+
+/* ── Cubit ───────────────────────────────────────────────────────────── */
+
+export const cubit = {
+  name: 'Cubit',
+  status: 'live' as Status,
+  href: 'https://aj8uppal.github.io/cubit/',
+  sub: '2048, cubed: slide and merge inside a 3×3×3 cube, across six directions instead of four.',
+  skim: {
+    role: 'The whole file: engine, renderer, input, synthesized sound.',
+    hard: 'Making six directions feel obvious. Swipes are scored against how each axis actually projects on screen, so a swipe along a lattice edge does what it looks like.',
+    proof: 'One self-contained 553 KB HTML file, 62 tests.',
+  },
+  spread: {
+    n: 'Plate 06 / Cubit',
+    t: 'Twenty-seven cells, six exits',
+    s: 'Space held: the layers apart, the whole value rainbow readable at once.',
+  },
+  prose: [
+    'It’s 2048 with a third axis: twenty-seven cells, six slide directions, the same merge rule. The axis you can’t see is the one that kills you, so tiles blocking your view of other tiles go translucent, and holding Space spreads the layers apart to let you read the inside of the board.',
+    'Vanilla JS with a vendored three.js, bundled into a single HTML file you could attach to an email. The input got the most iteration: swipes are matched to the on-screen projection of all six directions, and on a phone you can lean the device a capped twelve degrees to peek around the cube, without changing what any swipe means.',
+  ],
+  plate: [
+    ['Status', 'Live, saves locally'],
+    ['Board', '3×3×3, six slide directions'],
+    ['Bundle', 'One HTML file, 553 KB, nothing external'],
+    ['Input', 'Swipes scored against screen-space axis projections'],
+    ['Tilt', 'Gyro peek, opt-in, capped at 12 degrees'],
+    ['Tests', '62, node --test'],
+  ] as Array<[string, string]>,
 } as const;
 
 /* ── Work ────────────────────────────────────────────────────────────── */

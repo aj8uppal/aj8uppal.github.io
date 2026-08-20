@@ -84,6 +84,14 @@ const MAP: Record<string, Source[]> = {
 
   'elderwood.proof': [{ cls: 'capture', shot: 'elderwood-default' }],
 
+  /* The battle is a capture off the live deployment; the counts - maps,
+     difficulties, endless - are what the game is configured to hold. */
+  'blockhold.proof': [{ cls: 'capture', shot: 'blockhold-lead-battle' }, { cls: 'config' }],
+
+  /* The file size is read off the built artifact; the test count off the
+     suite. Both are one person's machine, and say so. */
+  'cubit.proof': [{ cls: 'measurement' }, { cls: 'config' }],
+
   'notable.scale': [{ cls: 'resume', said: '2026' }],
   /* True, and nothing public says so. A résumé that does not carry a claim is
      not evidence against it, but it is not evidence for it either. */
