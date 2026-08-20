@@ -645,7 +645,7 @@ export const playground = {
      in this repository is dated 10 February 2015, so eleven years is a fact
      git will hand back to anyone who asks it. */
   statement: 'Eleven years of this, and the oldest ones still run.',
-  prose: ['Here are three of the oldest, running in the page. Go ahead.'],
+  prose: ['Here are three of the oldest, running in the page, and the newest, which wants a screen of its own. Go ahead.'],
   items: [
     {
       yr: 'c. 2019',
@@ -673,6 +673,15 @@ export const playground = {
       statusLabel: 'Repaired',
       what: 'Doodle Jump in three dimensions, built while I was learning three.js. Its keyboard library vanished along with a CDN, so the dependencies now live in the repo.',
       k: 'three.js r70 · vendored deps',
+    },
+    {
+      yr: '2026',
+      name: 'Blockhold',
+      href: '/blockhold/',
+      status: 'live' as Status,
+      statusLabel: 'Runs',
+      what: 'A voxel tower defense: five maps, three heroes, road traps, a shard economy, an endless mode. There is no asset file anywhere in it - every model is boxes placed in code, every sound is synthesized at play time. Built this August, pair-working with agents.',
+      k: 'three.js · TypeScript · PWA',
     },
   ],
 } as const;
