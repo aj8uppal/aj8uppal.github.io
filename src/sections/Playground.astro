@@ -137,6 +137,36 @@ const rzShots = [
   </div>
 
   {
+    /* The newest two invert the section's rule twice over: they are not
+      old, and they do not run inline. Full games want the whole screen,
+      the keyboard and a save file, so they get doors instead of windows.
+      Doors are all text, so their row splits evenly rather than in a
+      frame's favour. */
+  }
+  <div class="labs labs--doors">
+    {
+      playground.items.slice(3).map((it) => (
+        <article class="lab" data-reveal>
+          <div class="lab__head">
+            <span class="lab__date">{it.statusLabel}</span>
+            <h3>
+              {it.name}
+              <span class="era">{it.yr}</span>
+            </h3>
+            <p>{it.what}</p>
+            <p class="stack">{dots(it.k)}</p>
+            <p>
+              <a class="toolbar__link" href={it.href} target="_blank" rel="noopener">
+                Play it in its own tab <span aria-hidden="true">&rarr;</span>
+              </a>
+            </p>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  {
     /* Not a lab: nothing here runs, and there is nowhere to send a reader. It
       gets a block rather than a row anyway. It is the only thing in this
       section that was a product other people used, and the pair underneath is
