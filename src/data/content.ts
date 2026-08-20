@@ -645,7 +645,7 @@ export const playground = {
      in this repository is dated 10 February 2015, so eleven years is a fact
      git will hand back to anyone who asks it. */
   statement: 'Eleven years of this, and the oldest ones still run.',
-  prose: ['Here are three of the oldest, running in the page, and the newest, which wants a screen of its own. Go ahead.'],
+  prose: ['Three of the oldest run here. The two newest need screens of their own. Go ahead.'],
   items: [
     {
       yr: 'c. 2019',
@@ -680,8 +680,17 @@ export const playground = {
       href: '/blockhold/',
       status: 'live' as Status,
       statusLabel: 'Runs',
-      what: 'A voxel tower defense: five maps, three heroes, road traps, a shard economy, an endless mode. There is no asset file anywhere in it - every model is boxes placed in code, every sound is synthesized at play time. Built this August, pair-working with agents.',
+      what: 'A voxel tower defense: five maps, three heroes, road traps, a shard economy, an endless mode. There is no asset file anywhere in it - every model is boxes placed in code, every sound is synthesized at play time. I built it this August, working with agents.',
       k: 'three.js · TypeScript · PWA',
+    },
+    {
+      yr: '2026',
+      name: 'Cubit',
+      href: '/cubit/',
+      status: 'live' as Status,
+      statusLabel: 'Runs',
+      what: '2048, cubed: slide and merge tiles inside a 3x3x3 cube, across six directions instead of four. Vanilla JS with a vendored three.js, bundled into a single self-contained HTML file.',
+      k: 'Vanilla JS · three.js',
     },
   ],
 } as const;

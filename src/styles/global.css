@@ -3124,6 +3124,31 @@ summary,
   }
 }
 
+/* The doors row is all text: there is no frame to feed, so it splits evenly,
+   and it holds as a row long after the demos above have given theirs up. */
+.labs--doors {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.labs--doors .stack {
+  color: var(--muted);
+  font: 650 0.69rem/1.45 var(--mono);
+}
+
+/* The two descriptions differ in length; the links should not differ in
+   height. The head takes the card's full drop and hands the gap to the
+   space above its link. */
+.labs--doors .lab__head {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.labs--doors .lab__head p:last-child {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
 /* The break before the game. Two demos, then a rule, then the one thing on the
    page still in someone else's colours - so the rule is the section's heaviest
    and the strip states what changes. It is a grid item, spanning whatever the

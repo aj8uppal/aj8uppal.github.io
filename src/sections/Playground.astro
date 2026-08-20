@@ -134,24 +134,36 @@ const rzShots = [
         note="Vendored three.js r70, served from its original URL"
       />
     </article>
+  </div>
 
+  {
+    /* The newest two invert the section's rule twice over: they are not
+      old, and they do not run inline. Full games want the whole screen,
+      the keyboard and a save file, so they get doors instead of windows.
+      Doors are all text, so their row splits evenly rather than in a
+      frame's favour. */
+  }
+  <div class="labs labs--doors">
     {
-      /* The newest one inverts the section's rule twice: it is not old, and
-        it does not run inline. A full tower defense wants the whole screen,
-        the keyboard and a save file, so it gets a door instead of a window. */
+      playground.items.slice(3).map((it) => (
+        <article class="lab" data-reveal>
+          <div class="lab__head">
+            <span class="lab__date">{it.statusLabel}</span>
+            <h3>
+              {it.name}
+              <span class="era">{it.yr}</span>
+            </h3>
+            <p>{it.what}</p>
+            <p class="stack">{dots(it.k)}</p>
+            <p>
+              <a class="toolbar__link" href={it.href} target="_blank" rel="noopener">
+                Play it in its own tab <span aria-hidden="true">&rarr;</span>
+              </a>
+            </p>
+          </div>
+        </article>
+      ))
     }
-    <article class="lab" data-reveal>
-      <div class="lab__head">
-        <span class="lab__date">{playground.items[3]?.statusLabel}</span>
-        <h3>
-          {playground.items[3]?.name}<span class="era">{playground.items[3]?.yr}</span>
-        </h3>
-        <p>{playground.items[3]?.what}</p>
-        <p>
-          <a class="toolbar__link" href={playground.items[3]?.href}>Play it in its own tab &rarr;</a>
-        </p>
-      </div>
-    </article>
   </div>
 
   {
