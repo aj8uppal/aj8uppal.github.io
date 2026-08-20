@@ -18,15 +18,15 @@ const OUT = process.argv[3] ?? '/tmp/p6shots';
 
 /* The captain's stated reason for preferring this direction was less to
    scroll through. It is a number, so it gets asserted like one. */
-/* 12,615px at 1440 after the last round of cuts. The margin is one card's
-   worth: enough that adding a project does not trip it, tight enough that
-   quietly growing a section back does. */
-const HEIGHT_BUDGET = 13000;
+/* 14,490px at 1440 with the Blockhold and Cubit cards - a whole row of two
+   shipped projects, which is the growth the old margin was sized to admit one
+   of. The margin stays one card's worth: enough that adding a project does
+   not trip it, tight enough that quietly growing a section back does. */
+const HEIGHT_BUDGET = 14900;
 
-/* The same number for the phone, which used to be twice it. 12,708px after the
-   swipe rows, the ledger and the card fold; the margin is one folded card, on
-   the same reasoning as the line above. */
-const MOBILE_BUDGET = 13200;
+/* The same reasoning for the phone: 14,644px with the two new cards folded;
+   the margin is one folded card, as above. */
+const MOBILE_BUDGET = 15100;
 
 const fail = [];
 const note = (ok, label, detail) => {
@@ -859,7 +859,7 @@ await run(
       `${mob.ledger} rows, all shut ${mob.shut}, entries kept ${mob.kept}`,
     );
     note(
-      mob.deeps === 4 && mob.untilFound && mob.reachable,
+      mob.deeps === 6 && mob.untilFound && mob.reachable,
       '390 each project folds to hidden="until-found", not out of the document',
       `${mob.deeps} folds, until-found ${mob.untilFound}, findable ${mob.reachable}`,
     );
@@ -879,7 +879,7 @@ await run(
       };
     });
     note(
-      opened.shown && opened.gone && opened.focus === 'deep' && opened.rest === 3,
+      opened.shown && opened.gone && opened.focus === 'deep' && opened.rest === 5,
       '390 the press opens its own card and hands over the focus it held',
       `shown ${opened.shown}, press gone ${opened.gone}, focus ${opened.focus}, ${opened.rest} still shut`,
     );

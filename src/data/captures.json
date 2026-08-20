@@ -881,5 +881,102 @@
       "bytes": 62192
     },
     "dated": "2026-08-09"
+  },
+  {
+    "out": "blockhold-lead-battle",
+    "from": "blockhold-greenhollow-wave-battle.png",
+    "src": {
+      "w": 2560,
+      "h": 1440
+    },
+    "asset": {
+      "w": 2400,
+      "h": 1350,
+      "bytes": 189838
+    },
+    "dated": "2026-08-20"
+  },
+  {
+    "out": "blockhold-frame-greenhollow",
+    "from": "blockhold-greenhollow-wave-battle.png",
+    "src": {
+      "w": 2560,
+      "h": 1440
+    },
+    "asset": {
+      "w": 2000,
+      "h": 1125,
+      "bytes": 158004
+    },
+    "dated": "2026-08-20"
+  },
+  {
+    "out": "blockhold-frame-veiltide",
+    "from": "blockhold-frostmere-veiltide-surge.png",
+    "src": {
+      "w": 2560,
+      "h": 1440
+    },
+    "asset": {
+      "w": 2000,
+      "h": 1125,
+      "bytes": 137772
+    },
+    "dated": "2026-08-20"
+  },
+  {
+    "out": "blockhold-frame-crown",
+    "from": "blockhold-shattered-crown-void.png",
+    "src": {
+      "w": 2560,
+      "h": 1440
+    },
+    "asset": {
+      "w": 2000,
+      "h": 1125,
+      "bytes": 137778
+    },
+    "dated": "2026-08-20"
+  },
+  {
+    "out": "cubit-lead-peek",
+    "from": "cubit-peek-spread.png",
+    "src": {
+      "w": 2560,
+      "h": 1440
+    },
+    "asset": {
+      "w": 2400,
+      "h": 1116,
+      "bytes": 100802
+    },
+    "dated": "2026-08-20",
+    "crop": {
+      "left": 0,
+      "top": 100,
+      "width": 2560,
+      "height": 1190
+    },
+    "trim": {
+      "left": 0,
+      "top": 100,
+      "right": 0,
+      "bottom": 150
+    },
+    "omits": "empty starfield above and below the cube; the band is composed for the lead slot"
+  },
+  {
+    "out": "cubit-inset-board",
+    "from": "cubit-board-xray.png",
+    "src": {
+      "w": 2560,
+      "h": 1440
+    },
+    "asset": {
+      "w": 2000,
+      "h": 1125,
+      "bytes": 66306
+    },
+    "dated": "2026-08-20"
   }
 ]

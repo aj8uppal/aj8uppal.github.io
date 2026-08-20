@@ -20,9 +20,11 @@ import '../styles/apple.css';
 import '../styles/ports.css';
 import {
   about,
+  blockhold,
   emberRegions,
   contact,
   cover,
+  cubit,
   education,
   elderwood,
   ember,
@@ -73,10 +75,12 @@ const emberAsset: Record<string, string> = {
 
 const regions = emberRegions.map((r) => ({ ...r, img: asset(emberAsset[r.key] ?? '') }));
 
-/* The other two get a card each, led by their own spread capture. */
+/* The other four get a card each, led by their own spread capture. */
 const others = [
   { p: hidamari, img: asset('hidamari-spread-canopy'), href: undefined },
   { p: elderwood, img: asset('elderwood-default'), href: undefined },
+  { p: blockhold, img: asset('blockhold-lead-battle'), href: blockhold.href },
+  { p: cubit, img: asset('cubit-lead-peek'), href: cubit.href },
 ];
 
 /* The two legacy ports take a poster as a full source set rather than an
@@ -411,11 +415,11 @@ const canonical = new URL('/alternate/', site.url).href;
         </div>
       </section>
 
-      <!-- ── The other two ──────────────────────────────────────────── -->
+      <!-- ── The other four ─────────────────────────────────────────── -->
       <section class="band band--ink">
         <div class="shell">
           <div class="head head--mid" data-reveal>
-            <h2>Two more,<br />in various states of done.</h2>
+            <h2>Four more,<br />in various states of done.</h2>
           </div>
 
           <div class="proj-grid">

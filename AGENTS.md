@@ -57,7 +57,7 @@ Its classes are prefixed `dlab`, because the playground cards already own `.lab`
 
 ## Page length is a standing budget
 
-`npm run verify` fails if the document grows past `HEIGHT_BUDGET` (11,000px at 1440).
+`npm run verify` fails if the document grows past `HEIGHT_BUDGET` in `scripts/verify.mjs` - the script is the authority on the number; a copy of it here has drifted stale once already.
 The budget exists because length regresses by accretion - a paragraph here, a section pad there - and nobody notices until the page is 17,000px again.
 When a change pushes it over, the fix is almost always copy or vertical rhythm, not shrinking someone's work: cut prose, or put the frame beside the title instead of above it.
 

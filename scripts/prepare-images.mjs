@@ -57,6 +57,14 @@ const RZ_FRAME = { left: 28, top: 28, width: 2864, height: 1784 };
  * derived: the centred crop is the closest match of every offset tried.
  */
 const HERO = { left: 1008, top: 864, width: 3360, height: 1440 };
+/**
+ * The cubit capture is 2560x1440 with the spread cube running from about
+ * y=140 to y=1100. The card lead slot is the same 2.15:1 band as saltline's,
+ * and an object-fit center crop takes the top layer of the cube with it. So
+ * the band is composed here: full width, and the height picked to hold the
+ * whole spread with the starfield trimmed evenly around it.
+ */
+const CUBIT_LEAD = { left: 0, top: 100, width: 2560, height: 1190 };
 
 /**
  * The depth plates are 16-bit inverse depth, and they cannot be shown raw.
@@ -141,6 +149,7 @@ const OMITS = new Map([
     HERO,
     'the 1.6x overscan margin the reprojection pans into, which the camera never shows at rest',
   ],
+  [CUBIT_LEAD, 'empty starfield above and below the cube; the band is composed for the lead slot'],
 ]);
 
 /**
@@ -340,6 +349,16 @@ const JOBS = [
   { in: 'rz-rendezvous1dark.png', out: 'rendezvous-night', width: 1400 },
   { in: 'rz-rendezvous2light.png', out: 'rendezvous-chat-day', width: 1400 },
   { in: 'rz-rendezvous2dark.png', out: 'rendezvous-chat-night', width: 1400 },
+
+  // Blockhold and Cubit - captured straight off the live deployments at the
+  // exact viewport, so there are no bars and nothing to crop. The battles are
+  // staged through the games' own dev handles: real builds, arranged scenes.
+  { in: 'blockhold-greenhollow-wave-battle.png', out: 'blockhold-lead-battle', width: 2400 },
+  { in: 'blockhold-greenhollow-wave-battle.png', out: 'blockhold-frame-greenhollow', width: 2000 },
+  { in: 'blockhold-frostmere-veiltide-surge.png', out: 'blockhold-frame-veiltide', width: 2000 },
+  { in: 'blockhold-shattered-crown-void.png', out: 'blockhold-frame-crown', width: 2000 },
+  { in: 'cubit-peek-spread.png', out: 'cubit-lead-peek', crop: CUBIT_LEAD, width: 2400 },
+  { in: 'cubit-board-xray.png', out: 'cubit-inset-board', width: 2000 },
 ];
 
 async function run() {

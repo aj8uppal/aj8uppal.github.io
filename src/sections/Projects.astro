@@ -15,7 +15,9 @@ import FrameSwitcher from '../components/react/FrameSwitcher';
 import type { SwitchFrame } from '../components/react/FrameSwitcher';
 import { asset, sources } from '../lib/images';
 import {
+  blockhold,
   cover,
+  cubit,
   elderwood,
   ember,
   emberRegions,
@@ -88,16 +90,26 @@ const elderFrames: SwitchFrame[] = await Promise.all(
     img: await sources(`elderwood-${f.key}`, EW_W, EW_S),
   })),
 );
+
+const blockholdFrames: SwitchFrame[] = await Promise.all(
+  blockhold.figures.map(async (f) => ({
+    key: f.key,
+    tab: f.tab,
+    alt: `Blockhold, ${f.cap.toLowerCase()}`,
+    note: f.cap,
+    img: await sources(`blockhold-frame-${f.key}`, EW_W, EW_S),
+  })),
+);
 ---
 
 <Section n={n} id="building" name="Projects" tone={tone} cls="work">
   <div class="head" data-reveal>
     <div class="head__k">
       <p class="kicker">{n} / Projects</p>
-      <p class="head__count">4 entries · 2 open to anyone</p>
+      <p class="head__count">6 entries · 4 open to anyone</p>
     </div>
     <div>
-      <h2 class="display head__t">Four projects</h2>
+      <h2 class="display head__t">Six projects</h2>
       <p class="head__lead head__lead--big">{cover.second}</p>
     </div>
   </div>
@@ -419,6 +431,161 @@ const elderFrames: SwitchFrame[] = await Promise.all(
             frames={elderFrames}
           />
           <Inspect by="FrameSwitcher.tsx" assets={elderFrames.map((f) => `elderwood-${f.key}`)} />
+        </Deep>
+      </div>
+    </article>
+
+    {/* Blockhold */}
+    <article class="card card--half" id={places.blockhold.at} data-place data-reveal>
+      <div class="shot shot--lead">
+        <Picture
+          src={asset('blockhold-lead-battle')}
+          alt="Blockhold mid-battle on Greenhollow: a dense wave of voxel enemies marching down the road into a line of shielded soldiers, towers firing, health bars ticking, the castle at the top of the map."
+          widths={HALF_W}
+          sizes={HALF_S}
+          formats={['avif']}
+          fallbackFormat="webp"
+          loading="lazy"
+          decoding="async"
+        />
+        <p class="flag">Greenhollow &middot; wave 8 &middot; the line holds</p>
+      </div>
+
+      <div class="card__copy">
+        <Inspect by="astro:assets Picture" assets="blockhold-lead-battle" />
+        <span class="card__index">{blockhold.spread.n}</span>
+        <div class="card__badges">
+          <State status={blockhold.status} label="Live" />
+          <span class="tag">05 &middot; Shipped</span>
+          <span class="tag">Zero asset files</span>
+        </div>
+
+        <h3 class="display">
+          <a href={blockhold.href} target="_blank" rel="noopener">{blockhold.name}</a>
+        </h3>
+        <p class="card__sub">{blockhold.sub}</p>
+
+        <Skim
+          {...blockhold.skim}
+          ev="blockhold.proof"
+          cta={{ href: blockhold.href, label: 'Play Blockhold', out: true }}
+        />
+
+        <Deep label="Read on · three battles">
+          <div class="card__body">
+            {blockhold.prose.map((p) => <p>{p}</p>)}
+          </div>
+
+          <details class="notes">
+            <summary>Technical notes</summary>
+            <dl class="specs">
+              {
+                blockhold.plate.map(([k, v]) => (
+                  <div>
+                    <dt>{k}</dt>
+                    <dd>{v}</dd>
+                  </div>
+                ))
+              }
+              <div>
+                <dt>Open</dt>
+                <dd>
+                  <a href={blockhold.href} target="_blank" rel="noopener">
+                    aj8uppal.github.io/blockhold
+                  </a>
+                </dd>
+              </div>
+            </dl>
+          </details>
+
+          <p class="card__lede">{blockhold.framesLede}</p>
+          <p class="cue">{blockhold.framesCue}</p>
+          <FrameSwitcher
+            client:visible={{ rootMargin: '600px' }}
+            label="Blockhold battles"
+            frames={blockholdFrames}
+          />
+          <Inspect
+            by="FrameSwitcher.tsx"
+            assets={blockholdFrames.map((f) => `blockhold-frame-${f.key}`)}
+          />
+        </Deep>
+      </div>
+    </article>
+
+    {/* Cubit */}
+    <article class="card card--half" id={places.cubit.at} data-place data-reveal>
+      <div class="shot shot--lead">
+        <Picture
+          src={asset('cubit-lead-peek')}
+          alt="Cubit with Space held: the three layers of the 3x3x3 cube spread apart against a starfield, tiles from 2 up to a glowing pink 1024, floating keycap gizmos marking the six slide directions."
+          widths={HALF_W}
+          sizes={HALF_S}
+          formats={['avif']}
+          fallbackFormat="webp"
+          loading="lazy"
+          decoding="async"
+        />
+        <p class="flag">Space held &middot; layers apart</p>
+      </div>
+
+      <div class="card__copy">
+        <Inspect by="astro:assets Picture" assets="cubit-lead-peek" />
+        <span class="card__index">{cubit.spread.n}</span>
+        <div class="card__badges">
+          <State status={cubit.status} label="Live" />
+          <span class="tag">06 &middot; One file</span>
+        </div>
+
+        <h3 class="display">
+          <a href={cubit.href} target="_blank" rel="noopener">{cubit.name}</a>
+        </h3>
+        <p class="card__sub">{cubit.sub}</p>
+
+        <Skim
+          {...cubit.skim}
+          ev="cubit.proof"
+          cta={{ href: cubit.href, label: 'Play Cubit', out: true }}
+        />
+
+        <Deep label="Read on · the third axis">
+          <div class="card__body">
+            {cubit.prose.map((p) => <p>{p}</p>)}
+          </div>
+
+          <div class="shot shot--inset">
+            <Picture
+              src={asset('cubit-inset-board')}
+              alt="The compact Cubit board from the same game: tiles that sit between the camera and other tiles rendered translucent, so the 512 and 1024 read through the front layer."
+              widths={INSET_W}
+              sizes={INSET_S}
+              formats={['avif']}
+              fallbackFormat="webp"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <Inspect by="astro:assets Picture" assets="cubit-inset-board" />
+
+          <details class="notes">
+            <summary>Technical notes</summary>
+            <dl class="specs">
+              {
+                cubit.plate.map(([k, v]) => (
+                  <div>
+                    <dt>{k}</dt>
+                    <dd>{v}</dd>
+                  </div>
+                ))
+              }
+              <div>
+                <dt>Open</dt>
+                <dd>
+                  <a href={cubit.href} target="_blank" rel="noopener">aj8uppal.github.io/cubit</a>
+                </dd>
+              </div>
+            </dl>
+          </details>
         </Deep>
       </div>
     </article>
