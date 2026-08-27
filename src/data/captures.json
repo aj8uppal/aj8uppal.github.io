@@ -884,21 +884,34 @@
   },
   {
     "out": "blockhold-lead-battle",
-    "from": "blockhold-greenhollow-wave-battle.png",
+    "from": "blockhold-greenhollow-hollow-king.png",
     "src": {
       "w": 2560,
       "h": 1440
     },
     "asset": {
       "w": 2400,
-      "h": 1350,
-      "bytes": 189838
+      "h": 1117,
+      "bytes": 200104
     },
-    "dated": "2026-08-20"
+    "dated": "2026-08-27",
+    "crop": {
+      "left": 0,
+      "top": 0,
+      "width": 2560,
+      "height": 1191
+    },
+    "trim": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 249
+    },
+    "omits": null
   },
   {
     "out": "blockhold-frame-greenhollow",
-    "from": "blockhold-greenhollow-wave-battle.png",
+    "from": "blockhold-greenhollow-board.png",
     "src": {
       "w": 2560,
       "h": 1440
@@ -906,13 +919,13 @@
     "asset": {
       "w": 2000,
       "h": 1125,
-      "bytes": 158004
+      "bytes": 141464
     },
-    "dated": "2026-08-20"
+    "dated": "2026-08-27"
   },
   {
     "out": "blockhold-frame-veiltide",
-    "from": "blockhold-frostmere-veiltide-surge.png",
+    "from": "blockhold-frostmere-veiltide-board.png",
     "src": {
       "w": 2560,
       "h": 1440
@@ -920,13 +933,13 @@
     "asset": {
       "w": 2000,
       "h": 1125,
-      "bytes": 137772
+      "bytes": 125402
     },
-    "dated": "2026-08-20"
+    "dated": "2026-08-27"
   },
   {
-    "out": "blockhold-frame-crown",
-    "from": "blockhold-shattered-crown-void.png",
+    "out": "blockhold-frame-cinderwake",
+    "from": "blockhold-cinderwake-board.png",
     "src": {
       "w": 2560,
       "h": 1440
@@ -934,9 +947,23 @@
     "asset": {
       "w": 2000,
       "h": 1125,
-      "bytes": 137778
+      "bytes": 139852
     },
-    "dated": "2026-08-20"
+    "dated": "2026-08-27"
+  },
+  {
+    "out": "blockhold-frame-tidereach",
+    "from": "blockhold-tidereach-board.png",
+    "src": {
+      "w": 2560,
+      "h": 1440
+    },
+    "asset": {
+      "w": 2000,
+      "h": 1125,
+      "bytes": 161786
+    },
+    "dated": "2026-08-27"
   },
   {
     "out": "cubit-lead-peek",

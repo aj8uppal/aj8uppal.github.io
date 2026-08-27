@@ -65,6 +65,14 @@ const HERO = { left: 1008, top: 864, width: 3360, height: 1440 };
  * whole spread with the starfield trimmed evenly around it.
  */
 const CUBIT_LEAD = { left: 0, top: 100, width: 2560, height: 1190 };
+/**
+ * Blockhold's lead lands in the same 2.15:1 band, and a centred object-fit crop
+ * of the 2560x1440 capture leaves a 19px sliver of the ability bar along the
+ * bottom edge - a strip of half a button, which reads as a rendering fault
+ * rather than as UI. The band is composed here instead: it starts at the top so
+ * the HUD row keeps its whole chips, and it ends 100px above the ability bar.
+ */
+const BLOCKHOLD_LEAD = { left: 0, top: 0, width: 2560, height: 1191 };
 
 /**
  * The depth plates are 16-bit inverse depth, and they cannot be shown raw.
@@ -356,13 +364,21 @@ const JOBS = [
   { in: 'rz-rendezvous2light.png', out: 'rendezvous-chat-day', width: 1400 },
   { in: 'rz-rendezvous2dark.png', out: 'rendezvous-chat-night', width: 1400 },
 
-  // Blockhold and Cubit - captured straight off the live deployments at the
-  // exact viewport, so there are no bars and nothing to crop. The battles are
-  // staged through the games' own dev handles: real builds, arranged scenes.
-  { in: 'blockhold-greenhollow-wave-battle.png', out: 'blockhold-lead-battle', width: 2400 },
-  { in: 'blockhold-greenhollow-wave-battle.png', out: 'blockhold-frame-greenhollow', width: 2000 },
-  { in: 'blockhold-frostmere-veiltide-surge.png', out: 'blockhold-frame-veiltide', width: 2000 },
-  { in: 'blockhold-shattered-crown-void.png', out: 'blockhold-frame-crown', width: 2000 },
+  // Blockhold and Cubit - captured at the exact viewport with no browser
+  // chrome, so there are no bars and nothing to crop. The Blockhold battles
+  // are real builds in arranged fights: every tower goes up through the game's
+  // own build path and every wave arrives through its wave manager, on a dev
+  // server running the code that is live. Only the clock is cheated.
+  {
+    in: 'blockhold-greenhollow-hollow-king.png',
+    out: 'blockhold-lead-battle',
+    crop: BLOCKHOLD_LEAD,
+    width: 2400,
+  },
+  { in: 'blockhold-greenhollow-board.png', out: 'blockhold-frame-greenhollow', width: 2000 },
+  { in: 'blockhold-frostmere-veiltide-board.png', out: 'blockhold-frame-veiltide', width: 2000 },
+  { in: 'blockhold-cinderwake-board.png', out: 'blockhold-frame-cinderwake', width: 2000 },
+  { in: 'blockhold-tidereach-board.png', out: 'blockhold-frame-tidereach', width: 2000 },
   { in: 'cubit-peek-spread.png', out: 'cubit-lead-peek', crop: CUBIT_LEAD, width: 2400 },
   { in: 'cubit-board-xray.png', out: 'cubit-inset-board', width: 2000 },
   /* Murmuration - captured by the captain against Pink Floyd's "Shine On You
