@@ -139,6 +139,11 @@ async function depthPass(from, alphaFrom, crop, width) {
  * it is the part a reader is entitled to: an edited capture that will not say
  * what was edited off it is a claim, not evidence.
  */
+/* Murmuration captures are 1999x1254 browser screenshots with the transport and
+   readout pinned along the bottom. The clean frames crop it off; the interface
+   frame keeps it deliberately, the way the saltline dev panel is kept. */
+const MURMUR = { left: 0, top: 0, width: 1999, height: 1145 };
+
 const OMITS = new Map([
   [EMBER, 'the black letterbox bars the capture window puts on the top and bottom'],
   [SALT_CLEAN, 'the developer panel down the left edge, and the bar above the viewport'],
@@ -150,6 +155,7 @@ const OMITS = new Map([
     'the 1.6x overscan margin the reprojection pans into, which the camera never shows at rest',
   ],
   [CUBIT_LEAD, 'empty starfield above and below the cube; the band is composed for the lead slot'],
+  [MURMUR, 'the transport and readout pinned along the bottom of the browser window'],
 ]);
 
 /**
@@ -359,6 +365,34 @@ const JOBS = [
   { in: 'blockhold-shattered-crown-void.png', out: 'blockhold-frame-crown', width: 2000 },
   { in: 'cubit-peek-spread.png', out: 'cubit-lead-peek', crop: CUBIT_LEAD, width: 2400 },
   { in: 'cubit-board-xray.png', out: 'cubit-inset-board', width: 2000 },
+  /* Murmuration - captured by the captain against Pink Floyd's "Shine On You
+     Crazy Diamond", which is what the readout in the interface frame shows. */
+  {
+    in: 'murmuration-ribbon-violet.png',
+    out: 'murmuration-lead-ribbon',
+    crop: MURMUR,
+    width: 1999,
+  },
+  {
+    in: 'murmuration-constellation-dense.png',
+    out: 'murmuration-frame-constellation',
+    crop: MURMUR,
+    width: 1800,
+  },
+  { in: 'murmuration-ribbon-teal.png', out: 'murmuration-frame-ribbon', crop: MURMUR, width: 1800 },
+  {
+    in: 'murmuration-constellation-lull.png',
+    out: 'murmuration-frame-lull',
+    crop: MURMUR,
+    width: 1800,
+  },
+  /* Kept whole: the readout along the bottom is the evidence that the mode,
+     style, sensitivity and frame rate are real controls, not captions. */
+  {
+    in: 'murmuration-constellation-sparse.png',
+    out: 'murmuration-proof-interface',
+    width: 1999,
+  },
 ];
 
 async function run() {

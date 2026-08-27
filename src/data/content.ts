@@ -86,8 +86,8 @@ export const sections = [
     n: '02',
     id: 'building',
     name: 'Projects',
-    desc: 'Six projects, in various states of done',
-    count: '6 entries',
+    desc: 'Seven projects, in various states of done',
+    count: '7 entries',
   },
   { n: '03', id: 'work', name: 'Experience', desc: 'Eight jobs, reverse order', count: '8 rows' },
   {
@@ -111,6 +111,7 @@ export const sections = [
  */
 export const places = {
   saltline: { name: 'saltline', at: 'p-saltline' },
+  murmuration: { name: 'murmuration', at: 'p-murmuration' },
   ember: { name: 'Ember Wilds', at: 'p-ember' },
   hidamari: { name: 'hidamari', at: 'p-hidamari' },
   elderwood: { name: 'Elderwood Vale', at: 'p-elderwood' },
@@ -154,7 +155,7 @@ export const cover = {
   /* This used to name all four projects in a 57-word run-on, immediately above
      four cards that name themselves. What is left is the only thing the cards
      cannot say from inside one card: which half of them you can open. */
-  second: 'Four are live today. Two aren’t finished yet.',
+  second: 'Five are live today. Two aren’t finished yet.',
   strip: [
     { dt: 'Place', dd: 'Bay Area', sub: 'California' },
     { dt: 'Work', dd: 'Software engineer', sub: 'Notable Health, since Aug 2022' },
@@ -455,6 +456,59 @@ export const saltline = {
   ] as Array<[string, string]>,
 } as const;
 
+/* ── murmuration ─────────────────────────────────────────────────────── */
+
+export const murmuration = {
+  name: 'murmuration',
+  href: 'https://aj8uppal.github.io/murmuration/',
+  status: 'live' as Status,
+  sub: 'A music visualiser that works out what the music is doing, not just how loud it is.',
+  skim: {
+    role: 'The analysis, the WebGPU renderer, the whole thing.',
+    hard: 'Frequency cannot separate a voice from a piano - they share the octaves. Stereo placement can.',
+    proof: 'Live, runs on a phone, 1.2M particles in 11.9 ms of GPU time.',
+  },
+  lead: {
+    asset: 'murmuration-lead-ribbon',
+    alt: 'murmuration in ribbon style: a dense violet and white form of drawn-out particle streaks against black, filling most of the frame.',
+    flag: 'ribbon · 620k particles · 97 fps',
+  },
+  spread: {
+    n: 'Plate 03 / murmuration',
+    t: 'A field that listens',
+    s: 'Ribbon style at 1.6x sensitivity, 620k particles, 97 fps. Captured against Pink Floyd, four minutes in.',
+  },
+  prose: [
+    'A million grains of light pushed through a curl-noise flow field in a WebGPU compute shader, then drawn as velocity-stretched additive sprites. Play it anything - the bundled track, a file you drop on it, or your microphone.',
+    'The part I care about is that it is listening rather than reacting. Loudness is easy and it is what most visualisers use. This works out the key and whether the piece is major or minor, the tempo, where the transients are, whether a band is being struck or held, and - the one I am most pleased with - where the music stops to breathe.',
+  ],
+  framesLede:
+    'Two styles and a lull, all from one session. Only the style and the music changed.',
+  framesCue: 'Pick a style, or use the arrow keys',
+  proof: {
+    t: 'The readout, uncropped',
+    alt: 'The full murmuration window: a sparse violet and white constellation of particles on black, and along the bottom a bar reading Pink Floyd - Shine On You Crazy Dia..., 4:21 of 13:35, a waveform, then PARTICLE, CONSTELLATION, SENS 1.6X, FULL, 106 FPS and the key hints beside them.',
+    body: [
+      'Mode, style, sensitivity, quality and frame rate along the bottom are live controls, not captions. B cycles the render mode, V the style, and the minus and equals keys scale how hard the music drives the field.',
+    ],
+  },
+  plate: [
+    ['Status', 'Live, and it runs on a phone'],
+    ['Renders', 'WebGPU: compute sim, additive sprites, bloom, ACES grade'],
+    /* GPU time per frame at 1800x3043, measured by submitting frames back to
+       back and awaiting onSubmittedWorkDone - not wall clock, which on a loaded
+       machine read nearly twice this for the same work. */
+    ['Cost', '620k particles at 8.07 ms of GPU time; 1.2M at 11.85 ms'],
+    ['Key and mode', 'Chroma against Krumhansl-Kessler profiles'],
+    ['Tempo', 'Autocorrelated spectral flux, phase-locked between estimates'],
+    ['The voice', 'Centre against sides - 3.5x separation on the bundled track'],
+    ['Articulation', 'Per-band attack against sustain: struck 0.71, held 0.06'],
+    ['The breath', 'Quiet passages thin, dim and slow the whole field'],
+    ['Styles', 'nebula, ink, constellation, ribbon, etching'],
+    ['Sources', 'Bundled track, any dropped file, or live microphone'],
+  ] as Array<[string, string]>,
+} as const;
+
 /* ── hidamari ────────────────────────────────────────────────────────── */
 
 export const hidamari = {
@@ -467,7 +521,7 @@ export const hidamari = {
     proof: '116 frames per second live.',
   },
   spread: {
-    n: 'Plate 03 / hidamari',
+    n: 'Plate 04 / hidamari',
     t: 'Photoreal, because it cheats',
     s: 'One autumn path at golden hour. None of it is lit in the browser - that’s the trick.',
   },
@@ -529,7 +583,7 @@ export const blockhold = {
     proof: 'Playable right now: five maps, three difficulties, an endless mode with saved records.',
   },
   spread: {
-    n: 'Plate 05 / Blockhold',
+    n: 'Plate 06 / Blockhold',
     t: 'The one that shipped',
     s: 'A wave crashing into the soldier line on Greenhollow, the castle up the road.',
   },
@@ -580,7 +634,7 @@ export const cubit = {
     proof: 'One self-contained 553 KB HTML file, 62 tests.',
   },
   spread: {
-    n: 'Plate 06 / Cubit',
+    n: 'Plate 07 / Cubit',
     t: 'Twenty-seven cells, six exits',
     s: 'Space held: the layers apart, the whole value rainbow readable at once.',
   },

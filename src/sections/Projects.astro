@@ -23,6 +23,7 @@ import {
   emberRegions,
   hidamari,
   places,
+  murmuration,
   saltline,
   saltlineArc,
 } from '../data/content';
@@ -66,6 +67,26 @@ const emberAsset: Record<string, string> = {
   plateau: 'ember-region-black-plateau',
 };
 
+const murmurationFrames: SwitchFrame[] = await Promise.all(
+  [
+    { key: 'ribbon', tab: 'ribbon', asset: 'murmuration-frame-ribbon',
+      alt: 'murmuration in ribbon style: long teal and violet strands drawn out into continuous calligraphic curves against black.',
+      note: 'Ribbon draws each grain as a long continuous strand. 78 fps at 1.4x sensitivity.' },
+    { key: 'constellation', tab: 'constellation', asset: 'murmuration-frame-constellation',
+      alt: 'murmuration in constellation style: a dense field of tight silver points spread across the frame, more starfield than cloud.',
+      note: 'Constellation trades filaments for tight points. 94 fps at 1.6x sensitivity.' },
+    { key: 'lull', tab: 'the lull', asset: 'murmuration-frame-lull',
+      alt: 'murmuration during a quiet passage: the field thinned to a faint blue-white curve, most of the frame black.',
+      note: 'The same session during a quiet passage. Nothing is scripted - the field thins because the music did.' },
+  ].map(async (f) => ({
+    key: f.key,
+    tab: f.tab,
+    alt: f.alt,
+    note: f.note,
+    img: await sources(f.asset, HALF_W, HALF_S),
+  })),
+);
+
 const emberFrames: SwitchFrame[] = await Promise.all(
   emberRegions.map(async (f) => ({
     ...f,
@@ -106,10 +127,10 @@ const blockholdFrames: SwitchFrame[] = await Promise.all(
   <div class="head" data-reveal>
     <div class="head__k">
       <p class="kicker">{n} / Projects</p>
-      <p class="head__count">6 entries · 4 open to anyone</p>
+      <p class="head__count">7 entries · 5 open to anyone</p>
     </div>
     <div>
-      <h2 class="display head__t">Six projects</h2>
+      <h2 class="display head__t">Seven projects</h2>
       <p class="head__lead head__lead--big">{cover.second}</p>
     </div>
   </div>
@@ -337,7 +358,113 @@ const blockholdFrames: SwitchFrame[] = await Promise.all(
       </div>
     </article>
 
-    {/* hidamari */}
+    {/* Murmuration */}
+    <article class="card card--full" id={places.murmuration.at} data-place data-reveal>
+      <div class="card__hero">
+        <div class="card__plate">
+          <div class="shot shot--lead">
+            <Picture
+              src={asset('murmuration-lead-ribbon')}
+              alt={murmuration.lead.alt}
+              widths={LEAD_W}
+              sizes={LEAD_S}
+              formats={['avif']}
+              fallbackFormat="webp"
+              loading="lazy"
+              decoding="async"
+            />
+            <p class="flag">{murmuration.lead.flag}</p>
+          </div>
+          <p class="plate-cap"><b>{murmuration.spread.t}.</b> {murmuration.spread.s}</p>
+          <Inspect by="astro:assets Picture" assets="murmuration-lead-ribbon" />
+        </div>
+
+        <div class="card__intro">
+          <span class="card__index">{murmuration.spread.n}</span>
+          <div class="card__badges">
+            <State status={murmuration.status} label="Live" />
+            <span class="tag">03 &middot; Shipped</span>
+            <span class="tag">WebGPU</span>
+          </div>
+          <h3 class="display">
+            <a href={murmuration.href} target="_blank" rel="noopener">{murmuration.name}</a>
+          </h3>
+          <p class="card__sub">{murmuration.sub}</p>
+          <Skim
+            {...murmuration.skim}
+            ev="murmuration.proof"
+            cta={{ href: murmuration.href, label: 'Open Murmuration', out: true }}
+          />
+        </div>
+      </div>
+
+      <div class="card__copy">
+        <Deep label="Read on &middot; five styles, one listener">
+          <div class="card__cols">
+            <div class="card__body">
+              {murmuration.prose.map((p) => <p>{p}</p>)}
+            </div>
+            <div class="card__aside">
+              <details class="notes">
+                <summary>Technical notes</summary>
+                <dl class="specs">
+                  {
+                    murmuration.plate.map(([k, v]) => (
+                      <div>
+                        <dt>{k}</dt>
+                        <dd>{v}</dd>
+                      </div>
+                    ))
+                  }
+                  <div>
+                    <dt>Open</dt>
+                    <dd>
+                      <a href={murmuration.href} target="_blank" rel="noopener">
+                        aj8uppal.github.io/murmuration
+                      </a>
+                    </dd>
+                  </div>
+                </dl>
+              </details>
+            </div>
+          </div>
+
+          <p class="card__lede">{murmuration.framesLede}</p>
+          <p class="cue">{murmuration.framesCue}</p>
+          <FrameSwitcher
+            client:visible={{ rootMargin: '600px' }}
+            label="Murmuration styles"
+            frames={murmurationFrames}
+          />
+          <Inspect
+            by="FrameSwitcher.tsx"
+            assets={murmurationFrames.map((f) => `murmuration-frame-${f.key}`)}
+          />
+
+          <div class="inset">
+            <div class="shot shot--inset">
+              <Picture
+                src={asset('murmuration-proof-interface')}
+                alt={murmuration.proof.alt}
+                widths={INSET_W}
+                sizes={INSET_S}
+                formats={['avif']}
+                fallbackFormat="webp"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <Inspect by="astro:assets Picture" assets="murmuration-proof-interface" />
+            <div class="inset__body">
+              <h4>{murmuration.proof.t}</h4>
+              {murmuration.proof.body.map((p) => <p>{p}</p>)}
+            </div>
+          </div>
+        </Deep>
+      </div>
+    </article>
+
+    {/* Hidamari */}
     <article class="card card--half" id={places.hidamari.at} data-place data-reveal>
       <div class="shot shot--lead">
         <Picture
@@ -358,7 +485,7 @@ const blockholdFrames: SwitchFrame[] = await Promise.all(
         <span class="card__index">{hidamari.spread.n}</span>
         <div class="card__badges">
           <State status={hidamari.status} label="Not public" />
-          <span class="tag">03 &middot; Rendering</span>
+          <span class="tag">04 &middot; Rendering</span>
         </div>
 
         <h3 class="display">{hidamari.name}</h3>
@@ -396,7 +523,7 @@ const blockholdFrames: SwitchFrame[] = await Promise.all(
         <span class="card__index">{elderwood.title}</span>
         <div class="card__badges">
           <State status={elderwood.status} label="Greybox" />
-          <span class="tag">04 &middot; Architecture</span>
+          <span class="tag">05 &middot; Architecture</span>
         </div>
 
         <h3 class="display">{elderwood.name}</h3>
@@ -456,7 +583,7 @@ const blockholdFrames: SwitchFrame[] = await Promise.all(
         <span class="card__index">{blockhold.spread.n}</span>
         <div class="card__badges">
           <State status={blockhold.status} label="Live" />
-          <span class="tag">05 &middot; Shipped</span>
+          <span class="tag">06 &middot; Shipped</span>
           <span class="tag">Zero asset files</span>
         </div>
 
@@ -534,7 +661,7 @@ const blockholdFrames: SwitchFrame[] = await Promise.all(
         <span class="card__index">{cubit.spread.n}</span>
         <div class="card__badges">
           <State status={cubit.status} label="Live" />
-          <span class="tag">06 &middot; One file</span>
+          <span class="tag">07 &middot; One file</span>
         </div>
 
         <h3 class="display">

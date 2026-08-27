@@ -88,6 +88,19 @@ const MAP: Record<string, Source[]> = {
      difficulties, endless - are what the game is configured to hold. */
   'blockhold.proof': [{ cls: 'capture', shot: 'blockhold-lead-battle' }, { cls: 'config' }],
 
+  /* Three different kinds of thing and the row names all three. That it is live
+     is the page itself. That it runs on a phone is a setting - the handheld path
+     renders at native resolution with a reduced particle count, which is code,
+     not an observation. The frame figure is one person's machine: GPU time per
+     frame, taken by submitting frames back to back and awaiting the queue rather
+     than reading wall clock, which on a loaded machine measured nearly twice the
+     same work. A developer measurement, and it says so. */
+  'murmuration.proof': [
+    { cls: 'capture', shot: 'murmuration-lead-ribbon' },
+    { cls: 'config' },
+    { cls: 'measurement' },
+  ],
+
   /* The file size is read off the built artifact; the test count off the
      suite. Both are one person's machine, and say so. */
   'cubit.proof': [{ cls: 'measurement' }, { cls: 'config' }],

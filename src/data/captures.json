@@ -978,5 +978,127 @@
       "bytes": 66306
     },
     "dated": "2026-08-20"
+  },
+  {
+    "out": "murmuration-lead-ribbon",
+    "from": "murmuration-ribbon-violet.png",
+    "src": {
+      "w": 1999,
+      "h": 1254
+    },
+    "asset": {
+      "w": 1999,
+      "h": 1145,
+      "bytes": 479744
+    },
+    "dated": "2026-08-27",
+    "crop": {
+      "left": 0,
+      "top": 0,
+      "width": 1999,
+      "height": 1145
+    },
+    "trim": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 109
+    },
+    "omits": "the transport and readout pinned along the bottom of the browser window"
+  },
+  {
+    "out": "murmuration-frame-constellation",
+    "from": "murmuration-constellation-dense.png",
+    "src": {
+      "w": 1999,
+      "h": 1254
+    },
+    "asset": {
+      "w": 1800,
+      "h": 1031,
+      "bytes": 606922
+    },
+    "dated": "2026-08-27",
+    "crop": {
+      "left": 0,
+      "top": 0,
+      "width": 1999,
+      "height": 1145
+    },
+    "trim": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 109
+    },
+    "omits": "the transport and readout pinned along the bottom of the browser window"
+  },
+  {
+    "out": "murmuration-frame-ribbon",
+    "from": "murmuration-ribbon-teal.png",
+    "src": {
+      "w": 1999,
+      "h": 1254
+    },
+    "asset": {
+      "w": 1800,
+      "h": 1031,
+      "bytes": 219834
+    },
+    "dated": "2026-08-27",
+    "crop": {
+      "left": 0,
+      "top": 0,
+      "width": 1999,
+      "height": 1145
+    },
+    "trim": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 109
+    },
+    "omits": "the transport and readout pinned along the bottom of the browser window"
+  },
+  {
+    "out": "murmuration-frame-lull",
+    "from": "murmuration-constellation-lull.png",
+    "src": {
+      "w": 1999,
+      "h": 1254
+    },
+    "asset": {
+      "w": 1800,
+      "h": 1031,
+      "bytes": 164890
+    },
+    "dated": "2026-08-27",
+    "crop": {
+      "left": 0,
+      "top": 0,
+      "width": 1999,
+      "height": 1145
+    },
+    "trim": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 109
+    },
+    "omits": "the transport and readout pinned along the bottom of the browser window"
+  },
+  {
+    "out": "murmuration-proof-interface",
+    "from": "murmuration-constellation-sparse.png",
+    "src": {
+      "w": 1999,
+      "h": 1254
+    },
+    "asset": {
+      "w": 1999,
+      "h": 1254,
+      "bytes": 263424
+    },
+    "dated": "2026-08-27"
   }
 ]

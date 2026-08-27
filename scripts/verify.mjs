@@ -18,15 +18,15 @@ const OUT = process.argv[3] ?? '/tmp/p6shots';
 
 /* The captain's stated reason for preferring this direction was less to
    scroll through. It is a number, so it gets asserted like one. */
-/* 14,490px at 1440 with the Blockhold and Cubit cards - a whole row of two
-   shipped projects, which is the growth the old margin was sized to admit one
-   of. The margin stays one card's worth: enough that adding a project does
-   not trip it, tight enough that quietly growing a section back does. */
-const HEIGHT_BUDGET = 14900;
+/* 16,125px at 1440 with the murmuration card, which is a full-width plate in
+   the flagship row rather than a half in the grid below it - the shape the
+   card was asked for. The margin stays what it was, a few hundred pixels:
+   enough that it does not trip on its own, tight enough that quietly growing
+   a section back does. */
+const HEIGHT_BUDGET = 16500;
 
-/* The same reasoning for the phone: 14,644px with the two new cards folded;
-   the margin is one folded card, as above. */
-const MOBILE_BUDGET = 15100;
+/* The same reasoning for the phone: 15,628px with the seven cards folded. */
+const MOBILE_BUDGET = 16000;
 
 const fail = [];
 const note = (ok, label, detail) => {
@@ -838,7 +838,7 @@ await run(
         deeps: deeps.length,
         untilFound: deeps.every((d) => d.getAttribute('hidden') === 'until-found'),
         /* content-visibility, not display: none. The difference is whether
-           find-in-page can reach the four cards' whole argument. */
+           find-in-page can reach every card's whole argument. */
         reachable: deeps.every((d) => getComputedStyle(d).contentVisibility === 'hidden'),
       };
     });
@@ -859,7 +859,7 @@ await run(
       `${mob.ledger} rows, all shut ${mob.shut}, entries kept ${mob.kept}`,
     );
     note(
-      mob.deeps === 6 && mob.untilFound && mob.reachable,
+      mob.deeps === 7 && mob.untilFound && mob.reachable,
       '390 each project folds to hidden="until-found", not out of the document',
       `${mob.deeps} folds, until-found ${mob.untilFound}, findable ${mob.reachable}`,
     );
@@ -879,7 +879,7 @@ await run(
       };
     });
     note(
-      opened.shown && opened.gone && opened.focus === 'deep' && opened.rest === 5,
+      opened.shown && opened.gone && opened.focus === 'deep' && opened.rest === 6,
       '390 the press opens its own card and hands over the focus it held',
       `shown ${opened.shown}, press gone ${opened.gone}, focus ${opened.focus}, ${opened.rest} still shut`,
     );
