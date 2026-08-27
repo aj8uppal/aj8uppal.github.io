@@ -482,8 +482,7 @@ export const murmuration = {
     'A million grains of light pushed through a curl-noise flow field in a WebGPU compute shader, then drawn as velocity-stretched additive sprites. Play it anything - the bundled track, a file you drop on it, or your microphone.',
     'The part I care about is that it is listening rather than reacting. Loudness is easy and it is what most visualisers use. This works out the key and whether the piece is major or minor, the tempo, where the transients are, whether a band is being struck or held, and - the one I am most pleased with - where the music stops to breathe.',
   ],
-  framesLede:
-    'Two styles and a lull, all from one session. Only the style and the music changed.',
+  framesLede: 'Two styles and a lull, all from one session. Only the style and the music changed.',
   framesCue: 'Pick a style, or use the arrow keys',
   proof: {
     t: 'The readout, uncropped',

@@ -69,15 +69,27 @@ const emberAsset: Record<string, string> = {
 
 const murmurationFrames: SwitchFrame[] = await Promise.all(
   [
-    { key: 'ribbon', tab: 'ribbon', asset: 'murmuration-frame-ribbon',
+    {
+      key: 'ribbon',
+      tab: 'ribbon',
+      asset: 'murmuration-frame-ribbon',
       alt: 'murmuration in ribbon style: long teal and violet strands drawn out into continuous calligraphic curves against black.',
-      note: 'Ribbon draws each grain as a long continuous strand. 78 fps at 1.4x sensitivity.' },
-    { key: 'constellation', tab: 'constellation', asset: 'murmuration-frame-constellation',
+      note: 'Ribbon draws each grain as a long continuous strand. 78 fps at 1.4x sensitivity.',
+    },
+    {
+      key: 'constellation',
+      tab: 'constellation',
+      asset: 'murmuration-frame-constellation',
       alt: 'murmuration in constellation style: a dense field of tight silver points spread across the frame, more starfield than cloud.',
-      note: 'Constellation trades filaments for tight points. 94 fps at 1.6x sensitivity.' },
-    { key: 'lull', tab: 'the lull', asset: 'murmuration-frame-lull',
+      note: 'Constellation trades filaments for tight points. 94 fps at 1.6x sensitivity.',
+    },
+    {
+      key: 'lull',
+      tab: 'the lull',
+      asset: 'murmuration-frame-lull',
       alt: 'murmuration during a quiet passage: the field thinned to a faint blue-white curve, most of the frame black.',
-      note: 'The same session during a quiet passage. Nothing is scripted - the field thins because the music did.' },
+      note: 'The same session during a quiet passage. Nothing is scripted - the field thins because the music did.',
+    },
   ].map(async (f) => ({
     key: f.key,
     tab: f.tab,
@@ -399,7 +411,7 @@ const blockholdFrames: SwitchFrame[] = await Promise.all(
       </div>
 
       <div class="card__copy">
-        <Deep label="Read on &middot; five styles, one listener">
+        <Deep label="Read on · five styles, one listener">
           <div class="card__cols">
             <div class="card__body">
               {murmuration.prose.map((p) => <p>{p}</p>)}
