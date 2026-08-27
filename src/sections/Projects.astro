@@ -579,7 +579,7 @@ const blockholdFrames: SwitchFrame[] = await Promise.all(
       <div class="shot shot--lead">
         <Picture
           src={asset('blockhold-lead-battle')}
-          alt="Blockhold mid-battle on Greenhollow: a dense wave of voxel enemies marching down the road into a line of shielded soldiers, towers firing, health bars ticking, the castle at the top of the map."
+          alt="Blockhold mid-battle on Greenhollow: a column of voxel enemies walking up the road into shielded soldiers and a hero, arrow and cannon towers firing from the plots beside them, health bars and damage numbers over the fight, a gargoyle in the air."
           widths={HALF_W}
           sizes={HALF_S}
           formats={['avif']}
@@ -587,7 +587,7 @@ const blockholdFrames: SwitchFrame[] = await Promise.all(
           loading="lazy"
           decoding="async"
         />
-        <p class="flag">Greenhollow &middot; wave 8 &middot; the line holds</p>
+        <p class="flag">Greenhollow &middot; wave 16 of 16 &middot; the last road</p>
       </div>
 
       <div class="card__copy">
@@ -596,7 +596,7 @@ const blockholdFrames: SwitchFrame[] = await Promise.all(
         <div class="card__badges">
           <State status={blockhold.status} label="Live" />
           <span class="tag">06 &middot; Shipped</span>
-          <span class="tag">Zero asset files</span>
+          <span class="tag">Models are code</span>
         </div>
 
         <h3 class="display">
@@ -610,7 +610,7 @@ const blockholdFrames: SwitchFrame[] = await Promise.all(
           cta={{ href: blockhold.href, label: 'Play Blockhold', out: true }}
         />
 
-        <Deep label="Read on · three battles">
+        <Deep label="Read on · four boards">
           <div class="card__body">
             {blockhold.prose.map((p) => <p>{p}</p>)}
           </div>

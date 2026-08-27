@@ -40,6 +40,10 @@ Any rule that shapes one of these images needs `height: auto` alongside it.
 
 `npm run verify` drives the running site in headless Chromium and is the gate before calling visual work done.
 It needs a server already up: `npm run dev` for the source, `npm run preview` for the built output.
+
+Preview the output of `npm run build:lab`, not `npm run build`.
+The suite drives the design lab to prove each hero variant mounts, and a plain build resolves that component away (see below), so four assertions fail on a correct tree.
+`astro preview` also has to be bound with `--host 127.0.0.1`; the suite dials that literal address and the default bind does not answer it.
 Its reduced-motion context is a real `prefers-reduced-motion: reduce` browser context, not a stubbed media query.
 
 Reduced motion here is a separate code path, not a shorter duration.
