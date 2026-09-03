@@ -1,0 +1,1398 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Shipworthy: a vibe-code idea bench. Rank app ideas by viral potential and fit, score your own, and get a v1 prompt to paste into your coding agent.">
+<meta name="theme-color" content="#F2F4F8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0D1120" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Shipworthy">
+<meta property="og:description" content="Pick something people will screenshot, then build it this weekend.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aj8uppal.github.io/shipworthy/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://aj8uppal.github.io/shipworthy/">
+<title>Shipworthy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F2F4F8; --surface:#FFFFFF; --surface-2:#E9EDF5; --surface-3:#DEE3EE;
+  --ink:#10172A; --muted:#5E6A85; --line:#D6DCE8; --line-strong:#B9C2D4;
+  --accent:#2B3FEE; --accent-ink:#FFFFFF; --accent-soft:#E4E8FF; --accent-line:#9DA9FF;
+  --heat:#C21F74; --heat-soft:#FBE0EE; --heat-ink:#FFFFFF;
+  --good:#0F6E44; --good-soft:#DDF3E8; --warn:#8F5807; --warn-soft:#FBEED3; --bad:#B32838; --bad-soft:#FBE1E4;
+  --shadow:0 1px 2px rgba(16,23,42,.05),0 10px 28px -14px rgba(16,23,42,.22);
+  --display:"Bricolage Grotesque","Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:10px; --r-sm:6px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1120; --surface:#161B2E; --surface-2:#1E2439; --surface-3:#283049;
+    --ink:#E9ECF5; --muted:#98A2BC; --line:#2A3149; --line-strong:#3B4463;
+    --accent:#8A97FF; --accent-ink:#0D1120; --accent-soft:#232A54; --accent-line:#4A57B8;
+    --heat:#FF6CB5; --heat-soft:#3D1F33; --heat-ink:#0D1120;
+    --good:#3FCB8A; --good-soft:#153327; --warn:#F0B454; --warn-soft:#3A2B10; --bad:#FF6F7C; --bad-soft:#3D1B21;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -14px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1120; --surface:#161B2E; --surface-2:#1E2439; --surface-3:#283049;
+  --ink:#E9ECF5; --muted:#98A2BC; --line:#2A3149; --line-strong:#3B4463;
+  --accent:#8A97FF; --accent-ink:#0D1120; --accent-soft:#232A54; --accent-line:#4A57B8;
+  --heat:#FF6CB5; --heat-soft:#3D1F33; --heat-ink:#0D1120;
+  --good:#3FCB8A; --good-soft:#153327; --warn:#F0B454; --warn-soft:#3A2B10; --bad:#FF6F7C; --bad-soft:#3D1B21;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -14px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;min-height:100vh}
+h1,h2,h3,h4{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+p{margin:0}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.55}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1240px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand h1{font-size:22px;font-weight:800;letter-spacing:-.02em;font-variation-settings:"opsz" 96}
+.brand .sub{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.tabs{display:flex;gap:4px;margin-left:auto;background:var(--surface-2);padding:4px;border-radius:999px}
+.tab{padding:7px 14px;border-radius:999px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.tab .n{font-family:var(--mono);font-size:11px;background:var(--accent);color:var(--accent-ink);border-radius:999px;min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.tab .n:empty{display:none}
+
+main{max-width:1240px;margin:0 auto;padding:24px 20px 80px}
+[hidden]{display:none!important}
+
+/* intro */
+.intro{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px;align-items:end;margin-bottom:28px}
+.intro h2{font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-.025em;font-variation-settings:"opsz" 96;max-width:16ch}
+.intro h2 em{font-style:normal;color:var(--heat)}
+.intro p{color:var(--muted);max-width:56ch;font-size:16px}
+.formula{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:8px}
+.formula .row{display:flex;justify-content:space-between;gap:12px;align-items:baseline;font-size:13px}
+.formula .row b{font-family:var(--mono);font-weight:500;color:var(--heat)}
+.formula .row span{color:var(--muted)}
+
+/* find layout */
+.find{display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;align-items:start}
+.profile{position:sticky;top:76px;max-height:calc(100vh - 92px);overflow:auto;overscroll-behavior:contain;display:grid;gap:18px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.profile h2{font-size:17px;font-weight:700}
+.group{display:grid;gap:8px}
+.group-head{display:flex;justify-content:space-between;align-items:baseline}
+.group-head .hint{font-size:12px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line-strong);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:500;background:var(--surface);transition:background .12s,border-color .12s,color .12s}
+.chip:hover{border-color:var(--accent-line)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.profile-actions{display:grid;gap:8px;padding-top:6px;border-top:1px solid var(--line)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:9px 14px;font-weight:600;font-size:14px;background:var(--surface);transition:background .12s,border-color .12s,transform .08s;line-height:1.2}
+.btn:hover{border-color:var(--accent-line);background:var(--accent-soft)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.heat{background:var(--heat);border-color:var(--heat);color:var(--heat-ink)}
+.btn.heat:hover{filter:brightness(1.06)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+.btn.ghost:hover{background:var(--surface-2);color:var(--ink)}
+.btn.sm{padding:6px 10px;font-size:13px}
+.btn svg{width:15px;height:15px;flex:none}
+.share-link{font-size:12px;color:var(--muted);text-align:center}
+.share-link button{color:var(--accent);font-weight:500;text-decoration:underline;text-underline-offset:2px}
+
+.results{display:grid;gap:12px;min-width:0}
+.results-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.results-head .count{font-family:var(--display);font-weight:600;font-size:18px}
+.results-head .count span{color:var(--muted);font-weight:500;font-size:14px;font-family:var(--body)}
+.sort{display:flex;gap:2px;background:var(--surface-2);padding:3px;border-radius:999px}
+.sort button{padding:5px 12px;border-radius:999px;font-size:13px;font-weight:500;color:var(--muted)}
+.sort button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+
+.ideas{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.idea{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:border-color .12s,box-shadow .12s}
+.idea:hover{border-color:var(--line-strong)}
+.idea.open{border-color:var(--accent-line);box-shadow:var(--shadow)}
+.idea-head{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;text-align:left;padding:14px 16px;cursor:pointer}
+.idea-head .rank{font-family:var(--mono);font-size:12px;color:var(--muted);align-self:start;padding-top:4px}
+.idea-head h3{font-size:18px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.idea-toggle{font:inherit;letter-spacing:inherit;text-align:left;display:inline-flex;align-items:center;gap:8px;min-width:0;overflow-wrap:anywhere}
+.idea-head .pitch,.idea-body .block p,.comps span,td .p,td .t,.critique,.modal pre{overflow-wrap:anywhere}
+.idea-toggle::before{content:"";width:7px;height:7px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(-45deg);flex:none;transition:transform .15s}
+.idea-toggle[aria-expanded="true"]::before{transform:rotate(45deg)}
+.idea-toggle:focus-visible{outline-offset:3px}
+.idea-head .pitch{color:var(--muted);font-size:14px;margin-top:2px;max-width:70ch}
+.idea-head .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.badge{font-family:var(--mono);font-size:11px;letter-spacing:.02em;padding:2px 7px;border-radius:4px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.badge.ai{background:var(--accent-soft);color:var(--accent)}
+.badge.remix{background:var(--heat-soft);color:var(--heat)}
+.badge.mine{background:var(--good-soft);color:var(--good)}
+.meters{display:grid;gap:6px;min-width:128px}
+.meter{display:grid;grid-template-columns:44px 1fr 30px;align-items:center;gap:8px;font-size:11px}
+.meter .lbl{font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.meter .bar{height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden}
+.meter .bar i{display:block;height:100%;border-radius:3px;background:var(--accent);transition:width .35s ease}
+.meter.heat .bar i{background:linear-gradient(90deg,var(--accent),var(--heat))}
+.meter .val{font-family:var(--mono);font-weight:600;font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+.meter.heat .val{color:var(--heat)}
+
+.idea-body{border-top:1px solid var(--line);padding:18px 16px 18px 66px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.8fr);gap:24px}
+.idea-body h4{font-size:12px;font-family:var(--mono);font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.idea-body .block+.block{margin-top:16px}
+.idea-body .block p{max-width:62ch}
+.idea-body ol{margin:0;padding-left:20px;display:grid;gap:4px;max-width:62ch}
+.idea-body .mech{display:inline-flex;align-items:center;gap:6px;background:var(--heat-soft);color:var(--heat);font-weight:600;padding:3px 9px;border-radius:999px;font-size:13px;margin-bottom:6px}
+.comps{display:flex;flex-wrap:wrap;gap:6px}
+.comps span{border:1px dashed var(--line-strong);border-radius:999px;padding:2px 9px;font-size:12px;color:var(--muted)}
+.axes{display:grid;gap:8px;background:var(--surface-2);border-radius:var(--r-sm);padding:12px}
+.axis{display:grid;grid-template-columns:86px 1fr 20px;gap:8px;align-items:center;font-size:12px}
+.axis .lbl{color:var(--muted)}
+.axis .bar{height:5px;background:var(--surface-3);border-radius:3px;overflow:hidden}
+.axis .bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.axis.low .bar i{background:var(--warn)}
+.axis .v{font-family:var(--mono);text-align:right}
+.axes .why{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.right{display:grid;gap:12px;align-content:start}
+
+.empty{padding:40px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line-strong);border-radius:var(--r)}
+.empty b{color:var(--ink)}
+
+/* Claude panel */
+.ai-box{background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:var(--r);padding:14px 16px;display:grid;gap:10px}
+.ai-box .st{display:flex;align-items:center;gap:10px;font-size:13px}
+.ai-box .dots i{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-right:3px;animation:pulse 1.2s infinite ease-in-out}
+.ai-box .dots i:nth-child(2){animation-delay:.2s}.ai-box .dots i:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.ai-box .err{color:var(--bad);font-size:13px}
+
+/* score mode */
+.score{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);gap:24px;align-items:start}
+.form{display:grid;gap:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.field{display:grid;gap:6px}
+.field label{font-weight:600;font-size:14px}
+.field .q{font-size:12px;color:var(--muted)}
+input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:9px 11px;width:100%}
+textarea{min-height:72px;resize:vertical}
+input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+.qgrid{display:grid;gap:14px}
+.qcard{display:grid;gap:8px;padding-top:14px;border-top:1px solid var(--line)}
+.qcard .qhead{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.qcard .qhead b{font-weight:600}
+.qcard .qhead .ax{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.opt{border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:8px 10px;font-size:12.5px;text-align:left;line-height:1.3;background:var(--surface);transition:background .12s,border-color .12s}
+.opt:hover{border-color:var(--accent-line)}
+.opt[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.card{position:sticky;top:76px;max-height:calc(100vh - 92px);overflow:auto;overscroll-behavior:contain;display:grid;gap:14px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.critique[aria-busy="true"]{opacity:.8}
+.err-line{color:var(--bad);font-size:13px;margin-top:8px}
+body.modal-open{overflow:hidden}
+.verdict{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.big{font-family:var(--display);font-size:56px;font-weight:800;letter-spacing:-.04em;line-height:1;font-variation-settings:"opsz" 96;color:var(--heat)}
+.big small{font-size:16px;color:var(--muted);letter-spacing:0;font-weight:600;margin-left:2px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-weight:700;padding:4px 10px;border-radius:999px;font-size:13px;font-family:var(--display)}
+.pill.ship{background:var(--good-soft);color:var(--good)}
+.pill.sharpen{background:var(--warn-soft);color:var(--warn)}
+.pill.skip{background:var(--bad-soft);color:var(--bad)}
+.verdict p{font-size:13px;color:var(--muted);margin-top:4px;max-width:36ch}
+.sugg{display:grid;gap:10px}
+.sugg h4{font-size:12px;font-family:var(--mono);font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.sugg li{font-size:13.5px;line-height:1.45}
+.sugg ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.sugg li b{font-weight:600}
+.critique{background:var(--surface-2);border-radius:var(--r-sm);padding:12px;font-size:13.5px;white-space:pre-wrap;line-height:1.5;max-height:340px;overflow:auto}
+
+/* shortlist */
+.shortlist{display:grid;gap:16px}
+.compare{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--surface-2)}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+th.num{text-align:right}
+td .t{font-weight:600}
+td .p{color:var(--muted);font-size:12.5px;max-width:44ch}
+tr:last-child td{border-bottom:0}
+.rowact{display:flex;gap:4px;justify-content:flex-end}
+
+/* toast + modal */
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:13.5px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;max-width:90vw}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal{position:fixed;inset:0;z-index:40;background:rgba(10,14,30,.5);display:grid;place-items:center;padding:20px}
+.modal .box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);width:min(720px,100%);max-height:86vh;display:grid;grid-template-rows:auto 1fr auto;box-shadow:var(--shadow)}
+.modal .hd{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.modal .hd h3{font-size:16px}
+.modal pre{margin:0;padding:16px 18px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.55;white-space:pre-wrap;color:var(--ink)}
+.modal .ft{display:flex;gap:8px;justify-content:flex-end;padding:12px 18px;border-top:1px solid var(--line)}
+
+footer{max-width:1240px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font-size:12.5px;display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+footer button{color:var(--muted);text-decoration:underline;text-underline-offset:2px}
+
+@media (max-width:960px){
+  .find{grid-template-columns:1fr}
+  .profile{position:static}
+  .score{grid-template-columns:1fr}
+  .card{position:static}
+  .intro{grid-template-columns:1fr}
+  .idea-body{grid-template-columns:1fr;padding-left:16px}
+}
+@media (max-width:640px){
+  .top-in{gap:10px}
+  .tabs{margin-left:0;width:100%;justify-content:space-between}
+  .tab{padding:7px 6px;font-size:13px;flex:1;min-width:0;justify-content:center;overflow:hidden;text-overflow:ellipsis}
+  .idea-head{grid-template-columns:minmax(0,1fr);gap:8px}
+  .idea-head .rank{display:none}
+  .meters{min-width:0}
+  .opts{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+<style>
+/* Standalone build: the hosted artifact gets this reset from its viewer. */
+img{max-width:100%}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <h1>Shipworthy</h1>
+      <span class="sub">vibe-code idea bench</span>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" id="tab-find" aria-selected="true" aria-controls="panel-find">Find ideas</button>
+      <button class="tab" role="tab" id="tab-score" aria-selected="false" aria-controls="panel-score" tabindex="-1">Score my idea</button>
+      <button class="tab" role="tab" id="tab-short" aria-selected="false" aria-controls="panel-short" tabindex="-1">Shortlist <span class="n" id="short-n"></span></button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="panel-find" role="tabpanel" aria-labelledby="tab-find">
+    <div class="intro">
+      <div>
+        <h2>Pick something people will <em>screenshot</em>, then build it this weekend.</h2>
+        <p style="margin-top:10px">Tell the bench who you are. It ranks a library of ideas by viral potential and fit, shows you the exact share moment to nail, and hands you a v1 prompt you can paste into your coding agent.</p>
+      </div>
+      <div class="formula" role="group" aria-label="How the viral score is computed">
+        <div class="eyebrow">Viral score = weighted axes</div>
+        <div class="row"><span>Screenshot test (does the output post well?)</span><b>28%</b></div>
+        <div class="row"><span>Identity (does it say something about me?)</span><b>22%</b></div>
+        <div class="row"><span>Utility (how often, how painful)</span><b>20%</b></div>
+        <div class="row"><span>Timing (riding a wave)</span><b>15%</b></div>
+        <div class="row"><span>Network (better with friends)</span><b>15%</b></div>
+      </div>
+    </div>
+
+    <div class="find">
+      <aside class="profile" aria-label="Your profile">
+        <h2>Who are you building for?</h2>
+        <div class="group">
+          <div class="group-head"><span class="eyebrow">Audience</span><span class="hint">pick any, none = all</span></div>
+          <div class="chips" id="g-aud" role="group" aria-label="Audience"></div>
+        </div>
+        <div class="group">
+          <div class="group-head"><span class="eyebrow">Format</span><span class="hint">pick any, none = all</span></div>
+          <div class="chips" id="g-fmt" role="group" aria-label="Format"></div>
+        </div>
+        <div class="group">
+          <div class="group-head"><span class="eyebrow">Your unfair edge</span><span class="hint">pick any, none = all</span></div>
+          <div class="chips" id="g-edge" role="group" aria-label="Your edge"></div>
+        </div>
+        <div class="group">
+          <div class="group-head"><span class="eyebrow">What you want from it</span><span class="hint">pick one</span></div>
+          <div class="chips" id="g-goal" role="group" aria-label="Goal"></div>
+        </div>
+        <div class="group">
+          <div class="group-head"><span class="eyebrow">Time you'll give v1</span><span class="hint">pick one</span></div>
+          <div class="chips" id="g-time" role="group" aria-label="Time budget"></div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn heat" id="btn-remix" type="button">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 4h3l6 8h3M2 12h3l1.5-2M11 4h3l-1.5 2M12 2l2 2-2 2M12 10l2 2-2 2"/></svg>
+            Remix a fresh idea
+          </button>
+          <button class="btn primary" id="btn-ai" type="button" hidden>
+            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.6 4.4L14 7l-4.4 1.6L8 13l-1.6-4.4L2 7l4.4-1.6z"/></svg>
+            Generate 5 tailored ideas with Claude
+          </button>
+          <button class="btn ghost sm" id="btn-reset" type="button">Reset profile</button>
+          <div class="share-link">Profile saved on this device · <button type="button" id="btn-sharelink">copy a link to this setup</button></div>
+        </div>
+      </aside>
+
+      <div class="results">
+        <div id="ai-box" class="ai-box" role="status" hidden></div>
+        <div class="results-head">
+          <div class="count" id="count" aria-live="polite"></div>
+          <div class="sort" role="group" aria-label="Sort by">
+            <button type="button" data-sort="rank" aria-pressed="true">Best for you</button>
+            <button type="button" data-sort="viral" aria-pressed="false">Most viral</button>
+            <button type="button" data-sort="speed" aria-pressed="false">Fastest to ship</button>
+          </div>
+        </div>
+        <ol class="ideas" id="ideas"></ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-score" role="tabpanel" aria-labelledby="tab-score" hidden>
+    <div class="intro">
+      <div>
+        <h2>Already have an idea? Put it on the <em>bench</em>.</h2>
+        <p style="margin-top:10px">Eight honest questions. The scorecard updates live and tells you the two or three things that would move the number most.</p>
+      </div>
+    </div>
+    <div class="score">
+      <form class="form" id="score-form" autocomplete="off">
+        <div class="field">
+          <label for="my-title">Working name</label>
+          <input type="text" id="my-title" maxlength="60" placeholder="e.g. Commit Roast">
+        </div>
+        <div class="field">
+          <label for="my-pitch">One-line pitch</label>
+          <textarea id="my-pitch" maxlength="280" placeholder="Paste a GitHub handle, get a savage but fair roast of your commit history on a card built to be posted."></textarea>
+        </div>
+        <div class="field">
+          <label for="my-who">Who is it for?</label>
+          <input type="text" id="my-who" maxlength="80" placeholder="Developers with a public GitHub">
+        </div>
+        <div class="field">
+          <span class="group-head"><label id="my-fmt-label">Format</label><span class="q">shapes the v1 prompt</span></span>
+          <div class="chips" id="my-fmt" role="group" aria-labelledby="my-fmt-label"></div>
+        </div>
+        <div class="qgrid" id="qgrid"></div>
+      </form>
+      <div class="card" id="scorecard"></div>
+    </div>
+  </section>
+
+  <section id="panel-short" role="tabpanel" aria-labelledby="tab-short" hidden>
+    <div class="intro">
+      <div>
+        <h2>Your <em>shortlist</em>.</h2>
+        <p style="margin-top:10px">Compare side by side, then copy the v1 prompt for the one you'll actually ship.</p>
+      </div>
+    </div>
+    <div class="shortlist" id="shortlist"></div>
+  </section>
+</main>
+
+<footer>
+  <span>Scores are a heuristic, not a prophecy. The only real test is shipping.</span>
+  <span><button type="button" id="btn-clear-all">Clear everything saved on this device</button></span>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="modal-root"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- vocab ---------- */
+/* vocab tables have no prototype, so "constructor" or "toString" from a stored or shared value never passes a lookup */
+const V=o=>Object.assign(Object.create(null),o);
+const AUD=V({me:"Myself",devs:"Developers",creators:"Creators",students:"Students",smb:"Small businesses",gamers:"Gamers",parents:"Parents",fitness:"Fitness people",jobs:"Job seekers",teams:"Teams at work"});
+const FMT=V({web:"Web app",ext:"Browser extension",bot:"Chat bot",mobile:"Phone-first",cli:"CLI / dev tool"});
+const EDGE=V({audience:"I have an audience",domain:"I know a niche deeply",design:"I make things look good",data:"I have data or an API",speed:"I ship fast"});
+const GOAL=V({fun:"Fun",followers:"Followers",money:"Money",portfolio:"Portfolio",learn:"Learning"});
+const TIME=V({weekend:"A weekend",week:"A week",month:"A month"});
+const MECH=V({identity:"Identity badge",screenshot:"Screenshot bait",invite:"Invite loop",wom:"Utility word of mouth",ritual:"Daily ritual",wave:"Wave rider",humor:"Humor"});
+const AXES=[["share","Screenshot"],["identity","Identity"],["utility","Utility"],["timing","Timing"],["net","Network"],["speed","Ship speed"]];
+const W={share:.28,identity:.22,utility:.20,timing:.15,net:.15};
+
+/* ---------- idea library ---------- */
+/* s = 1..5 per axis. effort 1 weekend, 2 week, 3 month. money 1..5 */
+const IDEAS=[
+{id:"commit-roast",t:"Commit Roast",p:"Paste a GitHub handle, get a savage but fair roast of your commit history on a card built to be posted.",aud:["devs"],fmt:"web",edge:["none"],goal:["fun","followers","portfolio"],mech:"humor",
+ why:"Every developer has a commit log they are slightly ashamed of. A roast turns that shame into a badge, and the card carries the app's name into every feed it lands in.",
+ share:"A 1200×630 card: their avatar, one brutal line, three stats (messages that just say 'fix', commits after midnight, longest streak of 'wip').",
+ mvp:["Fetch public commits for a handle via the GitHub API (no auth for v1).","Compute five stats and send them with a tight persona prompt to a language model.","Render the card on a canvas and give it a one-tap download and share button."],
+ first:"Roast ten well-known open-source maintainers (with affection) and post the cards. Tag them.",
+ risk:"Rate limits and roasts that land as mean instead of funny. Keep a blocklist of topics and a 'roast me gently' toggle.",
+ comps:["GitHub Wrapped","Roast my startup","Spotify Wrapped"],s:{share:5,identity:5,utility:2,timing:3,net:3,speed:5},effort:1,money:1},
+{id:"ai-wrapped",t:"AI Wrapped",p:"Upload your chat export from any assistant and get your year in prompts: tokens, favourite words, the number of times you said please.",aud:["me","devs","creators"],fmt:"web",edge:["none"],goal:["followers","fun","portfolio"],mech:"identity",
+ why:"Wrapped works because it is about you and lands on a calendar moment. The existing 'ChatGPT Wrapped' clones read one assistant's export on a server; this reads all of them, in the browser, and compares.",
+ share:"A vertical story-sized card: 'You wrote 1.2M words to an AI this year. 61% of them were apologies.'",
+ mvp:["Parse the JSON export entirely in the browser, never upload it.","Compute ten stats client-side: volume, hour-of-day heatmap, politeness score, longest thread.","Render three swipeable cards and export as PNG."],
+ first:"Ship it the first week of December and post your own card. Ask three AI-newsletter writers to run theirs.",
+ risk:"Export formats change without notice. Ship with a sample export so the page works before anyone uploads anything.",
+ comps:["Spotify Wrapped","GitHub Wrapped","Year in Review by Strava"],s:{share:5,identity:5,utility:2,timing:5,net:2,speed:4},effort:1,money:1},
+{id:"bill-splitter",t:"Snap & Split",p:"Photograph the receipt, tap who had what, everyone gets a payment link. No accounts, no app to install.",aud:["me","students"],fmt:"mobile",edge:["none"],goal:["portfolio","money","learn"],mech:"invite",
+ why:"Every use pulls in three to eight other people who had to open the link. Group dinners are a weekly ritual for the exact audience that shares apps.",
+ share:"The link itself. 'Tap your items' is the whole onboarding, and the person who paid sends it to everyone.",
+ mvp:["Vision model reads the receipt into line items; let the user fix mistakes inline.","Shareable page where each person taps their items; tax and tip split proportionally.","Generate Venmo, Cash App and PayPal deep links with the amount pre-filled."],
+ first:"Use it at every meal for a month and let the guests find it. Post the before and after of a 14-person tab.",
+ risk:"Receipt OCR quality on crumpled paper. Always let people type a total and split evenly as a fallback.",
+ comps:["Splitwise","Tab","Plates by Splitwise"],s:{share:3,identity:1,utility:5,timing:3,net:5,speed:4},effort:1,money:2},
+{id:"meeting-meter",t:"Meeting Meter",p:"A live ticker in the corner of every video call showing what the meeting has cost in salary so far.",aud:["teams"],fmt:"ext",edge:["none"],goal:["fun","followers"],mech:"screenshot",
+ why:"It makes an invisible number visible and slightly outrageous. Screenshots of '$1,840 and we have not decided anything' write themselves.",
+ share:"A screenshot of the ticker over a call, with an optional 'this meeting could have been an email' stamp at the end.",
+ mvp:["Extension that detects a Meet, Zoom web or Teams tab and counts participants from the DOM.","Overlay with a running cost from one configurable average hourly rate.","End-of-call summary card with total cost and a copy button."],
+ first:"Post one screenshot from a real all-hands. Managers will share it as a joke and then install it.",
+ risk:"DOM selectors on call apps change monthly. Keep participant count manual as a fallback.",
+ comps:["Meeting Cost Calculator","Time Is Ltd","Clockwise"],s:{share:5,identity:3,utility:3,timing:3,net:3,speed:5},effort:1,money:2},
+{id:"fridge-dinner",t:"Fridge to Dinner",p:"Photograph the inside of your fridge, get three dinners under 20 minutes from what is actually in the photo. No shopping list, ever.",aud:["me","parents"],fmt:"mobile",edge:["none"],goal:["portfolio","learn","money"],mech:"wom",
+ why:"The 6pm 'what's for dinner' problem is universal, daily and mildly painful. Chat assistants can do this from a photo, but nobody opens a chat at 6pm; a camera button on the home screen wins on speed. The angle is the hard rule: only what is in the photo.",
+ share:"A photo of the fridge next to the three suggestions. Slightly chaotic fridges make the best posts.",
+ mvp:["Camera capture, sent to a vision model with a strict JSON schema for ingredients.","Three recipes with a 'missing one thing' flag and a 20-minute cap.","Save the ones you cooked; suggest them again when the same ingredients reappear."],
+ first:"Post it in three parenting and student subreddits with your own fridge photo. Ask for the worst fridges.",
+ risk:"Hallucinated ingredients. Show the detected list for confirmation before recipes.",
+ comps:["SuperCook","Samsung Food","Whisk"],s:{share:3,identity:2,utility:4,timing:2,net:2,speed:4},effort:1,money:3},
+{id:"hours-not-dollars",t:"Hours, Not Dollars",p:"Rewrites every price you see online as hours of your own work. That jacket is 6h 20m.",aud:["me","students"],fmt:"ext",edge:["none"],goal:["fun","followers","portfolio"],mech:"identity",
+ why:"It changes how people feel, not what they know, and the feeling is shareable. It also tells the world something about you: that you are the kind of person who thinks about this.",
+ share:"Screenshots of absurd conversions (a phone for 84 hours, a coffee for 11 minutes) and the monthly card: 'You looked at 212 hours of stuff this month and bought 9.'",
+ mvp:["Content script that finds price patterns in the page text and appends the hours.","One-time setup: hourly wage, computed from salary if preferred, stored locally.","Toggle per site and a monthly total of hours 'looked at'."],
+ first:"Post the extension on a personal finance forum with three screenshots. Then a 'worst offenders' thread.",
+ risk:"Price detection false positives (dates, model numbers). Only rewrite text that has a currency symbol.",
+ comps:["Time Is Money extension","Your Money or Your Life","Honey"],s:{share:4,identity:4,utility:3,timing:2,net:2,speed:5},effort:1,money:1},
+{id:"daily-icon",t:"Iconle",p:"A daily puzzle: guess the app from a blurred, slowly revealing icon. Six tries, emoji grid to share.",aud:["me","gamers","devs"],fmt:"web",edge:["design"],goal:["followers","fun"],mech:"ritual",
+ why:"Wordle's mechanic is proven: one puzzle a day, the same for everyone, a spoiler-free emoji result to post. Nobody has done it with the icons everyone sees a hundred times a day.",
+ share:"The emoji grid plus streak, copied to the clipboard in one tap.",
+ mvp:["A list of 365 icons stored as data URIs; the day index picks the puzzle.","Reveal steps: heavy blur, pixelation, colour only, one quadrant, full.","Local streak and a results grid identical in shape to Wordle's."],
+ first:"Post the day-one grid in a design Slack and two subreddits. Ask people to guess the pattern.",
+ risk:"Trademark sensitivity. Use icons as commentary and never claim affiliation; keep a takedown path.",
+ comps:["Wordle","Framed","Heardle"],s:{share:5,identity:3,utility:1,timing:3,net:4,speed:5},effort:1,money:1},
+{id:"readme-guess",t:"Guess the Repo",p:"Five real issue titles from a famous open-source project, one at a time. Name the repo before the fifth. A daily puzzle for developers.",aud:["devs"],fmt:"web",edge:["none"],goal:["followers","fun"],mech:"ritual",
+ why:"Developers love proving they know the ecosystem, and issue titles are funnier and more revealing than READMEs ('Segfault on M1 when locale is Turkish'). Puzzle content is free and endless.",
+ share:"An emoji grid plus 'named it from issue 2, day 43'.",
+ mvp:["Curate 200 repos; pull five closed issue titles each via the GitHub API, strip the project name.","Reveal one title per guess, then language, then star count as the last hint.","Streak, grid, copy button."],
+ first:"Reply to a maintainer's launch post with 'you're day 12'. Post in Hacker News Show.",
+ risk:"Cheating is trivial, and that is fine. Do not add leaderboards.",
+ comps:["Wordle","Chessle","Crosswordle"],s:{share:4,identity:4,utility:1,timing:2,net:3,speed:5},effort:1,money:1},
+{id:"pitch-stress",t:"VC Stress Test",p:"Paste your startup one-liner and get the five questions a partner will ask, with the weakest answer highlighted.",aud:["smb","me"],fmt:"web",edge:["domain"],goal:["followers","portfolio","money"],mech:"identity",
+ why:"Founders share their scores because a good one is a flex and a bad one is content. Every accelerator cohort is a distribution channel.",
+ share:"A scorecard: five questions, a colour per answer, one 'fundability' number founders will argue about.",
+ mvp:["One text field; a prompt that returns five questions and a 1–10 rating with reasoning as JSON.","Scorecard rendered as a shareable image.","A 'rerun with my answers' loop that shows the number moving."],
+ first:"Run it on ten famous Y Combinator one-liners and publish the results.",
+ risk:"Generic questions feel like a toy. Use a rubric with specific failure modes per business model.",
+ comps:["Roast my startup","PitchBob","YC's application questions"],s:{share:4,identity:4,utility:3,timing:3,net:2,speed:5},effort:1,money:3},
+{id:"jd-decoder",t:"Job Post Decoder",p:"Paste a job description, get the red flags translated ('fast-paced' means understaffed) and a guessed pay range.",aud:["jobs"],fmt:"ext",edge:["none"],goal:["followers","fun","portfolio"],mech:"humor",
+ why:"Job hunting is miserable and the translations are funny in a way people want to forward. It also solves a real problem: figuring out which posts to ignore.",
+ share:"A screenshot of the decoded post with the worst flags highlighted in red.",
+ mvp:["Content script on LinkedIn, Indeed and Greenhouse pages adds a 'Decode' button.","Prompt returns flags with a severity and a plain-English translation.","Pay estimate from title, location and seniority with a confidence label."],
+ first:"Decode twenty viral 'unhinged job post' screenshots and reply to the original posts.",
+ risk:"Pay guesses that are wrong look bad. Show a range and always say it is an estimate.",
+ comps:["r/recruitinghell","Hiring.cafe ghost-job flags","Corporate BS Generator"],s:{share:4,identity:3,utility:4,timing:3,net:2,speed:5},effort:1,money:2},
+{id:"shot-to-csv",t:"Screenshot to Spreadsheet",p:"Drop any screenshot of a table, get a clean CSV or a Google Sheets paste in two seconds. Runs in the browser, nothing uploaded.",aud:["teams","students","me"],fmt:"web",edge:["none"],goal:["money","portfolio","learn"],mech:"wom",
+ why:"Pure utility that people hit at work every week. Nobody posts about it, but everyone tells the colleague sitting next to them, and 'nothing leaves your machine' is what lets them use it on work data.",
+ share:"The 10-second GIF: screenshot dropped, sheet appears, one low-confidence cell highlighted. Make that GIF the top of the page.",
+ mvp:["Drag-and-drop image, sent to a vision model with a 'return a CSV only' prompt.","Editable grid preview with copy-as-TSV and download-as-CSV.","Handle multiple tables and merged headers by asking the model for JSON rows."],
+ first:"Post the GIF in analyst and ops communities. Offer it free until a hundred people ask for batch mode.",
+ risk:"Numbers misread by one digit are dangerous. Highlight low-confidence cells.",
+ comps:["Table Capture","Nanonets","Excel's insert data from picture"],s:{share:2,identity:1,utility:5,timing:2,net:1,speed:4},effort:1,money:4},
+{id:"viral-predictor",t:"Will This Post Land?",p:"Paste a draft post and get a virality score with the one edit that would raise it most.",aud:["creators","me"],fmt:"web",edge:["audience","data"],goal:["followers","money"],mech:"identity",
+ why:"Creators are obsessed with the number and will screenshot a high score. The tool is about their own words, which makes it identity.",
+ share:"The score card next to the post, especially when the post then goes viral.",
+ mvp:["A scoring prompt with a rubric: hook, specificity, curiosity gap, length, call to reply.","Return score, three notes and one rewritten hook as JSON.","Compare two drafts side by side."],
+ first:"Score fifty famous viral posts and publish which rules they broke.",
+ risk:"It is a vibe, not a model. Say so and let people rate whether the advice helped.",
+ comps:["Typefully","Tweet Hunter","Hemingway Editor"],s:{share:4,identity:3,utility:3,timing:3,net:2,speed:4},effort:1,money:3},
+{id:"insta-site",t:"Nine Posts to Homepage",p:"Upload your nine best posts and a bio; get a one-page website with your links and a booking button, colours pulled from the photos.",aud:["creators","smb"],fmt:"web",edge:["design"],goal:["money","portfolio"],mech:"wom",
+ why:"Small creators and local businesses need a site, hate building one, and the result is something they immediately show people.",
+ share:"The site itself, in their bio. Every visitor is a prospect.",
+ mvp:["Upload nine images and a bio; crop and order them on one screen.","Three templates that look good with any photos; pick colours from the images.","Custom subdomain and a 'made with' badge on the free tier."],
+ first:"Build twenty for local cafés and tattoo artists without being asked. Send them the link.",
+ risk:"Platform scraping breaks. Manual upload must be first-class, not a fallback.",
+ comps:["Linktree","Carrd","Beacons"],s:{share:3,identity:3,utility:4,timing:3,net:2,speed:3},effort:2,money:5},
+{id:"where-to-eat",t:"Where Bot",p:"A group-chat bot that ends the 'where should we eat' loop: it proposes three places, everyone taps, it converges in two rounds.",aud:["me","students","gamers"],fmt:"bot",edge:["none"],goal:["fun","portfolio","learn"],mech:"invite",
+ why:"It only works in a group, so every install brings a group. The problem happens weekly and is universally annoying.",
+ share:"The bot message itself, in the chat, with a 'decided in 2 min' stamp.",
+ mvp:["Discord or Telegram bot: /where triggers a poll with three options from a places search near the chat's saved area.","Two-round elimination with a clear winner message.","Remember what the group picked and avoid repeats."],
+ first:"Drop it in ten friend groups and college Discords. Post the funniest decision logs.",
+ risk:"Places API costs. Cache aggressively and let groups add their own list.",
+ comps:["Doodle","Wheel of Names","Slack polls"],s:{share:3,identity:1,utility:4,timing:2,net:5,speed:4},effort:1,money:1},
+{id:"url-nutrition",t:"Nutrition Label for the Web",p:"Paste any article link and get a nutrition label: reading time, ad density, sources cited, how much is opinion.",aud:["me","students"],fmt:"ext",edge:["design"],goal:["followers","portfolio","fun"],mech:"screenshot",
+ why:"The label format is instantly legible and people already screenshot nutrition labels to make points. It lets readers judge a link before they argue about it.",
+ share:"The label, styled exactly like the food one, with the source's name on top.",
+ mvp:["Fetch and parse the article; count words, ads, links, quotes, and adjectives.","Prompt for a 'fact vs opinion' ratio and a two-line summary.","Render the label as an SVG that copies as an image."],
+ first:"Label the ten most shared articles of the week and post the labels side by side.",
+ risk:"Paywalls and bot blocks. Degrade to what the page exposes and say what was measured.",
+ comps:["Ground News","Ad Fontes Media","Pocket reading time"],s:{share:4,identity:3,utility:3,timing:3,net:2,speed:4},effort:1,money:2},
+{id:"run-verdict",t:"Run or Not",p:"One screen, one verdict: should you run outside right now? Uses temperature, wind, air quality, pollen and daylight.",aud:["fitness"],fmt:"mobile",edge:["data"],goal:["portfolio","learn"],mech:"wom",
+ why:"Runners check three apps to make this decision. Collapsing it to one word is a small pleasure they will mention in run clubs.",
+ share:"The verdict card with the reason: 'GO. Wind 4 mph, AQI 22, sunset in 2h 10m.'",
+ mvp:["Geolocate; pull a free weather and air quality API.","A rule set with user tweaks: max heat, min daylight, pollen sensitivity.","Home-screen PWA with a widget-like single screen."],
+ first:"Post it in local run club chats and on Strava club pages. Ask people to send their thresholds.",
+ risk:"API keys exposed in a static app. Proxy them through one tiny serverless function.",
+ comps:["Strava","Weather for Runners","AirVisual"],s:{share:2,identity:2,utility:4,timing:2,net:2,speed:4},effort:1,money:2},
+{id:"aisle-list",t:"Aisle Order",p:"Talk your grocery list into your phone; it comes out sorted by the aisle order of your actual store.",aud:["parents","me"],fmt:"mobile",edge:["none"],goal:["portfolio","learn"],mech:"wom",
+ why:"Weekly, for millions of people, and the aisle-sort trick is a genuine 'oh' moment on first use. Parents tell other parents.",
+ share:"A before and after: the chaotic voice memo and the neat, ordered list.",
+ mvp:["Speech-to-text in the browser, then a prompt that normalises items and categories.","A default aisle order; let the user drag categories to match their store.","Tap to check off, swipe to keep for next week."],
+ first:"Post in parenting groups with the 'say it in the car' framing.",
+ risk:"Store layouts differ. Make reordering aisles a two-second gesture, not a setting.",
+ comps:["AnyList","Bring!","Out of Milk"],s:{share:2,identity:1,utility:4,timing:2,net:3,speed:4},effort:1,money:2},
+{id:"explain-bill",t:"Explain My Bill",p:"Photograph a medical, utility or phone bill and get every line in plain English, plus what you can dispute.",aud:["me","parents"],fmt:"web",edge:["domain"],goal:["money","portfolio"],mech:"wom",
+ why:"Bills are opaque on purpose. A tool that finds a $140 mistake gets talked about, and the audience is everyone.",
+ share:"'It found $312 in charges I could dispute' posts. Provide a redacted card that shows the finding without the account details.",
+ mvp:["Vision model extracts line items with codes and amounts to JSON, on device where possible.","Prompt explains each code and flags common overcharges.","Generates a dispute letter or the phone script."],
+ first:"Explain twenty bills for friends and family. Write up the five biggest finds.",
+ risk:"Privacy and liability. Never store images, say it is not advice, and strip identifiers before any request.",
+ comps:["Goodbill","Rocket Money","Dollar For"],s:{share:3,identity:2,utility:5,timing:4,net:2,speed:4},effort:1,money:4},
+{id:"tab-graveyard",t:"Tab Graveyard",p:"Closes the 200 tabs you were never going to read and hands you a weekly card of what you hoarded.",aud:["me","devs"],fmt:"ext",edge:["none"],goal:["fun","followers","portfolio"],mech:"identity",
+ why:"Tab count is a personality trait people confess to. A card that says '412 tabs, oldest from March' is a joke and a flex at once.",
+ share:"The weekly tombstone card: number buried, oldest tab, most hoarded domain.",
+ mvp:["Extension lists tabs older than N days; one click archives them to a local list and closes them.","Weekly summary card generated from that list.","Search across the graveyard, resurrect any tab."],
+ first:"Post your own card with a truly embarrassing number. Reply to every 'how many tabs do you have' thread.",
+ risk:"Closing tabs feels dangerous. Undo must be instant and obvious.",
+ comps:["OneTab","Toby","Arc's auto-archive"],s:{share:4,identity:4,utility:4,timing:2,net:2,speed:4},effort:1,money:2},
+{id:"release-notes-voice",t:"Release Notes, Dramatically",p:"A GitHub Action that rewrites your changelog in a chosen voice: film trailer, sea shanty, nature documentary.",aud:["devs"],fmt:"cli",edge:["none"],goal:["fun","followers"],mech:"humor",
+ why:"Release notes are boring and everyone reads them. A shanty about a bug fix gets quoted in Slack and linked from the repo.",
+ share:"The release page itself, plus a quote card for the best line.",
+ mvp:["Action reads merged pull request titles since the last tag.","Prompt with a strict persona and a plain-text version appended underneath.","Publish as a GitHub release draft for review."],
+ first:"Open pull requests adding it to five beloved open-source projects. Ship your own release with it first.",
+ risk:"Jokes get old. Ship ten voices and rotate weekly.",
+ comps:["Release Drafter","Conventional Changelog","Semantic Release"],s:{share:4,identity:3,utility:2,timing:2,net:2,speed:5},effort:1,money:1},
+{id:"dep-obituary",t:"Dependency Obituary",p:"Point it at a repo and get an obituary page for every unmaintained dependency you rely on, with a badge for your README.",aud:["devs"],fmt:"cli",edge:["none"],goal:["followers","portfolio","learn"],mech:"screenshot",
+ why:"Developers love a grim joke about their own stack, and the badge puts the app's name in READMEs forever.",
+ share:"The obituary card: 'left-pad-ish, 2014–2021. Survived by 4,112 dependents.' And the README badge.",
+ mvp:["Read package.json or requirements.txt; check last publish date and open issues from the registry.","Render an obituary per package past a threshold.","Badge endpoint and a copy-to-README snippet."],
+ first:"Run it on the twenty most starred repos and post the worst offenders.",
+ risk:"Registry rate limits. Cache results per package for a week.",
+ comps:["Snyk","Libraries.io","Renovate"],s:{share:4,identity:3,utility:4,timing:2,net:2,speed:4},effort:1,money:2},
+{id:"tenant-letter",t:"Tenant Letter",p:"Pick your state and your problem, get a legally worded letter to your landlord with the statute cited.",aud:["me","students"],fmt:"web",edge:["domain"],goal:["money","portfolio"],mech:"wom",
+ why:"A high-stakes moment, an intimidated audience, and an answer that is mostly templated. People who get their deposit back tell everyone.",
+ share:"'Sent this, got $1,800 back in 9 days' posts. Add a redacted summary card.",
+ mvp:["A form: state, issue type, dates, amounts.","Template per issue with the statute filled in from a table you maintain.","Download as PDF; a checklist for sending it properly."],
+ first:"Post in tenant subreddits and campus housing groups. Help the first fifty by hand.",
+ risk:"Legal accuracy. Cover five states well before going wide; label it a template, not advice.",
+ comps:["DoNotPay","JustAnswer","Nolo"],s:{share:3,identity:1,utility:5,timing:2,net:2,speed:3},effort:2,money:4},
+{id:"sleep-ledger",t:"Sleep Debt Ledger",p:"Type when you slept, see your running sleep debt as a bank balance, with a payoff date.",aud:["fitness","me"],fmt:"mobile",edge:["none"],goal:["portfolio","learn","fun"],mech:"identity",
+ why:"Turning sleep into a debt balance reframes it as money, and people love confessing their balance. Zero hardware required.",
+ share:"The balance card: '-14h 20m. Solvent by Sunday if you sleep 8h.'",
+ mvp:["Two taps a day: bed and wake, stored locally.","Rolling 14-day debt against a target with a projection.","A weekly card and a streak for nights above target."],
+ first:"Post your own ledger during exam season or a product launch week.",
+ risk:"Health-adjacent. Do not diagnose, just count.",
+ comps:["Rise","Sleep Cycle","Bearable"],s:{share:3,identity:3,utility:3,timing:2,net:2,speed:5},effort:1,money:2},
+{id:"chore-auction",t:"Chore Auction",p:"Kids bid on chores with allowance points in a weekly family auction. Lowest bid wins the job.",aud:["parents"],fmt:"web",edge:["none"],goal:["fun","portfolio"],mech:"invite",
+ why:"It gamifies a fight every family has, and it needs the whole family in it. Parents share parenting hacks relentlessly.",
+ share:"The auction results board: who won what for how much.",
+ mvp:["Family room via a link; chores with a starting price.","Live bidding with a timer, on any phone.","Weekly ledger and a payout screen."],
+ first:"Run it in your own family, post the board, and offer it to parenting newsletters.",
+ risk:"Fairness fights. Add a parent override and a minimum bid.",
+ comps:["Greenlight","OurHome","Homey"],s:{share:3,identity:2,utility:3,timing:2,net:4,speed:3},effort:2,money:3},
+{id:"syllabus-cal",t:"Syllabus to Calendar",p:"Upload every syllabus at the start of term and get all deadlines, exams and readings in your calendar in one go.",aud:["students"],fmt:"web",edge:["none"],goal:["portfolio","money","learn"],mech:"wom",
+ why:"A sharp, seasonal pain that hits millions on the same two weeks a year, and the result is visible on their calendar all semester.",
+ share:"The 'my whole semester in one calendar' screenshot in the first week of term.",
+ mvp:["PDF or image upload; a prompt extracts events with dates and weights as JSON.","Preview and edit the table; one click exports .ics or adds to Google Calendar.","Weight-aware reminders: bigger exams get earlier nudges."],
+ first:"Launch the week before term. Post in every campus subreddit and Discord you can find.",
+ risk:"Ambiguous dates ('week 4'). Ask for the term start date and resolve relative dates.",
+ comps:["Notion templates","MyStudyLife","Google Calendar"],s:{share:3,identity:1,utility:5,timing:4,net:2,speed:4},effort:1,money:3},
+{id:"three-sides",t:"Three Sides",p:"Paste a conflict from your life and get the same story told from three points of view, including the one you are avoiding.",aud:["me","students"],fmt:"web",edge:["none"],goal:["fun","followers"],mech:"screenshot",
+ why:"People already post their conflicts online for judgment. A tool that hands them the other side is both useful and dramatic.",
+ share:"The three-column card, often posted with 'ok fine, they had a point'.",
+ mvp:["One text box; a prompt that returns three perspectives with a fairness note.","Three-column card rendered as an image.","A 'what could I say next' follow-up."],
+ first:"Run it on the top posts of an advice forum and post the results.",
+ risk:"Sensitive content. Refuse anything involving harm and never store inputs.",
+ comps:["r/AmItheAsshole","Delphi by AI2","Character.ai"],s:{share:4,identity:3,utility:2,timing:3,net:2,speed:5},effort:1,money:1},
+{id:"corporate-translator",t:"Corporate Translator",p:"Turns 'per my last email' into what you meant, and what you meant into something HR-safe. Both directions.",aud:["teams","me"],fmt:"ext",edge:["none"],goal:["fun","followers"],mech:"humor",
+ why:"Office speak is a shared joke among a billion people. Screenshots of translations are pure feed material.",
+ share:"A two-column card: what they said, what they meant.",
+ mvp:["Select text on any page, right click, translate.","Two prompt modes with a slider for how passive-aggressive.","Copy the result; keep a local history of your best ones."],
+ first:"Translate ten famous leaked corporate memos and post them.",
+ risk:"One joke. Add a 'make it sound senior' mode people will actually use daily.",
+ comps:["Corporate BS Generator","Grammarly tone detector"],s:{share:5,identity:3,utility:2,timing:2,net:2,speed:5},effort:1,money:1},
+{id:"squad-streak",t:"Squad Streak",p:"A shared gym streak for a group of friends. One photo a day each. If one person misses, everyone's streak resets.",aud:["fitness","students"],fmt:"mobile",edge:["none"],goal:["fun","followers","portfolio"],mech:"invite",
+ why:"Shared consequences create real accountability, and the app only works if you recruit friends. Streak screenshots are already a fitness genre.",
+ share:"The squad streak card, posted when it hits a round number or when someone breaks it.",
+ mvp:["Create a squad via link; each member posts one photo a day.","Streak logic with a grace window and a 'rest day' vote.","A daily card and a hall of shame."],
+ first:"Start three squads with friends and post day 30.",
+ risk:"Photo storage costs. Keep photos for seven days only.",
+ comps:["BeReal","Strava","Duolingo streaks"],s:{share:4,identity:4,utility:3,timing:3,net:5,speed:3},effort:2,money:3},
+{id:"menu-lens",t:"Menu Lens",p:"Photograph a menu abroad and get it translated, allergen-tagged and sorted by price, with what to order.",aud:["me","parents"],fmt:"mobile",edge:["none"],goal:["portfolio","learn","money"],mech:"wom",
+ why:"Travel moments get shared and the tool solves a stressful problem in seconds. It also has a natural paid tier.",
+ share:"The side-by-side photo: cryptic menu, sorted list with a 'locals order this' pick.",
+ mvp:["Camera to vision model; return dishes with price, allergens, description as JSON.","Sort and filter by allergen and budget.","Offline phrasebook for the top ten ordering phrases."],
+ first:"Post in travel subreddits before summer with three menus from different alphabets.",
+ risk:"Allergen errors are serious. Label as best-effort and show the original text.",
+ comps:["Google Lens","Waygo","TripLingo"],s:{share:3,identity:1,utility:4,timing:3,net:2,speed:4},effort:1,money:3},
+{id:"repo-landing",t:"Repo to Landing Page",p:"Paste a GitHub URL, get a landing page with a hero, features from the README and install instructions.",aud:["devs"],fmt:"web",edge:["design"],goal:["money","portfolio"],mech:"wom",
+ why:"Every side project needs a page and developers hate making them. The output carries a 'built with' link into every project page.",
+ share:"The landing page in the repo's About link and on launch posts.",
+ mvp:["Fetch README and metadata; prompt extracts tagline, features, and quickstart.","Three templates with the repo's language colour as accent.","One-click deploy to a subdomain."],
+ first:"Generate pages for twenty trending repos and open pull requests to add the link.",
+ risk:"Generic output. Pull real screenshots from the README and use them.",
+ comps:["readme.so","Vercel templates","Carrd"],s:{share:3,identity:2,utility:4,timing:3,net:2,speed:4},effort:1,money:4},
+{id:"dupe-finder",t:"Dupe Radar",p:"On any skincare or beauty product page, see cheaper products with the same ingredient list, ranked by how close they are.",aud:["me","creators"],fmt:"ext",edge:["data"],goal:["money","followers"],mech:"screenshot",
+ why:"Finding dupes is already a huge content genre. Screenshots of a $180 product next to its $22 twin are catnip.",
+ share:"The side-by-side card with the price gap in big type.",
+ mvp:["Content script reads the product title and ingredient list from the page.","Match ingredient lists against Open Beauty Facts (free, open data) and rank by overlap.","Side-by-side card with a 'why this is a dupe' line and the price gap in big type."],
+ first:"Post a thread of the ten biggest gaps you find. Tag creators who do dupe content.",
+ risk:"Affiliate optics and false matches. Show your similarity reasoning.",
+ comps:["Dupe.com","Honey","Camelcamelcamel"],s:{share:4,identity:2,utility:4,timing:3,net:2,speed:3},effort:2,money:4},
+{id:"afford-it",t:"Can I Afford It?",p:"Type your numbers once. Then ask 'can I afford a $340 flight' and get a yes or no with the reason.",aud:["me","students"],fmt:"mobile",edge:["none"],goal:["portfolio","learn"],mech:"wom",
+ why:"Budgeting apps fail because they ask too much. A one-question interface is the whole product, and the honesty of it is what people mention.",
+ share:"The answer card: 'No. That's your groceries until the 28th.'",
+ mvp:["Onboarding: income, fixed costs, payday, current balance, stored locally.","A simple engine that projects the balance to the next payday.","One text box that parses the amount and answers in one line."],
+ first:"Post in student and personal finance communities with the honest screenshots.",
+ risk:"It is easy to be wrong when people forget expenses. Show the math under the answer.",
+ comps:["YNAB","Copilot Money","Monarch"],s:{share:3,identity:2,utility:4,timing:2,net:1,speed:5},effort:1,money:3},
+{id:"future-text",t:"Text From Future You",p:"Write a message to yourself; it arrives by text on a date you pick, from a number that is you. Not buried in email like the old letter sites.",aud:["me","students"],fmt:"mobile",edge:["none"],goal:["fun","followers","portfolio"],mech:"identity",
+ why:"An old idea that keeps working because receiving one is emotional and people post the screenshot. Texts hit harder than email.",
+ share:"The screenshot of the message arriving, a year later.",
+ mvp:["Form: message, date, phone number. Verify the number.","Scheduler that sends via an SMS API.","A 'write one for New Year's' campaign page."],
+ first:"Launch on December 26th with a 'to me, next December' prompt.",
+ risk:"SMS costs and spam rules. Charge $1 per letter beyond the first.",
+ comps:["FutureMe","Timehop","BeReal memories"],s:{share:3,identity:4,utility:2,timing:3,net:2,speed:5},effort:1,money:2},
+{id:"code-typing",t:"Type Your Own Code",p:"A typing speed test, except the text is code from your own repositories.",aud:["devs"],fmt:"web",edge:["none"],goal:["fun","followers"],mech:"identity",
+ why:"Typing tests already have a huge shareable culture. Making it about your own code adds identity and a reason to come back per repo.",
+ share:"The result card: words per minute, accuracy, and the file you typed.",
+ mvp:["Enter a public repo; fetch a file; strip comments.","A typing test with per-character feedback and a timer.","Result card with a copy button and a repo leaderboard."],
+ first:"Post your own score on a famous file (the Linux kernel's main.c).",
+ risk:"Tabs and brackets ruin the flow. Normalise indentation and skip long lines.",
+ comps:["monkeytype","typeracer","SpeedCoder"],s:{share:4,identity:4,utility:1,timing:2,net:3,speed:5},effort:1,money:1},
+{id:"cursor-party",t:"Sixty Seconds",p:"A page where everyone there right now sees each other's cursors and draws together for sixty seconds. Then the moment gets a name and a replay link.",aud:["me","devs","creators"],fmt:"web",edge:["none"],goal:["fun","followers","learn"],mech:"invite",
+ why:"Presence is delightful and has zero onboarding. Posting the link is the entire growth loop: you only see the magic if others come.",
+ share:"A recording of a swarm of cursors drawing something. Give each session a name and a replay.",
+ mvp:["Realtime channel for cursor positions and strokes.","Canvas that fades strokes after sixty seconds.","A 'save this moment' button that renders the canvas to a PNG."],
+ first:"Post the link with 'be here at 9pm'. The peak becomes the content.",
+ risk:"Abuse. Rate limit strokes and add a hidden moderator mute.",
+ comps:["cursor-party by Partykit","r/place","Draw This"],s:{share:4,identity:2,utility:1,timing:2,net:5,speed:4},effort:1,money:1},
+{id:"guess-price",t:"Guess the Rent",p:"See a real apartment listing, guess the rent, get scored. Ten a day, with a city leaderboard.",aud:["me","gamers"],fmt:"web",edge:["data"],goal:["fun","followers"],mech:"ritual",
+ why:"Everyone has opinions about rent. Guessing wrong by $1,400 is funny, and the daily format gives people a reason to come back.",
+ share:"The daily score card with the worst miss highlighted.",
+ mvp:["Hand-curate 100 listings with your own or consented photos and real prices; that is ten days of puzzles.","Guess slider, score by percentage error, ten rounds.","Daily seed, streak, and a city filter."],
+ first:"Post in city subreddits with 'you will not get today's number 4'.",
+ risk:"Listing photo rights. Use public datasets or partner listings.",
+ comps:["GeoGuessr","The Price Is Right","Zillow Gone Wild"],s:{share:4,identity:2,utility:1,timing:3,net:3,speed:4},effort:1,money:2},
+{id:"ship-log",t:"Ship Log",p:"A public 'day N of shipping' page: one line a day, one screenshot, a streak counter, and a card for every milestone.",aud:["creators","devs"],fmt:"web",edge:["audience"],goal:["followers","portfolio"],mech:"identity",
+ why:"Building in public is a movement with its own rituals. A tool that produces the daily card removes the friction from the ritual.",
+ share:"Day 30, day 100 cards. Also the daily post, every day, from every user.",
+ mvp:["One text box and one image upload a day; a public page per user.","Streak counter and an auto-generated milestone card.","Copy-as-post for X, LinkedIn and Threads."],
+ first:"Use it yourself for the build. Day 1 is the launch post.",
+ risk:"Abandonment is visible. Add a 'paused' state that does not look like failure.",
+ comps:["WIP.co","Indie Hackers","Makerlog"],s:{share:4,identity:5,utility:2,timing:3,net:3,speed:4},effort:1,money:2},
+{id:"contract-redline",t:"Freelance Redline",p:"Upload a client contract and get every clause that hurts you highlighted, with the sentence to ask for instead.",aud:["smb","creators"],fmt:"web",edge:["domain"],goal:["money","portfolio"],mech:"wom",
+ why:"Freelancers are terrified of contracts and talk to each other constantly. A tool that catches an unlimited-revisions clause pays for itself once.",
+ share:"'It caught this' screenshots of a red clause and its replacement.",
+ mvp:["PDF upload; a prompt with a clause rubric returns risky clauses with severity and alternative wording.","Highlighted document view.","Export a reply email with the requested changes."],
+ first:"Review twenty contracts from freelancer communities for free and post anonymised findings.",
+ risk:"Not legal advice. Say so, and keep the rubric transparent.",
+ comps:["Bonsai","Lawgeex","Common Paper"],s:{share:2,identity:1,utility:5,timing:3,net:2,speed:4},effort:1,money:5},
+{id:"invoice-chaser",t:"Invoice Chaser",p:"Paste an unpaid invoice. It sends polite, escalating reminders on a schedule you approve, and stops the second you are paid.",aud:["smb"],fmt:"bot",edge:["none"],goal:["money"],mech:"wom",
+ why:"Chasing money is emotionally hard and small businesses avoid it. Automating the awkward part is worth real money and gets recommended in trade groups.",
+ share:"Not a card. The moment a late payer replies within an hour of reminder two.",
+ mvp:["Form: client email, amount, due date, tone.","Four-step reminder sequence with preview and approval.","A 'mark paid' link in every email that stops the sequence."],
+ first:"Offer it free to twenty tradespeople and designers in local business groups.",
+ risk:"Email deliverability. Use a reputable transactional provider from day one.",
+ comps:["Chaser","FreshBooks reminders","Wave"],s:{share:1,identity:1,utility:5,timing:2,net:2,speed:4},effort:1,money:5},
+{id:"review-reply",t:"Review Reply in My Voice",p:"Paste three replies you have written to customers. It drafts every new Google review reply in that exact voice.",aud:["smb"],fmt:"web",edge:["none"],goal:["money"],mech:"wom",
+ why:"Owners know replies matter for ranking and hate writing them. Voice matching is the difference between a tool and a template.",
+ share:"An owner showing another owner on their phone. Make onboarding a two-minute demo.",
+ mvp:["Paste past replies; extract a style guide with a prompt.","Paste a review; get a draft that matches the guide, with a 'more formal' slider.","History of drafts with copy buttons."],
+ first:"Walk into ten local businesses with a demo on your phone.",
+ risk:"Replies that sound fake. Keep them short and let the owner edit inline.",
+ comps:["Birdeye","Podium","Google Business Profile"],s:{share:1,identity:2,utility:4,timing:3,net:1,speed:5},effort:1,money:5},
+{id:"photo-playlist",t:"Playlist From a Photo",p:"Upload one photo, get a twelve-song playlist that matches its mood, on Spotify or Apple Music.",aud:["creators","me"],fmt:"web",edge:["none"],goal:["fun","followers"],mech:"screenshot",
+ why:"Pure aesthetic identity. The photo and playlist together are exactly the kind of post people make already.",
+ share:"The photo with the tracklist overlaid, in the app's signature layout.",
+ mvp:["Vision model describes mood, era, setting; a prompt returns twelve tracks.","Validate every track with the iTunes Search API (no key needed) and link each one; no playlist creation in v1, since Spotify caps dev-mode apps at 25 users.","Render the poster and copy the tracklist."],
+ first:"Make posters for ten iconic photos and post them.",
+ risk:"Hallucinated songs. Validate every track against the API before showing it.",
+ comps:["Spotify's Playlist in a Bottle","Receiptify","Instafest"],s:{share:5,identity:5,utility:1,timing:3,net:2,speed:4},effort:1,money:1},
+{id:"lore-keeper",t:"Lore Keeper",p:"A Discord bot for your tabletop campaign that remembers every character, place and grudge, and answers 'who was the innkeeper in session 3?'",aud:["gamers"],fmt:"bot",edge:["domain"],goal:["fun","portfolio","learn"],mech:"wom",
+ why:"Groups run for years and memory is the constant problem. The bot lives where the group already talks and gets shown to other groups.",
+ share:"A screenshot of the bot correctly recalling a detail from a year ago.",
+ mvp:["Bot ingests session notes posted in a channel.","Retrieval over notes with a prompt that answers in the game master's voice.","Auto-generated recap before each session."],
+ first:"Post in tabletop subreddits with a 'it remembers the innkeeper' clip.",
+ risk:"Notes are messy. Make the ingest forgiving and show its sources.",
+ comps:["Kanka","World Anvil","Obsidian"],s:{share:2,identity:3,utility:4,timing:3,net:4,speed:4},effort:1,money:3},
+{id:"patch-digest",t:"Patch Notes for Your Main",p:"Filtered by the character or role you actually play: one paragraph on what each patch changes for you, posted in your group's Discord.",aud:["gamers"],fmt:"bot",edge:["data"],goal:["fun","followers","portfolio"],mech:"wom",
+ why:"Patch notes are long and players only care about the two lines that nerf their character. Group chats already argue about patches, so the bot lands in the conversation.",
+ share:"The digest message, quoted with outrage when a nerf lands.",
+ mvp:["Scrape or subscribe to patch notes for five popular games.","Prompt summarises changes filtered by character or role.","Post to a channel and DM subscribers."],
+ first:"Set it up in five game-specific Discords the day of a major patch.",
+ risk:"Sources change format. Keep per-game parsers tiny and fail loudly.",
+ comps:["Patchbot","Dotabuff","Reddit patch threads"],s:{share:3,identity:3,utility:4,timing:3,net:3,speed:4},effort:1,money:2},
+{id:"todo-boss",t:"Boss Fight Todo",p:"Every task is a monster with hit points. Finishing it deals damage. Your week is a dungeon.",aud:["me","gamers","students"],fmt:"web",edge:["design"],goal:["fun","portfolio"],mech:"identity",
+ why:"Gamified productivity has a devoted audience and the visuals are inherently shareable. Design skill is the moat here.",
+ share:"The end-of-week card: bosses slain, damage dealt, the one that got away.",
+ mvp:["Task list with hit points derived from estimated time.","Pixel-art boss per task, damage animation on completion.","Weekly dungeon summary card."],
+ first:"Post a clip of a big task dying. Productivity subreddits love this.",
+ risk:"Novelty wears off. Keep the base list genuinely fast to use.",
+ comps:["Habitica","Forest","Finch"],s:{share:4,identity:3,utility:3,timing:2,net:2,speed:3},effort:2,money:2},
+{id:"standup-card",t:"Standup in One Card",p:"Each teammate types three lines by 9am; the bot posts one clean card with blockers on top so the meeting can be skipped.",aud:["teams"],fmt:"bot",edge:["none"],goal:["money","portfolio"],mech:"wom",
+ why:"Teams hate standups and love skipping them. A tool that gives permission to skip spreads manager to manager.",
+ share:"A screenshot of the card next to 'we cancelled the meeting'.",
+ mvp:["Slack bot DMs a prompt at a set time; collects three fields.","Posts one formatted card with blockers highlighted.","Weekly 'what got unblocked' summary."],
+ first:"Run it on your own team, then post the week-one card.",
+ risk:"Crowded space. Win on the card being beautiful and the setup taking one minute.",
+ comps:["Geekbot","Standuply","Range"],s:{share:2,identity:1,utility:4,timing:2,net:4,speed:4},effort:1,money:4},
+{id:"skill-tree",t:"Skill Tree",p:"Paste your resume or GitHub and get a video-game skill tree of what you know, with the next node to unlock.",aud:["jobs","devs","students"],fmt:"web",edge:["design"],goal:["followers","portfolio","fun"],mech:"identity",
+ why:"It turns a boring document into a portrait of the person. People post character sheets about themselves without prompting.",
+ share:"The skill tree image, styled like a game, with the person's name and level.",
+ mvp:["Prompt extracts skills, levels and relationships as JSON from pasted text.","Render a tree with a force layout on canvas.","Suggest three 'next nodes' with a reason each."],
+ first:"Generate trees for ten famous engineers from public info and post them.",
+ risk:"Layout ugliness on large trees. Cap at forty nodes and cluster.",
+ comps:["roadmap.sh","LinkedIn Skills","Path of Exile's tree"],s:{share:5,identity:5,utility:2,timing:2,net:2,speed:4},effort:1,money:2},
+{id:"interview-sparring",t:"Interview Sparring",p:"Paste the job post; get a mock interview by voice with a tough interviewer who grades every answer and gives a replay.",aud:["jobs"],fmt:"web",edge:["none"],goal:["money","portfolio","learn"],mech:"wom",
+ why:"High stakes, high anxiety, and a result people share when they get the offer. Voice makes it feel real in a way text mocks never did.",
+ share:"The scorecard after a session, and the 'I got the job' post.",
+ mvp:["Speech in and out in the browser; a prompt that runs a structured interview from the job post.","Grades per answer with a specific improvement.","Replay with transcript."],
+ first:"Offer free sessions in job-search communities during hiring season.",
+ risk:"Latency ruins the illusion. Keep answers short and stream audio.",
+ comps:["Pramp","Interviewing.io","Final Round AI"],s:{share:3,identity:2,utility:5,timing:4,net:2,speed:3},effort:2,money:4},
+{id:"agent-receipt",t:"Agent Receipt",p:"A daily receipt for what your coding agents did and cost: files touched, tokens burned, the one commit that mattered.",aud:["devs"],fmt:"cli",edge:["none"],goal:["followers","fun","portfolio"],mech:"wave",
+ why:"Everyone is running agents and nobody knows what they cost or did. The receipt format is instantly legible, and the wave is at its peak right now.",
+ share:"A receipt-shaped card: '$4.12 · 38 files · 1 commit that mattered · 3 that got reverted.' Posted daily by builders in public.",
+ mvp:["Read local agent session logs (Claude Code, Cursor, Codex) and the day's git log.","Compute cost, files touched, commits kept versus reverted.","Print a receipt in the terminal and render a PNG for posting."],
+ first:"Post your own receipt every day for two weeks. Reply to 'how much does vibe coding cost' threads with one.",
+ risk:"Log formats change often. Support one tool well and fail gracefully on the rest.",
+ comps:["Spotify Wrapped","ccusage","GitHub Wrapped"],s:{share:4,identity:4,utility:3,timing:5,net:2,speed:4},effort:1,money:2},
+{id:"trip-room",t:"Trip Room",p:"One link for a group trip. Everyone drops ideas, votes, and the itinerary and the money split settle themselves.",aud:["me","students"],fmt:"web",edge:["none"],goal:["portfolio","money","learn"],mech:"invite",
+ why:"A group trip is the most viral unit there is: eight people, one link, weeks of use. Every trip planned is eight people who saw it work.",
+ share:"The link itself, and the final itinerary card the group posts at the end.",
+ mvp:["Create a room by link; anyone with it can add places, dates and costs without an account.","Voting that converges on dates and places, with a live itinerary.","Running cost split with settle-up links at the end."],
+ first:"Plan three real trips with friends on it. Post the itinerary cards.",
+ risk:"Scope creep. Ship voting and the itinerary first; the split can be a link to Snap & Split style tools until it is asked for.",
+ comps:["Splitwise","Wanderlog","Doodle"],s:{share:3,identity:1,utility:4,timing:2,net:5,speed:2},effort:3,money:3}
+];
+
+/* ---------- remix generator ---------- */
+/* Each pattern needs an object carrying one of its tags, so titles and pitches read as English (tag key below OBJECTS) */
+const PATTERNS=[
+ {t:"{X} Wrapped",need:["num"],p:"A year-in-review card for your {x}: the stats nobody asked for, designed to be posted.",mech:"identity",s:{share:5,identity:5,utility:2,timing:3,net:2,speed:4},share:"A story-sized card with three stats and one roast line.",not:["weekly wrapped","daily puzzle"]},
+ {t:"Wordle for {X}",need:["puzzle"],p:"A daily puzzle built from real {x}. Same puzzle for everyone, an emoji grid to share.",mech:"ritual",s:{share:5,identity:3,utility:1,timing:3,net:4,speed:5},share:"The emoji grid and streak, copied in one tap.",not:["daily puzzle","leaderboard"]},
+ {t:"Roast My {X}",need:["roast"],p:"Paste your {x}, get a brutal but fair roast on a card.",mech:"humor",s:{share:5,identity:4,utility:2,timing:3,net:2,speed:5},share:"The roast card with their name on it.",not:["shareable card"]},
+ {t:"{X} in One Photo",need:["phys"],p:"Take a photo of your {x} and get it all turned into structured, sorted, useful data.",mech:"wom",s:{share:3,identity:1,utility:4,timing:4,net:1,speed:4},share:"The before-and-after: chaos on the left, order on the right.",not:["from a photo"],fmt:"mobile"},
+ {t:"Nag Bot for {X}",need:["send","daily"],p:"A group-chat bot that nags the whole group about {x} until it gets done, with escalating tone.",mech:"invite",s:{share:2,identity:1,utility:4,timing:2,net:5,speed:4},share:"The bot's most passive-aggressive message, screenshotted.",not:["group chat","whole team"],fmt:"bot"},
+ {t:"Live Cost of {X}",need:["cost"],p:"A ticker that shows what your {x} {is} costing in real time, in money and hours.",mech:"screenshot",s:{share:4,identity:3,utility:3,timing:2,net:2,speed:5},share:"The ticker at an outrageous number.",not:[],fmt:"ext"},
+ {t:"Leaderboard for {X}",need:["rank"],p:"A public leaderboard for {x} among friends, with a weekly reset and a champion card.",mech:"invite",s:{share:4,identity:4,utility:2,timing:2,net:5,speed:4},share:"The champion card, posted by the winner.",not:["leaderboard","nemesis"]},
+ {t:"Plain English {X}",need:["doc"],p:"Paste your {x}, get every confusing line translated into plain English with the traps flagged.",mech:"wom",s:{share:3,identity:1,utility:5,timing:3,net:1,speed:5},share:"A highlighted screenshot of the trap it found.",not:[],fmt:"ext"},
+ {t:"{X} Streak",need:["daily"],p:"One tap a day to log your {x}. A public streak page and a milestone card every ten days.",mech:"identity",s:{share:4,identity:4,utility:3,timing:2,net:3,speed:5},share:"The day-30 card.",not:["daily puzzle"]},
+ {t:"Guess the {X}",need:["guess"],p:"See a real person's {x}, guess the number, get scored against everyone else today.",mech:"ritual",s:{share:4,identity:2,utility:1,timing:3,net:3,speed:4},share:"The daily score with the worst miss highlighted.",not:["daily puzzle"]},
+ {t:"{X} Skill Tree",need:["tree"],p:"Turn your {x} into a video-game skill tree with the next node to unlock.",mech:"identity",s:{share:5,identity:5,utility:2,timing:2,net:2,speed:4},share:"The tree image with the person's name and level.",not:["shareable card"]},
+ {t:"{X} Autopilot",need:["send"],p:"Hand over your {x}; it drafts, schedules and sends, and only asks you when it is unsure.",mech:"wom",s:{share:1,identity:1,utility:5,timing:4,net:1,speed:3},share:"Not a card. A text to a friend saying 'I have not thought about this in a month'.",not:["sea captain"],fmt:"bot"}
+];
+/* x = the thing, pl = plural noun. Tags name the patterns an object reads well in:
+   num wrapped · guess "guess the number" · cost "live cost of" · rank leaderboard · roast · puzzle wordle-style
+   doc plain-english · phys photographable · send drafted-and-sent · daily a daily act · tree skill tree */
+const OBJECTS=V({
+ me:[{x:"open tabs",pl:1,tags:["num","guess","cost","rank","roast","daily"]},{x:"subscriptions",pl:1,tags:["num","guess","cost","rank","roast","doc"]},{x:"screenshots",pl:1,tags:["num","guess","roast","phys","daily"]},{x:"receipts",pl:1,tags:["num","guess","phys","cost"]},{x:"unread emails",pl:1,tags:["num","guess","rank","roast","send","cost"]}],
+ devs:[{x:"commit history",pl:0,tags:["num","roast","puzzle","tree","daily","rank"]},{x:"dependencies",pl:1,tags:["num","guess","cost","roast","doc","tree"]},{x:"pull requests",pl:1,tags:["num","guess","rank","roast","puzzle","send","tree","daily","cost"]},{x:"terminal history",pl:0,tags:["num","roast","puzzle","tree"]},{x:"side projects",pl:1,tags:["num","guess","rank","roast","tree"]}],
+ creators:[{x:"captions",pl:1,tags:["num","roast","puzzle","send","daily"]},{x:"posting schedule",pl:0,tags:["roast","daily","cost"]},{x:"thumbnails",pl:1,tags:["num","roast","phys","rank"]},{x:"comment replies",pl:1,tags:["num","guess","rank","send","daily","cost"]},{x:"brand deals",pl:1,tags:["num","guess","doc","send","cost"]}],
+ students:[{x:"syllabus",pl:0,tags:["doc","phys"]},{x:"lecture notes",pl:1,tags:["num","doc","phys","tree"]},{x:"group project messages",pl:1,tags:["num","roast","puzzle","send","rank"]},{x:"reading list",pl:0,tags:["num","roast","rank","tree"]},{x:"study hours",pl:1,tags:["num","guess","rank","daily","cost"]}],
+ smb:[{x:"invoices",pl:1,tags:["num","guess","doc","send","phys","cost"]},{x:"Google reviews",pl:1,tags:["num","guess","rank","puzzle","send"]},{x:"quotes",pl:1,tags:["num","guess","doc","send"]},{x:"inventory",pl:0,tags:["num","guess","phys","cost"]},{x:"no-shows",pl:1,tags:["num","guess","cost"]}],
+ gamers:[{x:"patch notes",pl:1,tags:["doc","puzzle"]},{x:"loadouts",pl:1,tags:["num","roast","rank","tree"]},{x:"clips",pl:1,tags:["num","guess","rank","daily"]},{x:"play time",pl:0,tags:["num","guess","rank","roast","daily","cost","tree"]},{x:"ranked matches",pl:1,tags:["num","guess","rank","daily","tree"]}],
+ parents:[{x:"chores",pl:1,tags:["num","guess","rank","daily","cost"]},{x:"school emails",pl:1,tags:["num","guess","doc","send","roast"]},{x:"lunchboxes",pl:1,tags:["num","phys","daily","roast","rank"]},{x:"screen time",pl:0,tags:["num","guess","rank","roast","daily","cost"]},{x:"permission slips",pl:1,tags:["num","doc","phys","send"]}],
+ fitness:[{x:"workouts",pl:1,tags:["num","guess","rank","roast","daily","tree"]},{x:"sleep",pl:0,tags:["num","rank","roast","daily"]},{x:"meals",pl:1,tags:["num","guess","rank","phys","daily"]},{x:"runs",pl:1,tags:["num","guess","rank","daily","tree"]},{x:"rest days",pl:1,tags:["num","guess","rank","daily"]}],
+ jobs:[{x:"job descriptions",pl:1,tags:["doc","puzzle","roast"]},{x:"applications",pl:1,tags:["num","guess","rank","send","daily","cost"]},{x:"interviews",pl:1,tags:["num","guess","rank","cost"]},{x:"LinkedIn profile",pl:0,tags:["roast","tree","doc"]},{x:"rejection emails",pl:1,tags:["num","guess","roast","puzzle","doc"]}],
+ teams:[{x:"meetings",pl:1,tags:["num","guess","rank","cost","roast"]},{x:"standups",pl:1,tags:["num","send","daily","cost"]},{x:"Slack threads",pl:1,tags:["num","guess","rank","puzzle","roast","cost","doc"]},{x:"OKRs",pl:1,tags:["doc","roast","puzzle","tree"]},{x:"status updates",pl:1,tags:["num","send","daily","puzzle"]}]
+});
+const TWISTS=[
+ {t:"with a shareable card",d:{share:1}},{t:"as a daily puzzle",d:{net:1,share:1,utility:-1}},{t:"that works from a photo",d:{utility:1,timing:1},fmt:"mobile"},
+ {t:"that lives in the group chat",d:{net:2,speed:-1},fmt:"bot"},{t:"that runs entirely offline",d:{utility:1,speed:-1}},{t:"with a public leaderboard",d:{net:1,identity:1}},
+ {t:"in the voice of a sea captain",d:{share:1,utility:-1}},{t:"with no sign-up at all",d:{net:1,utility:1}},{t:"for your whole team",d:{net:1,utility:1,speed:-1}},
+ {t:"with a nemesis mode",d:{identity:1,net:1}},{t:"that texts you",d:{utility:1,speed:-1}},{t:"with a weekly wrapped",d:{share:1,identity:1}}
+];
+const SMALL=new Set(["of","for","the","in","my","and","a","to"]);
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function titleCase(s){return s.split(" ").map((w,i)=>i&&SMALL.has(w)?w:(/^[A-Z]/.test(w)?w:w.charAt(0).toUpperCase()+w.slice(1))).join(" ")}
+function remixIdea(prof){
+  const auds=prof.aud.size?[...prof.aud]:Object.keys(OBJECTS);
+  /* choose an object first, then a pattern that fits it, then a twist that does not repeat the pattern */
+  for(let tries=0;tries<20;tries++){
+    const aud=pick(auds), obj=pick(OBJECTS[aud]);
+    const pats=PATTERNS.filter(p=>p.need.some(t=>obj.tags.includes(t)));
+    if(!pats.length)continue;
+    const pat=pick(pats);
+    const tws=TWISTS.filter(tw=>!pat.not.some(n=>tw.t.includes(n))&&(!tw.t.includes("photo")||obj.tags.includes("phys")));
+    const tw=pick(tws);
+    const s={...pat.s}; for(const k in tw.d){s[k]=Math.max(1,Math.min(5,s[k]+tw.d[k]))}
+    const fmt=tw.fmt||pat.fmt||"web";
+    const x=obj.x;
+    const title=titleCase(pat.t.replace("{X}",x));
+    const pitch=pat.p.replace(/\{x\}/g,x).replace("{is}",obj.pl?"are":"is");
+    const goalByMech={identity:["followers","fun"],ritual:["followers","fun"],humor:["fun","followers"],wom:["money","portfolio"],invite:["fun","portfolio"],screenshot:["followers","fun"]};
+    return {id:newId("remix"),remix:true,t:title,p:pitch.charAt(0).toUpperCase()+pitch.slice(1)+" Twist: "+tw.t+".",
+      aud:[aud],fmt,edge:["none"],goal:goalByMech[pat.mech],mech:pat.mech,
+      why:"Combines a proven pattern ("+pat.t.replace("{X}","X")+") with something "+AUD[aud].toLowerCase()+" already deal with every week. The twist, "+tw.t+", changes who sees it and where.",
+      share:pat.share,
+      mvp:["One input: the user's "+x+" (paste, upload or connect).","One output that matches the share moment, rendered as an image or a message.","A copy or share button and nothing else."],
+      first:"Make ten examples with real "+x+" from friends and post them where "+AUD[aud].toLowerCase()+" hang out.",
+      risk:"Remixes are starting points. Check whether the pattern has been done for this exact object before you build.",
+      comps:[pat.t.replace("{X}","X")+" pattern"],s,effort:s.speed>=4?1:2,money:pat.mech==="wom"?4:1};
+  }
+  return null;
+}
+
+/* ---------- state ---------- */
+const store={
+  get(k,d){try{const v=localStorage.getItem("shipworthy."+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem("shipworthy."+k,JSON.stringify(v))}catch(e){}},
+  del(k){try{localStorage.removeItem("shipworthy."+k)}catch(e){}}
+};
+const defaultProfile=()=>({aud:new Set(),fmt:new Set(),edge:new Set(),goal:"followers",time:"weekend"});
+let profile=defaultProfile();
+let sort="rank";
+let extra=[];           /* remixes and Claude ideas, newest first */
+let openId=null;
+let pinned=new Set(); /* ids from the latest remix or Claude batch, shown first under "Best for you" */
+const Q_KEYS=["share","identity","freq","pain","timing","net","novelty","speed"];
+const newId=p=>p+"-"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function blankIdea(){return {id:newId("mine"),title:"",pitch:"",who:"",fmt:"web",a:{}}}
+/* stored data is untrusted: older shapes, hand edits, or a cleared library */
+function saneIdea(x){
+  const o=blankIdea();if(!x||typeof x!=="object")return o;
+  const str=v=>typeof v==="string"?v:"";
+  o.id=typeof x.id==="string"&&x.id.startsWith("mine-")?x.id:o.id;
+  o.title=str(x.title).slice(0,60);o.pitch=str(x.pitch).slice(0,280);o.who=str(x.who).slice(0,80);o.fmt=FMT[x.fmt]?x.fmt:"web";
+  if(x.a&&typeof x.a==="object")Q_KEYS.forEach(k=>{const v=x.a[k];if(Number.isInteger(v)&&v>=0&&v<=3)o.a[k]=v});
+  return o;
+}
+function saneCustom(c){
+  if(!c||typeof c!=="object"||typeof c.id!=="string"||!c.id||typeof c.t!=="string"||!c.s||typeof c.s!=="object")return null;
+  c={...c,t:c.t.slice(0,60),id:c.id.slice(0,80)};
+  const s={};["share","identity","utility","timing","net","speed"].forEach(k=>{const v=Math.round(Number(c.s[k]));s[k]=Number.isFinite(v)?Math.max(1,Math.min(5,v)):3});
+  const arr=(v,d)=>Array.isArray(v)&&v.length?v.map(String):d;
+  return {...c,s,aud:arr(c.aud,["me"]),mvp:arr(c.mvp,["Input","Output as share moment","Share button"]),comps:arr(c.comps,[]),goal:arr(c.goal,["fun"]),edge:["none"],
+    fmt:FMT[c.fmt]?c.fmt:"web",mech:MECH[c.mech]?c.mech:"wom",effort:[1,2,3].includes(c.effort)?c.effort:1,money:Number.isFinite(c.money)?c.money:2,
+    p:String(c.p||""),why:String(c.why||""),share:String(c.share||""),first:String(c.first||""),risk:String(c.risk||"")};
+}
+function saneShortlist(list){
+  if(!Array.isArray(list))return [];
+  const out=[],seen=new Set();
+  list.forEach(x=>{
+    if(!x||typeof x!=="object")return;
+    if(x.custom){const c=saneCustom(x.custom);if(c&&!seen.has(c.id)){seen.add(c.id);out.push({id:c.id,custom:c})}}
+    else if(typeof x.id==="string"&&IDEAS.some(i=>i.id===x.id)&&!seen.has(x.id)){seen.add(x.id);out.push({id:x.id})}
+  });
+  return out;
+}
+let shortlist=saneShortlist(store.get("shortlist",[]));   /* [{id} | {id, custom idea}] */
+store.set("shortlist",shortlist);
+let myIdea=saneIdea(store.get("myidea",null));
+store.set("myidea",myIdea);
+let critiqueText="",critiqueBusy=false,critiqueSeq=0,critiqueCtl=null,critiqueErr="";
+let sampleApi=undefined; /* undefined = not yet resolved, null = unavailable */
+let abortCtl=null;
+
+function loadProfile(){
+  let p=null,fromHash=false;
+  const m=location.hash.match(/#p=([^&]+)/);
+  if(m){try{p=JSON.parse(decodeURIComponent(m[1]))}catch(e){}}
+  const isObj=v=>v&&typeof v==="object"&&!Array.isArray(v);
+  if(isObj(p))fromHash=true; else p=store.get("profile",null);
+  if(isObj(p)){
+    const keys=(v,vocab)=>(Array.isArray(v)?v:[]).filter(k=>typeof k==="string"&&vocab[k]);
+    profile.aud=new Set(keys(p.aud,AUD));
+    profile.fmt=new Set(keys(p.fmt,FMT));
+    profile.edge=new Set(keys(p.edge,EDGE));
+    profile.goal=typeof p.goal==="string"&&GOAL[p.goal]?p.goal:"followers";
+    profile.time=typeof p.time==="string"&&TIME[p.time]?p.time:"weekend";
+  }
+  if(fromHash){saveProfile();toast("Profile loaded from the link")}else stripHash();
+}
+function stripHash(){try{if(location.hash)history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
+function saveProfile(){store.set("profile",serialProfile());stripHash()}
+function serialProfile(){return {aud:[...profile.aud],fmt:[...profile.fmt],edge:[...profile.edge],goal:profile.goal,time:profile.time}}
+
+/* ---------- scoring ---------- */
+function viral(s){let v=0;for(const k in W) v+=W[k]*(s[k]||1);return Math.round(v/5*100)}
+function fit(idea){
+  let f=0;
+  f+=profile.aud.size? (idea.aud.some(a=>profile.aud.has(a))?40:8) : 40;
+  f+=profile.fmt.size? (profile.fmt.has(idea.fmt)?20:5) : 20;
+  f+=profile.edge.size? (idea.edge.includes("none")||idea.edge.some(e=>profile.edge.has(e))?20:8) : 20;
+  f+=idea.goal.includes(profile.goal)?20:6;
+  return f;
+}
+const timeCap={weekend:1,week:2,month:3};
+function shipFit(idea){const cap=timeCap[profile.time];return idea.effort<=cap?1:idea.effort-cap===1?.6:.3}
+function rankScore(idea){return viral(idea.s)*.55+fit(idea)*.3+idea.s.speed/5*100*.15*shipFit(idea)}
+function ranked(){
+  const all=[...extra,...IDEAS];
+  const cap=timeCap[profile.time];
+  const list=all.map(i=>({i,v:viral(i.s),f:fit(i),r:rankScore(i)}));
+  if(sort==="viral") list.sort((a,b)=>b.v-a.v||b.f-a.f);
+  else if(sort==="speed") list.sort((a,b)=>b.i.s.speed-a.i.s.speed||b.r-a.r);
+  else list.sort((a,b)=>{
+    const pa=pinned.has(a.i.id)?1:0, pb=pinned.has(b.i.id)?1:0;
+    if(pa!==pb) return pb-pa;
+    return b.r-a.r;
+  });
+  return list.map(x=>({...x,over:x.i.effort>cap}));
+}
+
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+let toastT;
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),2200)}
+async function copy(text){
+  try{await navigator.clipboard.writeText(text);return true}catch(e){}
+  try{const ta=document.createElement("textarea");ta.value=text;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.top="-1000px";document.body.appendChild(ta);ta.select();const ok=document.execCommand("copy");ta.remove();return ok}catch(e){return false}
+}
+const effortLabel=e=>e===1?"weekend build":e===2?"one-week build":"month-long build";
+const effortTime=e=>e===1?"a weekend":e===2?"a week":"a month";
+function focusSel(sel){const el=document.querySelector(sel);if(el){el.focus({preventScroll:true});return true}return false}
+const moneyLabel=m=>m>=4?"strong paid tier":m===3?"could charge":"free / for reach";
+function findIdea(id){return extra.find(i=>i.id===id)||IDEAS.find(i=>i.id===id)||shortlist.find(x=>x.custom&&x.custom.id===id)?.custom||null}
+
+/* ---------- prompt builder ---------- */
+function buildPrompt(idea){
+  const time=effortTime(idea.effort);
+  const fmtText={web:"a single-page web app (one HTML file with inline CSS and JS is fine for v1; add a tiny serverless function only if an API key must be hidden)",ext:"a browser extension (Manifest V3, one content script, one popup, no background service unless required)",bot:"a chat bot (Discord or Telegram first; one command, one response format)",mobile:"a phone-first progressive web app (installable, works one-handed, camera and share sheet where needed)",cli:"a command-line tool or GitHub Action (one command, sensible defaults, zero config to run)"}[idea.fmt];
+  const auds=idea.aud.map(a=>AUD[a]||a).join(", ");
+  return [
+`# Build: ${idea.t}`,
+idea.p,``,
+`## Who it is for`,auds,``,
+`## The share moment (non-negotiable)`,idea.share,
+`Every design decision serves this. If a feature does not get the user to this moment faster or make it better, cut it.`,``,
+`## Why it spreads`,idea.why,``,
+`## v1 scope (ship in ${time})`,
+...idea.mvp.map((m,i)=>`${i+1}. ${m}`),``,
+`## Non-goals for v1`,
+`No accounts, no settings page, no admin, no dark patterns. One screen, one output, one share button.`,``,
+`## Format`,fmtText+".",``,
+`## Watch out`,idea.risk,``,
+`## First 100 users`,idea.first,``,
+`## Done when`,
+`A stranger can go from landing to the share moment in under 60 seconds, the output looks good in a screenshot, and it works on a phone.`,``,
+`Start by proposing a file layout and the data shape for the main output, then build the share moment first and the input second.`
+].join("\n");
+}
+
+/* ---------- render: profile ---------- */
+/* chips are built once and then synced in place so focus survives a click */
+function syncChips(id,vocab,state){
+  const el=$("#"+id);
+  if(!el.children.length){
+    el.innerHTML=Object.entries(vocab).map(([k,v])=>`<button type="button" class="chip" data-g="${id}" data-k="${k}" aria-pressed="false">${esc(v)}</button>`).join("");
+  }
+  const on=k=>state instanceof Set?state.has(k):state===k;
+  $$(".chip",el).forEach(b=>b.setAttribute("aria-pressed",String(on(b.dataset.k))));
+}
+function renderChips(){
+  syncChips("g-aud",AUD,profile.aud);syncChips("g-fmt",FMT,profile.fmt);syncChips("g-edge",EDGE,profile.edge);
+  syncChips("g-goal",GOAL,profile.goal);syncChips("g-time",TIME,profile.time);
+}
+$(".profile").addEventListener("click",e=>{
+  const b=e.target.closest(".chip");if(!b)return;
+  const g=b.dataset.g,k=b.dataset.k;
+  if(g==="g-aud"||g==="g-fmt"||g==="g-edge"){const set=profile[g.slice(2)];set.has(k)?set.delete(k):set.add(k)}
+  else if(g==="g-goal") profile.goal=k; else profile.time=k;
+  saveProfile();renderChips();renderIdeas();
+});
+
+/* ---------- render: ideas ---------- */
+function axisRows(s,withWhy){
+  const low=Object.entries(s).filter(([k,v])=>k!=="speed"&&v<=2).map(([k])=>k);
+  const why={share:"Output is not naturally a screenshot. Build a card.",identity:"Result says little about the user. Add a type, rank or percentile.",utility:"Low frequency. Fine for a toy; do not expect retention.",timing:"Not riding a wave. Tie it to a moment or a trend.",net:"Solo product. Add one reason to bring a friend."};
+  return `<div class="axes">${AXES.map(([k,l])=>`<div class="axis ${s[k]<=2?"low":""}"><span class="lbl">${l}</span><span class="bar"><i style="width:${s[k]*20}%"></i></span><span class="v">${s[k]}</span></div>`).join("")}${withWhy&&low.length?`<div class="why">${low.map(k=>why[k]).join(" ")}</div>`:""}</div>`;
+}
+function inShortlist(id){return shortlist.some(x=>x.id===id||(x.custom&&x.custom.id===id))}
+function ideaCard(row,idx){
+  const {i,v,f,over}=row;const open=openId===i.id;
+  const tags=[i.remix?`<span class="badge remix">remix</span>`:"",i.ai?`<span class="badge ai">Claude</span>`:""].join("");
+  return `<li class="idea ${open?"open":""}" data-id="${esc(i.id)}">
+  <div class="idea-head">
+    <span class="rank" aria-hidden="true">${String(idx+1).padStart(2,"0")}</span>
+    <div>
+      <h3><button type="button" class="idea-toggle" aria-expanded="${open}"${open?` aria-controls="body-${esc(i.id)}"`:""}>${esc(i.t)}</button>${tags}</h3>
+      <p class="pitch">${esc(i.p)}</p>
+      <div class="meta">${i.aud.map(a=>`<span class="badge">${esc(AUD[a]||a)}</span>`).join("")}<span class="badge">${esc(FMT[i.fmt]||i.fmt)}</span><span class="badge" ${over?'style="color:var(--warn)"':""}>${effortLabel(i.effort)}${over?" · over your budget":""}</span><span class="badge">${moneyLabel(i.money)}</span></div>
+    </div>
+    <div class="meters">
+      <div class="meter heat"><span class="lbl">Viral</span><span class="bar" aria-hidden="true"><i style="width:${v}%"></i></span><span class="val">${v}</span></div>
+      <div class="meter"><span class="lbl">Fit</span><span class="bar" aria-hidden="true"><i style="width:${f}%"></i></span><span class="val">${f}</span></div>
+    </div>
+  </div>
+  ${open?`<div class="idea-body" id="body-${esc(i.id)}">
+    <div>
+      <div class="block"><span class="mech">${esc(MECH[i.mech]||i.mech)}</span><h4>Why it spreads</h4><p>${esc(i.why)}</p></div>
+      <div class="block"><h4>The share moment</h4><p>${esc(i.share)}</p></div>
+      <div class="block"><h4>v1 you can ship in ${esc(effortTime(i.effort))}</h4><ol>${i.mvp.map(m=>`<li>${esc(m)}</li>`).join("")}</ol></div>
+      <div class="block"><h4>First 100 users</h4><p>${esc(i.first)}</p></div>
+      <div class="block"><h4>Watch out</h4><p>${esc(i.risk)}</p></div>
+      <div class="block"><h4>Things that already spread like this</h4><div class="comps">${i.comps.map(c=>`<span>${esc(c)}</span>`).join("")}</div></div>
+    </div>
+    <div class="right">
+      ${axisRows(i.s,true)}
+      <div class="actions">
+        <button type="button" class="btn primary" data-act="prompt" data-id="${esc(i.id)}">Copy v1 prompt</button>
+        <button type="button" class="btn" data-act="short" data-id="${esc(i.id)}" aria-pressed="${inShortlist(i.id)}">${inShortlist(i.id)?"✓ Shortlisted":"Shortlist"}</button>
+        <button type="button" class="btn ghost" data-act="bench" data-id="${esc(i.id)}">Score on the bench</button>
+        ${i.remix||i.ai?`<button type="button" class="btn ghost" data-act="discard" data-id="${esc(i.id)}">Discard</button>`:""}
+      </div>
+    </div>
+  </div>`:""}
+</li>`;
+}
+function renderIdeas(){
+  const list=ranked();
+  const within=list.filter(x=>!x.over).length;
+  const how=sort==="rank"?(pinned.size?"newest first, then fit and heat":"fit and heat"):sort==="viral"?"viral score":"ship speed";
+  $("#count").innerHTML=`${list.length} ideas <span>· ${within} fit ${esc(TIME[profile.time].toLowerCase())} · sorted by ${how}</span>`;
+  $("#ideas").innerHTML=list.map(ideaCard).join("");
+  $$(".sort button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.sort===sort)));
+}
+$(".sort").addEventListener("click",e=>{const b=e.target.closest("button[data-sort]");if(!b)return;sort=b.dataset.sort;renderIdeas()});
+const smooth=()=>matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
+$("#ideas").addEventListener("click",e=>{
+  const act=e.target.closest("[data-act]");
+  if(act){
+    const id=act.dataset.id,idea=findIdea(id);if(!idea)return;
+    if(act.dataset.act==="prompt") showPrompt(idea);
+    else if(act.dataset.act==="short"){toggleShort(idea);focusSel(`.idea[data-id="${CSS.escape(id)}"] [data-act="short"]`)}
+    else if(act.dataset.act==="bench") benchIdea(idea);
+    else if(act.dataset.act==="discard"){extra=extra.filter(x=>x.id!==id);pinned.delete(id);if(openId===id)openId=null;renderIdeas();toast("Discarded");focusSel("#ideas .idea-toggle")||focusSel("#btn-remix")}
+    return;
+  }
+  const head=e.target.closest(".idea-head");if(!head)return;
+  if(e.target.closest("a"))return;
+  const li=head.closest(".idea");const id=li.dataset.id;
+  openId=openId===id?null:id;renderIdeas();
+  focusSel(`.idea[data-id="${CSS.escape(id)}"] .idea-toggle`);
+  if(openId){const el=$(`.idea[data-id="${CSS.escape(id)}"]`);if(el){const top=el.getBoundingClientRect().top;if(top<70||top>window.innerHeight-200)el.scrollIntoView({block:"start",behavior:smooth()})}}
+});
+function toggleShort(idea){
+  const id=idea.id;
+  if(inShortlist(id)){shortlist=shortlist.filter(x=>x.id!==id&&!(x.custom&&x.custom.id===id));toast("Removed from shortlist")}
+  else{shortlist.push(idea.remix||idea.ai||idea.mine?{id,custom:idea}:{id});toast("Added to shortlist")}
+  store.set("shortlist",shortlist);updateShortBadge();renderIdeas();renderShortlist();
+}
+function updateShortBadge(){$("#short-n").textContent=shortlist.length?String(shortlist.length):""}
+
+/* remix */
+$("#btn-remix").addEventListener("click",()=>{
+  const idea=remixIdea(profile);
+  if(!idea){toast("Could not build a remix for that audience. Try another.");return}
+  extra.unshift(idea);extra=extra.slice(0,12);pinned=new Set([idea.id]);openId=idea.id;sort="rank";renderIdeas();
+  window.scrollTo({top:$("#ideas").getBoundingClientRect().top+window.scrollY-80,behavior:smooth()});
+});
+$("#btn-reset").addEventListener("click",()=>{profile=defaultProfile();store.del("profile");stripHash();renderChips();renderIdeas();toast("Profile reset")});
+$("#btn-sharelink").addEventListener("click",async()=>{
+  const url=location.origin+location.pathname+location.search+"#p="+encodeURIComponent(JSON.stringify(serialProfile()));
+  if(await copy(url))toast("Link copied");
+  else showText("Link to this profile",url,"Copy could not run here. Select the link and copy it.","Copy link");
+});
+
+/* ---------- text modal (prompts, fallbacks) ---------- */
+let closeModal=null;
+function showText(title,text,note,copyLabel){
+  if(closeModal)closeModal();
+  const root=$("#modal-root");
+  root.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="mtitle">
+    <div class="box">
+      <div class="hd"><h3 id="mtitle">${esc(title)}</h3><button type="button" class="btn ghost sm" data-close>Close</button></div>
+      <pre tabindex="0">${esc(text)}</pre>
+      <div class="ft"><span style="margin-right:auto;font-size:12.5px;color:var(--muted);align-self:center">${esc(note)}</span><button type="button" class="btn primary" data-copy>${esc(copyLabel)}</button></div>
+    </div></div>`;
+  const prevFocus=document.activeElement;
+  const box=root.querySelector(".box");
+  const focusables=()=>$$("button,[tabindex='0']",box);
+  ["header","main","footer"].forEach(t=>{const el=document.querySelector(t);if(el)el.inert=true});
+  document.body.classList.add("modal-open");
+  const onKey=e=>{
+    if(e.key==="Escape"){e.preventDefault();close();return}
+    if(e.key!=="Tab")return;
+    const f=focusables();if(!f.length)return;
+    const first=f[0],last=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+    else if(!box.contains(document.activeElement)){e.preventDefault();first.focus()}
+  };
+  const close=()=>{
+    root.innerHTML="";document.removeEventListener("keydown",onKey);closeModal=null;
+    ["header","main","footer"].forEach(t=>{const el=document.querySelector(t);if(el)el.inert=false});
+    document.body.classList.remove("modal-open");
+    if(prevFocus&&prevFocus.isConnected&&prevFocus.focus)prevFocus.focus();
+    else if(prevFocus&&prevFocus.id)focusSel("#"+CSS.escape(prevFocus.id));
+  };
+  let downOnBackdrop=false;
+  closeModal=close;
+  document.addEventListener("keydown",onKey);
+  root.querySelector("[data-close]").addEventListener("click",close);
+  const backdrop=root.querySelector(".modal");
+  backdrop.addEventListener("pointerdown",e=>{downOnBackdrop=e.target===backdrop});
+  backdrop.addEventListener("click",e=>{if(e.target===backdrop&&downOnBackdrop)close();downOnBackdrop=false});
+  root.querySelector("[data-copy]").addEventListener("click",async()=>{
+    if(await copy(text))toast("Copied");
+    else{const pre=root.querySelector("pre");pre.focus();const r=document.createRange();r.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(r);toast("Copy is blocked here. The text is selected, press Ctrl or Cmd + C.")}
+  });
+  root.querySelector("[data-copy]").focus();
+}
+function showPrompt(idea){
+  showText("v1 prompt · "+idea.t,buildPrompt(idea),"Paste into Claude Code, Cursor, or wherever you vibe code.","Copy prompt");
+}
+
+/* ---------- tabs ---------- */
+const TABS=[["tab-find","panel-find"],["tab-score","panel-score"],["tab-short","panel-short"]];
+function showTab(id){
+  TABS.forEach(([t,p])=>{const on=t===id;const tb=$("#"+t);tb.setAttribute("aria-selected",String(on));tb.tabIndex=on?0:-1;$("#"+p).hidden=!on});
+  if(id==="tab-short")renderShortlist();
+  if(id==="tab-score")renderScorecard();
+  store.set("tab",id);
+}
+$(".tabs").addEventListener("click",e=>{const b=e.target.closest(".tab");if(b)showTab(b.id)});
+$(".tabs").addEventListener("keydown",e=>{
+  const ids=TABS.map(t=>t[0]);const i=ids.indexOf(document.activeElement.id);if(i<0)return;
+  let n=null;if(e.key==="ArrowRight")n=(i+1)%ids.length;if(e.key==="ArrowLeft")n=(i-1+ids.length)%ids.length;if(e.key==="Home")n=0;if(e.key==="End")n=ids.length-1;
+  if(n!=null){e.preventDefault();showTab(ids[n]);$("#"+ids[n]).focus()}
+});
+
+/* ---------- score my idea ---------- */
+const QS=[
+ {k:"share",ax:"Screenshot",q:"If someone posted the result, would strangers get it in one glance?",o:["No visual output","A wall of text","A decent card","Instantly gettable, one glance"]},
+ {k:"identity",ax:"Identity",q:"Does the result say something about the person using it?",o:["Nothing","A little","A label or score","A type, rank or percentile they'll want to post"]},
+ {k:"freq",ax:"Utility",q:"How often would someone come back?",o:["Once","Monthly","Weekly","Daily"]},
+ {k:"pain",ax:"Utility",q:"How painful is the problem today?",o:["Nobody is bothered","Mild annoyance","People complain about it","People pay or hack around it"]},
+ {k:"timing",ax:"Timing",q:"Is it riding a wave?",o:["Evergreen but quiet","Steady interest","Rising topic","Everyone's talking about it this month"]},
+ {k:"net",ax:"Network",q:"Does it get better with other people?",o:["Solo only","Could share results","Invites a friend naturally","Useless alone (group vote, bill split)"]},
+ {k:"novelty",ax:"Novelty",q:"How crowded is the space?",o:["Five big apps do it","A few do it","Some do it, badly","Nobody has done this angle"]},
+ {k:"speed",ax:"Ship speed",q:"Honest v1 build time with vibe coding?",o:["More than a month","A month","A week","A weekend"]}
+];
+const SUGG={
+ share:["Give it a share card.","Render the result as a 1200×630 image with one big number and the app's name in the corner. Wordle's emoji grid is the benchmark: the output should make sense to someone who has never opened the app."],
+ identity:["Make the result about the person.","A type, a rank, a percentile, a nickname. People share what flatters or teases them, not what informs them."],
+ utility:["Find the weekly pain.","If people would only use it once, bolt it onto something they already do every week, or accept it is a toy and pour everything into the share card instead."],
+ timing:["Attach it to a wave.","Name the thing everyone is talking about this month in the title, or ship a version tied to a calendar moment: new year, back to school, Wrapped season."],
+ net:["Add one reason to bring a friend.","Compare scores, split a bill, vote together, a leaderboard for a group. The invite should be the natural next step after the result, not a growth hack."],
+ novelty:["Pick a sharper angle.","If five apps already do this, own a niche audience or a format they don't (a bot, an extension, a daily puzzle) rather than competing on features."],
+ speed:["Cut v1 to one screen and one output.","If it can't ship this weekend, it isn't v1. Delay accounts, settings and anything a user would not miss on day one."]
+};
+function renderQuestions(){
+  const grid=$("#qgrid");
+  if(!grid.children.length){
+    grid.innerHTML=QS.map(q=>`<div class="qcard"><div class="qhead"><b id="q-${q.k}">${esc(q.q)}</b><span class="ax">${esc(q.ax)}</span></div>
+      <div class="opts" role="group" aria-labelledby="q-${q.k}">${q.o.map((o,i)=>`<button type="button" class="opt" data-q="${q.k}" data-v="${i}" aria-pressed="false">${esc(o)}</button>`).join("")}</div></div>`).join("");
+  }
+  $$(".opt",grid).forEach(b=>b.setAttribute("aria-pressed",String(myIdea.a[b.dataset.q]===+b.dataset.v)));
+  syncChips("my-fmt",FMT,myIdea.fmt);
+}
+function myScores(){
+  const a=myIdea.a;const g=k=>a[k]==null?null:a[k];
+  const to5=x=>x==null?null:1+x*4/3;
+  const util=(g("freq")!=null||g("pain")!=null)?to5(((g("freq")??g("pain"))+(g("pain")??g("freq")))/2):null;
+  return {share:to5(g("share")),identity:to5(g("identity")),utility:util,timing:to5(g("timing")),net:to5(g("net")),novelty:to5(g("novelty")),speed:to5(g("speed"))};
+}
+function renderScorecard(){
+  const s=myScores();
+  const answered=QS.filter(q=>myIdea.a[q.k]!=null).length;
+  const w={share:.26,identity:.2,utility:.18,timing:.12,net:.14,novelty:.10};
+  let v=0,wt=0;for(const k in w){if(s[k]!=null){v+=w[k]*s[k];wt+=w[k]}}
+  const viralN=wt?Math.round(v/wt/5*100):null;
+  const overall=viralN==null?null:Math.round(viralN*.75+(s.speed!=null?s.speed/5*100:60)*.25);
+  const complete=answered===QS.length;
+  const verdict=!complete||overall==null?null:overall>=68?["ship","Ship it","High viral potential and a v1 you can actually build. Copy the prompt and start tonight."]:overall>=50?["sharpen","Sharpen it","Good bones. Fix the weakest axes below before you write a line of code."]:["skip","Skip or pivot","As described, this will be built and forgotten. Try the remix button or reframe around a share moment."];
+  const lows=complete?Object.entries(s).filter(([k,val])=>val!=null&&val<=3).sort((a,b)=>a[1]-b[1]).slice(0,3):[];
+  const title=myIdea.title.trim()||"Untitled idea";
+  $("#scorecard").innerHTML=`
+    <div class="eyebrow">Scorecard · ${esc(title)}</div>
+    <div class="verdict">
+      <div class="big">${overall==null?"—":overall}<small>/100</small></div>
+      <div>${verdict?`<span class="pill ${verdict[0]}">${verdict[1]}</span><p>${verdict[2]}</p>`:`<p>${overall==null?"Answer the eight questions.":"Provisional score."} ${answered} of ${QS.length} answered.</p>`}</div>
+    </div>
+    <div class="axes">${[["share","Screenshot"],["identity","Identity"],["utility","Utility"],["timing","Timing"],["net","Network"],["novelty","Novelty"],["speed","Ship speed"]].map(([k,l])=>`<div class="axis ${s[k]!=null&&s[k]<=2.4?"low":""}"><span class="lbl">${l}</span><span class="bar"><i style="width:${s[k]==null?0:s[k]*20}%"></i></span><span class="v">${s[k]==null?"·":s[k].toFixed(1)}</span></div>`).join("")}
+      <div class="why">Viral ${viralN==null?"—":viralN} · weighted like the library, plus novelty. Ship speed counts a quarter of the overall.</div>
+    </div>
+    ${lows.length?`<div class="sugg"><h4>What would move the number</h4><ul>${lows.map(([k])=>`<li><b>${esc(SUGG[k][0])}</b> ${esc(SUGG[k][1])}</li>`).join("")}</ul></div>`:complete?`<div class="sugg"><h4>Nothing weak here</h4><ul><li>Stop scoring and ship. Post the share moment on day one.</li></ul></div>`:""}
+    <div class="actions" style="margin-top:0">
+      <button type="button" class="btn primary" id="my-prompt" ${complete?"":"disabled"}>Copy v1 prompt</button>
+      <button type="button" class="btn" id="my-short" ${complete?"":"disabled"}>${inShortlist(customId())?"Update shortlist":"Shortlist this"}</button>
+      <button type="button" class="btn ghost" id="my-critique" ${sampleApi?"":"hidden"} ${complete&&!critiqueBusy?"":"disabled"}>${critiqueBusy?"Claude is thinking…":"Critique with Claude"}</button>
+      ${critiqueBusy?`<button type="button" class="btn ghost sm" id="my-critique-stop">Stop</button>`:""}
+      <button type="button" class="btn ghost sm" id="my-clear">Clear</button>
+    </div>
+    <div id="critique-out">${critiqueText||critiqueBusy?`<div class="critique" id="critique" aria-live="polite" aria-busy="${critiqueBusy}">${esc(critiqueText||"Thinking…")}</div>`:""}${critiqueErr?`<p class="err-line" role="status">${esc(critiqueErr)}</p>`:""}</div>`;
+  const stop=$("#my-critique-stop");if(stop)stop.addEventListener("click",()=>{if(critiqueCtl)critiqueCtl.abort()});
+  $("#my-prompt").addEventListener("click",()=>showPrompt(customIdea()));
+  $("#my-short").addEventListener("click",()=>{
+    const c=customIdea();
+    if(inShortlist(c.id)){shortlist=shortlist.map(x=>(x.custom&&x.custom.id===c.id)?{id:c.id,custom:c}:x);toast("Shortlist updated with your latest answers")}
+    else{shortlist.push({id:c.id,custom:c});toast("Added to shortlist")}
+    store.set("shortlist",shortlist);updateShortBadge();renderScorecard();focusSel("#my-short");
+  });
+  $("#my-clear").addEventListener("click",()=>{myIdea=blankIdea();resetCritique();store.set("myidea",myIdea);$("#my-title").value="";$("#my-pitch").value="";$("#my-who").value="";renderQuestions();renderScorecard();focusSel("#my-title")});
+  $("#my-critique").addEventListener("click",critique);
+}
+function customId(){return myIdea.id}
+const AXLABEL={share:"screenshot",identity:"identity",utility:"utility",timing:"timing",net:"network",novelty:"novelty",speed:"ship speed"};
+function customIdea(){
+  const s=myScores();const r=k=>Math.max(1,Math.min(5,Math.round(s[k]??3)));
+  const id=customId();
+  const low=Object.entries(s).filter(([k,val])=>k!=="speed"&&val!=null&&val<=3).sort((a,b)=>a[1]-b[1]).slice(0,2);
+  return {id,mine:true,t:myIdea.title.trim()||"Untitled idea",p:myIdea.pitch.trim()||"No pitch written yet.",aud:[myIdea.who.trim()||"People like you"],fmt:FMT[myIdea.fmt]?myIdea.fmt:"web",edge:["none"],goal:[profile.goal],mech:s.net>=4?"invite":s.share>=4?"screenshot":s.identity>=4?"identity":"wom",
+    why:"Your own scoring: strongest on "+Object.entries(s).filter(([,v])=>v!=null).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([k])=>AXLABEL[k]).join(" and ")+".",
+    share:s.share>=4?"You said the output is instantly gettable in one glance. Build that card first.":"Define it before building: the one image or message a user would post. "+SUGG.share[1],
+    mvp:["The single input that produces the result.","The result rendered as the share moment (card, message or image).","A copy or share button. Nothing else in v1."],
+    first:"Make ten examples for real people you know and post them where "+(myIdea.who.trim()||"your audience")+" already hang out.",
+    risk:low.length?"Weakest axes: "+low.map(([k])=>AXLABEL[k]+" ("+SUGG[k][0].toLowerCase().replace(/\.$/,"")+")").join("; ")+".":"No obvious weak axis. The risk is not shipping.",
+    comps:["Your own scoring on the bench"],s:{share:r("share"),identity:r("identity"),utility:r("utility"),timing:r("timing"),net:r("net"),speed:r("speed")},effort:s.speed>=4.5?1:s.speed>=3?2:3,money:r("utility")};
+}
+function benchIdea(idea){
+  const v=x=>Math.round((x-1)*3/4);
+  myIdea={id:idea.mine?idea.id:newId("mine"),title:idea.t.slice(0,60),pitch:idea.p.slice(0,280),who:idea.aud.map(a=>AUD[a]||a).join(", ").slice(0,80),fmt:FMT[idea.fmt]?idea.fmt:"web",a:{share:v(idea.s.share),identity:v(idea.s.identity),freq:v(idea.s.utility),pain:v(idea.s.utility),timing:v(idea.s.timing),net:v(idea.s.net),novelty:idea.remix?1:2,speed:v(idea.s.speed)}};
+  resetCritique();store.set("myidea",myIdea);
+  $("#my-title").value=myIdea.title;$("#my-pitch").value=myIdea.pitch;$("#my-who").value=myIdea.who;
+  renderQuestions();showTab("tab-score");$("#tab-score").focus();window.scrollTo({top:0});toast("Loaded onto the bench. Adjust any answer.");
+}
+/* any edit to the idea on the bench abandons an in-flight critique, since it would describe the old answers */
+function benchEdited(){if(critiqueBusy){resetCritique();toast("Critique stopped: the idea changed")}}
+$("#qgrid").addEventListener("click",e=>{const b=e.target.closest(".opt");if(!b)return;benchEdited();myIdea.a[b.dataset.q]=+b.dataset.v;store.set("myidea",myIdea);renderQuestions();renderScorecard()});
+$("#my-fmt").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;benchEdited();myIdea.fmt=b.dataset.k;store.set("myidea",myIdea);renderQuestions();renderScorecard()});
+["my-title","my-pitch","my-who"].forEach(id=>$("#"+id).addEventListener("input",e=>{benchEdited();myIdea[id.slice(3)]=e.target.value;store.set("myidea",myIdea);if(id==="my-title"||!critiqueBusy)renderScorecard()}));
+$("#score-form").addEventListener("submit",e=>e.preventDefault());
+
+/* ---------- shortlist ---------- */
+function renderShortlist(){
+  const root=$("#shortlist");
+  const items=shortlist.map(x=>x.custom||IDEAS.find(i=>i.id===x.id)).filter(Boolean);
+  if(!items.length){root.innerHTML=`<div class="empty"><b>Nothing shortlisted yet.</b><br>Open an idea and press Shortlist, or score your own on the bench.</div>`;return}
+  root.innerHTML=`<div class="compare"><table>
+    <thead><tr><th>Idea</th><th>Spreads by</th><th>Build</th><th class="num">Viral</th><th class="num">Fit</th><th class="num">Speed</th><th></th></tr></thead>
+    <tbody>${items.map(i=>`<tr>
+      <td><div class="t">${esc(i.t)} ${i.mine?'<span class="badge mine">mine</span>':i.ai?'<span class="badge ai">Claude</span>':i.remix?'<span class="badge remix">remix</span>':""}</div><div class="p">${esc(i.p)}</div></td>
+      <td>${esc(MECH[i.mech]||i.mech)}<br><span class="p">${esc(i.share)}</span></td>
+      <td>${effortLabel(i.effort)}<br><span class="p">${esc(FMT[i.fmt]||i.fmt)}</span></td>
+      <td class="num" style="color:var(--heat);font-weight:600">${viral(i.s)}</td>
+      <td class="num" ${i.mine?'title="Fit is only computed for library ideas"':""}>${i.mine?"—":fit(i)}</td>
+      <td class="num">${i.s.speed}/5</td>
+      <td><div class="rowact"><button type="button" class="btn sm primary" data-act="prompt" data-id="${esc(i.id)}">Prompt</button><button type="button" class="btn sm ghost" data-act="remove" data-id="${esc(i.id)}" aria-label="Remove ${esc(i.t)}">✕</button></div></td>
+    </tr>`).join("")}</tbody></table></div>
+    <div class="actions"><button type="button" class="btn" id="short-copy-all">Copy all prompts</button><button type="button" class="btn ghost" id="short-clear">Clear shortlist</button></div>`;
+  root.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",()=>{
+    const idea=items.find(i=>i.id===b.dataset.id);if(!idea)return;
+    if(b.dataset.act==="prompt")showPrompt(idea);
+    else{shortlist=shortlist.filter(x=>x.id!==idea.id&&!(x.custom&&x.custom.id===idea.id));store.set("shortlist",shortlist);updateShortBadge();renderShortlist();renderIdeas();toast("Removed")}
+  }));
+  $("#short-copy-all").addEventListener("click",async()=>{
+    const all=items.map(buildPrompt).join("\n\n---\n\n");
+    if(await copy(all))toast(`${items.length} prompt${items.length===1?"":"s"} copied`);
+    else showText("All shortlisted prompts",all,"Copy could not run here. Select the text and copy it.","Copy all");
+  });
+  $("#short-clear").addEventListener("click",()=>{shortlist=[];store.set("shortlist",shortlist);updateShortBadge();renderShortlist();renderIdeas();toast("Shortlist cleared");focusSel("#tab-find")});
+}
+$("#btn-clear-all").addEventListener("click",()=>{
+  ["profile","shortlist","myidea","tab"].forEach(k=>store.del(k));
+  profile=defaultProfile();shortlist=[];myIdea=blankIdea();extra=[];pinned=new Set();openId=null;resetCritique();
+  $("#my-title").value="";$("#my-pitch").value="";$("#my-who").value="";
+  stripHash();
+  renderChips();renderIdeas();renderQuestions();renderScorecard();renderShortlist();updateShortBadge();toast("Everything cleared");
+});
+
+/* ---------- Claude (optional) ---------- */
+function profileText(){
+  return `Audience: ${profile.aud.size?[...profile.aud].map(a=>AUD[a]).join(", "):"any"}. Format: ${profile.fmt.size?[...profile.fmt].map(f=>FMT[f]).join(", "):"any"}. Builder's edge: ${profile.edge.size?[...profile.edge].map(e=>EDGE[e]).join(", "):"none in particular"}. Goal: ${GOAL[profile.goal]}. Time for v1: ${TIME[profile.time]}.`;
+}
+const REVOKE=new Set(["not_granted","sampling_disabled","capability_disabled","capability_removed","not_declared"]);
+function aiBox(html){const b=$("#ai-box");b.hidden=!html;b.innerHTML=html||""}
+function aiErr(msg){aiBox(`<div class="st"><span class="err">${esc(msg)}</span><button type="button" class="btn ghost sm" id="ai-dismiss" style="margin-left:auto">Dismiss</button></div>`);$("#ai-dismiss").addEventListener("click",()=>{aiBox("");focusSel("#btn-ai")})}
+async function generateIdeas(){
+  if(!sampleApi)return;
+  const btn=$("#btn-ai");btn.disabled=true;
+  abortCtl=new AbortController();
+  aiBox(`<div class="st"><span class="dots"><i></i><i></i><i></i></span>Claude is generating five ideas for this profile. Usually 10 to 40 seconds.<button type="button" class="btn ghost sm" id="ai-cancel" style="margin-left:auto">Cancel</button></div>`);
+  $("#ai-cancel").addEventListener("click",()=>abortCtl.abort());
+  const seen=[...extra,...IDEAS].map(i=>i.t).slice(0,60).join("; ");
+  const prompt=`You are an idea bench for people who vibe code small apps fast. Generate exactly 5 app ideas that are useful and have a real chance of spreading organically, tailored to this builder.
+
+${profileText()}
+
+Rules: each idea must have one concrete "share moment" (the image, message or artifact a user would post or send). Prefer weekend-buildable scope. Be specific, not generic. Avoid these existing titles: ${seen}.
+
+Return ONLY a JSON array of 5 objects with these keys:
+t (title, max 4 words), p (one-line pitch, max 160 chars), aud (array of 1-2 keys from: me,devs,creators,students,smb,gamers,parents,fitness,jobs,teams), fmt (one of: web,ext,bot,mobile,cli), mech (one of: identity,screenshot,invite,wom,ritual,wave,humor), why (2 sentences on why it spreads), share (the share moment, 1-2 sentences), mvp (array of exactly 3 build steps), first (how to get the first 100 users, 1-2 sentences), risk (biggest risk and mitigation, 1-2 sentences), comps (array of 2-3 existing things that spread the same way), s (object with integer 1-5 for share, identity, utility, timing, net, speed), effort (1 weekend, 2 week, 3 month), money (integer 1-5 monetization potential).`;
+  try{
+    const out=await sampleApi.json(prompt,{signal:abortCtl.signal,modelTier:"default"});
+    const arr=Array.isArray(out)?out:(out&&Array.isArray(out.ideas)?out.ideas:null);
+    if(!arr)throw {code:"invalid_json",message:"Unexpected shape"};
+    const clean=arr.slice(0,5).map(normalizeAi).filter(Boolean);
+    if(!clean.length)throw {code:"invalid_json",message:"No usable ideas"};
+    extra=[...clean,...extra].slice(0,15);pinned=new Set(clean.map(c=>c.id));openId=clean[0].id;sort="rank";renderIdeas();aiBox("");
+    toast(`${clean.length} ideas from Claude added to the top`);
+  }catch(err){
+    const code=err&&err.code;
+    if(code==="cancelled")aiBox("");
+    else if(REVOKE.has(code)){aiBox("");revokeSample()}
+    else if(code==="rate_limited")aiErr("Claude is rate limited right now. Try again in a minute, or use Remix.");
+    else aiErr(`Could not get ideas from Claude (${code||"error"}). Remix still works offline.`);
+  }finally{btn.disabled=false;abortCtl=null}
+}
+function normalizeAi(o){
+  if(!o||typeof o!=="object"||!o.t)return null;
+  const n=(x,d)=>{const v=Math.round(Number(x));return Number.isFinite(v)?Math.max(1,Math.min(5,v)):d};
+  const str=(x,d="")=>typeof x==="string"?x.slice(0,600):d;
+  const arr=(x,len,d)=>{const v=Array.isArray(x)?x.slice(0,len).map(i=>str(i)).filter(Boolean):[];return v.length>=Math.min(len,d.length)?v:v.concat(d.slice(v.length))};
+  const s=o.s||{};
+  return {id:"ai-"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),ai:true,
+    t:str(o.t,"Untitled").slice(0,60),p:str(o.p,"").slice(0,220),
+    aud:(Array.isArray(o.aud)?o.aud.filter(a=>AUD[a]):[]).slice(0,2).length?o.aud.filter(a=>AUD[a]).slice(0,2):["me"],
+    fmt:FMT[o.fmt]?o.fmt:"web",edge:["none"],goal:[profile.goal],mech:MECH[o.mech]?o.mech:"wom",
+    why:str(o.why,"Claude did not say."),share:str(o.share,"Define the share moment before building."),
+    mvp:arr(o.mvp,3,["Input","Output as share moment","Share button"]),first:str(o.first,"Post it where the audience already is."),
+    risk:str(o.risk,"Unknown. Validate before building."),comps:arr(o.comps,3,[]),
+    s:{share:n(s.share,3),identity:n(s.identity,3),utility:n(s.utility,3),timing:n(s.timing,3),net:n(s.net,2),speed:n(s.speed,4)},
+    effort:[1,2,3].includes(Number(o.effort))?Number(o.effort):1,money:n(o.money,2)};
+}
+function revokeSample(){sampleApi=null;$("#btn-ai").hidden=true;const c=$("#my-critique");if(c)c.hidden=true}
+function setCritique(text,busy){
+  critiqueText=text;critiqueBusy=busy;
+  const el=$("#critique");
+  if(el){el.textContent=text||"Thinking…";el.setAttribute("aria-busy",String(busy))}else renderScorecard();
+}
+/* called whenever the idea on the bench changes: abandons any in-flight critique */
+function resetCritique(){critiqueSeq++;if(critiqueCtl){critiqueCtl.abort();critiqueCtl=null}critiqueText="";critiqueErr="";critiqueBusy=false}
+async function critique(){
+  if(!sampleApi||critiqueBusy)return;
+  const idea=customIdea();
+  const seq=++critiqueSeq;critiqueCtl=new AbortController();const ctl=critiqueCtl;
+  critiqueErr="";setCritique("",true);renderScorecard();
+  const prompt=`You are a blunt, kind product critic for someone about to vibe code a small app. Idea: "${idea.t}". Pitch: ${idea.p}. For: ${idea.aud[0]}. Format: ${FMT[idea.fmt]}. Their self-scores (1-5): ${Object.entries(idea.s).map(([k,v])=>AXLABEL[k]+" "+v).join(", ")}.
+In under 180 words, plain text, no headers: (1) the one thing most likely to make this spread, (2) the one thing most likely to kill it, (3) a sharper one-line pitch, (4) the single feature to build first. Be specific to this idea.`;
+  try{
+    const r=await sampleApi(prompt,{modelTier:"default",signal:ctl.signal,onText:u=>{if(seq===critiqueSeq)setCritique(u.text,true)}});
+    if(seq!==critiqueSeq)return;
+    setCritique(r.text,false);
+  }catch(err){
+    if(seq!==critiqueSeq)return;
+    const code=err&&err.code;
+    if(REVOKE.has(code)){critiqueText="";critiqueBusy=false;revokeSample();renderScorecard();return}
+    const partial=code==="refused"?"":(err&&typeof err.text==="string")?err.text:critiqueText;
+    critiqueText=partial;critiqueBusy=false;
+    critiqueErr=code==="cancelled"?(partial?"Stopped. Keeping what came through.":"Stopped."):code==="rate_limited"?"Claude is rate limited right now. Try again in a minute.":"Could not finish the critique ("+(code||"error")+"). The scorecard above still stands.";
+  }finally{if(critiqueCtl===ctl)critiqueCtl=null}
+  renderScorecard();
+}
+$("#btn-ai").addEventListener("click",generateIdeas);
+(async()=>{
+  try{
+    if(window.claude&&typeof window.claude.use==="function"){sampleApi=await window.claude.use("sample")}else sampleApi=null;
+  }catch(e){sampleApi=null}
+  if(sampleApi){$("#btn-ai").hidden=false;const c=$("#my-critique");if(c)c.hidden=false}
+})();
+
+/* ---------- init ---------- */
+loadProfile();
+renderChips();renderIdeas();renderQuestions();
+$("#my-title").value=myIdea.title||"";$("#my-pitch").value=myIdea.pitch||"";$("#my-who").value=myIdea.who||"";
+renderScorecard();updateShortBadge();
+const lastTab=store.get("tab","tab-find");
+if(lastTab!=="tab-find"&&TABS.some(t=>t[0]===lastTab))showTab(lastTab);
+window.addEventListener("hashchange",()=>{if(location.hash.startsWith("#p=")){loadProfile();renderChips();renderIdeas()}});
+})();
+</script>
+</body>
+</html>
