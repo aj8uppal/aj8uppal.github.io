@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Viral Night — ten apps, one night</title>
+<style>
+  :root{
+    --ink:#0b0b0d; --paper:#f4f1ea; --dim:#6f6a60; --rule:#d8d2c6;
+    --accent:#c2452d;
+    --card:#fffdf8;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --ink:#efe9dd; --paper:#0c0c0e; --dim:#8b857a; --rule:#26262b; --card:#141417; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font:16px/1.5 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:56px 24px 96px}
+  header{border-bottom:1px solid var(--rule);padding-bottom:28px;margin-bottom:8px}
+  .kicker{font:500 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--accent)}
+  h1{font-size:clamp(38px,7vw,74px);line-height:.95;margin:16px 0 12px;font-weight:500;letter-spacing:-.02em}
+  .sub{color:var(--dim);max-width:60ch;margin:0}
+  .how{margin-top:22px;font:13px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--dim)}
+  .how code{background:color-mix(in oklab,var(--ink) 8%,transparent);padding:2px 7px;border-radius:4px;color:var(--ink)}
+  .grid{display:grid;gap:28px;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));margin-top:48px}
+  a.card{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--card);
+    border:1px solid var(--rule);border-radius:3px;overflow:hidden;
+    transition:transform .18s cubic-bezier(.2,.7,.3,1),border-color .18s,box-shadow .18s}
+  a.card:hover,a.card:focus-visible{transform:translateY(-3px);border-color:var(--accent);
+    box-shadow:0 14px 40px -20px rgba(0,0,0,.55);outline:none}
+  .shotwrap{aspect-ratio:16/10;background:#08080a;overflow:hidden;position:relative;
+    border-bottom:1px solid var(--rule);display:grid;place-items:center}
+  .shotwrap img{width:100%;height:100%;object-fit:cover;display:block}
+  .noshot{font:11px/1 ui-monospace,Menlo,monospace;letter-spacing:.18em;text-transform:uppercase;color:#5a5a62}
+  .body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .name{font:600 21px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.01em}
+  .hook{margin:0;font-size:16px;line-height:1.45}
+  .meta{margin-top:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+    font:10px/1 ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  .tag{border:1px solid var(--rule);border-radius:99px;padding:5px 9px}
+  .num{color:var(--accent)}
+  footer{margin-top:72px;padding-top:24px;border-top:1px solid var(--rule);color:var(--dim);font-size:14px}
+  footer a{color:inherit}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Overnight build · 2026-09-02</div>
+  <h1>Viral Night</h1>
+  <p class="sub">Ten apps that share nothing but ambition. Each is pure client-side HTML/JS — no server,
+  no accounts, no API keys, nothing leaves the device. Every one has a demo mode, so nothing needs your
+  camera, mic or permission to be worth looking at.</p>
+  <div class="how">Ten apps, each at its own path on this domain. Nothing here is linked from the portfolio.<br>
+  Append <code>?demo=1</code> to force demo mode, <code>?demo=0</code> to go live.</div>
+</header>
+
+<div class="grid" id="grid"></div>
+
+<footer>
+  Ideas generated with codex, built by Opus 5 + codex, reviewed adversarially by codex.
+  Full brainstorm with mechanics and share strategy: <a href="IDEAS.md">IDEAS.md</a>.
+</footer>
+</div>
+
+<script>
+const APPS = [
+  {n:"pulseprint",   c:"Health × art",      h:"Put a finger over your camera; your heartbeat paints a living signature no one else can make.", m:"Camera PPG"},
+  {n:"throatlight",  c:"Music",             h:"Hum one note and watch your voice open a cathedral made of light.", m:"Mic · pitch"},
+  {n:"dontblink",    c:"Game",              h:"A horror game that only moves when you blink.", m:"Camera · blink"},
+  {n:"roomtone",     c:"Lifestyle",         h:"Point your camera around your room and discover its secret color chord.", m:"Camera · OKLab"},
+  {n:"afterimage",   c:"Art / perception",  h:"Stare at a ghost for eight seconds, then watch it appear on your real wall.", m:"Retina"},
+  {n:"gravitylies",  c:"Science",           h:"Tilt your phone to bend a star field — then find out which way “down” really is.", m:"Motion sensors"},
+  {n:"samebreath",   c:"Social, co-located",h:"Two people hold the same screen and try to make one creature breathe.", m:"Two fingers"},
+  {n:"filefossil",   c:"Tool × data art",   h:"Drop any file into the browser and excavate the creature hiding in its bytes.", m:"Bytes · local"},
+  {n:"apologyengine",c:"Emotional instrument",h:"Type the apology you never sent. Everything you delete stays.", m:"Edit timeline"},
+  {n:"cursorweather",c:"Behavioral mirror", h:"Your mouse has been leaving weather behind its whole life. Now you can see it.", m:"Pointer stats"},
+];
+const grid = document.getElementById('grid');
+APPS.forEach((a,i)=>{
+  const el = document.createElement('a');
+  el.className='card'; el.href='../'+a.n+'/';
+  el.innerHTML = `
+    <div class="shotwrap"><span class="noshot">no screenshot yet</span></div>
+    <div class="body">
+      <div class="name">${a.n}</div>
+      <p class="hook">${a.h}</p>
+      <div class="meta"><span class="num">${String(i+1).padStart(2,'0')}</span>
+        <span class="tag">${a.c}</span><span class="tag">${a.m}</span></div>
+    </div>`;
+  // The published copy carries a downscaled screenshot.jpg; the working tree has
+  // the full-size screenshot.png that verify.py writes. Try the small one first
+  // and fall back, so one file works in both places.
+  const img = new Image();
+  img.alt = a.n + ' screenshot';
+  img.onload = () => { const w = el.querySelector('.shotwrap'); w.innerHTML=''; w.appendChild(img); };
+  img.onerror = () => {
+    if (img.dataset.retried) return;
+    img.dataset.retried = '1';
+    img.src = '../'+a.n+'/screenshot.png';
+  };
+  img.src = '../'+a.n+'/screenshot.jpg';
+  grid.appendChild(el);
+});
+</script>
+</body>
+</html>

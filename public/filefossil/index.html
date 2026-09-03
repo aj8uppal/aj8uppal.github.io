@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FILEFOSSIL — a cabinet of byte-borne specimens</title>
+<meta name="description" content="Drop any file into the browser and excavate the creature hiding in its bytes. Everything is measured locally; nothing is uploaded.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/plate.css">
+</head>
+<body>
+<canvas id="paper" aria-hidden="true"></canvas>
+
+<div class="plate">
+  <header class="masthead">
+    <div class="masthead__rules" aria-hidden="true"><i></i><i></i></div>
+    <h1>Filefossil</h1>
+    <p class="masthead__sub">A cabinet of byte-borne specimens · Plate <span id="plateNo">I</span></p>
+    <div class="masthead__rules masthead__rules--under" aria-hidden="true"><i></i><i></i></div>
+  </header>
+
+  <main class="columns">
+    <section class="stage" id="stage">
+      <canvas id="view" tabindex="0" role="img"
+              aria-label="Rotating skeletal specimen generated from the analysed file's byte statistics"></canvas>
+      <p class="stage__hint" id="stageHint">drag to orbit · scroll to zoom · arrow keys work too</p>
+      <div class="stage__badge" id="badge" hidden>Synthetic specimen</div>
+      <div class="stage__progress" id="progress" hidden>
+        <span class="stage__progress-label" id="progressLabel">Excavating…</span>
+        <span class="stage__progress-track"><i id="progressBar"></i></span>
+      </div>
+    </section>
+
+    <aside class="card" id="card">
+      <p class="card__cat">Catalogue <span id="catalogue">—</span> · acc. <span id="accession">—</span></p>
+      <h2 class="card__binomial" id="binomial" aria-live="polite">—</h2>
+      <p class="card__order"><span id="orderName">—</span> · <span id="sourceName">—</span></p>
+
+      <h3 class="card__head">Measurements <small>read locally, in this tab</small></h3>
+      <dl class="measures" id="measures"></dl>
+
+      <h3 class="card__head">Morphology <small>trait ← measurement that caused it</small></h3>
+      <ul class="traits" id="traits"></ul>
+
+      <p class="card__note" id="privacyNote">
+        Every byte is read with the File API inside this tab. Once the page itself has loaded
+        (its own HTML, CSS and JS from this origin), it makes no further network requests of any
+        kind — nothing about your file is uploaded, stored or transmitted, and it keeps working
+        with the machine offline. It is a deterministic drawing of byte statistics: it does not
+        identify content, detect malware, or infer meaning.
+      </p>
+    </aside>
+  </main>
+
+  <footer class="console">
+    <div class="console__group">
+      <h4>Specimen source</h4>
+      <div class="console__row">
+        <button class="btn btn--file" type="button" id="fileBtn">Choose a file…</button>
+        <input type="file" id="fileInput" hidden>
+        <span class="console__drop">or drop one anywhere on this page</span>
+      </div>
+      <div class="console__row chips" id="samples" role="group" aria-label="Synthetic sample specimens"></div>
+    </div>
+
+    <div class="console__group console__group--mutate">
+      <h4>Mutate one byte <small id="mutateState">no edits</small></h4>
+      <div class="console__row slider">
+        <label for="offset">offset</label>
+        <input type="range" id="offset" min="0" max="0" step="1" value="0">
+        <output id="offsetOut" class="num">0x00000000</output>
+      </div>
+      <div class="console__row slider">
+        <label for="value">value</label>
+        <input type="range" id="value" min="0" max="255" step="1" value="0" disabled>
+        <output id="valueOut" class="num">0x00</output>
+      </div>
+      <div class="console__row">
+        <button class="btn" id="randomByte" type="button" disabled>Random byte</button>
+        <button class="btn" id="headerByte" type="button" disabled>Break the header</button>
+        <button class="btn" id="restore" type="button" disabled>Restore</button>
+      </div>
+    </div>
+
+    <div class="console__group console__group--out">
+      <h4>Plate</h4>
+      <div class="console__row">
+        <button class="btn btn--primary" id="exportBtn" type="button">Export plate (PNG)</button>
+      </div>
+      <div class="console__row">
+        <button class="btn" id="spinBtn" type="button" aria-pressed="true">Pause rotation</button>
+        <button class="btn" id="themeBtn" type="button" aria-pressed="false">Slate ground</button>
+      </div>
+      <p class="console__meta" id="capNote"></p>
+    </div>
+  </footer>
+</div>
+
+<div class="dropveil" id="dropveil" hidden><span>Release to excavate</span></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

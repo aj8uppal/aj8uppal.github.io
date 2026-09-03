@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Pulseprint — your heartbeat, drawn</title>
+<meta name="description" content="Put a finger over your camera; your heartbeat paints a living signature no one else can make.">
+<link rel="stylesheet" href="./css/pulseprint.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0507'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23ff9a63' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23ffd9b8'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="frame">
+
+  <header class="topbar">
+    <div class="mark">
+      <span class="mark-glyph" aria-hidden="true"></span>
+      <span class="mark-word">Pulseprint</span>
+    </div>
+    <div class="topbar-right">
+      <span id="modeChip" class="chip" data-mode="demo">Demo mode</span>
+      <button id="sourceBtn" class="btn btn-ghost" type="button">Use my camera</button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+    <canvas id="art" aria-label="Generative artwork grown from your pulse"></canvas>
+    <p id="bpmSr" class="sr-only" role="status" aria-live="polite">No pulse found yet.</p>
+    <div class="stage-hint" id="stageHint" hidden>Rest a fingertip flat over the lens. Still and gentle.</div>
+  </main>
+
+  <footer class="dock">
+
+    <div class="dock-readout">
+      <div class="meter" role="group" aria-label="Signal quality">
+        <span class="micro">Signal</span>
+        <div class="meter-track" id="meterTrack" aria-hidden="true"></div>
+        <span class="meter-state micro" id="signalState" role="status" aria-live="polite">Idle</span>
+      </div>
+      <div class="tallies">
+        <span class="tally"><b id="beatCount">0</b><span class="micro">beats</span></span>
+        <span class="tally"><b id="elapsed">0:00</b><span class="micro">elapsed</span></span>
+      </div>
+      <canvas id="trace" class="trace" aria-label="Live pulse waveform"></canvas>
+    </div>
+
+    <div class="dock-controls">
+      <div class="seg" role="group" aria-label="Artwork style">
+        <button class="seg-btn is-on" type="button" data-style="0" aria-pressed="true">Corolla</button>
+        <button class="seg-btn" type="button" data-style="1" aria-pressed="false">Filament</button>
+        <button class="seg-btn" type="button" data-style="2" aria-pressed="false">Ripple</button>
+      </div>
+      <label class="picker" id="pickerWrap" hidden>
+        <span class="micro">Camera</span>
+        <select id="devicePicker"></select>
+      </label>
+      <div class="dock-actions">
+        <button id="motionBtn" class="btn btn-ghost" type="button" aria-pressed="false">Motion: full</button>
+        <button id="freezeBtn" class="btn btn-solid" type="button">Freeze &amp; save</button>
+      </div>
+    </div>
+
+    <p class="fineprint">A visual toy, not a medical device — no diagnosis, no health scores. Camera frames are read in this
+      tab and never leave your device.</p>
+  </footer>
+
+</div>
+
+<!-- Onboarding -->
+<div class="veil" id="intro" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+  <div class="card">
+    <p class="eyebrow">health &times; generative art</p>
+    <h1 id="introTitle">Your heartbeat<br>paints a signature<br>no one else can make.</h1>
+    <ol class="steps">
+      <li><span>1</span>Cover the rear camera lens with a fingertip — flat, gentle, still.</li>
+      <li><span>2</span>Wait about five seconds for the signal to lock.</li>
+      <li><span>3</span>Every beat throws a ring into a growing bloom.</li>
+    </ol>
+    <div class="card-actions">
+      <button id="beginBtn" class="btn btn-solid btn-lg" type="button">Begin</button>
+      <button id="demoBtn" class="btn btn-ghost" type="button">Watch a simulated pulse</button>
+    </div>
+    <p class="card-note" id="introNote">Nothing is uploaded. No account, no history, no network.</p>
+    <p class="card-fine">A visual toy, not a medical device.</p>
+  </div>
+</div>
+
+<!-- Freeze / share card -->
+<div class="veil" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="card card-wide">
+    <p class="eyebrow" id="sheetTitle">Your print</p>
+    <div class="card-preview"><canvas id="cardCanvas" aria-label="Share card preview"></canvas></div>
+    <div class="card-actions">
+      <button id="downloadBtn" class="btn btn-solid" type="button">Download PNG</button>
+      <button id="resumeBtn" class="btn btn-ghost" type="button">Keep growing</button>
+      <button id="restartBtn" class="btn btn-ghost" type="button">Start a new print</button>
+    </div>
+    <p class="card-fine">Saved straight from this tab. A visual toy, not a medical device.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>

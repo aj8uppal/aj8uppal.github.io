@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Gravity Lies — field plate 001</title>
+<meta name="description" content="Tilt your phone to bend a star field, then find out which way down really is.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2304060a'/%3E%3Ccircle cx='16' cy='11' r='2.5' fill='%235fd0e8'/%3E%3Cpath d='M16 14 L16 26 M12 22 L16 26 L20 22' stroke='%235fd0e8' stroke-width='1.4' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<canvas id="plate" aria-hidden="true"></canvas>
+<canvas id="vectors" aria-hidden="true"></canvas>
+
+<div id="hud" class="hud">
+  <div class="topbar">
+    <div class="ident">
+      <span class="mark">GRAVITY&thinsp;LIES</span>
+      <span class="sub">field plate 001</span>
+    </div>
+    <div class="readout" id="readout" aria-hidden="true">
+      <div class="row"><span class="k">source</span><span class="v" id="rSource">simulated</span></div>
+      <div class="row"><span class="k">tilt</span><span class="v" id="rTilt">0.0&deg;</span></div>
+      <div class="row"><span class="k">roll / pitch</span><span class="v" id="rRP">0.0 / 0.0</span></div>
+      <div class="row"><span class="k">stars</span><span class="v" id="rStars">0</span></div>
+    </div>
+    <div class="progress"><i id="progressFill"></i></div>
+  </div>
+
+  <div class="stagecard" id="stagecard" aria-live="polite">
+    <p class="stagenum" id="stageNum">01</p>
+    <h1 class="stagetitle" id="stageTitle">Screen down</h1>
+    <p class="stagebody" id="stageBody"></p>
+  </div>
+
+  <div class="bottombar">
+    <nav class="rail" id="rail" aria-label="Chapters">
+      <button type="button" class="railbtn" data-stage="1"><b>01</b><span>screen down</span></button>
+      <button type="button" class="railbtn" data-stage="2"><b>02</b><span>world down</span></button>
+      <button type="button" class="railbtn" data-stage="3"><b>03</b><span>conflict</span></button>
+      <button type="button" class="railbtn" data-stage="4"><b>04</b><span>reveal</span></button>
+    </nav>
+    <div class="barright">
+      <div class="badge" id="badge" hidden>
+        <span class="dot" aria-hidden="true"></span>
+        <span id="badgeText">Demo mode &mdash; simulated tilt</span>
+        <button type="button" id="btnLive" class="badgebtn">use my real sensors</button>
+      </div>
+      <p class="privacy">Sensor data is read and discarded in this tab. No network requests, no storage.</p>
+    </div>
+  </div>
+</div>
+
+<div class="gate" id="gate">
+  <div class="gatecard">
+    <p class="eyebrow">observatory / perception</p>
+    <h1 class="gatetitle">Gravity lies.</h1>
+    <p class="gatelede">Tilt your phone to bend a star field &mdash; then find out which way <em>down</em> really is.</p>
+    <p class="gatenote" id="gateNote">Your pointer is the tilt. Leave it alone and the plate runs itself.</p>
+    <div class="gateacts">
+      <button type="button" id="btnBegin" class="primary">Begin the sequence</button>
+      <button type="button" id="btnGateLive" class="ghost" hidden>Use my phone&rsquo;s motion sensors</button>
+    </div>
+    <p class="gatefoot">Runs entirely offline. Nothing leaves this device. It also starts on its own.</p>
+  </div>
+</div>
+
+<div class="calibrate" id="calibrate" hidden>
+  <div class="calcard">
+    <p class="eyebrow">calibration</p>
+    <h2>Hold it flat.</h2>
+    <div class="bubble" aria-hidden="true"><i id="bubbleDot"></i><span class="ring"></span><span class="cross"></span></div>
+    <p class="calstat" id="calStat">waiting for a steady reading&hellip;</p>
+    <div class="calbar"><i id="calBar"></i></div>
+    <button type="button" id="btnSkipCal" class="ghost small">Skip calibration</button>
+  </div>
+</div>
+
+<div class="panel" id="reveal" hidden role="dialog" aria-modal="false" aria-labelledby="revealTitle">
+  <div class="panelcard">
+    <p class="eyebrow">04 / reveal</p>
+    <h2 id="revealTitle">Two answers to one question.</h2>
+    <div class="compare">
+      <div class="col guess">
+        <p class="collabel">what your brain guessed</p>
+        <p class="colval" id="valGuess">0.0&deg;</p>
+        <p class="colnote">screen-relative &ldquo;down&rdquo; &mdash; always the bottom edge</p>
+      </div>
+      <div class="col measured">
+        <p class="collabel">what the sensor measured</p>
+        <p class="colval" id="valMeasured">0.0&deg;</p>
+        <p class="colnote" id="valSource">from simulated tilt</p>
+      </div>
+    </div>
+    <p class="disagree">disagreement <b id="valDelta">0.0&deg;</b> <span id="valDeltaNote">between the two frames right now</span></p>
+    <div class="prose">
+      <p><b>Why a phone can feel gravity at all.</b> An accelerometer measures <em>proper</em> acceleration &mdash; acceleration relative to free fall. A phone lying still on a table is not floating; the table is shoving it upward, so the sensor honestly reads about 1&nbsp;g pointing <em>up</em>. Down is simply the opposite of that. In free fall the same sensor reads zero.</p>
+      <p class="caveat"><b>Honest about the number.</b> This is a live estimate, not a survey instrument. The gravity vector is a complementary blend of a low-pass filtered accelerometer signal and the browser&rsquo;s reported orientation angles; hand tremor, linear motion, sensor bias and the two-second flat calibration put roughly &plusmn;3&deg; of slop on it, more while you are moving. In demo mode the tilt is synthetic and labelled as such.</p>
+    </div>
+    <div class="panelacts">
+      <button type="button" id="btnReplay" class="primary">Run it again</button>
+      <button type="button" id="btnCard" class="ghost">Save the plate (PNG)</button>
+      <button type="button" id="btnPanelLive" class="ghost" hidden>Use my real sensors</button>
+    </div>
+    <p class="savenote" id="saveNote" hidden></p>
+  </div>
+</div>
+
+<noscript>
+  <div class="gate"><div class="gatecard"><h1 class="gatetitle">Gravity lies.</h1>
+  <p class="gatelede">This piece is a live canvas simulation and needs JavaScript enabled.</p></div></div>
+</noscript>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

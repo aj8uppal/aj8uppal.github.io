@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>cursorweather — a climate made of how you move</title>
+<meta name="description" content="Your mouse has been leaving weather behind its whole life. Now you can see it.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23070d16'/%3E%3Cpath d='M4 20q6-9 12-4t12-6' stroke='%237fb6df' stroke-width='2' fill='none'/%3E%3Cpath d='M4 26q6-9 12-4t12-6' stroke='%23ffb066' stroke-width='2' fill='none' opacity='.7'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="stage" id="stage">
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <canvas id="chart" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- ── masthead ─────────────────────────────────────────── -->
+  <header class="masthead" id="masthead">
+    <div class="mast-left">
+      <span class="sigil" aria-hidden="true"></span>
+      <span class="wordmark">cursorweather</span>
+      <span class="mast-sub">surface analysis &middot; local device</span>
+    </div>
+    <div class="mast-right">
+      <button class="badge" id="demoBadge" hidden title="Switch to your own pointer">demo<span class="wide"> mode &middot; use mine</span></button>
+      <button class="chip" id="calmBtn" aria-pressed="false" title="Removes flashes and slows motion">calm&nbsp;mode</button>
+    </div>
+  </header>
+
+  <!-- ── instrument panel ─────────────────────────────────── -->
+  <section class="panel readout" id="readout" aria-live="off">
+    <div class="panel-hd"><span id="readoutTitle">live telemetry</span><span class="dot" id="recDot"></span></div>
+    <dl class="gauges" id="gauges"></dl>
+    <p class="src" id="srcLine">source: —</p>
+  </section>
+
+  <!-- ── centre stack ─────────────────────────────────────── -->
+  <div class="centre" id="centre">
+
+    <section class="card intro" id="introCard">
+      <h1>cursorweather</h1>
+      <p class="hook">Your mouse has been leaving weather behind its whole life.<br>Now you can see it.</p>
+      <p class="body">Chase five seconds of targets. We measure only how the pointer travelled &mdash; speed, curvature,
+         tremor, hesitation, corrections, clicks &mdash; then paint those numbers as a sky.</p>
+      <div class="btnrow">
+        <button class="btn primary" id="startBtn">Begin 5-second calibration</button>
+        <button class="btn" id="demoBtn">Watch it run itself</button>
+      </div>
+      <p class="fine">Keyboard: press <kbd>&#8594;</kbd> or <kbd>WASD</kbd> to fly the pointer, <kbd>space</kbd> to click &mdash; it makes
+         its own, visibly different weather. <kbd>Enter</kbd> starts.</p>
+      <p class="fine warn">Contains brief lightning flashes. <b>Calm mode</b> removes them.</p>
+      <p class="fine">Everything is measured and drawn on this device. Nothing is uploaded &mdash; there is no server to upload to.</p>
+    </section>
+
+    <section class="card calib" id="calibCard" hidden>
+      <div class="calib-row">
+        <span class="calib-label">calibration</span>
+        <span class="calib-time" id="calibTime">5.0s</span>
+        <span class="calib-hits" id="calibHits">0 hits</span>
+      </div>
+      <div class="timebar"><i id="timeFill"></i></div>
+      <p class="calib-hint" id="calibHint">Click the rings. Move however you actually move.</p>
+    </section>
+
+    <section class="card report" id="reportCard" hidden>
+      <h2 id="reportTitle">Your five seconds, as a sky</h2>
+      <p class="verdict" id="verdict">—</p>
+      <div class="btnrow">
+        <button class="btn primary" id="pngBtn">Save PNG</button>
+        <button class="btn" id="webmBtn" hidden>Record 6s loop</button>
+        <button class="btn" id="againBtn">Run again</button>
+        <button class="btn" id="legendBtn" aria-expanded="true">Hide legend</button>
+      </div>
+      <p class="fine" id="exportNote">Exports are generated in this tab and never leave your device.</p>
+    </section>
+  </div>
+
+  <!-- ── legend ───────────────────────────────────────────── -->
+  <section class="panel legend" id="legend" hidden>
+    <div class="panel-hd"><span>legend &middot; what drove what</span><button class="chip" id="legendClose">close</button></div>
+    <ul id="legendList"></ul>
+    <p class="fine">Isobars, station pressures and the H/L centres are the drawing's own noise field in hPa &mdash; decoration, not a forecast.</p>
+    <p class="fine disclaim">A picture of how a hand moved for five seconds. Not a personality test, not a diagnosis,
+      no opinion about you &mdash; it only knows arithmetic on pixel coordinates.</p>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<noscript><p style="color:#cfe0ee;font:14px monospace;padding:2rem">cursorweather needs JavaScript: it is a drawing of your own pointer motion, computed live in this tab.</p></noscript>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

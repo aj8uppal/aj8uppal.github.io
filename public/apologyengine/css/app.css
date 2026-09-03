@@ -1,0 +1,305 @@
+/* apologyengine — paper and dust.
+   One serif face; the chrome is meant to nearly disappear. */
+
+:root{
+  --paper:#efe7d9;
+  --paper-deep:#e3d7c1;
+  --ink:#211b13;
+  --ink-soft:rgba(33,27,19,.56);
+  --ink-faint:rgba(33,27,19,.42);
+  --ink-quiet:rgba(33,27,19,.60);
+  --ember:#b4531f;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
+  --measure:34rem;
+  --glass:rgba(239,231,217,.58);
+  --dusk:0;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  min-height:100%;
+  background:
+    radial-gradient(120% 90% at 50% 0%, #f5efe4 0%, var(--paper) 46%, var(--paper-deep) 100%);
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:17px;
+  line-height:1.62;
+  overflow-x:hidden;
+}
+
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0;
+}
+
+/* ---------- the depth field ---------- */
+/* the dusk sits BEHIND the ghosts: in the reveal the page falls away and the
+   removed fragments are the only thing lit */
+.dusk{
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;
+  background:radial-gradient(125% 95% at 50% 46%, #2c1d0d 0%, #170f07 56%, #0a0603 100%);
+  transition:opacity .9s ease;
+}
+body.explode .dusk{opacity:1}
+.field{position:fixed;inset:0;z-index:1;pointer-events:none}
+.field canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#g-far{filter:blur(9px);opacity:.95}
+#g-mid{filter:blur(3.2px)}
+#g-near{filter:blur(.8px)}
+
+.glass{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg, rgba(245,239,228,.66), rgba(236,227,211,.5) 60%, rgba(226,214,193,.6));
+  transition:opacity .9s ease;
+}
+.grain{
+  position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.30;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:140px 140px;
+}
+.vignette{
+  position:fixed;inset:0;z-index:4;pointer-events:none;
+  background:radial-gradient(120% 85% at 50% 42%, rgba(0,0,0,0) 42%, rgba(46,32,16,.16) 100%);
+  transition:background .9s ease;
+}
+
+/* ---------- the sheet ---------- */
+.sheet{
+  position:relative;z-index:5;
+  max-width:var(--measure);
+  margin:0 auto;
+  padding:clamp(2.4rem,7vh,4.5rem) 1.35rem clamp(2rem,6vh,3.5rem);
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;flex-direction:column;
+  transition:opacity .7s ease, filter .7s ease;
+}
+
+.masthead{text-align:center;flex:none}
+.wordmark{
+  margin:0;
+  font-size:.72rem;
+  font-weight:400;
+  letter-spacing:.42em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  text-indent:.42em;
+}
+.wordmark em{font-style:normal;color:var(--ink-faint)}
+.rule{
+  width:2.2rem;height:0;margin:.9rem auto 1.1rem;
+  border-top:1px solid rgba(33,27,19,.28);
+}
+.hook{
+  margin:0 0 clamp(1.6rem,5vh,2.8rem);
+  font-size:clamp(1.02rem,2.6vw,1.16rem);
+  font-style:italic;
+  color:var(--ink-soft);
+  line-height:1.5;
+}
+.hook span{color:var(--ink-faint)}
+
+/* ---------- writing surface ---------- */
+.writer{position:relative;flex:1 0 auto;display:flex;flex-direction:column}
+
+#pad,.mirror{
+  font-family:var(--serif);
+  font-size:clamp(1.15rem,3.4vw,1.32rem);
+  line-height:1.78;
+  letter-spacing:.002em;
+  padding:.2rem 0 1.2rem;
+  border:0;margin:0;
+  white-space:pre-wrap;
+  overflow-wrap:break-word;
+  word-break:normal;
+  width:100%;
+  min-height:9.5rem;
+  text-align:left;
+}
+#pad{
+  position:relative;z-index:2;
+  display:block;
+  background:transparent;
+  color:var(--ink);
+  caret-color:var(--ink);
+  resize:none;
+  overflow:hidden;
+  outline:none;
+  -webkit-appearance:none;
+  appearance:none;
+}
+#pad::placeholder{color:rgba(33,27,19,.26);font-style:italic}
+#pad:focus-visible{outline:none}
+/* the keyboard focus indicator: a letterpress margin rule beside the text */
+.writer::after{
+  content:"";position:absolute;left:-.9rem;top:-.35rem;bottom:.4rem;width:2px;
+  background:var(--ink);opacity:0;transform:scaleY(.4);transform-origin:50% 50%;
+  transition:opacity .18s ease, transform .18s ease;
+}
+.writer:focus-within::after{opacity:.62;transform:none}
+@media (max-width:560px){ .writer::after{left:-.55rem} }
+.mirror{
+  position:absolute;inset:0;z-index:1;
+  pointer-events:none;
+  color:transparent;
+  visibility:hidden;
+}
+body.redact .mirror{visibility:visible}
+body.redact #pad{color:transparent}
+body.redact #pad::placeholder{color:transparent}
+.mirror b{
+  font-weight:inherit;
+  color:transparent;
+  background:rgba(33,27,19,.86);
+  border-radius:1.5px;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
+}
+
+.holdbar{
+  position:absolute;left:0;right:0;bottom:.35rem;height:1px;
+  background:rgba(33,27,19,.12);opacity:0;transition:opacity .18s ease;
+}
+.holdbar.on{opacity:1}
+.holdbar i{display:block;height:100%;width:0;background:var(--ink);transition:width .06s linear}
+
+/* ---------- colophon / controls ---------- */
+.colophon{flex:none;padding-top:1.4rem;text-align:center}
+.note{
+  margin:0 0 1rem;
+  font-size:.66rem;letter-spacing:.19em;text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.controls{
+  display:flex;flex-wrap:wrap;gap:.1rem 1.1rem;justify-content:center;align-items:center;
+}
+.controls button,.stage-exit,.badge button{
+  font-family:var(--serif);
+  font-size:.72rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--ink-quiet);
+  background:none;border:0;
+  padding:.85rem .2rem;
+  min-height:44px;
+  cursor:pointer;
+  transition:color .25s ease;
+  border-radius:2px;
+}
+.controls button:hover,.stage-exit:hover,.badge button:hover{color:var(--ink)}
+.controls button:focus-visible,.stage-exit:focus-visible,.badge button:focus-visible{
+  outline:1px dashed rgba(33,27,19,.5);outline-offset:3px;color:var(--ink);
+}
+.controls button[aria-pressed="true"]{color:var(--ink);text-decoration:underline;text-underline-offset:.32em}
+.controls button[disabled]{opacity:.35;cursor:default}
+.hint{
+  margin:.7rem 0 0;font-size:.66rem;letter-spacing:.1em;color:rgba(33,27,19,.24);
+  min-height:1.2em;transition:opacity .4s ease;
+}
+.hint kbd{font:inherit;border-bottom:1px solid rgba(33,27,19,.3);padding-bottom:1px}
+@media (pointer:coarse){ .hint{opacity:0} }
+
+/* ---------- demo badge ---------- */
+.badge{
+  position:fixed;z-index:7;left:50%;transform:translateX(-50%);
+  bottom:max(.9rem,env(safe-area-inset-bottom));
+  display:flex;align-items:center;gap:.55rem;
+  padding:.15rem .85rem .15rem .8rem;
+  background:rgba(243,236,225,.86);
+  border:1px solid rgba(33,27,19,.14);
+  border-radius:2px;
+  max-width:calc(100vw - 1.6rem);
+}
+.badge[hidden]{display:none}
+.badge-label{
+  font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft);
+}
+.badge .dot{
+  width:5px;height:5px;border-radius:50%;background:var(--ember);flex:none;
+  animation:pulse 2.4s ease-in-out infinite;
+}
+.badge button{padding:.7rem .1rem;min-height:38px;text-decoration:underline;text-underline-offset:.3em}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
+
+/* ---------- reveal stage ---------- */
+.stage{
+  position:fixed;inset:auto 0 0 0;z-index:8;
+  display:flex;flex-direction:column;align-items:center;gap:.2rem;
+  padding:0 1rem max(1.6rem,env(safe-area-inset-bottom));
+  pointer-events:none;
+  opacity:0;transition:opacity .8s ease;
+}
+.stage[hidden]{display:none}
+.stage.on{opacity:1}
+.stage-caption{
+  margin:0;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(240,232,218,.72);text-align:center;
+}
+.stage-actions{display:flex;gap:1.4rem;align-items:center}
+.stage-exit{pointer-events:auto;color:rgba(240,232,218,.66)}
+.stage-exit:hover,.stage-exit:focus-visible{color:rgba(245,238,226,.95)}
+
+/* the page recedes while the revisions come forward */
+body.explode{--dusk:1}
+body.explode .glass{opacity:0}
+body.explode .vignette{background:radial-gradient(115% 82% at 50% 46%, rgba(0,0,0,0) 40%, rgba(0,0,0,.42) 100%)}
+body.explode .sheet{opacity:0;pointer-events:none}
+body.explode .grain{opacity:.16}
+body.explode .badge{opacity:0;pointer-events:none;transition:opacity .5s ease}
+
+/* ---------- burn ---------- */
+/* the burn front is the top 28vh of a very tall box; everything below it is char,
+   so nothing is left uncovered as the sheet goes up */
+.scorch{
+  position:fixed;left:0;right:0;top:0;height:300vh;
+  z-index:6;pointer-events:none;opacity:0;transform:translateY(100vh);
+  background-color:rgba(22,11,4,.96);
+  background-image:linear-gradient(0deg,
+    rgba(22,11,4,.96) 0%,
+    rgba(64,25,7,.94) 34%,
+    rgba(158,71,23,.93) 62%,
+    rgba(232,148,66,.72) 72%,
+    rgba(255,222,166,.26) 80%,
+    rgba(255,236,200,.06) 88%,
+    rgba(0,0,0,0) 100%);
+  background-repeat:no-repeat;
+  background-size:100% 28vh;
+  background-position:0 0;
+}
+body.burning .scorch{animation:scorch 1900ms cubic-bezier(.5,.02,.62,1) forwards}
+body.burning .sheet{animation:ashen 1900ms cubic-bezier(.5,.02,.62,1) forwards}
+@keyframes scorch{
+  0%{opacity:0;transform:translateY(100vh)}
+  8%{opacity:1}
+  84%{opacity:1}
+  100%{opacity:0;transform:translateY(-70vh)}
+}
+@keyframes ashen{
+  0%{opacity:1;filter:none;transform:none}
+  42%{opacity:.78;filter:sepia(.55) contrast(1.2) brightness(.78)}
+  100%{opacity:0;filter:sepia(.95) contrast(1.6) brightness(.4);transform:translateY(-1.6rem)}
+}
+body.burning .sheet,body.burning .badge{pointer-events:none}
+
+@media (prefers-reduced-motion: reduce){
+  .badge .dot{animation:none;opacity:.7}
+  body.burning .scorch{animation:none;opacity:0}
+  body.burning .sheet{animation:calmfade 420ms linear forwards}
+  @keyframes calmfade{to{opacity:0}}
+  .glass,.vignette,.sheet,.stage,.hint{transition-duration:.01ms}
+}
+
+@media (max-width:520px){
+  :root{--measure:100%}
+  .sheet{padding-left:1.15rem;padding-right:1.15rem;padding-bottom:5.2rem}
+  .controls{display:grid;grid-template-columns:1fr 1fr;gap:0;justify-items:center}
+  .controls button{font-size:.64rem;letter-spacing:.13em}
+  .hook{font-size:1rem}
+}
+@media (max-height:560px){
+  .sheet{padding-top:1.4rem}
+  .hook{margin-bottom:1rem}
+}

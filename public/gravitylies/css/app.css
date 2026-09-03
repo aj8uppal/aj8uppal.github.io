@@ -1,0 +1,272 @@
+:root{
+  --void:#04060a;
+  --void-2:#070b11;
+  --ink:#dbe6ee;
+  --ink-dim:#8a9aa8;
+  --ink-faint:#4d5b68;
+  --accent:#5fd0e8;
+  --accent-dim:#2b6d7d;
+  --warn:#e8c86a;
+  --hair:rgba(120,150,170,.22);
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --pad: clamp(14px, 3.2vw, 34px);
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--void);
+  color:var(--ink);
+  font-family:var(--mono);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overscroll-behavior:none;
+  touch-action:none;
+}
+
+canvas#plate,canvas#vectors{
+  position:fixed; inset:0; width:100%; height:100%; display:block;
+}
+canvas#vectors{pointer-events:none}
+
+/* ---------- HUD ---------- */
+.hud{
+  position:fixed; inset:0; z-index:3;
+  display:flex; flex-direction:column; justify-content:space-between;
+  padding:calc(var(--pad) + env(safe-area-inset-top,0px)) var(--pad) calc(var(--pad) + env(safe-area-inset-bottom,0px));
+  pointer-events:none;
+  animation:fadein .9s ease both;
+}
+.hud [class*="btn"], .hud button, .hud .rail{pointer-events:auto}
+/* Legibility scrims: the plate is busy, the instrument text must still read. */
+.hud::before,.hud::after{content:""; position:absolute; left:0; right:0; height:26vh; pointer-events:none; z-index:-1}
+.hud::before{top:0; background:linear-gradient(180deg, rgba(4,6,10,.88), rgba(4,6,10,0))}
+.hud::after{bottom:0; background:linear-gradient(0deg, rgba(4,6,10,.88), rgba(4,6,10,0))}
+
+.topbar{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; position:relative}
+.ident .mark{
+  display:block; font-size:11px; letter-spacing:.42em; text-transform:uppercase; color:var(--ink);
+}
+.ident .sub{
+  display:block; margin-top:5px; font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:var(--ink-faint);
+}
+.readout{display:grid; gap:3px; min-width:172px; text-align:right}
+.readout .row{display:flex; justify-content:flex-end; gap:10px; font-size:10px; letter-spacing:.14em; line-height:1.4}
+.readout .k{color:var(--ink-faint); text-transform:uppercase}
+.readout .v{color:var(--accent); font-variant-numeric:tabular-nums; min-width:74px; text-align:right}
+
+.progress{
+  position:absolute; left:0; right:0; top:-10px; height:1px; background:var(--hair);
+}
+.progress i{display:block; height:100%; width:0; background:var(--accent); transition:width .16s linear}
+
+/* ---------- stage card ---------- */
+.stagecard{
+  max-width:min(30rem, 78vw);
+  margin:auto 0;
+  border-left:1px solid var(--hair);
+  padding:14px 96px 14px 18px;
+  background:linear-gradient(94deg, rgba(4,6,10,.86) 0%, rgba(4,6,10,.68) 48%, rgba(4,6,10,0) 100%);
+  opacity:0; transform:translateY(10px);
+  transition:opacity .55s ease, transform .55s cubic-bezier(.2,.7,.2,1);
+}
+.stagecard.on{opacity:1; transform:none}
+.stagenum{margin:0 0 10px; font-size:10px; letter-spacing:.4em; color:rgba(95,208,232,.72); text-transform:uppercase}
+.stagetitle{
+  margin:0 0 12px; font-family:var(--serif); font-weight:400;
+  font-size:clamp(30px, 6.6vw, 62px); line-height:1.02; letter-spacing:-.015em; color:var(--ink);
+}
+.stagebody{
+  margin:0; font-size:clamp(12px,1.6vw,13.5px); line-height:1.72; color:var(--ink-dim); max-width:34ch;
+  letter-spacing:.02em;
+}
+.stagebody em{color:var(--accent); font-style:normal}
+
+/* ---------- bottom ---------- */
+.bottombar{display:flex; align-items:flex-end; justify-content:space-between; gap:14px}
+.rail{display:flex; gap:2px; border-top:1px solid var(--hair); padding-top:2px}
+.railbtn{
+  appearance:none; background:none; border:0; border-top:1px solid transparent; margin-top:-3px;
+  color:var(--ink-faint); font-family:var(--mono); cursor:pointer;
+  padding:12px 16px 10px 0; min-height:44px; text-align:left; display:block;
+  transition:color .3s ease, border-color .3s ease;
+}
+.railbtn b{display:block; font-size:10px; letter-spacing:.24em; font-weight:400}
+.railbtn span{display:block; margin-top:4px; font-size:9px; letter-spacing:.2em; text-transform:uppercase; opacity:.72}
+.railbtn:hover,.railbtn:focus-visible{color:var(--ink-dim)}
+.railbtn[aria-current="true"]{color:var(--accent); border-top-color:var(--accent)}
+.privacy{margin:0; font-size:9.5px; letter-spacing:.16em; color:var(--ink-faint); text-transform:uppercase; max-width:32ch; line-height:1.7; text-align:right}
+
+/* ---------- badge ---------- */
+.barright{display:flex; flex-direction:column; align-items:flex-end; gap:10px}
+.badge{
+  display:flex; align-items:center; gap:10px;
+  padding:7px 7px 7px 12px; border:1px solid var(--hair); border-radius:2px;
+  background:rgba(6,10,15,.82); backdrop-filter:blur(6px);
+  font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-dim);
+  max-width:min(360px, 90vw); pointer-events:auto;
+}
+.badge .dot{width:5px; height:5px; border-radius:50%; background:var(--warn); flex:none; animation:pulse 2.6s ease-in-out infinite}
+.badgebtn{
+  appearance:none; border:1px solid var(--accent-dim); background:none; color:var(--accent);
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.18em; text-transform:uppercase;
+  padding:8px 10px; min-height:34px; border-radius:2px; cursor:pointer; white-space:nowrap;
+}
+.badgebtn:hover,.badgebtn:focus-visible{background:rgba(95,208,232,.1)}
+
+/* ---------- gate / calibrate / panel shells ---------- */
+.gate,.calibrate{
+  position:fixed; inset:0; z-index:9; display:grid; place-items:center;
+  padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px));
+  background:radial-gradient(120% 100% at 50% 45%, rgba(4,6,10,.48), rgba(4,6,10,.88) 72%);
+  backdrop-filter:blur(2px);
+  animation:fadein .5s ease both;
+  overflow-y:auto;
+}
+/* The reveal deliberately does not cover the plate: you need to see both vectors
+   on the field while you read what they mean. */
+.panel{
+  position:fixed; z-index:8; top:0; right:0; bottom:0; width:min(470px, 100%);
+  display:flex; align-items:flex-start; overflow-y:auto;
+  padding:calc(18px + env(safe-area-inset-top,0px)) 18px calc(18px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(90deg, rgba(4,6,10,0), rgba(4,6,10,.9) 26%);
+  animation:slidein .55s cubic-bezier(.2,.7,.2,1) both;
+}
+.gate.out,.calibrate.out,.panel.out{animation:fadeout .42s ease both; pointer-events:none}
+@keyframes slidein{from{opacity:0; transform:translateX(22px)}to{opacity:1; transform:none}}
+
+.gatecard,.calcard,.panelcard{
+  width:min(680px, 100%); border:1px solid var(--hair); background:rgba(5,8,13,.86);
+  padding:clamp(22px,4.2vw,42px);
+  position:relative;
+}
+.gatecard::before,.panelcard::before{
+  content:""; position:absolute; left:-1px; top:-1px; width:16px; height:16px;
+  border-left:1px solid var(--accent); border-top:1px solid var(--accent);
+}
+.gatecard::after,.panelcard::after{
+  content:""; position:absolute; right:-1px; bottom:-1px; width:16px; height:16px;
+  border-right:1px solid var(--accent); border-bottom:1px solid var(--accent);
+}
+.eyebrow{margin:0 0 16px; font-size:10px; letter-spacing:.4em; text-transform:uppercase; color:var(--accent-dim)}
+.gatetitle{
+  margin:0 0 14px; font-family:var(--serif); font-weight:400; font-size:clamp(38px,8.4vw,72px);
+  line-height:.98; letter-spacing:-.02em;
+}
+.gatelede{margin:0 0 18px; font-size:clamp(13px,1.8vw,15px); line-height:1.7; color:var(--ink); max-width:44ch}
+.gatelede em{color:var(--accent); font-style:italic}
+.gatenote{margin:0 0 26px; font-size:11px; line-height:1.7; letter-spacing:.06em; color:var(--ink-dim); max-width:48ch}
+.gateacts,.panelacts{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px}
+.gatefoot{margin:0; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint)}
+
+button.primary,button.ghost{
+  appearance:none; font-family:var(--mono); font-size:10.5px; letter-spacing:.22em; text-transform:uppercase;
+  padding:14px 20px; min-height:46px; border-radius:2px; cursor:pointer; transition:background .25s ease, color .25s ease, border-color .25s ease;
+}
+button.primary{background:var(--accent); border:1px solid var(--accent); color:#04141a; font-weight:600}
+button.primary:hover,button.primary:focus-visible{background:#8ee2f4; border-color:#8ee2f4}
+button.ghost{background:none; border:1px solid var(--hair); color:var(--ink-dim)}
+button.ghost:hover,button.ghost:focus-visible{border-color:var(--accent-dim); color:var(--accent)}
+button.ghost.small{padding:10px 14px; min-height:40px; font-size:9.5px}
+:focus-visible{outline:1px solid var(--accent); outline-offset:3px}
+
+/* ---------- calibration ---------- */
+.calcard{width:min(420px,100%); text-align:center}
+.calcard h2{margin:0 0 22px; font-family:var(--serif); font-weight:400; font-size:clamp(26px,5vw,38px)}
+.bubble{position:relative; width:132px; height:132px; margin:0 auto 20px}
+.bubble .ring{position:absolute; inset:0; border:1px solid var(--hair); border-radius:50%}
+.bubble .ring::after{content:""; position:absolute; inset:32px; border:1px dashed var(--accent-dim); border-radius:50%; opacity:.55}
+.bubble .cross{position:absolute; inset:0}
+.bubble .cross::before,.bubble .cross::after{content:""; position:absolute; background:var(--hair)}
+.bubble .cross::before{left:50%; top:0; bottom:0; width:1px}
+.bubble .cross::after{top:50%; left:0; right:0; height:1px}
+.bubble i{
+  position:absolute; left:50%; top:50%; width:13px; height:13px; margin:-6.5px 0 0 -6.5px;
+  border-radius:50%; background:var(--accent); box-shadow:0 0 14px rgba(95,208,232,.6);
+  transition:transform .09s linear;
+}
+.calstat{margin:0 0 12px; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-dim); min-height:1.4em}
+.calbar{height:1px; background:var(--hair); margin-bottom:22px}
+.calbar i{display:block; height:100%; width:0; background:var(--accent); transition:width .12s linear}
+
+/* ---------- reveal panel ---------- */
+.panelcard{width:100%; margin:auto 0; background:rgba(5,8,13,.9); backdrop-filter:blur(3px); padding:clamp(18px,3vw,28px)}
+.panelcard h2{margin:0 0 22px; font-family:var(--serif); font-weight:400; font-size:clamp(24px,3vw,34px); line-height:1.06}
+.compare{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--hair); border:1px solid var(--hair); margin-bottom:16px}
+.col{background:var(--void-2); padding:18px 16px}
+.collabel{margin:0 0 12px; font-size:9.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-faint)}
+.colval{margin:0 0 10px; font-size:clamp(26px,3.2vw,36px); font-variant-numeric:tabular-nums; letter-spacing:-.02em; line-height:1}
+.col.guess .colval{color:var(--ink)}
+.col.measured .colval{color:var(--accent)}
+.colnote{margin:0; font-size:10px; line-height:1.6; letter-spacing:.06em; color:var(--ink-dim)}
+.disagree{margin:0 0 24px; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint)}
+.disagree b{color:var(--warn); font-variant-numeric:tabular-nums; font-weight:400; margin:0 6px}
+.disagree span{text-transform:none; letter-spacing:.06em}
+.prose p{margin:0 0 13px; font-size:11.5px; line-height:1.78; color:var(--ink-dim); max-width:62ch; letter-spacing:.015em}
+.prose b{color:var(--ink); font-weight:500}
+.prose em{color:var(--ink); font-style:italic}
+.prose .caveat{border-left:1px solid var(--accent-dim); padding-left:14px; color:var(--ink-faint)}
+.savenote{margin:0; font-size:10px; letter-spacing:.14em; color:var(--accent)}
+
+@media (max-width:860px) and (orientation:portrait){
+  .panel{
+    left:0; right:0; top:auto; bottom:0; width:auto; max-height:80vh; align-items:flex-start;
+    background:linear-gradient(180deg, rgba(4,6,10,0), rgba(4,6,10,.92) 14%);
+    animation:slideup .55s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .panel{max-height:74vh}
+  .panelcard{margin-top:auto; margin-bottom:0}
+  .prose p{font-size:11px; line-height:1.7}
+}
+@keyframes slideup{from{opacity:0; transform:translateY(26px)}to{opacity:1; transform:none}}
+@media (max-width:860px) and (orientation:portrait){ body.revealing .badge{opacity:0; visibility:hidden} }
+
+@media (max-width:720px){
+  .bottombar{flex-direction:column-reverse; align-items:flex-start; gap:12px}
+  .stagecard{
+    max-width:none; border-left:0; padding:16px var(--pad) 18px;
+    margin-left:calc(var(--pad) * -1); margin-right:calc(var(--pad) * -1);
+    background:linear-gradient(180deg, rgba(4,6,10,0), rgba(4,6,10,.9) 14%, rgba(4,6,10,.9) 86%, rgba(4,6,10,0));
+  }
+  .barright{align-items:flex-start; width:100%}
+  .badge{max-width:100%; font-size:9px; letter-spacing:.14em}
+  .readout{min-width:0}
+  .readout .row:nth-child(3),.readout .row:nth-child(4){display:none}
+  .privacy{display:none}
+  .stagecard{margin-bottom:6vh}
+  .compare{grid-template-columns:1fr 1fr}
+  .badge{flex-wrap:wrap; justify-content:center; text-align:center; font-size:9px}
+  .railbtn{padding-right:12px}
+  .railbtn span{display:none}
+  .railbtn b{font-size:11px}
+}
+/* Phone landscape: short and wide. Keep the words — they are the piece — and let the
+   card run wider instead of taller. */
+@media (max-height:540px) and (orientation:landscape){
+  .panel{width:min(420px, 58%)}
+  .stagecard{max-width:min(40rem,58vw); padding-top:10px; padding-bottom:10px}
+  .stagetitle{font-size:clamp(22px,4.6vw,32px); margin-bottom:8px}
+  .stagenum{margin-bottom:6px}
+  .stagebody{font-size:11px; line-height:1.62; max-width:62ch}
+  .ident .sub{display:none}
+  .panelcard{padding:16px}
+  .panelcard h2{margin-bottom:14px}
+}
+
+@media (max-width:400px){
+  .compare{grid-template-columns:1fr}
+  .col{padding:14px}
+}
+
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes fadeout{from{opacity:1}to{opacity:0}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important}
+  .stagecard{opacity:1; transform:none}
+}

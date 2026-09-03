@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Afterimage — retinal adaptation bench</title>
+<meta name="description" content="Stare at a negative plate for eight seconds, then watch the picture appear on a blank field, drawn by your own visual system.">
+<meta name="color-scheme" content="dark">
+<link rel="stylesheet" href="css/app.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23070809'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23FF5A36' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23F0EDE6'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="frame" id="lab">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <h1>Afterimage</h1>
+      <span class="sub">retinal adaptation bench</span>
+    </div>
+    <div class="topmeta">
+      <span class="chip" id="demoBadge" hidden>Demo mode</span>
+      <span class="chip quiet">Offline · nothing leaves this device</span>
+    </div>
+  </header>
+
+  <div class="banner" id="resultBanner" role="status" aria-live="polite" hidden>
+    <span class="dot" aria-hidden="true"></span>
+    <p><strong>Run complete.</strong> <span id="resultText">Did a ghost of the picture float on the blank field?</span></p>
+    <div class="banner-actions">
+      <button class="btn small" data-act="run">Run again</button>
+      <button class="btn small ghost" data-act="toggle-field">Try the other field</button>
+      <button class="btn small ghost" data-act="science">Why it happens</button>
+    </div>
+  </div>
+
+  <main class="lab">
+
+    <section class="panel col-subjects" aria-labelledby="h-subjects">
+      <h2 id="h-subjects" class="label">Subject</h2>
+      <div class="thumbs" id="thumbs" role="radiogroup" aria-label="Subject"></div>
+
+      <div class="import">
+        <button class="btn ghost full" id="importBtn" type="button">Import an image…</button>
+        <input type="file" id="fileInput" accept="image/*" hidden tabindex="-1" aria-hidden="true">
+        <p class="fine">Decoded in this tab with the File API. Auto-cropped square, contrast-treated, downscaled. It is never uploaded — this page makes no network requests at all.</p>
+        <div class="crop" id="cropRow" hidden>
+          <span class="label tiny">Crop anchor</span>
+          <div class="seg" id="cropSeg" role="radiogroup" aria-label="Crop anchor">
+            <button type="button" role="radio" data-crop="start" tabindex="-1">Top</button>
+            <button type="button" role="radio" data-crop="center" aria-checked="true" class="on">Middle</button>
+            <button type="button" role="radio" data-crop="end" tabindex="-1">Bottom</button>
+          </div>
+        </div>
+      </div>
+
+      <ol class="protocol">
+        <li><span>01</span> Screen brightness up, room lights down.</li>
+        <li><span>02</span> Sit still, about an arm's length away.</li>
+        <li><span>03</span> Keep your eyes on the dot. Do not scan the picture.</li>
+        <li><span>04</span> When the screen goes blank, blink once, slowly.</li>
+      </ol>
+    </section>
+
+    <section class="panel col-view" aria-labelledby="h-plate">
+      <div class="viewhead">
+        <h2 id="h-plate" class="label">Adapting plate <span class="thin">/ opponent negative</span></h2>
+        <span class="label tiny" id="stageTag" hidden>Preview</span>
+      </div>
+
+      <div class="viewport" id="viewport">
+        <canvas id="view" width="640" height="640" aria-label="Negative adapting plate"></canvas>
+      </div>
+
+      <div class="previewbar" id="previewBar" aria-hidden="true">
+        <div class="seg-track"><i id="playhead"></i></div>
+        <div class="seg-labels">
+          <span data-stage="0">01 Adapt</span>
+          <span data-stage="1">02 Cut</span>
+          <span data-stage="2">03 Neutral field</span>
+        </div>
+      </div>
+
+      <p class="readout" id="readout">—</p>
+
+      <div class="actions">
+        <button class="btn primary" id="beginBtn">Begin the stare&nbsp;·&nbsp;<span id="beginSecs">10</span>s</button>
+        <button class="btn ghost" id="previewBtn">Preview the pipeline · 4s</button>
+        <button class="btn ghost" id="cardBtn">Export card</button>
+      </div>
+    </section>
+
+    <section class="panel col-controls" aria-labelledby="h-ctl">
+      <h2 id="h-ctl" class="label">Parameters</h2>
+
+      <div class="ctl">
+        <div class="ctl-head"><span class="label tiny">Strength</span><span class="num" id="strengthOut">62</span></div>
+        <input type="range" id="strength" min="0" max="100" value="62" aria-label="Adaptation strength">
+        <p class="fine">Chroma boost and lightness spread of the plate. Higher is a stronger ghost and a harsher stare.</p>
+      </div>
+
+      <div class="ctl">
+        <span class="label tiny">Adaptation time</span>
+        <div class="seg" id="durSeg" role="radiogroup" aria-label="Adaptation time">
+          <button type="button" role="radio" data-dur="8" tabindex="-1">8s</button>
+          <button type="button" role="radio" data-dur="10" aria-checked="true" class="on">10s</button>
+          <button type="button" role="radio" data-dur="12" tabindex="-1">12s</button>
+        </div>
+      </div>
+
+      <div class="ctl">
+        <span class="label tiny">Neutral field</span>
+        <div class="seg" id="fieldSeg" role="radiogroup" aria-label="Neutral field colour">
+          <button type="button" role="radio" data-field="white" aria-checked="true" class="on">White</button>
+          <button type="button" role="radio" data-field="grey" tabindex="-1">Mid-grey</button>
+        </div>
+        <p class="fine">White gives the brightest percept; mid-grey is gentler and often reads cleaner. Try both.</p>
+      </div>
+
+      <div class="ctl">
+        <label class="switch">
+          <input type="checkbox" id="reduced">
+          <span class="track" aria-hidden="true"></span>
+          <span class="switch-text"><span class="label tiny">Reduced intensity</span><span class="fine">Narrow lightness band, low chroma, soft cross-fade instead of a hard cut.</span></span>
+        </label>
+      </div>
+
+      <div class="ctl warn" role="note">
+        <span class="label tiny warnlabel">Before you start</span>
+        <p class="fine">This app shows one high-contrast image and then cuts to a bright field. There is no strobing or rapid flashing, but if you have photosensitive epilepsy or migraine with aura, use <strong>Reduced intensity</strong> or skip it.</p>
+        <p class="fine">Turn your screen brightness up, sit at a normal distance, and keep your eyes on the dot. Press <kbd>Esc</kbd> to stop at any time.</p>
+      </div>
+    </section>
+  </main>
+
+  <details class="science" id="science">
+    <summary class="label">What is actually happening <span class="thin">/ opponent process, honestly</span></summary>
+    <div class="science-body">
+      <p>Your retina feeds three cone types into <em>opponent channels</em>: roughly red-versus-green, blue-versus-yellow, and light-versus-dark. Hold a strong, steady colour on one patch of retina and the cells feeding those channels adapt — their response drifts toward a new baseline, so the constant signal stops being reported as strongly.</p>
+      <p>Cut to a neutral field and the balance is briefly wrong in the opposite direction. Green-adapted retina now reports a reddish signal from neutral light. Bright-adapted retina reports dark. That mismatch is the afterimage: an image with the lightness and the opponent axes flipped, which is exactly the plate you were staring at, flipped back.</p>
+      <p>So the plate is built by inverting in <strong>Oklab</strong>, a perceptual space: lightness is percentile-normalised and inverted inside a safe band (never true black, never paper white, so nothing crushes or bleaches), the <em>a</em> and <em>b</em> opponent axes are negated and scaled up, and the result is pulled back into the display gamut by reducing chroma rather than clipping channels — clipping would shift hue and the ghost would come back the wrong colour. A plain <code>255 − x</code> RGB inversion skips all of that and gives a noticeably weaker, muddier percept.</p>
+      <p>The barely-visible drift during the stare is deliberate. A perfectly stationary retinal image fades on its own (Troxler fading); sub-pixel motion keeps edges alive without pulling your gaze. Blinking right after the cut usually strengthens the percept.</p>
+      <p class="disclaim">This is an ordinary, temporary property of normal vision. It fades in seconds, it is not a vision test, it does not measure or diagnose anything, and how strongly you see it says nothing about you. If a ghost lingers unusually long or you get a headache, stop.</p>
+    </div>
+  </details>
+
+  <footer class="foot">
+    <span>Afterimage · a perception bench</span>
+    <span class="thin">Runs fully offline. No analytics, no uploads, no network calls.</span>
+  </footer>
+</div>
+
+<!-- Fullscreen run surface. Nothing but the plate and the fixation dot lives here. -->
+<div class="stage" id="stage" hidden>
+  <canvas id="stageCanvas"></canvas>
+  <button class="abort" id="abortBtn" type="button">Esc — stop</button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<a id="dl" hidden></a>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

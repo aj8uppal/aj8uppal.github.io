@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>apologyengine — everything you delete stays</title>
+<meta name="description" content="Type the apology you never sent. Everything you delete stays. Local, ephemeral, offline.">
+<meta name="color-scheme" content="light">
+<link rel="stylesheet" href="css/app.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23efe7d9'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='22' text-anchor='middle' fill='%231e1912'%3Ea%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+  <div class="dusk" aria-hidden="true"></div>
+  <div class="field" aria-hidden="true">
+    <canvas id="g-far"></canvas>
+    <canvas id="g-mid"></canvas>
+    <canvas id="g-near"></canvas>
+  </div>
+  <div class="glass" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="scorch" id="scorch" aria-hidden="true"></div>
+
+  <main class="sheet" id="sheet">
+    <header class="masthead">
+      <h1 class="wordmark">Apology<em>engine</em></h1>
+      <p class="rule" aria-hidden="true"></p>
+      <p class="hook">Type the apology you never sent.<br><span>Everything you delete stays.</span></p>
+    </header>
+
+    <div class="writer" id="writer">
+      <div class="mirror" id="mirror" aria-hidden="true"></div>
+      <label class="sr-only" for="pad">Your letter. Nothing is saved; a refresh erases it.</label>
+      <textarea id="pad" spellcheck="false" autocomplete="off" autocapitalize="sentences"
+        placeholder="Dear —"></textarea>
+      <div class="holdbar" id="holdbar" aria-hidden="true"><i></i></div>
+    </div>
+
+    <div class="colophon">
+      <p class="note" id="note">Nothing is stored. No network. A refresh burns it.</p>
+      <nav class="controls" aria-label="Letter controls">
+        <button type="button" data-action="redact" aria-pressed="false" id="btn-redact">Redact</button>
+        <button type="button" data-action="reveal" id="btn-reveal">Open every revision</button>
+        <button type="button" data-action="export">Save PNG</button>
+        <button type="button" data-action="burn">Burn it</button>
+      </nav>
+      <p class="hint" id="hint">On an empty page, hold <kbd>Backspace</kbd> to open the letter.</p>
+    </div>
+  </main>
+
+  <div class="badge" id="badge" hidden>
+    <span class="dot" aria-hidden="true"></span>
+    <span class="badge-label">Demo mode — it is writing itself. Type to take over.</span>
+    <button type="button" data-action="takeover">Write your own</button>
+  </div>
+
+  <div class="stage" id="stage" hidden role="dialog" aria-modal="true" aria-label="Every revision of this letter">
+    <ul class="sr-only" id="stageList"></ul>
+    <p class="stage-caption" id="stageCaption"></p>
+    <div class="stage-actions">
+      <button type="button" class="stage-exit" data-action="export">Save PNG</button>
+      <button type="button" class="stage-exit" data-action="close-reveal">Close <span aria-hidden="true">(esc)</span></button>
+    </div>
+  </div>
+
+  <p class="live sr-only" id="live" role="status" aria-live="polite"></p>
+
+  <script type="module" src="js/main.js"></script>
+  <noscript><p style="text-align:center;font-family:Georgia,serif;padding:2rem">apologyengine needs JavaScript. Nothing leaves your device either way.</p></noscript>
+</body>
+</html>

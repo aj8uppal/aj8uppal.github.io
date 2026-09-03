@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>throatlight — a cathedral built from one held note</title>
+<meta name="description" content="Hum one note and watch your voice open a cathedral made of light. Runs entirely in your browser.">
+<link rel="stylesheet" href="./css/throatlight.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2306070f'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23d9a441' stroke-width='1.4'/%3E%3Ccircle cx='16' cy='16' r='3.2' fill='%23d9a441'/%3E%3C/svg%3E">
+</head>
+<body data-mode="idle" data-locked="0">
+
+  <canvas id="glass" aria-label="Live rose window drawn from the sound of your voice"></canvas>
+  <div id="vignette" aria-hidden="true"></div>
+  <div id="grain" aria-hidden="true"></div>
+
+  <header id="brand">
+    <span class="mark">throatlight</span>
+    <span id="modeBadge" class="badge" hidden>Demo mode</span>
+  </header>
+
+  <div id="dock">
+    <div id="readout" class="readout">
+      <div class="note-line">
+        <span id="noteName" class="note-name">&mdash;</span><span id="noteOct" class="note-oct"></span>
+      </div>
+      <div class="cents" aria-hidden="true">
+        <div class="cents-track"><span class="cents-tick"></span><i id="centsNeedle" class="cents-needle"></i></div>
+      </div>
+      <p id="meta" class="meta">Waiting for a voice</p>
+      <p id="hint" class="hint">Hum a steady note &mdash; any note</p>
+    </div>
+
+    <nav id="controls" aria-label="Controls">
+      <button id="btnSource" type="button" class="ctl">Use my mic</button>
+      <button id="btnFreeze" type="button" class="ctl" aria-pressed="false">Freeze</button>
+      <button id="btnSave" type="button" class="ctl">Save PNG</button>
+      <button id="btnSound" type="button" class="ctl" aria-pressed="true">Sound on</button>
+      <button id="btnCalm" type="button" class="ctl" aria-pressed="false">Calm</button>
+      <button id="btnReset" type="button" class="ctl">Reset</button>
+    </nav>
+
+    <p id="privacy" class="privacy">Analysed inside this tab<span class="wide"> &mdash; no audio is recorded, stored, or sent anywhere</span>.</p>
+  </div>
+
+  <div id="gate" class="gate">
+    <div class="gate-card">
+      <p class="gate-eyebrow">a voice-lit window</p>
+      <h1 class="gate-title">throatlight</h1>
+      <p class="gate-tag">Hum one note and watch your voice open a cathedral made of light.</p>
+      <div class="gate-actions">
+        <button id="gateMic" type="button" class="ctl primary">Hum now</button>
+        <button id="gateDemo" type="button" class="ctl">Show me the demo</button>
+      </div>
+      <p class="gate-fine">The microphone is read in this tab only &mdash; nothing is recorded, stored or uploaded. The demo sings to itself through the exact same analysis.</p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+  <p id="sr" class="sr-only" aria-live="polite"></p>
+
+  <noscript><p class="noscript">throatlight needs JavaScript to listen and to draw.</p></noscript>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
