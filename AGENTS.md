@@ -105,6 +105,16 @@ A grid item's automatic minimum size is its min-content unless `min-width: 0` sa
 `.fs__strip` wraps a `width: max-content` tab list, so at 390 a `1fr` track resolved to 692px and blew the page out horizontally - and only in the switcher with seven tabs, which is what made it look like a content bug rather than a layout one.
 Any grid child that contains something horizontally scrollable needs `min-width: 0`.
 
+## Shipworthy is one file, and its ideas are regenerated daily
+
+`public/shipworthy/index.html` is the whole app and the only source: a single HTML document with its CSS and JS inline, served at `/shipworthy/` like the other demos, with no build step.
+The same page is also published as a Claude artifact; that copy is the file minus the doctype and head, and it is derived from this one, never the reverse.
+
+`.github/workflows/shipworthy-daily.yml` runs `scripts/shipworthy-daily.mjs` every morning: one request to the Messages API (built-in fetch, no SDK, because the lockfile has to stay untouched) that writes `public/shipworthy/daily.json` and appends to `archive.json`, which is what tomorrow's prompt is told to avoid.
+The page reads `daily.json` at load and shows the set as today's drop; without it, or when the ideas fail its own checks, it falls back to remixes seeded by the date, so a missed run is a quieter day and never a broken one.
+The job needs the `ANTHROPIC_API_KEY` repository secret and exits clean without it.
+A commit made with the workflow token does not trigger the deploy, so the job dispatches `deploy.yml` itself when the drop changed.
+
 ## Maintaining this file
 
 Keep this file for knowledge useful to almost every future agent session in this project.

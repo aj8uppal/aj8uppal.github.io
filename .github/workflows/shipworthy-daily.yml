@@ -1,0 +1,74 @@
+# Shipworthy's daily drop.
+#
+# Every morning this asks Claude for a handful of app ideas nobody has seen on
+# the page before, writes them to public/shipworthy/daily.json, and appends
+# them to the archive that keeps tomorrow's batch from repeating them. The
+# page reads daily.json at load and shows the set as "today's drop"; when the
+# file is missing or stale it falls back to remixes seeded by the date, so a
+# skipped run is a quieter day and never a broken one.
+#
+# It needs an ANTHROPIC_API_KEY repository secret. Without one the script
+# says so and exits clean, so the schedule can exist before the key does.
+#
+# A commit made with the workflow token does not trigger other workflows, so
+# the deploy is dispatched by hand at the end rather than left to the push.
+
+name: Shipworthy daily drop
+
+on:
+  schedule:
+    # 07:00 UTC, every day.
+    - cron: '0 7 * * *'
+  # A change to the generator is a reason to run it once, straight away.
+  push:
+    branches: [master]
+    paths:
+      - scripts/shipworthy-daily.mjs
+      - .github/workflows/shipworthy-daily.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: shipworthy-daily
+  cancel-in-progress: false
+
+jobs:
+  drop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # No dependencies: the script uses Node's built-in fetch.
+      - name: Ask for today's ideas
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/shipworthy-daily.mjs
+
+      - name: Commit the drop
+        id: commit
+        if: github.ref == 'refs/heads/master'
+        run: |
+          if git diff --quiet -- public/shipworthy/daily.json public/shipworthy/archive.json; then
+            echo "nothing new today"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/shipworthy/daily.json public/shipworthy/archive.json
+          git commit -m "chore: shipworthy drop $(date -u +%Y-%m-%d)"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Publish
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref master

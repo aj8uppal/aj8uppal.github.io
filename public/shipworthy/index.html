@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Shipworthy: a vibe-code idea bench. Rank app ideas by viral potential and fit, score your own, and get a v1 prompt to paste into your coding agent.">
+<meta name="description" content="Shipworthy: a vibe-code idea bench. A fresh drop of app ideas every day, a library ranked by viral potential and fit, a scorecard for your own idea, and a v1 prompt to paste into your coding agent.">
 <meta name="theme-color" content="#F2F4F8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0D1120" media="(prefers-color-scheme: dark)">
 <meta property="og:title" content="Shipworthy">
-<meta property="og:description" content="Pick something people will screenshot, then build it this weekend.">
+<meta property="og:description" content="Pick something people will screenshot, then build it this weekend. New ideas every day.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aj8uppal.github.io/shipworthy/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
@@ -179,6 +179,13 @@ main{max-width:1240px;margin:0 auto;padding:24px 20px 80px}
 @keyframes pulse{0%,80%,100%{opacity:.25}40%{opacity:1}}
 .ai-box .err{color:var(--bad);font-size:13px}
 
+/* today's drop banner */
+.drop{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:12px 16px;border:1px solid var(--heat);border-radius:var(--r);background:linear-gradient(90deg,var(--heat-soft),var(--surface) 70%)}
+.drop b{font-family:var(--display);font-weight:700;font-size:16px;color:var(--heat)}
+.drop span{font-size:13px;color:var(--muted)}
+.drop .when{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-left:auto}
+.badge.today{background:var(--heat);color:var(--heat-ink)}
+
 /* score mode */
 .score{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);gap:24px;align-items:start}
 .form{display:grid;gap:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
@@ -289,7 +296,7 @@ img{max-width:100%}
     <div class="intro">
       <div>
         <h2>Pick something people will <em>screenshot</em>, then build it this weekend.</h2>
-        <p style="margin-top:10px">Tell the bench who you are. It ranks a library of ideas by viral potential and fit, shows you the exact share moment to nail, and hands you a v1 prompt you can paste into your coding agent.</p>
+        <p style="margin-top:10px">Tell the bench who you are. It drops a fresh set of ideas every day, ranks a library of them by viral potential and fit, shows you the exact share moment to nail, and hands you a v1 prompt you can paste into your coding agent.</p>
       </div>
       <div class="formula" role="group" aria-label="How the viral score is computed">
         <div class="eyebrow">Viral score = weighted axes</div>
@@ -339,6 +346,7 @@ img{max-width:100%}
       </aside>
 
       <div class="results">
+        <div id="drop" class="drop" hidden></div>
         <div id="ai-box" class="ai-box" role="status" hidden></div>
         <div class="results-head">
           <div class="count" id="count" aria-live="polite"></div>
@@ -805,25 +813,27 @@ const TWISTS=[
  {t:"with a nemesis mode",d:{identity:1,net:1}},{t:"that texts you",d:{utility:1,speed:-1}},{t:"with a weekly wrapped",d:{share:1,identity:1}}
 ];
 const SMALL=new Set(["of","for","the","in","my","and","a","to"]);
-function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function pick(a,rng=Math.random){return a[Math.floor(rng()*a.length)]}
+/* mulberry32: a small seeded generator, so a date can pick the same ideas for everyone */
+function seeded(seed){let a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296}}
 function titleCase(s){return s.split(" ").map((w,i)=>i&&SMALL.has(w)?w:(/^[A-Z]/.test(w)?w:w.charAt(0).toUpperCase()+w.slice(1))).join(" ")}
-function remixIdea(prof){
+function remixIdea(prof,rng=Math.random){
   const auds=prof.aud.size?[...prof.aud]:Object.keys(OBJECTS);
   /* choose an object first, then a pattern that fits it, then a twist that does not repeat the pattern */
   for(let tries=0;tries<20;tries++){
-    const aud=pick(auds), obj=pick(OBJECTS[aud]);
+    const aud=pick(auds,rng), obj=pick(OBJECTS[aud],rng);
     const pats=PATTERNS.filter(p=>p.need.some(t=>obj.tags.includes(t)));
     if(!pats.length)continue;
-    const pat=pick(pats);
+    const pat=pick(pats,rng);
     const tws=TWISTS.filter(tw=>!pat.not.some(n=>tw.t.includes(n))&&(!tw.t.includes("photo")||obj.tags.includes("phys")));
-    const tw=pick(tws);
+    const tw=pick(tws,rng);
     const s={...pat.s}; for(const k in tw.d){s[k]=Math.max(1,Math.min(5,s[k]+tw.d[k]))}
     const fmt=tw.fmt||pat.fmt||"web";
     const x=obj.x;
     const title=titleCase(pat.t.replace("{X}",x));
     const pitch=pat.p.replace(/\{x\}/g,x).replace("{is}",obj.pl?"are":"is");
     const goalByMech={identity:["followers","fun"],ritual:["followers","fun"],humor:["fun","followers"],wom:["money","portfolio"],invite:["fun","portfolio"],screenshot:["followers","fun"]};
-    return {id:newId("remix"),remix:true,t:title,p:pitch.charAt(0).toUpperCase()+pitch.slice(1)+" Twist: "+tw.t+".",
+    return {id:rng===Math.random?newId("remix"):"drop-"+Math.floor(rng()*1e9).toString(36),remix:true,t:title,p:pitch.charAt(0).toUpperCase()+pitch.slice(1)+" Twist: "+tw.t+".",
       aud:[aud],fmt,edge:["none"],goal:goalByMech[pat.mech],mech:pat.mech,
       why:"Combines a proven pattern ("+pat.t.replace("{X}","X")+") with something "+AUD[aud].toLowerCase()+" already deal with every week. The twist, "+tw.t+", changes who sees it and where.",
       share:pat.share,
@@ -847,6 +857,7 @@ let sort="rank";
 let extra=[];           /* remixes and Claude ideas, newest first */
 let openId=null;
 let pinned=new Set(); /* ids from the latest remix or Claude batch, shown first under "Best for you" */
+let dropIds=new Set(); /* today's drop stays pinned under whatever else gets pinned */
 const Q_KEYS=["share","identity","freq","pain","timing","net","novelty","speed"];
 const newId=p=>p+"-"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 function blankIdea(){return {id:newId("mine"),title:"",pitch:"",who:"",fmt:"web",a:{}}}
@@ -926,7 +937,8 @@ function ranked(){
   if(sort==="viral") list.sort((a,b)=>b.v-a.v||b.f-a.f);
   else if(sort==="speed") list.sort((a,b)=>b.i.s.speed-a.i.s.speed||b.r-a.r);
   else list.sort((a,b)=>{
-    const pa=pinned.has(a.i.id)?1:0, pb=pinned.has(b.i.id)?1:0;
+    const rank=x=>pinned.has(x.i.id)?2:dropIds.has(x.i.id)?1:0;
+    const pa=rank(a), pb=rank(b);
     if(pa!==pb) return pb-pa;
     return b.r-a.r;
   });
@@ -1005,7 +1017,7 @@ function axisRows(s,withWhy){
 function inShortlist(id){return shortlist.some(x=>x.id===id||(x.custom&&x.custom.id===id))}
 function ideaCard(row,idx){
   const {i,v,f,over}=row;const open=openId===i.id;
-  const tags=[i.remix?`<span class="badge remix">remix</span>`:"",i.ai?`<span class="badge ai">Claude</span>`:""].join("");
+  const tags=[i.drop?`<span class="badge today">today</span>`:"",i.remix&&!i.drop?`<span class="badge remix">remix</span>`:"",i.ai?`<span class="badge ai">Claude</span>`:""].join("");
   return `<li class="idea ${open?"open":""}" data-id="${esc(i.id)}">
   <div class="idea-head">
     <span class="rank" aria-hidden="true">${String(idx+1).padStart(2,"0")}</span>
@@ -1034,7 +1046,7 @@ function ideaCard(row,idx){
         <button type="button" class="btn primary" data-act="prompt" data-id="${esc(i.id)}">Copy v1 prompt</button>
         <button type="button" class="btn" data-act="short" data-id="${esc(i.id)}" aria-pressed="${inShortlist(i.id)}">${inShortlist(i.id)?"✓ Shortlisted":"Shortlist"}</button>
         <button type="button" class="btn ghost" data-act="bench" data-id="${esc(i.id)}">Score on the bench</button>
-        ${i.remix||i.ai?`<button type="button" class="btn ghost" data-act="discard" data-id="${esc(i.id)}">Discard</button>`:""}
+        ${(i.remix||i.ai)&&!i.drop?`<button type="button" class="btn ghost" data-act="discard" data-id="${esc(i.id)}">Discard</button>`:""}
       </div>
     </div>
   </div>`:""}
@@ -1043,7 +1055,7 @@ function ideaCard(row,idx){
 function renderIdeas(){
   const list=ranked();
   const within=list.filter(x=>!x.over).length;
-  const how=sort==="rank"?(pinned.size?"newest first, then fit and heat":"fit and heat"):sort==="viral"?"viral score":"ship speed";
+  const how=sort==="rank"?(pinned.size?"newest first, then fit and heat":dropIds.size?"today's drop first, then fit and heat":"fit and heat"):sort==="viral"?"viral score":"ship speed";
   $("#count").innerHTML=`${list.length} ideas <span>· ${within} fit ${esc(TIME[profile.time].toLowerCase())} · sorted by ${how}</span>`;
   $("#ideas").innerHTML=list.map(ideaCard).join("");
   $$(".sort button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.sort===sort)));
@@ -1070,7 +1082,7 @@ $("#ideas").addEventListener("click",e=>{
 function toggleShort(idea){
   const id=idea.id;
   if(inShortlist(id)){shortlist=shortlist.filter(x=>x.id!==id&&!(x.custom&&x.custom.id===id));toast("Removed from shortlist")}
-  else{shortlist.push(idea.remix||idea.ai||idea.mine?{id,custom:idea}:{id});toast("Added to shortlist")}
+  else{shortlist.push(idea.remix||idea.ai||idea.mine||idea.drop?{id,custom:idea}:{id});toast("Added to shortlist")}
   store.set("shortlist",shortlist);updateShortBadge();renderIdeas();renderShortlist();
 }
 function updateShortBadge(){$("#short-n").textContent=shortlist.length?String(shortlist.length):""}
@@ -1079,7 +1091,7 @@ function updateShortBadge(){$("#short-n").textContent=shortlist.length?String(sh
 $("#btn-remix").addEventListener("click",()=>{
   const idea=remixIdea(profile);
   if(!idea){toast("Could not build a remix for that audience. Try another.");return}
-  extra.unshift(idea);extra=extra.slice(0,12);pinned=new Set([idea.id]);openId=idea.id;sort="rank";renderIdeas();
+  extra.unshift(idea);extra=[...extra.filter(x=>x.drop),...extra.filter(x=>!x.drop).slice(0,12)];pinned=new Set([idea.id]);openId=idea.id;sort="rank";renderIdeas();
   window.scrollTo({top:$("#ideas").getBoundingClientRect().top+window.scrollY-80,behavior:smooth()});
 });
 $("#btn-reset").addEventListener("click",()=>{profile=defaultProfile();store.del("profile");stripHash();renderChips();renderIdeas();toast("Profile reset")});
@@ -1264,7 +1276,7 @@ function renderShortlist(){
   root.innerHTML=`<div class="compare"><table>
     <thead><tr><th>Idea</th><th>Spreads by</th><th>Build</th><th class="num">Viral</th><th class="num">Fit</th><th class="num">Speed</th><th></th></tr></thead>
     <tbody>${items.map(i=>`<tr>
-      <td><div class="t">${esc(i.t)} ${i.mine?'<span class="badge mine">mine</span>':i.ai?'<span class="badge ai">Claude</span>':i.remix?'<span class="badge remix">remix</span>':""}</div><div class="p">${esc(i.p)}</div></td>
+      <td><div class="t">${esc(i.t)} ${i.mine?'<span class="badge mine">mine</span>':i.drop?'<span class="badge today">drop</span>':i.ai?'<span class="badge ai">Claude</span>':i.remix?'<span class="badge remix">remix</span>':""}</div><div class="p">${esc(i.p)}</div></td>
       <td>${esc(MECH[i.mech]||i.mech)}<br><span class="p">${esc(i.share)}</span></td>
       <td>${effortLabel(i.effort)}<br><span class="p">${esc(FMT[i.fmt]||i.fmt)}</span></td>
       <td class="num" style="color:var(--heat);font-weight:600">${viral(i.s)}</td>
@@ -1287,7 +1299,7 @@ function renderShortlist(){
 }
 $("#btn-clear-all").addEventListener("click",()=>{
   ["profile","shortlist","myidea","tab"].forEach(k=>store.del(k));
-  profile=defaultProfile();shortlist=[];myIdea=blankIdea();extra=[];pinned=new Set();openId=null;resetCritique();
+  profile=defaultProfile();shortlist=[];myIdea=blankIdea();extra=extra.filter(x=>x.drop);pinned=new Set();openId=null;resetCritique();
   $("#my-title").value="";$("#my-pitch").value="";$("#my-who").value="";
   stripHash();
   renderChips();renderIdeas();renderQuestions();renderScorecard();renderShortlist();updateShortBadge();toast("Everything cleared");
@@ -1321,7 +1333,7 @@ t (title, max 4 words), p (one-line pitch, max 160 chars), aud (array of 1-2 key
     if(!arr)throw {code:"invalid_json",message:"Unexpected shape"};
     const clean=arr.slice(0,5).map(normalizeAi).filter(Boolean);
     if(!clean.length)throw {code:"invalid_json",message:"No usable ideas"};
-    extra=[...clean,...extra].slice(0,15);pinned=new Set(clean.map(c=>c.id));openId=clean[0].id;sort="rank";renderIdeas();aiBox("");
+    extra=[...extra.filter(x=>x.drop),...clean,...extra.filter(x=>!x.drop)].slice(0,20);pinned=new Set(clean.map(c=>c.id));openId=clean[0].id;sort="rank";renderIdeas();aiBox("");
     toast(`${clean.length} ideas from Claude added to the top`);
   }catch(err){
     const code=err&&err.code;
@@ -1331,16 +1343,59 @@ t (title, max 4 words), p (one-line pitch, max 160 chars), aud (array of 1-2 key
     else aiErr(`Could not get ideas from Claude (${code||"error"}). Remix still works offline.`);
   }finally{btn.disabled=false;abortCtl=null}
 }
-function normalizeAi(o){
+/* ---------- today's drop ---------- */
+/* Same for everyone on a given day. Claude-generated when daily.json is published next to the page;
+   otherwise five remixes seeded by the date, so the fallback is still fresh every morning. */
+const DROP_N=5;
+function todayKey(){const d=new Date();return d.getUTCFullYear()*10000+(d.getUTCMonth()+1)*100+d.getUTCDate()}
+function seededDrop(){
+  const rng=seeded(todayKey()*7919);
+  const out=[],seen=new Set();
+  for(let i=0;i<40&&out.length<DROP_N;i++){
+    const idea=remixIdea({aud:new Set()},rng);
+    if(idea&&!seen.has(idea.t)){seen.add(idea.t);idea.drop=true;out.push(idea)}
+  }
+  return out;
+}
+function fmtDate(iso){
+  const d=new Date(iso+"T00:00:00Z");
+  return isNaN(d)?iso:d.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short",timeZone:"UTC"});
+}
+function installDrop(ideas,note,when){
+  extra=[...ideas,...extra.filter(x=>!x.drop)];
+  dropIds=new Set(ideas.map(i=>i.id));
+  const el=$("#drop");
+  el.innerHTML=`<b>Today's drop</b><span>${esc(note)}</span><span class="when">${esc(when)}</span>`;
+  el.hidden=false;
+  renderIdeas();
+}
+async function loadDrop(){
+  const today=new Date().toISOString().slice(0,10);
+  const fallback=()=>installDrop(seededDrop(),`${DROP_N} remixes seeded by the date. New every morning, the same for everyone.`,fmtDate(today));
+  let daily=null;
+  try{
+    const r=await fetch("daily.json?d="+today,{cache:"no-cache"});
+    if(r.ok)daily=await r.json();
+  }catch(e){}
+  const ideas=daily&&Array.isArray(daily.ideas)?daily.ideas.map(o=>normalizeAi(o,"drop")).filter(Boolean).slice(0,8):[];
+  if(!ideas.length){fallback();return}
+  const when=typeof daily.date==="string"?daily.date:today;
+  const stale=when<today;
+  installDrop(ideas,`${ideas.length} ideas Claude generated ${stale?"on "+fmtDate(when):"this morning"}, checked against every past drop so they are new. Tomorrow brings another set.`,fmtDate(when));
+}
+function normalizeAi(o,kind){
   if(!o||typeof o!=="object"||!o.t)return null;
   const n=(x,d)=>{const v=Math.round(Number(x));return Number.isFinite(v)?Math.max(1,Math.min(5,v)):d};
   const str=(x,d="")=>typeof x==="string"?x.slice(0,600):d;
   const arr=(x,len,d)=>{const v=Array.isArray(x)?x.slice(0,len).map(i=>str(i)).filter(Boolean):[];return v.length>=Math.min(len,d.length)?v:v.concat(d.slice(v.length))};
   const s=o.s||{};
-  return {id:"ai-"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),ai:true,
+  const drop=kind==="drop";
+  if(drop&&(!str(o.p)||!Array.isArray(o.mvp)||o.mvp.length<3))return null;
+  const slug=str(o.t,"untitled").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40);
+  return {id:drop?"drop-"+slug:newId("ai"),ai:!drop,drop,
     t:str(o.t,"Untitled").slice(0,60),p:str(o.p,"").slice(0,220),
     aud:(Array.isArray(o.aud)?o.aud.filter(a=>AUD[a]):[]).slice(0,2).length?o.aud.filter(a=>AUD[a]).slice(0,2):["me"],
-    fmt:FMT[o.fmt]?o.fmt:"web",edge:["none"],goal:[profile.goal],mech:MECH[o.mech]?o.mech:"wom",
+    fmt:FMT[o.fmt]?o.fmt:"web",edge:["none"],goal:Array.isArray(o.goal)&&o.goal.some(g=>GOAL[g])?o.goal.filter(g=>GOAL[g]).slice(0,3):[profile.goal],mech:MECH[o.mech]?o.mech:"wom",
     why:str(o.why,"Claude did not say."),share:str(o.share,"Define the share moment before building."),
     mvp:arr(o.mvp,3,["Input","Output as share moment","Share button"]),first:str(o.first,"Post it where the audience already is."),
     risk:str(o.risk,"Unknown. Validate before building."),comps:arr(o.comps,3,[]),
@@ -1387,6 +1442,7 @@ $("#btn-ai").addEventListener("click",generateIdeas);
 /* ---------- init ---------- */
 loadProfile();
 renderChips();renderIdeas();renderQuestions();
+loadDrop();
 $("#my-title").value=myIdea.title||"";$("#my-pitch").value=myIdea.pitch||"";$("#my-who").value=myIdea.who||"";
 renderScorecard();updateShortBadge();
 const lastTab=store.get("tab","tab-find");
