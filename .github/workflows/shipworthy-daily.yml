@@ -49,7 +49,12 @@ jobs:
       - name: Ask for today's ideas
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: node scripts/shipworthy-daily.mjs
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::warning::No ANTHROPIC_API_KEY repository secret, so no drop was generated."
+            echo "No ANTHROPIC_API_KEY repository secret, so no drop was generated. Add one under Settings > Secrets and variables > Actions > Secrets." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          node scripts/shipworthy-daily.mjs
 
       - name: Commit the drop
         id: commit

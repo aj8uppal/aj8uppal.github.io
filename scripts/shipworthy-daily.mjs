@@ -179,7 +179,10 @@ const clamp = (v, lo, hi, fallback) => {
 const str = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const list = (v, max, min) => {
   if (!Array.isArray(v)) return null;
-  const out = v.map((x) => str(x, 300)).filter(Boolean).slice(0, max);
+  const out = v
+    .map((x) => str(x, 300))
+    .filter(Boolean)
+    .slice(0, max);
   return out.length >= min ? out : null;
 };
 
@@ -218,7 +221,9 @@ const avoid = [...library, ...recent.flatMap((d) => d.ideas.map((i) => i.t))];
 const taken = new Set(avoid.map((t) => t.toLowerCase()));
 const focus = focusFor(today);
 
-console.log(`Asking ${MODEL} for ${COUNT} ideas, focus "${focus}", ${avoid.length} titles to avoid.`);
+console.log(
+  `Asking ${MODEL} for ${COUNT} ideas, focus "${focus}", ${avoid.length} titles to avoid.`,
+);
 
 const res = await ask({
   model: MODEL,
