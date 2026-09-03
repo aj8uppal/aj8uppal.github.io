@@ -1,13 +1,8 @@
 # GitHub Pages deploy for the user site aj8uppal.github.io.
 #
-# Deliberately manual. The trigger is workflow_dispatch only, so merging to
-# master does not publish: the site goes out when someone chooses to send it.
-# To make it automatic later, add:
-#
-#   push:
-#     branches: [master]
-#
-# under `on:` below. Nothing else needs to change.
+# Publishes on every push to master, and can also be sent by hand from the
+# Actions tab. It was dispatch-only until September 2026; to go back to that,
+# remove the `push:` block under `on:` below. Nothing else needs to change.
 #
 # Pages must also be switched to "GitHub Actions" as its source in
 # Settings > Pages, once. Until then this workflow will fail at the
@@ -16,6 +11,8 @@
 name: Deploy to GitHub Pages
 
 on:
+  push:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
