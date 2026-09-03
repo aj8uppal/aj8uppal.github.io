@@ -9,7 +9,7 @@
  *   npm run built:shots            all eleven
  *   npm run built:shots eyeshot    just this one
  *
- * The three apps served from this repo are read off a local server, so a shot
+ * The six apps served from this repo are read off a local server, so a shot
  * can be taken of a change that has not been pushed yet:
  *
  *   (cd public && python3 -m http.server 8099)

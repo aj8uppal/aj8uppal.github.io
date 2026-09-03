@@ -1,9 +1,10 @@
 /**
- * The eleven apps of 2 September 2026, and the page at /built that holds them.
+ * Eleven more projects, and the page at /built that holds them.
  *
- * The times are the directory timestamps, which is the only honest clock there
- * is for a day of work like this: they say the order things landed in and
- * roughly when, and nothing more. The claim on the page is exactly that.
+ * Three lead: Eyeshot, BeatLayer and Voidreach are the ones a person might
+ * send to another person, and they get the room that implies. The other eight
+ * are a grid. That is the only ranking on the page, and it is a judgement,
+ * not a metric.
  *
  * Each entry owns one accent. They are eleven stops around the wheel rather
  * than eleven shades of one colour, because the whole risk of a page like this
@@ -22,8 +23,8 @@ export type Reach =
 
 export interface Built {
   key: string;
-  /** Directory timestamp, 24h, on 2 September 2026. */
-  at: string;
+  /** The three that lead the page. Everything else is the grid. */
+  featured?: true;
   name: string;
   /** One word for the shelf it belongs on. */
   kind: string;
@@ -45,57 +46,40 @@ export interface Built {
 }
 
 export const built = {
-  date: '2 September 2026',
-  statement: 'Eleven apps, one day.',
-  lead: 'Eleven things got built on 2 September 2026. Two of them ate most of the day; four of them took about twenty minutes each, late, once the shape of the thing was obvious. That spread is the interesting part, so the page keeps the clock on.',
+  statement: 'Eleven more.',
+  lead: 'Smaller than the seven on the main page, and finished. A daily eye test, a drum machine that plays under you, a space sandbox with other people in it, a shared sixty-second canvas, a graveyard for tabs. Nine open in a browser tab; none of them asks you to sign up.',
   /* The honest asterisk, said once, up front, rather than eleven times in
      eleven cards. */
   caveat:
-    'Nothing here is a mockup. Every card below is a photograph of the app running, taken by a script that drives it into the state the picture shows.',
+    'Nothing here is a mockup. Every picture below is the app running, taken by a script that drives it into the state the picture shows.',
   facts: [
-    { k: 'Built', v: 'Eleven' },
-    { k: 'On', v: 'One day' },
+    { k: 'Projects', v: 'Eleven' },
     { k: 'Open in a browser', v: 'Nine' },
+    { k: 'With other people in them', v: 'Two' },
     { k: 'Signups needed', v: 'None' },
   ],
 } as const;
 
 export const apps: Built[] = [
   {
-    key: 'papertrader',
-    at: '09:02',
-    name: 'Paper Trader',
-    kind: 'Research',
-    reach: 'read',
-    reachLabel: 'Memo',
-    href: '/papertrader/',
-    cta: 'Read the memo',
-    what: 'A backtester, and seven passes of research through it looking for a strategy that more often than not makes money.',
-    how: 'The answer was a monthly momentum-and-trend allocation across nine ETFs with a crash canary: 9.0% CAGR, −19.3% worst drawdown, profitable in 87% of rolling years against SPY’s 83% and its −55%. It has been trading a paper account since. The app itself runs on my machine, against a real account; what is published is the argument.',
-    k: 'Python · pandas · Yahoo daily bars',
-    accent: '#41b8b8',
-    alt: 'The research memo: a headline claim, four stat panels, and a log-scale growth chart running 2007 to 2026 with the strategy, SPY and a 60/40 mix overlaid.',
-    cap: 'Growth of $100,000, log scale, against the two benchmarks',
-  },
-  {
-    key: 'lifetrack',
-    at: '09:12',
-    name: 'LifeTrack',
-    kind: 'Tool',
+    key: 'eyeshot',
+    featured: true,
+    name: 'Eyeshot',
+    kind: 'Game',
     reach: 'open',
     reachLabel: 'Live',
-    href: '/lifetrack/',
-    cta: 'Open LifeTrack',
-    what: 'Tasks, projects, habits, workouts, the calendar, the people you keep meaning to see — one app, and none of it leaves your browser.',
-    how: 'No build step and no framework: plain ES modules, a vendored Preact, IndexedDB, and a service worker so it installs to a home screen and opens on a plane. Every mutation is undoable, because a tracker you are afraid to touch stops being a tracker.',
-    k: 'ES modules · Preact · IndexedDB · PWA',
-    accent: '#a19df7',
-    alt: 'LifeTrack’s Today view: a sidebar of sections, four counters across the top, and columns of tasks and habits for the day.',
-    cap: 'The Today view, on the app’s own sample data',
+    href: 'https://eyeshot.app/',
+    cta: 'Play today’s five',
+    what: 'Five tests of your eye a day. Draw a perfect circle. Tap the exact middle of a line. Stop a timer at ten seconds.',
+    how: 'Everyone gets the same five, so the scores mean something against each other; the server re-scores your raw input with the same code the browser used, so the leaderboard is not a list of the most creative people. A new set at midnight.',
+    k: 'Fastify · SQLite · Canvas · Fly.io',
+    accent: '#85a9e0',
+    alt: 'The Eyeshot angle event: a sheet of graph paper with one arm of an angle drawn on it and the target, 115 degrees, above.',
+    cap: 'ANGLE — swing the second arm to exactly 115°',
   },
   {
     key: 'beatlayer',
-    at: '09:45',
+    featured: true,
     name: 'BeatLayer',
     kind: 'Instrument',
     reach: 'open',
@@ -111,7 +95,7 @@ export const apps: Built[] = [
   },
   {
     key: 'voidreach',
-    at: '18:10',
+    featured: true,
     name: 'Voidreach',
     kind: 'Game',
     reach: 'open',
@@ -126,72 +110,7 @@ export const apps: Built[] = [
     cap: 'Docking approach at Helios Anchorage, Sol Ascendant',
   },
   {
-    key: 'eyeshot',
-    at: '19:33',
-    name: 'Eyeshot',
-    kind: 'Game',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: 'https://eyeshot.app/',
-    cta: 'Play today’s five',
-    what: 'Five tests of your eye a day. Draw a perfect circle. Tap the exact middle of a line. Stop a timer at ten seconds.',
-    how: 'Everyone gets the same five, so the scores mean something against each other; the server re-scores your raw input with the same code the browser used, so the leaderboard is not a list of the most creative people. A new set at midnight.',
-    k: 'Fastify · SQLite · Canvas · Fly.io',
-    accent: '#85a9e0',
-    alt: 'The Eyeshot angle event: a sheet of graph paper with one arm of an angle drawn on it and the target, 115 degrees, above.',
-    cap: 'ANGLE — swing the second arm to exactly 115°',
-  },
-  {
-    key: 'tab-graveyard',
-    at: '21:17',
-    name: 'Tab Graveyard',
-    kind: 'Extension',
-    reach: 'install',
-    reachLabel: 'Unpacked',
-    href: '/tab-graveyard/',
-    cta: 'See your headstone',
-    what: 'Closes the tabs you were never going to read, and hands you a headstone with the number on it.',
-    how: 'Burying writes every tab to storage before it closes it, so nothing is deleted: the graveyard stays searchable forever, any tab comes back with one click, and the whole batch is undoable for ten minutes. Pinned and active tabs are never touched.',
-    k: 'Chrome MV3 · Canvas · two permissions',
-    accent: '#c8b98f',
-    alt: 'The Tab Graveyard landing page: a headstone card reading “here lie 61, tabs buried this week”, beside a slider and the epitaph it earns.',
-    cap: 'The card the extension draws, running on the page — drag the slider',
-  },
-  {
-    key: 'playlist-from-photo',
-    at: '21:24',
-    name: 'Playlist From a Photo',
-    kind: 'Toy',
-    reach: 'open',
-    reachLabel: 'Demo',
-    href: '/playlist-from-photo/',
-    cta: 'Make a poster',
-    what: 'Upload one photo. Get twelve songs that feel like it, as a poster you can post.',
-    how: 'Claude reads the light, the era and the mood — never the subject — and proposes titles; every one is then looked up in the Apple catalogue and dropped if it does not come back. An invented song fails the lookup and never reaches the poster. This copy has no server, so its twelve are fixed; the crop, the palette and the poster are still made from your photo.',
-    k: 'Claude Opus vision · iTunes catalogue · Canvas',
-    accent: '#c495e0',
-    alt: 'A finished poster: a dusk coastline above the title “Long Drive, No Radio” and twelve numbered tracks in two columns.',
-    cap: 'A poster, made from a photograph fed to it by the capture script',
-  },
-  {
-    key: 'ai-wrapped',
-    at: '21:26',
-    name: 'AI Wrapped',
-    kind: 'Toy',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: '/ai-wrapped/',
-    cta: 'Wrap your year',
-    what: 'Drop in your chat export and get your year in prompts: words written, the hour you are worst at, and the number of times you said please.',
-    how: 'One HTML file, no dependencies and no network calls of any kind. Your export is read with FileReader, counted in memory, and never leaves the tab — open it from disk with the wifi off and it still works.',
-    k: 'One file · no dependencies · no server',
-    accent: '#eb81d5',
-    alt: 'An AI Wrapped card: 627,257 in yellow on a violet-to-pink gradient, over the line “words you wrote to an AI”.',
-    cap: 'The opening card, on the built-in sample export',
-  },
-  {
     key: 'sixty-seconds',
-    at: '21:31',
     name: 'Sixty Seconds',
     kind: 'Multiplayer',
     reach: 'open',
@@ -206,8 +125,22 @@ export const apps: Built[] = [
     cap: 'Two browsers, one round — the capture script joins twice and draws',
   },
   {
+    key: 'tab-graveyard',
+    name: 'Tab Graveyard',
+    kind: 'Extension',
+    reach: 'install',
+    reachLabel: 'Unpacked',
+    href: '/tab-graveyard/',
+    cta: 'See your headstone',
+    what: 'Closes the tabs you were never going to read, and hands you a headstone with the number on it.',
+    how: 'Burying writes every tab to storage before it closes it, so nothing is deleted: the graveyard stays searchable forever, any tab comes back with one click, and the whole batch is undoable for ten minutes. Pinned and active tabs are never touched.',
+    k: 'Chrome MV3 · Canvas · two permissions',
+    accent: '#c8b98f',
+    alt: 'The Tab Graveyard landing page: a headstone card reading “here lie 61, tabs buried this week”, beside a slider and the epitaph it earns.',
+    cap: 'The card the extension draws, running on the page — drag the slider',
+  },
+  {
     key: 'run-or-not',
-    at: '21:34',
     name: 'Run or Not',
     kind: 'Tool',
     reach: 'open',
@@ -223,7 +156,6 @@ export const apps: Built[] = [
   },
   {
     key: 'sleep-debt-ledger',
-    at: '21:34',
     name: 'Sleep Debt Ledger',
     kind: 'Tool',
     reach: 'open',
@@ -236,5 +168,65 @@ export const apps: Built[] = [
     accent: '#f2c14e',
     alt: 'The Sleep Debt Ledger: a balance of minus sixteen hours twenty-eight minutes, the line “solvent by Sep 13 if you sleep 8h 30m”, and twelve nightly bars.',
     cap: 'Twelve nights logged, and the date the balance clears',
+  },
+  {
+    key: 'ai-wrapped',
+    name: 'AI Wrapped',
+    kind: 'Toy',
+    reach: 'open',
+    reachLabel: 'Live',
+    href: '/ai-wrapped/',
+    cta: 'Wrap your year',
+    what: 'Drop in your chat export and get your year in prompts: words written, the hour you are worst at, and the number of times you said please.',
+    how: 'One HTML file, no dependencies and no network calls of any kind. Your export is read with FileReader, counted in memory, and never leaves the tab — open it from disk with the wifi off and it still works.',
+    k: 'One file · no dependencies · no server',
+    accent: '#eb81d5',
+    alt: 'An AI Wrapped card: 627,257 in yellow on a violet-to-pink gradient, over the line “words you wrote to an AI”.',
+    cap: 'The opening card, on the built-in sample export',
+  },
+  {
+    key: 'playlist-from-photo',
+    name: 'Playlist From a Photo',
+    kind: 'Toy',
+    reach: 'open',
+    reachLabel: 'Demo',
+    href: '/playlist-from-photo/',
+    cta: 'Make a poster',
+    what: 'Upload one photo. Get twelve songs that feel like it, as a poster you can post.',
+    how: 'Claude reads the light, the era and the mood — never the subject — and proposes titles; every one is then looked up in the Apple catalogue and dropped if it does not come back. An invented song fails the lookup and never reaches the poster. This copy has no server, so its twelve are fixed; the crop, the palette and the poster are still made from your photo.',
+    k: 'Claude Opus vision · iTunes catalogue · Canvas',
+    accent: '#c495e0',
+    alt: 'A finished poster: a dusk coastline above the title “Long Drive, No Radio” and twelve numbered tracks in two columns.',
+    cap: 'A poster, made from a photograph the capture script painted for it',
+  },
+  {
+    key: 'lifetrack',
+    name: 'LifeTrack',
+    kind: 'Tool',
+    reach: 'open',
+    reachLabel: 'Live',
+    href: '/lifetrack/',
+    cta: 'Open LifeTrack',
+    what: 'Tasks, projects, habits, workouts, the calendar, the people you keep meaning to see — one app, and none of it leaves your browser.',
+    how: 'No build step and no framework: plain ES modules, a vendored Preact, IndexedDB, and a service worker so it installs to a home screen and opens on a plane. Every mutation is undoable, because a tracker you are afraid to touch stops being a tracker.',
+    k: 'ES modules · Preact · IndexedDB · PWA',
+    accent: '#a19df7',
+    alt: 'LifeTrack’s Today view: a sidebar of sections, four counters across the top, and columns of tasks and habits for the day.',
+    cap: 'The Today view, on the app’s own sample data',
+  },
+  {
+    key: 'papertrader',
+    name: 'Paper Trader',
+    kind: 'Research',
+    reach: 'read',
+    reachLabel: 'Memo',
+    href: '/papertrader/',
+    cta: 'Read the memo',
+    what: 'A backtester, and seven passes of research through it looking for a strategy that more often than not makes money.',
+    how: 'The answer was a monthly momentum-and-trend allocation across nine ETFs with a crash canary: 9.0% CAGR, −19.3% worst drawdown, profitable in 87% of rolling years against SPY’s 83% and its −55%. It has been trading a paper account since. The app itself runs on my machine, against a real account; what is published is the argument.',
+    k: 'Python · pandas · Yahoo daily bars',
+    accent: '#41b8b8',
+    alt: 'The research memo: a headline claim, four stat panels, and a log-scale growth chart running 2007 to 2026 with the strategy, SPY and a 60/40 mix overlaid.',
+    cap: 'Growth of $100,000, log scale, against the two benchmarks',
   },
 ];

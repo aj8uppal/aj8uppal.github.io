@@ -3,9 +3,9 @@
  *
  * `npm run verify` is the whole-site suite and stays the authority on the
  * index. This one covers only what the built page adds, and it covers it in
- * the four ways that page can break: a link that goes nowhere, a card whose
- * accent stops carrying its own text, a rail that overflows a phone, and the
- * height budget the strip spends against.
+ * the ways that page can break: a link that goes nowhere, a card whose accent
+ * stops carrying its own text, a lead card that fails to stack on a phone, and
+ * a fold on the index that does not open.
  *
  *   npm run preview   # in another shell, on 127.0.0.1
  *   npm run verify:built
@@ -109,7 +109,7 @@ for (const c of contrast) {
 
 /* Every card's link, and the two in the foot. A 404 here is the one failure a
    page of links cannot survive. */
-const hrefs = await page.$$eval('.bcard__h a, .bt-foot__go a, .rail__list a', (a) => [
+const hrefs = await page.$$eval('.bcard__h a, .bt-foot__go a', (a) => [
   ...new Set(a.map((x) => x.getAttribute('href'))),
 ]);
 for (const href of hrefs) {
@@ -141,22 +141,39 @@ note(
   'nothing scrolls sideways at 390',
   `${overflow.doc} in ${overflow.win}`,
 );
-const railHidden = await pp.$eval('.rail__plot', (n) => getComputedStyle(n).display === 'none');
-note(railHidden, 'the plot stands down and the eleven links are the index');
+const stacked = await pp.$$eval('.bcard--lead', (n) =>
+  n.every((c) => getComputedStyle(c).gridTemplateColumns.split(' ').length === 1),
+);
+note(stacked, 'the three lead cards stack to one column');
 
-console.log('\n── the door, on the index ──');
+console.log('\n── the eleven, on the index ──');
 await page.goto(BASE, { waitUntil: 'networkidle' });
 await page.waitForTimeout(800);
 await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 await page.waitForTimeout(1200);
-const strip = await page.$eval('.bstrip', (n) => ({
-  href: n.getAttribute('href'),
-  dots: n.querySelectorAll('.bstrip__dots span').length,
+const block = await page.$eval('.bs', (n) => ({
+  all: n.querySelector('.bs__all')?.getAttribute('href'),
+  lead: [...n.querySelectorAll('.bs__card')].map((a) => a.getAttribute('href')),
+  shots: [...n.querySelectorAll('.bs__shot img')].filter((i) => i.complete && i.naturalWidth > 0)
+    .length,
+  open: n.querySelector('.bs__rest').open,
+  rest: n.querySelectorAll('.bs__list a').length,
   h: Math.round(n.getBoundingClientRect().height),
 }));
-note(strip.href === '/built', 'the strip opens /built', strip.href);
-note(strip.dots === 11, 'eleven dots on the strip', String(strip.dots));
-note(strip.h < 200, 'the strip stays a strip', `${strip.h}px`);
+note(block.all === '/built', 'the block opens /built', block.all);
+note(block.lead.length === 3, 'three lead cards on the index', block.lead.join(' '));
+note(block.shots === 3, 'their three captures loaded', String(block.shots));
+note(block.open === false, 'the other eight are folded at rest');
+note(block.rest === 8, 'eight behind the fold', String(block.rest));
+
+/* Opening the fold has to work without any script: it is a native details. */
+await page.$eval('.bs__rest summary', (s) => s.click());
+await page.waitForTimeout(300);
+const opened = await page.$eval(
+  '.bs__rest',
+  (d) => d.open && d.querySelector('.bs__list').getBoundingClientRect().height > 0,
+);
+note(opened, 'the fold opens and the list has height');
 
 await browser.close();
 console.log(fail.length ? `\n${fail.length} failed\n` : '\nall built checks passed\n');

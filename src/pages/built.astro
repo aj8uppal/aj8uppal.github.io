@@ -1,14 +1,15 @@
 ---
 /**
- * /built — the eleven apps of 2 September 2026.
+ * /built — eleven more projects.
  *
- * A page rather than a section, for two reasons. The index is a composed
- * argument with a height budget that `npm run verify` enforces, and eleven
- * more cards is most of a second page of it. And these eleven have a thing in
- * common that the seven projects do not: they are one day. A page can say that
- * once, at the top, and then let each card be itself.
+ * A page rather than a section, because eleven more cards is most of a second
+ * index and the index has a height budget that `npm run verify` enforces. The
+ * main page keeps a door to here with the three that lead, and folds the rest.
  *
- * The order is the clock. Nothing here is sorted by how good it is.
+ * Three lead. Eyeshot, BeatLayer and Voidreach are the ones a person might
+ * send to another person, and each gets a wide card with the frame beside the
+ * copy, the way the flagship cards on the index are drawn. The other eight are
+ * a grid of the same card at half width. That is the only ranking here.
  */
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
@@ -17,66 +18,23 @@ import { dots } from '../lib/text';
 import { site } from '../data/content';
 import { apps, built } from '../data/built';
 
-/* The card image is 610px at the widest layout, 88vw on a phone. */
+/* A lead frame runs the wider half of a 1.15/1 split inside the shell: 660px
+   at the maximum. A grid frame is a half card: 610px. Both are 88vw on a phone. */
+const LEAD_W = [480, 660, 990, 1320];
+const LEAD_S = '(min-width: 1400px) 660px, (min-width: 900px) 50vw, 90vw';
 const SHOT_W = [420, 610, 900, 1220];
 const SHOT_S = '(min-width: 1400px) 610px, (min-width: 900px) 46vw, 90vw';
 
-const mins = (hhmm: string): number => {
-  const [h, m] = hhmm.split(':').map(Number);
-  if (h === undefined || m === undefined) throw new Error(`built: "${hhmm}" is not a time`);
-  return h * 60 + m;
-};
-
-/**
- * Two rails, because one linear rail is unreadable and a nonlinear one lies.
- *
- * On a 09:00-22:00 axis the last six land inside the final six percent of the
- * width and print on top of each other. Compressing the axis to spread them
- * out would throw away the only thing the graphic is for, which is that the
- * gaps are wildly uneven. So the axis stays linear and the crowded end is
- * shown again underneath at its own scale - a detail view, the way a chart
- * with one dense region is normally drawn.
- */
-const DAY = { from: mins('09:00'), to: mins('22:00') };
-const ZOOM = { from: mins('21:10'), to: mins('21:40') };
-
-const pctIn = (span: { from: number; to: number }, at: string): number =>
-  ((mins(at) - span.from) / (span.to - span.from)) * 100;
-
-/* Run or Not and Sleep Debt Ledger share 21:34. On the detail rail that is two
-   marks in one place, so they are nudged a hair apart and the caption says so;
-   on the day rail they are inside the bracket and never drawn separately. */
-const NUDGE: Record<string, number> = { 'run-or-not': -1.6, 'sleep-debt-ledger': 1.6 };
-
-const marks = apps.map((a) => ({
-  ...a,
-  day: pctIn(DAY, a.at),
-  zoom: pctIn(ZOOM, a.at) + (NUDGE[a.key] ?? 0),
-  inZoom: mins(a.at) >= ZOOM.from && mins(a.at) <= ZOOM.to,
-}));
-
-const bracket = {
-  left: pctIn(DAY, '21:10'),
-  right: pctIn(DAY, '21:40'),
-};
-
-/* The widest stretch of the day with nothing landing in it. Derived rather
-   than typed, so it cannot drift from the times above it. */
-const gap = apps
-  .map((a, i) => ({ from: apps[i - 1]?.at ?? a.at, to: a.at }))
-  .reduce((w, g) => (mins(g.to) - mins(g.from) > mins(w.to) - mins(w.from) ? g : w));
-const gapMins = mins(gap.to) - mins(gap.from);
-const gapLabel = `${Math.floor(gapMins / 60)}h ${String(gapMins % 60).padStart(2, '0')}m`;
-
-const HOURS = ['09:00', '12:00', '15:00', '18:00', '21:00'];
-const ZOOM_HOURS = ['21:15', '21:20', '21:25', '21:30', '21:35'];
+const lead = apps.filter((a) => a.featured);
+const rest = apps.filter((a) => !a.featured);
+if (lead.length !== 3) throw new Error(`built: three lead the page, got ${lead.length}`);
 
 const opens = apps.filter((a) => a.reach === 'open').length;
 ---
 
 <Base
-  title={`Built in a day · ${site.title}`}
-  description="Eleven apps built on 2 September 2026 — a space sandbox, a daily eye test, a drum machine, a shared canvas, a tab graveyard. Nine of them open in a browser."
+  title={`Eleven more · ${site.title}`}
+  description="Eleven more projects — a daily eye test, a drum machine that plays under you, a space sandbox with other people in it, a shared sixty-second canvas, a graveyard for tabs. Nine open in a browser."
   elsewhere
 >
   <section class="sec sec--ink bt-top">
@@ -106,94 +64,70 @@ const opens = apps.filter((a) => a.reach === 'open').length;
 
   <section class="sec sec--ink-deep bt-body">
     <div class="shell">
-      {
-        /* The index, and the graphic. Every mark is a link to its card, so the
-          rail is navigation as well as evidence; the list underneath is the
-          same eleven links in a shape a screen reader and a narrow phone can
-          both use, which is why the rail itself is aria-hidden. */
-      }
-      <figure class="rail">
-        <figcaption class="rail__cap">
-          <span class="kicker">The day</span>
-          <span
-            >Directory timestamps, 2 September 2026. Two apps took most of it; the last four took
-            seventeen minutes between them.</span
-          >
-        </figcaption>
+      <div class="bt-row">
+        <p class="kicker">Three to send to someone</p>
+        <p class="bt-row__p">
+          A game you play in a minute a day, an instrument, and a place. Each one has a reason to
+          open it again tomorrow.
+        </p>
+      </div>
 
-        <div class="rail__plot" aria-hidden="true">
-          <div class="rail__axis">
-            <div class="rail__line"></div>
-            {
-              marks.map((m) => (
-                <span
-                  class:list={['rail__dot', m.inZoom && 'rail__dot--dim']}
-                  style={`left:${m.day}%;--a:${m.accent}`}
+      <div class="bt-leads">
+        {
+          lead.map((a, i) => (
+            <article class="bcard bcard--lead" id={a.key} style={`--a:${a.accent}`}>
+              <a class="bcard__shot" href={a.href} tabindex="-1" aria-hidden="true">
+                <Picture
+                  src={asset(`built-${a.key}`)}
+                  alt=""
+                  widths={LEAD_W}
+                  sizes={LEAD_S}
+                  formats={['avif']}
+                  fallbackFormat="webp"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  fetchpriority={i === 0 ? 'high' : undefined}
+                  decoding="async"
                 />
-              ))
-            }
-            <span
-              class="rail__gap"
-              style={`left:${pctIn(DAY, gap.from)}%;width:${pctIn(DAY, gap.to) - pctIn(DAY, gap.from)}%`}
-              >{gapLabel}</span
-            >
-            <span
-              class="rail__bracket"
-              style={`left:${bracket.left}%;width:${bracket.right - bracket.left}%`}></span>
-            {
-              HOURS.map((h) => (
-                <span class="rail__hour" style={`left:${pctIn(DAY, h)}%`}>
-                  {h}
-                </span>
-              ))
-            }
-          </div>
+              </a>
 
-          {
-            /* The crowded end again, on a plate of its own. The bracket above
-              names the piece; the plate says the rail inside it is a second
-              scale and not a continuation of the first. */
-          }
-          <div class="rail__zoom">
-            <p class="rail__zoomLabel">
-              <span>21:10 &ndash; 21:40</span> at its own scale &middot; two apps share 21:34
-            </p>
-            <div class="rail__axis rail__axis--zoom">
-              <div class="rail__line"></div>
-              {
-                marks
-                  .filter((m) => m.inZoom)
-                  .map((m) => <span class="rail__dot" style={`left:${m.zoom}%;--a:${m.accent}`} />)
-              }
-              {
-                ZOOM_HOURS.map((h) => (
-                  <span class="rail__hour" style={`left:${pctIn(ZOOM, h)}%`}>
-                    {h}
-                  </span>
-                ))
-              }
-            </div>
-          </div>
-        </div>
+              <div class="bcard__body">
+                <p class="bcard__meta">
+                  <span class="bcard__kind">{a.kind}</span>
+                  <span class:list={['bcard__state', `is-${a.reach}`]}>{a.reachLabel}</span>
+                </p>
 
-        <ol class="rail__list">
-          {
-            marks.map((m, i) => (
-              <li style={`--a:${m.accent}`}>
-                <a href={`#${m.key}`}>
-                  <span class="rail__n">{String(i + 1).padStart(2, '0')}</span>
-                  <span class="rail__at">{m.at}</span>
-                  <span class="rail__name">{m.name}</span>
-                </a>
-              </li>
-            ))
-          }
-        </ol>
-      </figure>
+                <h2 class="display bcard__h bcard__h--lead">
+                  <a href={a.href}>{a.name}</a>
+                </h2>
+
+                <p class="bcard__what bcard__what--lead">{a.what}</p>
+                <p class="bcard__how">{a.how}</p>
+
+                <p class="bcard__cap">{a.cap}</p>
+                <p class="stack bcard__k">{dots(a.k)}</p>
+
+                <p class="bcard__go">
+                  <a href={a.href}>
+                    {a.cta}
+                    <span aria-hidden="true">&rarr;</span>
+                  </a>
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="bt-row bt-row--rest">
+        <p class="kicker">The other eight</p>
+        <p class="bt-row__p">
+          Tools, toys and one memo. Smaller, and each one does its one thing in the first minute.
+        </p>
+      </div>
 
       <div class="bt-grid">
         {
-          apps.map((a, i) => (
+          rest.map((a) => (
             <article class="bcard" id={a.key} style={`--a:${a.accent}`}>
               <a class="bcard__shot" href={a.href} tabindex="-1" aria-hidden="true">
                 <Picture
@@ -203,15 +137,13 @@ const opens = apps.filter((a) => a.reach === 'open').length;
                   sizes={SHOT_S}
                   formats={['avif']}
                   fallbackFormat="webp"
-                  loading={i < 2 ? 'eager' : 'lazy'}
+                  loading="lazy"
                   decoding="async"
                 />
               </a>
 
               <div class="bcard__body">
                 <p class="bcard__meta">
-                  <span class="bcard__n">{String(i + 1).padStart(2, '0')}</span>
-                  <span class="bcard__at">{a.at}</span>
                   <span class="bcard__kind">{a.kind}</span>
                   <span class:list={['bcard__state', `is-${a.reach}`]}>{a.reachLabel}</span>
                 </p>
@@ -239,7 +171,7 @@ const opens = apps.filter((a) => a.reach === 'open').length;
       </div>
 
       {
-        /* The alt text is on the figure below the card rather than on the
+        /* The alt text is on the list below the cards rather than on each
           card's own image, which is decorative there: a reader who cannot see
           the picture has already been told what the app is twice. */
       }
@@ -260,9 +192,8 @@ const opens = apps.filter((a) => a.reach === 'open').length;
       <p class="kicker">Elsewhere</p>
       <h2 class="display bt-foot__h">There are seven bigger ones.</h2>
       <p class="bt-foot__p">
-        These eleven are one day. The projects that took longer &mdash; a multiplayer sailing game,
-        a voxel tower defense, a rendering pipeline &mdash; are on the main page, along with
-        everything else.
+        The projects that took months &mdash; a multiplayer sailing game, a voxel tower defense, a
+        rendering pipeline &mdash; are on the main page, along with everything else.
       </p>
       <p class="bt-foot__go">
         <a href="/">Back to the site <span aria-hidden="true">&rarr;</span></a>
@@ -307,7 +238,7 @@ const opens = apps.filter((a) => a.reach === 'open').length;
   }
 
   /* The one asterisk on the whole page, said once. Set as an aside rather than
-     as another paragraph, because it is about the page and not about the day. */
+     as another paragraph, because it is about the page and not about the work. */
   .bt-caveat {
     max-width: 56ch;
     margin: 0;
@@ -349,225 +280,72 @@ const opens = apps.filter((a) => a.reach === 'open').length;
     text-transform: uppercase;
   }
 
-  /* ── The rail ──────────────────────────────────────────────────────── */
+  /* ── The two rows ──────────────────────────────────────────────────── */
   .bt-body {
     padding-block: clamp(2.6rem, 5vw, 4rem) clamp(3.4rem, 7vw, 5.5rem);
   }
 
-  .rail {
-    margin: 0 0 clamp(2.6rem, 5vw, 4rem);
-  }
-
-  .rail__cap {
+  .bt-row {
     display: grid;
-    grid-template-columns: minmax(120px, 0.24fr) minmax(0, 1fr);
+    grid-template-columns: minmax(140px, 0.3fr) minmax(0, 1fr);
     gap: 0.4rem 2rem;
     align-items: start;
-    margin-bottom: clamp(1.6rem, 3vw, 2.4rem);
-    max-width: 92ch;
+    margin: 0 0 clamp(1.3rem, 2.6vw, 2rem);
+  }
+
+  .bt-row--rest {
+    margin-top: clamp(2.6rem, 5vw, 4rem);
+  }
+
+  .bt-row__p {
+    max-width: 62ch;
+    margin: 0;
     color: var(--muted);
-    font-size: 0.94rem;
+    font-size: 0.96rem;
     line-height: 1.5;
   }
 
-  .rail__cap .kicker {
-    color: var(--on-ink);
-  }
-
-  .rail__plot {
+  /* Three wide cards, stacked. The frame takes the wider column and the copy
+     the narrower, and every second card swaps them so the eye zigzags down
+     the three rather than reading one column twice. */
+  .bt-leads {
     display: grid;
-    gap: 0.3rem;
+    gap: clamp(1.1rem, 2.2vw, 1.7rem);
   }
 
-  .rail__axis {
-    position: relative;
-    height: 2.9rem;
+  /* Doubled up on purpose: .bcard below sets display: flex, at the same
+     specificity and later in the sheet, and would win. */
+  .bcard.bcard--lead {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   }
 
-  .rail__line {
-    position: absolute;
-    inset-inline: 0;
-    top: 0.55rem;
-    height: 1px;
-    background: var(--line-dark-2);
+  .bcard--lead:nth-child(even) .bcard__shot {
+    order: 2;
   }
 
-  /* Each mark is its app's colour and nothing else on the rail is coloured, so
-     the rail and the eleven cards are keyed to each other without a legend. */
-  .rail__dot {
-    position: absolute;
-    top: 0.55rem;
-    width: 11px;
-    height: 11px;
-    margin: -5px 0 0 -5.5px;
-    border-radius: 50%;
-    background: var(--a);
-  }
-
-  /* The six inside the bracket are drawn again below at their own scale. Up
-     here they are a density, not six things to read. */
-  .rail__dot--dim {
-    width: 7px;
-    height: 7px;
-    margin: -3px 0 0 -3.5px;
-    opacity: 0.55;
-  }
-
-  .rail__bracket {
-    position: absolute;
-    top: 0.2rem;
-    height: 0.72rem;
-    border: 1px solid var(--line-dark-2);
+  .bcard--lead .bcard__shot {
     border-bottom: 0;
-    border-radius: 3px 3px 0 0;
-    min-width: 10px;
+    border-right: 2px solid var(--a);
   }
 
-  /* Under the bracket, pointing at the plate below. Short, because the plate
-     is directly under it and a long line at this aspect ratio is a rule. */
-  .rail__bracket::before,
-  .rail__bracket::after {
-    content: '';
-    position: absolute;
-    top: 0.72rem;
-    width: 1px;
-    height: 1.4rem;
-    background: linear-gradient(var(--line-dark-2), transparent);
+  .bcard--lead:nth-child(even) .bcard__shot {
+    border-right: 0;
+    border-left: 2px solid var(--a);
   }
 
-  .rail__bracket::before {
-    left: -1px;
-  }
-
-  .rail__bracket::after {
-    right: -1px;
-  }
-
-  /* The gap, drawn as the span it is: a rule the width of the empty stretch
-     with its length written on it. */
-  .rail__gap {
-    position: absolute;
-    top: 0.55rem;
-    display: grid;
-    place-items: center;
-    height: 1px;
-    color: var(--muted);
-    font: 640 0.62rem/1 var(--mono);
-    letter-spacing: 0.1em;
-  }
-
-  .rail__gap::before,
-  .rail__gap::after {
-    content: '';
-    position: absolute;
-    top: -3px;
-    width: 1px;
-    height: 7px;
-    background: var(--line-dark-2);
-  }
-
-  .rail__gap::before {
-    left: 0;
-  }
-
-  .rail__gap::after {
-    right: 0;
-  }
-
-  .rail__gap {
-    /* The label sits above its own rule rather than on it. */
-    align-content: end;
-    padding-bottom: 0.5rem;
-  }
-
-  .rail__zoom {
-    margin-top: 1rem;
-    padding: 0.85rem clamp(0.9rem, 2vw, 1.4rem) 0.3rem;
-    border: 1px solid var(--line-dark);
-    border-radius: var(--r-sm);
-    background: color-mix(in srgb, var(--on-ink) 3%, transparent);
-  }
-
-  .rail__hour {
-    position: absolute;
-    top: 1.3rem;
-    transform: translateX(-50%);
-    color: var(--muted);
-    font: 640 0.64rem/1 var(--mono);
-    letter-spacing: 0.1em;
-    white-space: nowrap;
-  }
-
-  .rail__zoomLabel {
-    margin: 0 0 0.2rem;
-    color: var(--muted);
-    font: 640 0.62rem/1.5 var(--mono);
-    letter-spacing: 0.11em;
-    text-transform: uppercase;
-  }
-
-  .rail__zoomLabel span {
-    color: var(--on-ink-2);
-    font-weight: 750;
-  }
-
-  .rail__axis--zoom .rail__line {
-    background: var(--line-dark);
-    border-top: 1px dashed transparent;
-  }
-
-  /* The eleven, as links. This is the accessible index; the plot above it is a
-     picture of the same list and is hidden from the accessibility tree. */
-  .rail__list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-    gap: 1px;
-    margin: clamp(1.4rem, 3vw, 2rem) 0 0;
-    padding: 0;
-    list-style: none;
-    background: var(--ink-deep);
-    border: 1px solid var(--line-dark);
-    border-radius: var(--r-sm);
-    overflow: hidden;
-  }
-
-  .rail__list a {
-    display: grid;
-    grid-template-columns: auto auto minmax(0, 1fr);
-    gap: 0.55rem;
-    align-items: baseline;
+  .bcard--lead .bcard__shot img {
     height: 100%;
-    padding: 0.62rem 0.8rem;
-    background: var(--ink-deep);
-    /* Not a border: a shadow has no layout, so with the grid's 1px gap each
-       cell's ring meets its neighbour's in the gap and the eleven share one
-       hairline. An empty twelfth cell then draws nothing at all. */
-    box-shadow: 0 0 0 1px var(--line-dark);
-    text-decoration: none;
-    transition:
-      background var(--dur-1) var(--ease),
-      color var(--dur-1) var(--ease);
+    aspect-ratio: auto;
+    object-position: left top;
   }
 
-  .rail__list a:hover {
-    background: var(--ink-2);
+  .bcard__h--lead {
+    font-size: clamp(2rem, 3.6vw, 2.9rem);
   }
 
-  .rail__n {
-    color: var(--a);
-    font: 700 0.66rem/1 var(--mono);
-  }
-
-  .rail__at {
-    color: var(--muted);
-    font: 640 0.66rem/1 var(--mono);
-    letter-spacing: 0.04em;
-  }
-
-  .rail__name {
-    font-size: 0.86rem;
-    font-weight: 600;
-    line-height: 1.35;
+  .bcard__what--lead {
+    font-size: clamp(1.06rem, 1.5vw, 1.2rem);
   }
 
   /* ── The cards ─────────────────────────────────────────────────────── */
@@ -632,14 +410,9 @@ const opens = apps.filter((a) => a.reach === 'open').length;
     text-transform: uppercase;
   }
 
-  .bcard__n {
+  .bcard__kind {
     color: var(--a);
     font-weight: 800;
-  }
-
-  .bcard__at,
-  .bcard__kind {
-    color: var(--muted);
   }
 
   /* The one badge that carries information rather than decoration: whether you
@@ -784,19 +557,32 @@ const opens = apps.filter((a) => a.reach === 'open').length;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .rail__cap {
+    .bt-row {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bcard.bcard--lead {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bcard--lead:nth-child(even) .bcard__shot {
+      order: 0;
+    }
+
+    .bcard--lead .bcard__shot,
+    .bcard--lead:nth-child(even) .bcard__shot {
+      border-right: 0;
+      border-left: 0;
+      border-bottom: 2px solid var(--a);
+    }
+
+    .bcard--lead .bcard__shot img {
+      height: auto;
+      aspect-ratio: 16 / 10;
     }
   }
 
-  /* The rail's hour labels are the first thing to run out of room, and a plot
-     whose axis is unreadable is worse than no plot. Below 620 the eleven links
-     underneath are the whole index. */
   @media (max-width: 620px) {
-    .rail__plot {
-      display: none;
-    }
-
     .bt-h1 {
       max-width: none;
     }

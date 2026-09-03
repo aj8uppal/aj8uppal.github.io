@@ -1,130 +1,352 @@
 ---
 /**
- * The one place the index says the eleven exist.
+ * The eleven, on the index.
  *
- * They are a page of their own (/built) rather than a fourth block in the
- * Playground, because eleven cards is most of a second index and the index has
- * a height budget that says so. What is owed here is a door, not a summary:
- * the count, the day, the eleven names, and the eleven colours the page itself
- * is keyed to, so arriving there feels like arriving somewhere already seen.
+ * They have a page of their own (/built), because eleven cards is most of a
+ * second index and the index has a height budget that says so. What the index
+ * owes them is presence, not a summary: the three that lead get a frame and a
+ * line each, right here, and the other eight fold behind one disclosure so a
+ * reader who wants the list has it without the page paying for it when they
+ * do not.
  *
- * A dark plate, on a section that is standing on sand. Everything else in
- * Playground is a frame with something running in it; this is the only thing
+ * A dark plate, on a section that is standing on sand. Everything else in the
+ * Playground is a frame with something running in it; this is the one thing
  * on the page that sends you off it, and it should not look like the others.
  */
+import { Picture } from 'astro:assets';
+import { asset } from '../lib/images';
 import { apps } from '../data/built';
+
+const lead = apps.filter((a) => a.featured);
+const rest = apps.filter((a) => !a.featured);
+
+/* A third of the plate's inner width: 380px at the maximum, 88vw on a phone. */
+const W = [300, 380, 570, 760];
+const S = '(min-width: 1400px) 380px, (min-width: 760px) 30vw, 88vw';
 ---
 
-<a class="bstrip" href="/built" data-reveal>
-  <div class="bstrip__l">
-    <p class="kicker bstrip__k">Also &middot; one day</p>
-    <p class="bstrip__t">
-      Eleven apps, <span>one day</span>
-    </p>
-    <p class="bstrip__s">2 September 2026. Nine of them open in a browser.</p>
+<div class="bs" data-reveal>
+  <div class="bs__head">
+    <div>
+      <p class="kicker bs__k">Eleven more</p>
+      <p class="bs__t">
+        Smaller, finished, <span>and open</span>
+      </p>
+    </div>
+    <a class="bs__all" href="/built"
+      >All eleven, with pictures <span aria-hidden="true">&rarr;</span></a
+    >
   </div>
 
-  <div class="bstrip__r">
-    {
-      /* The eleven, as their colours and then as their names. Ordered by the
-        clock, the same as the page it opens. */
-    }
-    <p class="bstrip__dots" aria-hidden="true">
-      {apps.map((a) => <span style={`--a:${a.accent}`} />)}
-    </p>
-    <p class="bstrip__names">{apps.map((a) => a.name).join(' · ')}</p>
-    <p class="bstrip__go">See the eleven <span aria-hidden="true">&rarr;</span></p>
+  {
+    /* Three cards, and on a phone they are a row rather than a column: the
+      same .swipe the Rendezvous block uses, so the fades and the snap come
+      from the site's own script. The plate names its own ground for the
+      fades, because the section's is sand and the plate is ink. */
+  }
+  <div class="swipe">
+    <div class="swipe__row bs__lead">
+      {
+        lead.map((a) => (
+          <a class="bs__card" href={a.href} style={`--a:${a.accent}`}>
+            <span class="bs__shot">
+              <Picture
+                src={asset(`built-${a.key}`)}
+                alt={a.alt}
+                widths={W}
+                sizes={S}
+                formats={['avif']}
+                fallbackFormat="webp"
+                loading="lazy"
+                decoding="async"
+              />
+            </span>
+            <span class="bs__meta">
+              <span class="bs__kind">{a.kind}</span>
+              <span class="bs__state">{a.reachLabel}</span>
+            </span>
+            <span class="bs__name">{a.name}</span>
+            <span class="bs__what">{a.what}</span>
+          </a>
+        ))
+      }
+    </div>
   </div>
-</a>
+
+  {
+    /* Closed by default, and the page is measured closed. Open, it is a list
+      of eight names with one line each: the same eight the page shows as
+      cards, in the same order, keyed by the same colours. */
+  }
+  <details class="bs__rest">
+    <summary>
+      <span class="bs__sum">
+        The other eight
+        <span class="bs__dots" aria-hidden="true">
+          {rest.map((a) => <i style={`--a:${a.accent}`} />)}
+        </span>
+      </span>
+      <span class="bs__chev" aria-hidden="true"></span>
+    </summary>
+    <ul class="bs__list">
+      {
+        rest.map((a) => (
+          <li style={`--a:${a.accent}`}>
+            <a href={a.href}>
+              <span class="bs__kind">{a.kind}</span>
+              <b>{a.name}</b>
+              <span class="bs__line">{a.what}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </details>
+</div>
 
 <style>
-  .bstrip {
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
-    gap: clamp(1.2rem, 3vw, 2.6rem);
-    align-items: center;
+  .bs {
+    --ground: var(--ink);
+
     margin-top: clamp(1.3rem, 2.4vw, 1.9rem);
-    padding: clamp(0.95rem, 1.9vw, 1.3rem) clamp(1.2rem, 2.6vw, 1.9rem);
+    padding: clamp(1.1rem, 2.2vw, 1.5rem) clamp(1.2rem, 2.6vw, 1.9rem);
     border-radius: var(--r-md);
     color: var(--on-ink);
     background: var(--ink);
-    text-decoration: none;
-    transition:
-      background var(--dur-2) var(--ease),
-      transform var(--dur-2) var(--ease);
   }
 
-  .bstrip:hover {
-    background: var(--ink-3);
+  .bs__head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.6rem;
+    align-items: end;
+    justify-content: space-between;
+    margin-bottom: 1rem;
   }
 
-  .bstrip__k {
+  .bs__k {
     color: var(--sand);
   }
 
-  .bstrip__t {
-    margin: 0.45rem 0 0;
+  .bs__t {
+    margin: 0.4rem 0 0;
     font-family: var(--display);
-    font-size: clamp(1.55rem, 2.9vw, 2.15rem);
+    font-size: clamp(1.5rem, 2.8vw, 2.1rem);
     font-weight: 900;
     letter-spacing: -0.055em;
     line-height: 0.92;
     text-transform: uppercase;
   }
 
-  .bstrip__t span {
+  .bs__t span {
     color: var(--sand);
   }
 
-  .bstrip__s {
-    max-width: 46ch;
-    margin: 0.5rem 0 0;
-    color: var(--on-ink-2);
-    font-size: 0.92rem;
-    line-height: 1.5;
+  .bs__all {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    color: var(--sand);
+    font-weight: 700;
+    font-size: 0.94rem;
+    text-decoration: none;
   }
 
-  .bstrip__dots {
+  .bs__all:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* ── the three ──────────────────────────────────────────────────────── */
+  .bs__lead {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.8rem, 1.6vw, 1.1rem);
+  }
+
+  .bs__card {
+    display: grid;
+    gap: 0.45rem;
+    align-content: start;
+    min-width: 0;
+    text-decoration: none;
+  }
+
+  .bs__shot {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--r-sm);
+    border-bottom: 2px solid var(--a);
+    background: var(--screen);
+  }
+
+  .bs__shot img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform var(--dur-3) var(--ease);
+  }
+
+  .bs__card:hover .bs__shot img {
+    transform: scale(1.03);
+  }
+
+  .bs__meta {
     display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    margin: 0;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+    font: 680 0.62rem/1.3 var(--mono);
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
   }
 
-  .bstrip__dots span {
-    width: 11px;
-    height: 11px;
+  .bs__kind {
+    color: var(--a);
+  }
+
+  .bs__state {
+    color: var(--on-ink-3);
+  }
+
+  .bs__name {
+    font-family: var(--display);
+    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .bs__card:hover .bs__name {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  .bs__what {
+    color: var(--on-ink-2);
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
+  /* ── the fold ───────────────────────────────────────────────────────── */
+  .bs__rest {
+    margin-top: 1rem;
+    border-top: 1px solid var(--line-dark);
+  }
+
+  .bs__rest summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 0 0.2rem;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 700;
+  }
+
+  .bs__rest summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .bs__sum {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .bs__dots {
+    display: inline-flex;
+    gap: 5px;
+  }
+
+  .bs__dots i {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: var(--a);
   }
 
-  .bstrip__names {
-    margin: 0.7rem 0 0;
-    color: var(--on-ink-2);
-    font: 640 0.74rem/1.7 var(--mono);
-    letter-spacing: 0.03em;
-  }
-
-  .bstrip__go {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    margin: 0.75rem 0 0;
-    color: var(--sand);
-    font-weight: 700;
-  }
-
-  .bstrip__go span {
+  /* The chevron, drawn: a square rotated to a point, turned over when open. */
+  .bs__chev {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-right: 2px solid var(--sand);
+    border-bottom: 2px solid var(--sand);
+    transform: rotate(45deg);
     transition: transform var(--dur-2) var(--ease);
   }
 
-  .bstrip:hover .bstrip__go span {
-    transform: translateX(4px);
+  .bs__rest[open] .bs__chev {
+    transform: rotate(225deg);
+  }
+
+  .bs__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 clamp(1rem, 2.4vw, 2rem);
+    margin: 0.6rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .bs__list a {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.15rem 0.7rem;
+    align-items: baseline;
+    padding: 0.55rem 0;
+    border-top: 1px solid var(--line-dark);
+    text-decoration: none;
+  }
+
+  .bs__list li:nth-child(-n + 2) a {
+    border-top: 0;
+  }
+
+  .bs__list .bs__kind {
+    font: 680 0.62rem/1.6 var(--mono);
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .bs__list b {
+    font-size: 0.94rem;
+  }
+
+  .bs__list a:hover b {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .bs__line {
+    grid-column: 2;
+    color: var(--on-ink-2);
+    font-size: 0.84rem;
+    line-height: 1.45;
   }
 
   @media (max-width: 760px) {
-    .bstrip {
+    .bs__lead {
       grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 620px) {
+    .bs__lead {
+      display: flex;
+    }
+
+    .bs__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bs__list li:nth-child(2) a {
+      border-top: 1px solid var(--line-dark);
     }
   }
 </style>

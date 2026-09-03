@@ -41,20 +41,21 @@ Any rule that shapes one of these images needs `height: auto` alongside it.
 The eleven cards on `/built` are photographs of eleven running apps, and they
 are not made by `npm run images`: that script crops a batch of raw captures
 that live outside the repo, and these have no raw batch. `npm run built:shots`
-*is* the batch - it drives each app into the one state its card shows (a GO
+_is_ the batch - it drives each app into the one state its card shows (a GO
 verdict, a poster made from a real photo, two browsers in one drawing round)
-and writes `src/assets/built-<key>.webp` straight out. Three of the eleven are
+and writes `src/assets/built-<key>.webp` straight out. Six of the eleven are
 read off `public/` on a local server, so a card can be reshot before the change
 is pushed; the rest are read from the live site. Re-running it changes the
 pictures, because live apps are different every time. That is the point, and
 the page says so.
 
-Nothing on that page is hand-listed twice. The rail, the card grid and the
-strip on the index all come off `src/data/built.ts`, and each app's accent
-colour with them. `npm run verify:built` is the gate: it proves every link
-answers, every capture loads, and every accent still clears AA on both the
-card's ground and its hover ground - which is the one thing that quietly breaks
-when a palette moves.
+Nothing on that page is hand-listed twice. The three lead cards, the grid of
+eight, and the block at the foot of the Playground on the index all come off
+`src/data/built.ts` - `featured: true` is the whole ranking - and each app's
+accent colour with them. `npm run verify:built` is the gate: it proves every
+link answers, every capture loads, the index fold opens, and every accent still
+clears AA on both the card's ground and its hover ground, which is the one
+thing that quietly breaks when a palette moves.
 
 ## Verification
 
@@ -82,7 +83,7 @@ Its classes are prefixed `dlab`, because the playground cards already own `.lab`
 ## Page length is a standing budget
 
 `npm run verify` fails if the document grows past `HEIGHT_BUDGET` in `scripts/verify.mjs` - the script is the authority on the number; a copy of it here has drifted stale once already.
-It has been raised deliberately exactly once, for the strip at the foot of the Playground that opens `/built`; the comment beside the constant says what bought it, and the next change to it should do the same or not happen.
+It has been raised deliberately, for the block at the foot of the Playground that carries three of the eleven and folds the rest; the comment beside the constant says what bought it, and the next change to it should do the same or not happen.
 The budget exists because length regresses by accretion - a paragraph here, a section pad there - and nobody notices until the page is 17,000px again.
 When a change pushes it over, the fix is almost always copy or vertical rhythm, not shrinking someone's work: cut prose, or put the frame beside the title instead of above it.
 
