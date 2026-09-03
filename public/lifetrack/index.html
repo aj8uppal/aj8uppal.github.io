@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#f7f7f8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#111114" media="(prefers-color-scheme: dark)" />
+  <meta name="description" content="LifeTrack — a private, local-first tracker for your work, projects, home, habits, workouts, routines, people and plans." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'" />
+  <title>LifeTrack</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="LifeTrack" />
+  <link rel="stylesheet" href="./src/styles.css" />
+  <script src="./src/theme-init.js"></script>
+</head>
+<body>
+  <noscript>
+    <div class="noscript">LifeTrack needs JavaScript to run. Everything stays on your device.</div>
+  </noscript>
+  <div id="app" class="app-loading" aria-busy="true">
+    <div class="splash"><div class="splash-logo">◎</div><div>Loading LifeTrack…</div></div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
