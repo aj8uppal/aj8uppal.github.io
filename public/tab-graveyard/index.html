@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tab Graveyard — bury the tabs you were never going to read</title>
+<meta name="description" content="A Chrome extension that closes the tabs you were never going to read and hands you a card of what you hoarded. Drag the slider to see yours.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0b0c0f">
+<link rel="icon" href="icons/icon48.png">
+<meta property="og:title" content="Tab Graveyard">
+<meta property="og:description" content="Closes the tabs you were never going to read, and hands you a card of what you hoarded.">
+<meta property="og:type" content="website">
+<style>
+:root{
+  --bg:#0b0c0f; --panel:#14161b; --line:#23262d;
+  --ink:#e6dfcd; --dim:#8b8f98; --accent:#c8b98f;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{
+  margin:0;color:var(--ink);background:var(--bg);
+  font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.wrap{width:min(1080px,calc(100% - 2.4rem));margin-inline:auto}
+
+/* ---- the fog ------------------------------------------------------------
+   One radial wash behind the whole page, warm at the top where the stone is
+   and gone by the fold. Static: a graveyard should not be animated. */
+.fog{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(120% 60% at 50% -8%,rgba(200,185,143,.13),transparent 62%)}
+
+header{padding:clamp(3rem,9vw,6rem) 0 0}
+.mark{display:flex;align-items:center;gap:.55rem;
+  font:700 .72rem/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.mark b{width:8px;height:8px;border-radius:2px 2px 0 0;background:var(--accent);display:block}
+
+h1{margin:1.6rem 0 0;max-width:16ch;
+  font:400 clamp(2.6rem,7.4vw,4.6rem)/1.02 var(--serif);letter-spacing:-.02em}
+h1 i{font-style:italic;color:var(--accent)}
+.sub{margin:1.1rem 0 0;max-width:52ch;font-size:clamp(1rem,1.7vw,1.16rem);color:#c3bdb0}
+
+/* ---- the stage ----------------------------------------------------------
+   Card left, controls right; one column below 860 with the card on top,
+   because the card is the argument. */
+.stage{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);
+  gap:clamp(1.8rem,4vw,3.4rem);align-items:start;
+  margin:clamp(2.4rem,5vw,3.6rem) 0 0}
+@media (max-width:860px){.stage{grid-template-columns:minmax(0,1fr)}}
+
+.plinth{position:relative;border-radius:14px;padding:14px;
+  background:linear-gradient(#16181d,#0f1114);border:1px solid var(--line)}
+canvas{display:block;width:100%;height:auto;border-radius:6px}
+
+.panel{display:grid;gap:1.5rem;align-content:start}
+
+.dial label{display:block;font:700 .68rem/1 var(--mono);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:.85rem}
+.readout{font:400 clamp(2rem,4.6vw,3rem)/1 var(--serif);letter-spacing:-.02em}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;margin:1.1rem 0 0;
+  height:4px;border-radius:2px;background:#2a2d34}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;
+  border-radius:50%;background:var(--ink);border:3px solid var(--bg);
+  box-shadow:0 0 0 1px #4a4d55;cursor:grab}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;
+  background:var(--ink);border:3px solid var(--bg);box-shadow:0 0 0 1px #4a4d55;cursor:grab}
+
+.epitaph{margin:0;padding:1rem 1.15rem;border-left:2px solid var(--accent);
+  background:#101216;font:italic 400 1.05rem/1.5 var(--serif);color:#d8d1c1}
+
+.acts{display:flex;flex-wrap:wrap;gap:.6rem}
+button,.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);
+  padding:.62rem 1.05rem;border-radius:8px;font:600 .88rem/1 var(--sans);
+  cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:.45rem;
+  transition:border-color 140ms,background 140ms}
+button:hover,.btn:hover{border-color:#3a3e47;background:#1a1d23}
+.btn--go{background:var(--accent);color:#15161a;border-color:var(--accent)}
+.btn--go:hover{background:#d6c79c;border-color:#d6c79c}
+.note{margin:0;font-size:.86rem;color:var(--dim)}
+
+/* ---- the three claims --------------------------------------------------- */
+.claims{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;
+  margin:clamp(3.4rem,7vw,5.4rem) 0 0;background:var(--line);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+@media (max-width:720px){.claims{grid-template-columns:minmax(0,1fr)}}
+.claim{background:var(--bg);padding:1.5rem 1.4rem}
+.claim h2{margin:0;font:700 .68rem/1 var(--mono);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--accent)}
+.claim p{margin:.85rem 0 0;color:#c3bdb0;font-size:.95rem}
+
+/* ---- install ------------------------------------------------------------ */
+.install{margin:clamp(3.4rem,7vw,5.4rem) 0 0;
+  display:grid;grid-template-columns:minmax(0,.42fr) minmax(0,1fr);gap:clamp(1.6rem,4vw,3rem)}
+@media (max-width:860px){.install{grid-template-columns:minmax(0,1fr)}}
+.install h2{margin:0;font:400 clamp(1.8rem,3.6vw,2.5rem)/1.05 var(--serif);letter-spacing:-.02em}
+ol{margin:0;padding-left:1.3rem;display:grid;gap:.75rem;color:#c3bdb0}
+ol code,p code{font:.86em var(--mono);background:#15171c;border:1px solid var(--line);
+  border-radius:4px;padding:.1em .38em;color:var(--ink)}
+
+footer{margin:clamp(3.4rem,7vw,5rem) 0;padding-top:1.4rem;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;gap:.9rem 1.6rem;justify-content:space-between;
+  font-size:.86rem;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="fog"></div>
+
+<div class="wrap">
+  <header>
+    <p class="mark"><b></b> Tab Graveyard</p>
+    <h1>Bury the tabs you were <i>never</i> going to read.</h1>
+    <p class="sub">A Chrome extension. One click closes the tabs that have gone
+      untouched, and hands you a headstone with the number on it. Nothing is
+      deleted — every tab stays searchable, and comes back with one click.</p>
+  </header>
+
+  <section class="stage" aria-labelledby="demo-h">
+    <div class="plinth">
+      <canvas id="card" aria-label="A tombstone card showing the number of tabs buried this week"></canvas>
+    </div>
+
+    <div class="panel">
+      <h2 id="demo-h" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">The card</h2>
+      <div class="dial">
+        <label for="count">How bad is it, honestly</label>
+        <p class="readout" id="readout">61 tabs</p>
+        <input type="range" id="count" min="1" max="640" value="61" step="1"
+               aria-describedby="epitaph">
+      </div>
+
+      <p class="epitaph" id="epitaph">&nbsp;</p>
+
+      <div class="acts">
+        <a class="btn btn--go" href="tab-graveyard.zip" download>Download the extension</a>
+        <button id="save" type="button">Save this card</button>
+      </div>
+
+      <p class="note">The card above is drawn by <code>card.js</code>, the same
+        file the extension ships — this is the render, not a picture of it. The
+        tabs in it are invented; yours would be yours.</p>
+    </div>
+  </section>
+
+  <section class="claims">
+    <div class="claim">
+      <h2>Nothing is deleted</h2>
+      <p>Burying writes the tab to storage before it closes it. Search the
+        graveyard forever; resurrect any of them with one click. Undo brings the
+        whole batch back for ten minutes.</p>
+    </div>
+    <div class="claim">
+      <h2>Nothing leaves the browser</h2>
+      <p>Two permissions, <code>tabs</code> and <code>storage</code>. No
+        background worker, no content script, no server, no account. The card is
+        drawn on your own canvas.</p>
+    </div>
+    <div class="claim">
+      <h2>Nothing you are using</h2>
+      <p>Pinned tabs and the active tab in every window are never touched. You
+        pick the age threshold — a day, a week, ninety days — and see the count
+        before you commit.</p>
+    </div>
+  </section>
+
+  <section class="install">
+    <h2>Install it</h2>
+    <div>
+      <ol>
+        <li>Download the zip above and unpack it.</li>
+        <li>Open <code>chrome://extensions</code> and turn on <b>Developer mode</b>.</li>
+        <li><b>Load unpacked</b>, and pick the folder you unpacked.</li>
+        <li>Pin the tombstone to the toolbar and click it.</li>
+      </ol>
+      <p class="note" style="margin-top:1.2rem">Chrome 121 or newer, for the tab
+        last-access times the age threshold is measured from. Works in Edge, Arc,
+        Brave and anything else Chromium.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Built in an afternoon, 2 September 2026.</span>
+    <span><a href="/">aj8uppal.github.io</a> · <a href="/built">the other ten</a></span>
+  </footer>
+</div>
+
+<script type="module" src="demo.js"></script>
+</body>
+</html>

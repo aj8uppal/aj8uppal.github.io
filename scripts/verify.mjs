@@ -18,12 +18,16 @@ const OUT = process.argv[3] ?? '/tmp/p6shots';
 
 /* The captain's stated reason for preferring this direction was less to
    scroll through. It is a number, so it gets asserted like one. */
-/* 16,125px at 1440 with the murmuration card, which is a full-width plate in
-   the flagship row rather than a half in the grid below it - the shape the
-   card was asked for. The margin stays what it was, a few hundred pixels:
-   enough that it does not trip on its own, tight enough that quietly growing
-   a section back does. */
-const HEIGHT_BUDGET = 16500;
+/* 16,462px at 1440. It was 16,125 with the murmuration card, which is a
+   full-width plate in the flagship row rather than a half in the grid below
+   it - the shape the card was asked for. The 337 on top of that is the door
+   to /built at the foot of the Playground: eleven apps that would have been
+   most of a second index if they had been cards here, spent instead as one
+   strip that leaves the page. Raised deliberately, and only for that.
+
+   The margin stays what it was, a few hundred pixels: enough that it does not
+   trip on its own, tight enough that quietly growing a section back does. */
+const HEIGHT_BUDGET = 16850;
 
 /* The same reasoning for the phone: 15,628px with the seven cards folded. */
 const MOBILE_BUDGET = 16000;

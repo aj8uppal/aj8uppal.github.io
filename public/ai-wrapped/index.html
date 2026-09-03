@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Wrapped — your year in prompts</title>
+<meta name="description" content="Upload your chat export from any AI assistant and get your year in prompts. Everything runs in your browser.">
+<meta name="theme-color" content="#08070d">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  :root{
+    --ink:#f6f4ff; --dim:rgba(246,244,255,.62); --bg:#08070d;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, "Helvetica Neue", Arial, sans-serif;
+  }
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font);
+    -webkit-font-smoothing:antialiased; overflow:hidden;
+    text-rendering:optimizeLegibility;
+  }
+  button{font-family:inherit;cursor:pointer;border:0;}
+  .screen{position:fixed;inset:0;display:none;flex-direction:column;}
+  .screen.on{display:flex;}
+
+  /* ---------------- landing ---------------- */
+  #landing{align-items:center;justify-content:center;padding:24px;overflow-y:auto;}
+  #landing::before{
+    content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(38vmax 38vmax at 18% 12%, rgba(122,0,255,.45), transparent 62%),
+      radial-gradient(34vmax 34vmax at 84% 78%, rgba(255,46,147,.38), transparent 62%),
+      radial-gradient(30vmax 30vmax at 62% 22%, rgba(42,201,255,.22), transparent 60%);
+    filter:blur(20px);
+    animation:drift 24s ease-in-out infinite alternate;
+  }
+  @keyframes drift{to{transform:translate3d(0,-3%,0) scale(1.06);}}
+  @media (prefers-reduced-motion: reduce){ #landing::before{animation:none;} }
+  .wrap{position:relative;z-index:1;width:100%;max-width:560px;text-align:center;padding:32px 0;}
+  .eyebrow{font-size:12px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin:0 0 18px;}
+  h1{
+    font-size:clamp(44px,13vw,88px);line-height:.92;font-weight:900;letter-spacing:-.045em;
+    margin:0 0 18px;
+    background:linear-gradient(120deg,#fff 15%,#ffd6f0 45%,#b9a3ff 80%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .sub{font-size:clamp(15px,4.2vw,19px);line-height:1.5;color:var(--dim);margin:0 auto 30px;max-width:34ch;}
+  #drop{
+    display:block;width:100%;border:2px dashed rgba(255,255,255,.22);border-radius:22px;
+    background:rgba(255,255,255,.05);backdrop-filter:blur(12px);
+    padding:34px 22px;color:var(--ink);text-align:center;transition:.18s;
+  }
+  #drop:hover,#drop:focus-visible,#drop.hot{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.5);transform:translateY(-2px);outline:none;}
+  #drop .big{display:block;font-size:19px;font-weight:800;letter-spacing:-.02em;}
+  #drop .small{display:block;margin-top:7px;font-size:13px;color:var(--dim);}
+  .ghost{
+    margin-top:16px;background:none;color:var(--ink);font-size:14px;font-weight:700;
+    text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px;
+    text-decoration-color:rgba(255,255,255,.35);padding:10px;
+  }
+  .privacy{margin-top:26px;font-size:12.5px;line-height:1.6;color:rgba(246,244,255,.45);}
+  .privacy b{color:rgba(246,244,255,.8);font-weight:700;}
+  .err{margin-top:18px;font-size:13.5px;line-height:1.5;color:#ffb4c8;min-height:1.2em;}
+
+  /* ---------------- loading ---------------- */
+  #loading{align-items:center;justify-content:center;gap:20px;}
+  #loading .msg{font-size:16px;font-weight:700;letter-spacing:-.01em;}
+  .track{width:min(260px,66vw);height:4px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;}
+  .track i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#ff2e93,#7a00ff);transition:width .3s ease;}
+
+  /* ---------------- deck ---------------- */
+  #deck{align-items:center;justify-content:center;}
+  .dots{position:absolute;top:max(14px,env(safe-area-inset-top));left:0;right:0;z-index:5;display:flex;gap:5px;padding:0 14px;}
+  .dots i{flex:1;height:3px;border-radius:99px;background:rgba(255,255,255,.24);overflow:hidden;}
+  .dots i.on{background:rgba(255,255,255,.95);}
+  .rail{
+    display:flex;gap:0;width:100%;height:100%;
+    overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .rail::-webkit-scrollbar{display:none;}
+  .slide{
+    flex:0 0 100%;height:100%;scroll-snap-align:center;
+    display:flex;align-items:center;justify-content:center;padding:52px 14px 92px;
+  }
+  .card{
+    container-type:size;
+    position:relative;width:min(100%,calc(88vh * 9 / 16));height:min(88vh,calc(100vw - 28px) * 16 / 9);
+    max-height:100%;border-radius:26px;overflow:hidden;
+    isolation:isolate;
+    box-shadow:0 24px 70px rgba(0,0,0,.55);
+  }
+  .card::after{
+    content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:radial-gradient(70% 46% at 50% 0%, rgba(255,255,255,.20), transparent 70%);
+  }
+  .inner{position:absolute;inset:0;display:flex;flex-direction:column;padding:8.5cqw;}
+  .k{font-size:3.15cqw;font-weight:800;letter-spacing:.2em;text-transform:uppercase;opacity:.78;margin:0 0 auto;}
+  .body{display:flex;flex-direction:column;justify-content:flex-end;flex:1;gap:2.6cqw;padding-bottom:5cqw;}
+  .hero{line-height:.86;font-weight:900;letter-spacing:-.05em;margin:0;overflow-wrap:anywhere;}
+  .label{font-size:4.3cqw;line-height:1.15;font-weight:800;letter-spacing:-.02em;margin:0;}
+  .line{font-size:3.5cqw;line-height:1.45;font-weight:500;margin:0;opacity:.84;}
+  .bars{display:flex;align-items:flex-end;gap:.7cqw;height:20cqw;margin:1cqw 0;}
+  .bars b{flex:1;border-radius:.8cqw;min-height:1.2%;display:block;}
+  .barlab{display:flex;justify-content:space-between;font-size:2.5cqw;font-weight:700;opacity:.6;letter-spacing:.06em;}
+  .list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2.2cqw;}
+  .list li{display:flex;align-items:baseline;gap:2.6cqw;font-size:5.4cqw;font-weight:800;letter-spacing:-.03em;}
+  .list .n{font-size:3.4cqw;opacity:.55;font-variant-numeric:tabular-nums;width:4.5cqw;flex:none;}
+  .list .c{margin-left:auto;font-size:3.2cqw;font-weight:700;opacity:.7;font-variant-numeric:tabular-nums;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:4.4cqw 3cqw;}
+  .grid div{min-width:0;}
+  .grid .v{font-size:6.4cqw;font-weight:900;letter-spacing:-.035em;line-height:1;overflow-wrap:anywhere;}
+  .grid .l{font-size:2.7cqw;font-weight:700;opacity:.66;margin-top:.9cqw;line-height:1.25;}
+  .foot{font-size:2.7cqw;font-weight:700;letter-spacing:.16em;text-transform:uppercase;opacity:.55;margin:auto 0 0;}
+
+  .bar{
+    position:absolute;left:0;right:0;bottom:0;z-index:6;
+    display:flex;gap:10px;justify-content:center;align-items:center;
+    padding:12px 14px calc(12px + env(safe-area-inset-bottom));
+  }
+  .btn{
+    border-radius:99px;padding:13px 22px;font-size:14.5px;font-weight:800;letter-spacing:-.01em;
+    background:#fff;color:#0b0a10;transition:.15s;
+  }
+  .btn:active{transform:scale(.96);}
+  .btn.alt{background:rgba(255,255,255,.13);color:#fff;backdrop-filter:blur(10px);}
+  .btn[disabled]{opacity:.55;pointer-events:none;}
+  .nav{
+    position:absolute;top:0;bottom:0;width:32%;z-index:4;background:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .nav.p{left:0;} .nav.n{right:0;}
+  @media (pointer:coarse){ .nav{display:none;} }
+  .toast{
+    position:absolute;left:50%;bottom:74px;transform:translate(-50%,10px);z-index:7;
+    background:rgba(10,9,16,.92);border:1px solid rgba(255,255,255,.16);
+    padding:9px 16px;border-radius:99px;font-size:13px;font-weight:700;
+    opacity:0;transition:.22s;pointer-events:none;white-space:nowrap;
+  }
+  .toast.on{opacity:1;transform:translate(-50%,0);}
+  @media (max-width:520px){ .slide{padding:46px 10px 88px;} .card{border-radius:22px;} }
+</style>
+</head>
+<body>
+
+<section id="landing" class="screen on">
+  <div class="wrap">
+    <p class="eyebrow">Your year in prompts</p>
+    <h1>AI&nbsp;Wrapped</h1>
+    <p class="sub">Drop in your chat export from ChatGPT, Claude, Gemini — anything. Get the numbers you didn't know you were making.</p>
+
+    <button id="drop" type="button">
+      <span class="big">Drop your export here</span>
+      <span class="small">.zip or .json &nbsp;·&nbsp; or tap to choose a file</span>
+    </button>
+    <input id="file" type="file" accept=".json,.zip,application/json,application/zip" hidden>
+
+    <button class="ghost" id="demo" type="button">or see it with sample data →</button>
+
+    <p class="privacy"><b>Nothing leaves this page.</b> Your export is read in your browser and never uploaded. No account, no server, no analytics. Turn off your wifi and it still works.</p>
+    <p class="err" id="err" role="alert"></p>
+  </div>
+</section>
+
+<section id="loading" class="screen">
+  <div class="msg" id="loadmsg">Reading your export…</div>
+  <div class="track"><i id="progress"></i></div>
+</section>
+
+<section id="deck" class="screen">
+  <div class="dots" id="dots"></div>
+  <div class="rail" id="rail"></div>
+  <button class="nav p" id="prev" aria-label="Previous card"></button>
+  <button class="nav n" id="next" aria-label="Next card"></button>
+  <div class="bar">
+    <button class="btn" id="share">Share this card</button>
+    <button class="btn alt" id="restart">Start over</button>
+  </div>
+  <div class="toast" id="toast"></div>
+</section>
+
+<script>
+/* ==========================================================================
+   AI WRAPPED
+   Everything runs in this file, in your browser. Nothing is uploaded.
+
+   Pipeline:  file -> adapters -> Conversation[] -> stats -> cardSpec[] -> DOM + PNG
+   The DOM card and the exported PNG are painted from the SAME cardSpec block
+   list, so what you swipe is exactly what you share.
+   ========================================================================== */
+
+const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Inter, "Helvetica Neue", Arial, sans-serif';
+const $ = id => document.getElementById(id);
+const num = n => (n || 0).toLocaleString('en-US');
+const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+
+/* ==========================================================================
+   1. THE SHARE MOMENT — card specs
+   ========================================================================== */
+
+// Hero type is sized from its own length, in cqw, so the DOM card and the
+// 1080px canvas pick the identical size instead of shrinking independently.
+const HERO_CQW = [40, 40, 40, 30, 26, 23, 21, 19, 17, 15];
+const hero = v => ({ t: 'hero', v, px: HERO_CQW[Math.min(String(v).length, 9)] });
+
+const hour12 = h => (h % 12 === 0 ? 12 : h % 12) + (h < 12 ? ' AM' : ' PM');
+const plural = (n, s, p) => n === 1 ? s : (p || s + 's');
+
+function buildCards(s) {
+  const cards = [];
+  const you = s.words.you;
+
+  cards.push({
+    id: 'volume',
+    colors: ['#5B2AF5', '#FF2E93'], accent: '#FFE066',
+    kicker: `Your year in prompts · ${s.meta.year}`,
+    blocks: [
+      hero(num(you)),
+      { t: 'label', v: `words you wrote to an AI` },
+      { t: 'line', v: `Across ${num(s.meta.conversations)} ${plural(s.meta.conversations,'conversation')} and ${num(s.msgs.you)} ${plural(s.msgs.you,'message')} — roughly ${num(s.tokens.you)} tokens of your own thinking, typed out.` },
+      { t: 'line', v: `For every word you wrote it wrote back ${s.ratio} — ${num(s.words.ai)} words of reply you may or may not have read.` }
+    ]
+  });
+
+  const p = s.politeness;
+  cards.push({
+    id: 'manners',
+    colors: ['#FF6A3D', '#B5179E'], accent: '#FFF3B0',
+    kicker: 'Manners',
+    blocks: [
+      hero(p.pct + '%'),
+      { t: 'label', v: 'of your messages were polite' },
+      { t: 'line', v: `${num(p.please)} ${plural(p.please,'please')} · ${num(p.thanks)} thank-${plural(p.thanks,'you')} · ${num(p.sorry)} ${plural(p.sorry,'apology','apologies')}` },
+      { t: 'line', v: p.sorry > 0
+          ? `You apologised to a language model ${num(p.sorry)} ${plural(p.sorry,'time')}. It has never once been upset with you.`
+          : `Not one apology all year. Ruthless efficiency.` }
+    ]
+  });
+
+  cards.push({
+    id: 'clock',
+    colors: ['#0B1F5B', '#2AC9FF'], accent: '#FFD166',
+    kicker: 'Your rhythm',
+    blocks: [
+      hero(hour12(s.peakHour)),
+      { t: 'label', v: 'your peak prompting hour' },
+      { t: 'bars', data: s.hours, from: '12 AM', mid: 'noon', to: '11 PM' },
+      { t: 'line', v: s.nightPct >= 8
+          ? `${s.nightPct}% of everything you asked happened between midnight and 4 AM. The machine was awake too.`
+          : `Only ${s.nightPct}% of your questions came after midnight. Suspiciously well-adjusted.` }
+    ]
+  });
+
+  const L = s.longest;
+  cards.push({
+    id: 'longest',
+    colors: ['#0F5132', '#4ADE80'], accent: '#FDE68A',
+    kicker: 'The long haul',
+    blocks: [
+      hero(num(L.messages)),
+      { t: 'label', v: 'messages in a single conversation' },
+      { t: 'line', v: `“${L.title}”` },
+      { t: 'line', v: L.spanHours >= 24
+          ? `You kept that thread alive for ${Math.round(L.spanHours / 24)} days and ${num(L.words)} words.`
+          : `${num(L.words)} words in one sitting of about ${Math.max(1, Math.round(L.spanHours))} ${plural(Math.max(1,Math.round(L.spanHours)),'hour')}.` }
+    ]
+  });
+
+  if (s.topWords.length) {
+    const top = s.topWords[0];
+    cards.push({
+      id: 'words',
+      colors: ['#3A0CA3', '#4CC9F0'], accent: '#FFD166',
+      kicker: 'Your vocabulary',
+      blocks: [
+        { t: 'label', v: 'The words you leaned on' },
+        { t: 'list', items: s.topWords.slice(0, 5).map((w, i) => ({ n: i + 1, k: w.word, c: num(w.n) + '×' })) },
+        { t: 'line', v: `You typed “${top.word}” ${num(top.n)} times. Every single one of them on purpose.` }
+      ]
+    });
+  }
+
+  cards.push({
+    id: 'wrap',
+    colors: ['#160A2E', '#FF2E93'], accent: '#FFE066',
+    kicker: `The whole year · ${s.meta.year}`,
+    blocks: [
+      { t: 'label', v: 'Ten things you did this year' },
+      { t: 'stats', items: [
+        { v: num(s.meta.conversations), l: 'conversations started' },
+        { v: num(s.msgs.you), l: 'messages sent' },
+        { v: num(you), l: 'words written' },
+        { v: num(s.tokens.total), l: 'tokens exchanged' },
+        { v: hour12(s.peakHour), l: 'peak hour' },
+        { v: s.nightPct + '%', l: 'after midnight' },
+        { v: p.pct + '%', l: 'polite messages' },
+        { v: num(s.longest.messages), l: 'longest thread' },
+        { v: num(s.streak.days), l: 'day streak' },
+        { v: num(s.avgLen), l: 'words per message' }
+      ]},
+      { t: 'line', v: `From ${s.meta.firstDay} to ${s.meta.lastDay}, read entirely in your own browser.` }
+    ]
+  });
+
+  return cards;
+}
+
+/* ==========================================================================
+   2. DOM RENDERER
+   ========================================================================== */
+
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+
+function barHeights(data) {
+  const max = Math.max(1, ...data);
+  return data.map(v => Math.round((v / max) * 100));
+}
+
+function blockHTML(b, spec) {
+  switch (b.t) {
+    case 'hero':
+      return `<p class="hero" style="font-size:${b.px}cqw;color:${spec.accent}">${esc(b.v)}</p>`;
+    case 'label': return `<p class="label">${esc(b.v)}</p>`;
+    case 'line':  return `<p class="line">${esc(b.v)}</p>`;
+    case 'bars': {
+      const h = barHeights(b.data), peak = b.data.indexOf(Math.max(...b.data));
+      return `<div><div class="bars">${h.map((v, i) =>
+        `<b style="height:${v}%;background:${i === peak ? spec.accent : 'rgba(255,255,255,.5)'}"></b>`).join('')}</div>
+        <div class="barlab"><span>${b.from}</span><span>${b.mid}</span><span>${b.to}</span></div></div>`;
+    }
+    case 'list':
+      return `<ul class="list">${b.items.map(i =>
+        `<li><span class="n">${i.n}</span><span>${esc(i.k)}</span><span class="c" style="color:${spec.accent}">${esc(i.c)}</span></li>`).join('')}</ul>`;
+    case 'stats':
+      return `<div class="grid">${b.items.map(i =>
+        `<div><div class="v" style="color:${spec.accent}">${esc(i.v)}</div><div class="l">${esc(i.l)}</div></div>`).join('')}</div>`;
+  }
+  return '';
+}
+
+function cardHTML(spec) {
+  return `<div class="card" style="background:linear-gradient(155deg, ${spec.colors[0]}, ${spec.colors[1]})">
+    <div class="inner">
+      <p class="k">${esc(spec.kicker)}</p>
+      <div class="body">${spec.blocks.map(b => blockHTML(b, spec)).join('')}</div>
+      <p class="foot">AI Wrapped · made in your browser</p>
+    </div>
+  </div>`;
+}
+
+/* ==========================================================================
+   3. PNG PAINTER — same blocks, 1080 x 1920
+   ========================================================================== */
+
+const W = 1080, H = 1920, PAD = 92, GAP = 28;
+const font = (px, w) => `${w} ${px}px ${FONT}`;
+
+function wrapText(ctx, text, maxW) {
+  const words = String(text).split(/\s+/), lines = [];
+  let line = '';
+  for (const w of words) {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = w; }
+    else line = test;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+  ctx.fill();
+}
+
+/* Each block: measure() then paint(). Sizes mirror the cqw values in the CSS. */
+function layoutBlock(ctx, b, spec, maxW) {
+  const inner = maxW;
+  switch (b.t) {
+    case 'hero': {
+      let size = (b.px || 19) * 10.8;   // cqw -> px at 1080 wide
+      ctx.font = font(size, 900);
+      while (ctx.measureText(b.v).width > inner && size > 60) { size -= 6; ctx.font = font(size, 900); }
+      return { h: size * 0.9, paint(y) {
+        ctx.fillStyle = spec.accent; ctx.font = font(size, 900);
+        ctx.textBaseline = 'top'; ctx.fillText(b.v, PAD, y - size * 0.06);
+      }};
+    }
+    case 'label': {
+      ctx.font = font(46, 800);
+      const lines = wrapText(ctx, b.v, inner);
+      return { h: lines.length * 53, paint(y) {
+        ctx.fillStyle = '#fff'; ctx.font = font(46, 800); ctx.textBaseline = 'top';
+        lines.forEach((l, i) => ctx.fillText(l, PAD, y + i * 53));
+      }};
+    }
+    case 'line': {
+      ctx.font = font(38, 500);
+      const lines = wrapText(ctx, b.v, inner);
+      return { h: lines.length * 55, paint(y) {
+        ctx.fillStyle = 'rgba(255,255,255,.86)'; ctx.font = font(38, 500); ctx.textBaseline = 'top';
+        lines.forEach((l, i) => ctx.fillText(l, PAD, y + i * 55));
+      }};
+    }
+    case 'bars': {
+      const BH = 216, peak = b.data.indexOf(Math.max(...b.data)), h = barHeights(b.data);
+      return { h: BH + 46, paint(y) {
+        const gap = 7, bw = (inner - gap * (b.data.length - 1)) / b.data.length;
+        h.forEach((v, i) => {
+          const bh = Math.max(4, (v / 100) * BH);
+          ctx.fillStyle = i === peak ? spec.accent : 'rgba(255,255,255,.5)';
+          roundRect(ctx, PAD + i * (bw + gap), y + BH - bh, bw, bh, 9);
+        });
+        ctx.fillStyle = 'rgba(255,255,255,.6)'; ctx.font = font(27, 700); ctx.textBaseline = 'top';
+        ctx.textAlign = 'left';   ctx.fillText(b.from, PAD, y + BH + 16);
+        ctx.textAlign = 'center'; ctx.fillText(b.mid, PAD + inner / 2, y + BH + 16);
+        ctx.textAlign = 'right';  ctx.fillText(b.to, PAD + inner, y + BH + 16);
+        ctx.textAlign = 'left';
+      }};
+    }
+    case 'list': {
+      const RH = 82;
+      return { h: b.items.length * RH, paint(y) {
+        b.items.forEach((it, i) => {
+          const ry = y + i * RH;
+          ctx.textBaseline = 'alphabetic';
+          ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.font = font(37, 800);
+          ctx.fillText(it.n, PAD, ry + 52);
+          ctx.fillStyle = '#fff'; ctx.font = font(58, 800);
+          ctx.fillText(it.k, PAD + 62, ry + 54);
+          ctx.fillStyle = spec.accent; ctx.font = font(35, 700); ctx.textAlign = 'right';
+          ctx.fillText(it.c, PAD + inner, ry + 52); ctx.textAlign = 'left';
+        });
+      }};
+    }
+    case 'stats': {
+      const rows = Math.ceil(b.items.length / 2), RH = 132, colW = inner / 2;
+      return { h: rows * RH, paint(y) {
+        ctx.textBaseline = 'top';
+        b.items.forEach((it, i) => {
+          const x = PAD + (i % 2) * colW, ry = y + Math.floor(i / 2) * RH;
+          let size = 69; ctx.font = font(size, 900);
+          while (ctx.measureText(it.v).width > colW - 24 && size > 30) { size -= 3; ctx.font = font(size, 900); }
+          ctx.fillStyle = spec.accent; ctx.fillText(it.v, x, ry);
+          ctx.fillStyle = 'rgba(255,255,255,.68)'; ctx.font = font(29, 700);
+          wrapText(ctx, it.l, colW - 24).slice(0, 2).forEach((l, j) => ctx.fillText(l, x, ry + size + 12 + j * 34));
+        });
+      }};
+    }
+  }
+  return { h: 0, paint() {} };
+}
+
+function paintCard(spec) {
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const ctx = c.getContext('2d');
+
+  const g = ctx.createLinearGradient(0, 0, W * 0.55, H);
+  g.addColorStop(0, spec.colors[0]); g.addColorStop(1, spec.colors[1]);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  const glow = ctx.createRadialGradient(W / 2, 0, 0, W / 2, 0, W * 0.9);
+  glow.addColorStop(0, 'rgba(255,255,255,.20)'); glow.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+
+  const inner = W - PAD * 2;
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+
+  // kicker, top
+  ctx.fillStyle = 'rgba(255,255,255,.78)'; ctx.font = font(34, 800);
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '6px';
+  ctx.fillText(spec.kicker.toUpperCase(), PAD, PAD);
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+
+  // body, bottom-weighted exactly like the DOM card
+  const laid = spec.blocks.map(b => layoutBlock(ctx, b, spec, inner));
+  const total = laid.reduce((a, l) => a + l.h, 0) + GAP * (laid.length - 1);
+  let y = Math.max(PAD + 130, H - PAD - 108 - total);
+  for (const l of laid) { l.paint(y); y += l.h + GAP; }
+
+  // footer, bottom
+  ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.font = font(29, 700); ctx.textBaseline = 'alphabetic';
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '5px';
+  ctx.fillText('AI WRAPPED · MADE IN YOUR BROWSER', PAD, H - PAD);
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+
+  return c;
+}
+
+/* ==========================================================================
+   4. INPUT — zip, then adapters
+   Exports change without notice, so every named adapter falls back to a
+   structural scavenger that just looks for "something with a role and text".
+   ========================================================================== */
+
+async function unzip(file) {
+  const buf = new Uint8Array(await file.arrayBuffer());
+  const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+  let eocd = -1;
+  for (let i = buf.length - 22; i >= Math.max(0, buf.length - 66000); i--) {
+    if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  }
+  if (eocd < 0) throw new Error("That .zip looks damaged — try unzipping it and dropping the .json inside.");
+
+  const count = dv.getUint16(eocd + 10, true);
+  let p = dv.getUint32(eocd + 16, true);
+  const out = [];
+  for (let i = 0; i < count; i++) {
+    if (p + 46 > buf.length || dv.getUint32(p, true) !== 0x02014b50) break;
+    const method = dv.getUint16(p + 10, true);
+    const csize = dv.getUint32(p + 20, true);
+    const nameLen = dv.getUint16(p + 28, true);
+    const lho = dv.getUint32(p + 42, true);
+    const name = new TextDecoder().decode(buf.subarray(p + 46, p + 46 + nameLen));
+    p += 46 + nameLen + dv.getUint16(p + 30, true) + dv.getUint16(p + 32, true);
+    if (!/\.json$/i.test(name) || name.startsWith('__MACOSX')) continue;
+    const start = lho + 30 + dv.getUint16(lho + 26, true) + dv.getUint16(lho + 28, true);
+    out.push({ name, method, data: buf.subarray(start, start + csize) });
+  }
+  return out;
+}
+
+async function inflate(entry) {
+  if (entry.method === 0) return entry.data;
+  if (typeof DecompressionStream === 'undefined')
+    throw new Error("This browser can't open zips. Unzip it yourself and drop conversations.json.");
+  const s = new Blob([entry.data]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Uint8Array(await new Response(s).arrayBuffer());
+}
+
+/* -- field helpers -------------------------------------------------------- */
+
+function normRole(v) {
+  const r = String(v || '').toLowerCase();
+  if (/^(user|human|you|me|prompt|person)/.test(r)) return 'user';
+  if (/^(assistant|model|ai|bot|gpt|claude|gemini|chatgpt)/.test(r)) return 'assistant';
+  return null;
+}
+
+function textOf(v) {
+  if (v == null) return '';
+  if (typeof v === 'string') return v;
+  if (Array.isArray(v)) return v.map(textOf).filter(Boolean).join('\n');
+  if (typeof v === 'object') {
+    if (typeof v.text === 'string') return v.text;
+    if (v.parts) return textOf(v.parts);
+    if (v.content) return textOf(v.content);
+    if (typeof v.value === 'string') return v.value;
+  }
+  return '';
+}
+
+function toMs(v) {
+  if (v == null) return null;
+  if (typeof v === 'number') return v > 1e12 ? v : v > 1e9 ? v * 1000 : null;
+  if (typeof v === 'string') {
+    const n = Number(v);
+    if (Number.isFinite(n) && n > 1e9) return toMs(n);
+    const d = Date.parse(v.replace(/\su/i, ' U'));
+    return Number.isFinite(d) ? d : null;
+  }
+  return null;
+}
+
+const stamp = o => toMs(o && (o.create_time ?? o.created_at ?? o.createdAt ?? o.timestamp ?? o.time ?? o.date ?? o.updated_at));
+
+function mkMsg(role, text, at) {
+  text = String(text || '').trim();
+  if (!role || !text) return null;
+  return { role, text, at };
+}
+
+/* -- adapters ------------------------------------------------------------- */
+
+const ADAPTERS = [
+  { name: 'ChatGPT',
+    test: a => Array.isArray(a) && a.some(c => c && c.mapping),
+    parse: a => a.filter(c => c && c.mapping).map((c, i) => {
+      const msgs = [];
+      for (const node of Object.values(c.mapping)) {
+        const m = node && node.message;
+        if (!m || (m.metadata && m.metadata.is_visually_hidden_from_conversation)) continue;
+        const role = normRole(m.author && m.author.role);
+        const mm = mkMsg(role, textOf(m.content), stamp(m) || stamp(c));
+        if (mm) msgs.push(mm);
+      }
+      msgs.sort((x, y) => (x.at || 0) - (y.at || 0));
+      return { id: c.conversation_id || c.id || i, title: c.title || 'Untitled', createdAt: stamp(c), messages: msgs };
+    })
+  },
+  { name: 'Claude',
+    test: a => Array.isArray(a) && a.some(c => c && Array.isArray(c.chat_messages)),
+    parse: a => a.filter(c => c && Array.isArray(c.chat_messages)).map((c, i) => ({
+      id: c.uuid || i, title: c.name || 'Untitled', createdAt: stamp(c),
+      messages: c.chat_messages.map(m =>
+        mkMsg(normRole(m.sender || m.role), m.text || textOf(m.content), stamp(m) || stamp(c))).filter(Boolean)
+    }))
+  },
+  { name: 'Gemini',
+    test: a => Array.isArray(a) && a.some(x => x && typeof x.title === 'string' && /^Prompted/.test(x.title) && x.time),
+    parse: a => [{
+      id: 'gemini', title: 'Gemini Apps activity', createdAt: toMs(a[0] && a[0].time),
+      messages: a.filter(x => x && /^Prompted/.test(x.title || ''))
+        .map(x => mkMsg('user', x.title.replace(/^Prompted\s*/, ''), toMs(x.time))).filter(Boolean)
+    }]
+  },
+  { name: 'Generic',
+    test: a => Array.isArray(a) && a.some(c => c && Array.isArray(c.messages)),
+    parse: a => a.filter(c => c && Array.isArray(c.messages)).map((c, i) => ({
+      id: c.id || i, title: c.title || c.name || 'Untitled', createdAt: stamp(c),
+      messages: c.messages.map(m =>
+        mkMsg(normRole(m.role || m.sender || m.author || m.from), textOf(m.content ?? m.text ?? m.parts), stamp(m) || stamp(c))).filter(Boolean)
+    }))
+  }
+];
+
+/* Last resort: walk anything and pull out message-shaped objects. */
+function scavenge(root) {
+  const msgs = [];
+  const seen = new Set();
+  (function walk(v, depth) {
+    if (!v || typeof v !== 'object' || depth > 12 || msgs.length > 400000) return;
+    if (seen.has(v)) return;
+    seen.add(v);
+    if (!Array.isArray(v)) {
+      const role = normRole(v.role || v.sender || v.author || v.from ||
+        (v.author && v.author.role) || (typeof v.author === 'object' ? '' : v.author));
+      const text = textOf(v.content ?? v.text ?? v.parts ?? v.message ?? v.body);
+      const m = mkMsg(role, text, stamp(v));
+      if (m) { msgs.push(m); return; }
+    }
+    for (const k of Object.keys(v)) walk(v[k], depth + 1);
+  })(root, 0);
+  if (!msgs.length) return [];
+  msgs.sort((a, b) => (a.at || 0) - (b.at || 0));
+  return [{ id: 'all', title: 'Your conversations', createdAt: msgs[0].at, messages: msgs }];
+}
+
+function parseExport(json) {
+  let data = json;
+  // unwrap the common containers
+  for (const key of ['conversations', 'chats', 'data', 'items', 'history']) {
+    if (data && !Array.isArray(data) && Array.isArray(data[key])) { data = data[key]; break; }
+  }
+  for (const ad of ADAPTERS) {
+    if (ad.test(data)) {
+      const convos = ad.parse(data).filter(c => c.messages.length);
+      if (convos.length) return { source: ad.name, convos };
+    }
+  }
+  const convos = scavenge(data).filter(c => c.messages.length);
+  if (convos.length) return { source: 'your export', convos };
+  throw new Error("Couldn't find any messages in that file. Make sure it's the conversations.json from your export.");
+}
+
+/* ==========================================================================
+   5. ANALYSIS
+   ========================================================================== */
+
+const STOP = new Set(('the a an and or but if then than that this these those there here it its it\'s is are was were be been being am do does did doing have has had having i you he she we they me him her them my your our their his if so as at by for from in into of on to with about can could would should will just not no yes what which who whom how when where why all any both each few more most other some such only own same too very s t don now get got make made use used using want need like know think see look one two do\'s i\'m you\'re we\'re i\'ve i\'ll let please thanks thank sorry ok okay yeah hey hi hello also really actually maybe something anything everything someone anyone way thing things time way lot bit sure right good great work works working new').split(/\s+/));
+
+function analyze(convos, source) {
+  // pick the year: this year if it has data, otherwise the busiest one
+  const byYear = {};
+  for (const c of convos) for (const m of c.messages) {
+    if (m.at) byYear[new Date(m.at).getFullYear()] = (byYear[new Date(m.at).getFullYear()] || 0) + 1;
+  }
+  const years = Object.keys(byYear).map(Number).sort((a, b) => a - b);
+  const nowYear = new Date().getFullYear();
+  let year = years.includes(nowYear) ? nowYear
+    : years.length ? years.reduce((a, b) => byYear[b] >= byYear[a] ? b : a) : nowYear;
+  if (!years.length) year = nowYear;
+
+  const inYear = m => !m.at || years.length === 0 || new Date(m.at).getFullYear() === year;
+
+  const s = {
+    meta: { source, year, years, conversations: 0, messages: 0, firstDay: '', lastDay: '' },
+    words: { you: 0, ai: 0 }, msgs: { you: 0, ai: 0 }, chars: { you: 0, ai: 0 }, tokens: { you: 0, ai: 0, total: 0 },
+    politeness: { please: 0, thanks: 0, sorry: 0, politeMsgs: 0, pct: 0 },
+    hours: new Array(24).fill(0), days: {}, nightPct: 0, peakHour: 0,
+    streak: { days: 0 }, busiestDay: { date: '', n: 0 },
+    longest: { title: '—', messages: 0, words: 0, spanHours: 0 },
+    topWords: [], avgLen: 0, ratio: 0
+  };
+
+  const RE = {
+    please: /\b(please|pls|plz)\b/gi,
+    thanks: /\b(thanks|thank you|thankyou|thx|ty|cheers|appreciate it)\b/gi,
+    sorry:  /\b(sorry|apologies|apologise|apologize|my bad|my apologies)\b/gi
+  };
+  const freq = new Map();
+  let first = Infinity, last = -Infinity;
+
+  for (const c of convos) {
+    const msgs = c.messages.filter(inYear);
+    if (!msgs.length) continue;
+    s.meta.conversations++;
+
+    let cw = 0;
+    for (const m of msgs) {
+      s.meta.messages++;
+      const words = m.text.split(/\s+/).filter(Boolean).length;
+      cw += words;
+
+      if (m.at) {
+        const d = new Date(m.at);
+        s.hours[d.getHours()]++;
+        const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        s.days[key] = (s.days[key] || 0) + 1;
+        if (m.at < first) first = m.at;
+        if (m.at > last) last = m.at;
+      }
+
+      if (m.role === 'user') {
+        s.msgs.you++; s.words.you += words; s.chars.you += m.text.length;
+        const p = (m.text.match(RE.please) || []).length;
+        const t = (m.text.match(RE.thanks) || []).length;
+        const y = (m.text.match(RE.sorry) || []).length;
+        s.politeness.please += p; s.politeness.thanks += t; s.politeness.sorry += y;
+        if (p || t || y) s.politeness.politeMsgs++;
+        for (const w of m.text.toLowerCase().match(/[a-z][a-z']{2,}/g) || []) {
+          if (STOP.has(w) || w.length > 18) continue;
+          freq.set(w, (freq.get(w) || 0) + 1);
+        }
+      } else { s.msgs.ai++; s.words.ai += words; s.chars.ai += m.text.length; }
+    }
+
+    const at = msgs.map(m => m.at).filter(Boolean);
+    if (msgs.length > s.longest.messages) {
+      s.longest = {
+        title: (c.title || 'Untitled').slice(0, 68),
+        messages: msgs.length, words: cw,
+        spanHours: at.length > 1 ? (Math.max(...at) - Math.min(...at)) / 36e5 : 0
+      };
+    }
+  }
+
+  if (!s.meta.messages) throw new Error("No messages found for " + year + ". Try a different export.");
+
+  s.tokens.you = Math.round(s.chars.you / 4);
+  s.tokens.ai = Math.round(s.chars.ai / 4);
+  s.tokens.total = s.tokens.you + s.tokens.ai;
+  s.avgLen = Math.round(s.words.you / Math.max(1, s.msgs.you));
+  s.ratio = s.words.you ? Math.round((s.words.ai / s.words.you) * 10) / 10 : 0;
+  s.peakHour = s.hours.indexOf(Math.max(...s.hours));
+  const night = s.hours.slice(0, 5).reduce((a, b) => a + b, 0);
+  const timed = s.hours.reduce((a, b) => a + b, 0);
+  s.nightPct = timed ? Math.round((night / timed) * 100) : 0;
+  s.politeness.pct = s.msgs.you ? Math.round((s.politeness.politeMsgs / s.msgs.you) * 100) : 0;
+  s.topWords = [...freq.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([word, n]) => ({ word, n }));
+
+  // busiest day + longest streak of consecutive days
+  const keys = Object.keys(s.days).sort();
+  for (const k of keys) if (s.days[k] > s.busiestDay.n) s.busiestDay = { date: k, n: s.days[k] };
+  let run = 0, best = 0, prev = null;
+  for (const k of keys) {
+    const d = new Date(k + 'T00:00:00');
+    run = (prev && (d - prev) === 864e5) ? run + 1 : 1;
+    best = Math.max(best, run); prev = d;
+  }
+  s.streak.days = best;
+
+  const fmt = ms => new Date(ms).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  s.meta.firstDay = Number.isFinite(first) ? fmt(first) : '—';
+  s.meta.lastDay = Number.isFinite(last) ? fmt(last) : '—';
+  return s;
+}
+
+/* ==========================================================================
+   6. SAMPLE EXPORT — so the page works before anyone uploads anything.
+   Seeded, so everyone who taps "sample data" sees the same year.
+   Shaped exactly like a real ChatGPT conversations.json, so it runs the
+   whole adapter path rather than a shortcut.
+   ========================================================================== */
+
+function sampleExport() {
+  let seed = 20261201;
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  const pick = a => a[Math.floor(rnd() * a.length)];
+  const int = (a, b) => a + Math.floor(rnd() * (b - a + 1));
+
+  const TOPICS = ['the migration script','my resume','a birthday toast','the flaky test','postgres indexes','a landing page','this regex','my sourdough starter','the standup notes','a cover letter','tailwind spacing','the deploy pipeline','my thesis intro','a dinner menu','the pricing page','onboarding copy','a git rebase gone wrong','the analytics query','my sleep schedule','a wedding speech','the retro doc','my tax situation','a bedtime story','the auth flow','marathon training','the investor update'];
+  const OPEN = ['can you help me with','rewrite','explain','debug','make this shorter','why does this break in','fix','review','summarise','turn this into a plan for','sanity check'];
+  const FOLLOW = ['wait, that broke','shorter','hmm, not quite — try again','why did you change the naming','can you explain that last part','make it less corporate','same thing but in typescript','ok now do the opposite','that worked, thanks','no, keep the original structure','one more pass, tighter','why is this slower than before','give me three options','which one would you actually ship'];
+
+  // real sentence fragments, not shuffled words, so the top-words card reads like a person
+  const USER_CHUNKS = [
+    'the api returns a 500 on this endpoint but only in production',
+    'here is the code i have so far and it mostly works',
+    'the test passes locally and fails in ci with no error output',
+    'i think the component re-renders every time the parent state changes',
+    'can you explain why this file needs that import at all',
+    'the error says undefined is not a function but the data looks fine',
+    'we deploy on friday so this needs to be boring code',
+    'i want the api to return the same shape for every error',
+    'the data comes back as a string when i expect an array',
+    'why does the test suite take nine minutes to run',
+    'this component is doing three things and i want to split it',
+    'the file is four hundred lines and nobody wants to touch it',
+    'i already tried that and it made the error worse somehow',
+    'the endpoint is fine in staging which is what worries me',
+    'give me the shortest version of this code that still reads clearly',
+    'i need to explain this to someone who has never seen the codebase'
+  ];
+  const context = n => { const o = []; for (let i = 0; i < n; i++) o.push(pick(USER_CHUNKS)); return o.join('. ') + '.'; };
+  const AI_POOL = 'the approach here depends on what you optimise for and there are two reasonable paths worth considering before committing either one of them to production because the tradeoff is mostly about how much complexity you want to carry later when this inevitably needs to change again'.split(' ');
+  const say = (pool, n) => { const o = []; for (let i = 0; i < n; i++) o.push(pick(pool)); return o.join(' ') + '.'; };
+
+  const politeWrap = t => {
+    const r = rnd();
+    if (r < .17) return t + ', please';
+    if (r < .31) return t + '. thanks!';
+    if (r < .38) return 'sorry, ignore the last one — ' + t;
+    return t;
+  };
+
+  const year = new Date().getFullYear();
+  const start = new Date(year, 0, 1).getTime();
+  const endDay = Math.min(364, Math.floor((Date.now() - start) / 864e5));
+  // hour weights: a work bump, an evening peak, a real late-night tail
+  const HW = [7,5,3,2,1,1,1,2,5,11,16,17,13,12,15,16,15,13,12,14,18,21,19,12];
+  const totalW = HW.reduce((a, b) => a + b, 0);
+  const drawHour = () => { let r = rnd() * totalW; for (let h = 0; h < 24; h++) if ((r -= HW[h]) < 0) return h; return 22; };
+
+  const convos = [];
+  for (let i = 0; i < 900; i++) {
+    const day = int(0, endDay);
+    const t0 = start + day * 864e5 + drawHour() * 36e5 + int(0, 3599) * 1000;
+    const topic = pick(TOPICS);
+    const turns = rnd() < .06 ? int(18, 46) : int(2, 9);
+    const mapping = {};
+    let t = t0;
+    for (let j = 0; j < turns; j++) {
+      // roughly a third of real prompts carry a pasted wall of context with them
+      let u = politeWrap(j === 0 ? `${pick(OPEN)} ${topic}` : pick(FOLLOW));
+      if (rnd() < .38) u += ' — ' + context(int(6, 36));
+      mapping['u' + j] = { message: { author: { role: 'user' }, create_time: t / 1000, content: { content_type: 'text', parts: [u] } } };
+      t += int(20, 240) * 1000;
+      mapping['a' + j] = { message: { author: { role: 'assistant' }, create_time: t / 1000, content: { content_type: 'text', parts: [say(AI_POOL, int(120, 380))] } } };
+      t += int(30, 900) * 1000;
+    }
+    convos.push({ title: topic.replace(/^(the|a|my|this) /, ''), create_time: t0 / 1000, conversation_id: 'sample-' + i, mapping });
+  }
+  return convos;
+}
+
+/* ==========================================================================
+   7. APP
+   ========================================================================== */
+
+let CARDS = [], idx = 0;
+
+const show = id => document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+let toastTimer;
+function toast(msg) {
+  const el = $('toast');
+  el.textContent = msg; el.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('on'), 2200);
+}
+
+async function step(pct, msg) {
+  $('progress').style.width = pct + '%';
+  if (msg) $('loadmsg').textContent = msg;
+  await sleep(msg ? 260 : 60);
+}
+
+function parseJSON(text, hint) {
+  try { return JSON.parse(text); }
+  catch (e) { throw new Error(hint || "That file isn't valid JSON. Drop the conversations.json from your export."); }
+}
+
+async function readJSON(file) {
+  if (/\.zip$/i.test(file.name) || file.type === 'application/zip') {
+    const entries = await unzip(file);
+    if (!entries.length) throw new Error("No .json files inside that zip.");
+    const pickEntry = entries.find(e => /conversations\.json$/i.test(e.name))
+      || entries.sort((a, b) => b.data.length - a.data.length)[0];
+    return parseJSON(new TextDecoder().decode(await inflate(pickEntry)),
+      "Couldn't read " + pickEntry.name + " out of that zip. Try unzipping it and dropping the .json.");
+  }
+  return parseJSON(await file.text());
+}
+
+async function run(file) {
+  $('err').textContent = '';
+  show('loading');
+  $('progress').style.width = '0%';
+  try {
+    await step(12, file ? 'Reading your export…' : 'Inventing a plausible year…');
+    const json = file ? await readJSON(file) : sampleExport();
+
+    await step(42, 'Finding your conversations…');
+    const { source, convos } = parseExport(json);
+
+    await step(72, 'Counting every word you typed…');
+    const stats = analyze(convos, source);
+
+    await step(92, 'Tallying the pleases…');
+    CARDS = buildCards(stats);
+    renderDeck();
+    await step(100);
+    show('deck');
+    $('rail').scrollLeft = 0;   // a hidden rail ignores scroll resets; do it once visible
+  } catch (e) {
+    console.error(e);
+    $('err').textContent = e && e.message ? e.message : 'Something went wrong reading that file.';
+    show('landing');
+  }
+}
+
+function renderDeck() {
+  $('rail').innerHTML = CARDS.map(c => `<div class="slide">${cardHTML(c)}</div>`).join('');
+  $('dots').innerHTML = CARDS.map(() => '<i></i>').join('');
+  idx = 0; $('rail').scrollLeft = 0; markDots();
+}
+
+function markDots() {
+  [...$('dots').children].forEach((d, i) => d.classList.toggle('on', i <= idx));
+}
+
+function go(n) {
+  const rail = $('rail');
+  idx = clamp(n, 0, CARDS.length - 1);
+  rail.scrollTo({ left: idx * rail.clientWidth, behavior: 'smooth' });
+  markDots();
+}
+
+$('rail').addEventListener('scroll', () => {
+  const rail = $('rail');
+  const i = Math.round(rail.scrollLeft / Math.max(1, rail.clientWidth));
+  if (i !== idx) { idx = i; markDots(); }
+}, { passive: true });
+
+$('prev').onclick = () => go(idx - 1);
+$('next').onclick = () => go(idx + 1);
+$('restart').onclick = () => { history.replaceState(null, '', location.pathname); show('landing'); };
+
+addEventListener('keydown', e => {
+  if (!$('deck').classList.contains('on')) return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(idx + 1); }
+  if (e.key === 'ArrowLeft') go(idx - 1);
+});
+
+/* -- share ---------------------------------------------------------------- */
+
+$('share').onclick = async function () {
+  const spec = CARDS[idx];
+  if (!spec) return;
+  this.disabled = true;
+  try {
+    const canvas = paintCard(spec);
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+    const file = new File([blob], `ai-wrapped-${spec.id}.png`, { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: 'My AI Wrapped' }); return; }
+      catch (e) { if (e.name === 'AbortError') return; }
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = file.name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    toast('Card saved — 1080 × 1920');
+  } catch (e) {
+    console.error(e); toast("Couldn't make the image");
+  } finally { this.disabled = false; }
+};
+
+/* -- input ---------------------------------------------------------------- */
+
+$('drop').onclick = () => $('file').click();
+$('demo').onclick = () => { location.hash = 'demo'; run(null); };
+if (location.hash === '#demo') run(null);   // shareable demo link
+$('file').onchange = e => { const f = e.target.files[0]; if (f) run(f); e.target.value = ''; };
+
+let dragDepth = 0;
+addEventListener('dragenter', e => { e.preventDefault(); if (++dragDepth) $('drop').classList.add('hot'); });
+addEventListener('dragover', e => e.preventDefault());
+addEventListener('dragleave', () => { if (--dragDepth <= 0) { dragDepth = 0; $('drop').classList.remove('hot'); } });
+addEventListener('drop', e => {
+  e.preventDefault(); dragDepth = 0; $('drop').classList.remove('hot');
+  const f = e.dataTransfer.files[0];
+  if (f) run(f);
+});
+</script>
+</body>
+</html>

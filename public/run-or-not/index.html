@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" data-tone="loading">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Run or Not</title>
+<meta name="description" content="One screen, one verdict: should you run outside right now?">
+<meta name="theme-color" content="#07090c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Run or Not">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<main class="screen">
+  <div class="wash" aria-hidden="true"></div>
+
+  <!-- The share moment. Everything above and below this is service. -->
+  <section id="card" class="card" aria-live="polite">
+    <p class="place" id="place">Finding you…</p>
+    <div class="stack">
+      <h1 class="verdict" id="verdict">…</h1>
+      <p class="reason" id="reason">Checking wind, air and light.</p>
+      <p class="window" id="window" hidden></p>
+      <ul class="factors" id="factors" aria-label="Conditions"></ul>
+    </div>
+  </section>
+
+  <footer class="actions">
+    <button class="btn btn-primary" id="share" type="button" disabled>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v13M12 3 7.5 7.5M12 3l4.5 4.5M5 14v5.5A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V14"/></svg>
+      Share
+    </button>
+    <button class="btn btn-ghost" id="tune" type="button">Tune</button>
+  </footer>
+
+  <p class="stamp" id="stamp"></p>
+</main>
+
+<!-- Recovery: geolocation gets declined more often than anyone plans for. -->
+<div class="veil" id="locate" hidden>
+  <form class="sheet" id="locate-form">
+    <h2>Where are you running?</h2>
+    <p class="sheet-sub" id="locate-msg">We could not get your location.</p>
+    <input id="locate-input" type="text" name="q" placeholder="City or postcode" autocomplete="address-level2" enterkeyhint="go" required>
+    <button class="btn btn-primary" type="submit">Check it</button>
+    <button class="btn btn-ghost" type="button" data-retry>Use my location</button>
+  </form>
+</div>
+
+<!-- Three knobs. Not a settings page. -->
+<div class="veil" id="sheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Your limits">
+    <h2>Your limits</h2>
+
+    <label class="knob">
+      <span class="knob-head">Too hot above <b id="heat-val">82°</b></span>
+      <input type="range" id="heat" min="60" max="105" step="1">
+    </label>
+
+    <label class="knob">
+      <span class="knob-head">Needs <b id="light-val">30m</b> of daylight</span>
+      <input type="range" id="light" min="0" max="120" step="15">
+    </label>
+
+    <fieldset class="knob">
+      <legend class="knob-head">Pollen bothers you</legend>
+      <div class="segmented" id="pollen"></div>
+    </fieldset>
+
+    <button class="btn btn-primary" id="sheet-done" type="button">Done</button>
+  </div>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

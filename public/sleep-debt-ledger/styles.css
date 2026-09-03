@@ -1,0 +1,369 @@
+:root {
+  --ink: #0B0D10;
+  --ink-2: #14181F;
+  --ink-3: #1C222B;
+  --line: #262D38;
+  --text: #F2F4F7;
+  --muted: #7C8794;
+  --debt: #F5A524;
+  --credit: #34D399;
+  --accent: var(--debt);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--text);
+  font: 400 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+main {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: max(18px, env(safe-area-inset-top)) 18px calc(40px + env(safe-area-inset-bottom));
+  display: grid;
+  gap: 18px;
+}
+
+h2 {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+/* ---- the card ---------------------------------------------------------- */
+
+.card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 26px 20px 22px;
+  text-align: center;
+  background:
+    radial-gradient(120% 80% at 50% 8%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+    var(--ink-2);
+  transition: background .3s ease;
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .28em;
+  color: var(--muted);
+}
+
+.balance {
+  margin: 0;
+  font-size: clamp(52px, 17vw, 76px);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.balance.unknown {
+  font-size: clamp(26px, 7.6vw, 34px);
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--muted);
+}
+
+.headline {
+  margin: 12px 0 0;
+  font-size: clamp(15px, 4.4vw, 19px);
+  font-weight: 500;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.bars {
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  align-items: center;
+  gap: 4px;
+  height: 116px;
+  margin: 22px 0 16px;
+  position: relative;
+}
+
+.bars::before {
+  content: "";
+  position: absolute;
+  inset-inline: -6px;
+  top: 34%;
+  border-top: 1px dashed var(--line);
+}
+
+.card.empty .bars { height: 44px; margin: 18px 0 12px; }
+
+.bar {
+  position: relative;
+  height: 100%;
+}
+
+.bar i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-radius: 5px;
+  background: var(--credit);
+  display: block;
+}
+
+.bar.debt i { background: var(--debt); }
+.bar.empty i { background: #1E242D; }
+
+.stats {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.stats b { color: var(--text); font-weight: 600; }
+
+/* ---- rate chips -------------------------------------------------------- */
+
+.rates { display: flex; gap: 10px; }
+
+.chip {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--ink-2);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.chip select {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: 600 15px/1 system-ui, -apple-system, sans-serif;
+  text-align: right;
+  padding: 2px 0;
+}
+
+/* ---- buttons ----------------------------------------------------------- */
+
+.btn {
+  width: 100%;
+  min-height: 56px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--ink-3);
+  color: var(--text);
+  font: 600 17px/1 system-ui, -apple-system, sans-serif;
+  cursor: pointer;
+  transition: transform .08s ease, filter .15s ease;
+}
+
+.btn:active { transform: scale(.985); }
+
+.btn.primary {
+  border-color: transparent;
+  background: var(--accent);
+  color: #0B0D10;
+}
+
+/* The week is a second helping, never a competing call to action. */
+.link.wide {
+  display: block;
+  width: 100%;
+  padding: 4px 0 2px;
+  margin-top: -8px;
+  text-align: center;
+  font-size: 14px;
+  min-height: 32px;
+}
+
+.link[disabled] { opacity: .4; cursor: default; text-decoration: none; }
+
+/* A dead primary button should not shout. */
+.btn[disabled] { cursor: default; }
+.btn.primary[disabled] {
+  background: var(--ink-3);
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.link {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--muted);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.share-note {
+  margin: -6px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---- log form ---------------------------------------------------------- */
+
+.log, .recent {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--ink-2);
+  padding: 18px;
+}
+
+.datestep {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.step {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--ink-3);
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dateface {
+  position: relative;
+  flex: 1;
+  height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--ink-3);
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+/* Native picker on tap, our own label on screen. */
+.dateface input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  cursor: pointer;
+}
+
+.times {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 12px;
+  margin-bottom: 14px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field input {
+  min-height: 52px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--ink-3);
+  color: var(--text);
+  font: 600 20px/1 system-ui, -apple-system, sans-serif;
+  padding: 0 12px;
+  text-align: center;
+}
+
+.duration {
+  grid-column: 1 / -1;
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.duration b { color: var(--text); }
+
+.hint {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  min-height: 19px;
+}
+
+.hint.ok { color: var(--credit); }
+
+/* ---- ledger list ------------------------------------------------------- */
+
+.recent ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+
+.recent li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 4px;
+  border-bottom: 1px solid var(--line);
+  font-size: 15px;
+}
+
+.recent li:last-child { border-bottom: 0; }
+.recent li.blank { color: var(--muted); }
+
+.recent .when {
+  color: var(--muted);
+  font-size: 13.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.recent .when b { color: var(--text); font-weight: 600; }
+.recent .slept { font-variant-numeric: tabular-nums; font-weight: 600; }
+.recent .delta { font-variant-numeric: tabular-nums; font-size: 13px; min-width: 62px; text-align: right; }
+.recent .delta.debt { color: var(--debt); }
+.recent .delta.credit { color: var(--credit); }
+
+.recent .edit {
+  border: 0; background: none; padding: 0; text-align: left;
+  color: inherit; font: inherit; cursor: pointer;
+}
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+footer p { margin: 4px 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

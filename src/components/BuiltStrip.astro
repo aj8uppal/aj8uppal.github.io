@@ -1,0 +1,130 @@
+---
+/**
+ * The one place the index says the eleven exist.
+ *
+ * They are a page of their own (/built) rather than a fourth block in the
+ * Playground, because eleven cards is most of a second index and the index has
+ * a height budget that says so. What is owed here is a door, not a summary:
+ * the count, the day, the eleven names, and the eleven colours the page itself
+ * is keyed to, so arriving there feels like arriving somewhere already seen.
+ *
+ * A dark plate, on a section that is standing on sand. Everything else in
+ * Playground is a frame with something running in it; this is the only thing
+ * on the page that sends you off it, and it should not look like the others.
+ */
+import { apps } from '../data/built';
+---
+
+<a class="bstrip" href="/built" data-reveal>
+  <div class="bstrip__l">
+    <p class="kicker bstrip__k">Also &middot; one day</p>
+    <p class="bstrip__t">
+      Eleven apps, <span>one day</span>
+    </p>
+    <p class="bstrip__s">2 September 2026. Nine of them open in a browser.</p>
+  </div>
+
+  <div class="bstrip__r">
+    {
+      /* The eleven, as their colours and then as their names. Ordered by the
+        clock, the same as the page it opens. */
+    }
+    <p class="bstrip__dots" aria-hidden="true">
+      {apps.map((a) => <span style={`--a:${a.accent}`} />)}
+    </p>
+    <p class="bstrip__names">{apps.map((a) => a.name).join(' · ')}</p>
+    <p class="bstrip__go">See the eleven <span aria-hidden="true">&rarr;</span></p>
+  </div>
+</a>
+
+<style>
+  .bstrip {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+    gap: clamp(1.2rem, 3vw, 2.6rem);
+    align-items: center;
+    margin-top: clamp(1.3rem, 2.4vw, 1.9rem);
+    padding: clamp(0.95rem, 1.9vw, 1.3rem) clamp(1.2rem, 2.6vw, 1.9rem);
+    border-radius: var(--r-md);
+    color: var(--on-ink);
+    background: var(--ink);
+    text-decoration: none;
+    transition:
+      background var(--dur-2) var(--ease),
+      transform var(--dur-2) var(--ease);
+  }
+
+  .bstrip:hover {
+    background: var(--ink-3);
+  }
+
+  .bstrip__k {
+    color: var(--sand);
+  }
+
+  .bstrip__t {
+    margin: 0.45rem 0 0;
+    font-family: var(--display);
+    font-size: clamp(1.55rem, 2.9vw, 2.15rem);
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 0.92;
+    text-transform: uppercase;
+  }
+
+  .bstrip__t span {
+    color: var(--sand);
+  }
+
+  .bstrip__s {
+    max-width: 46ch;
+    margin: 0.5rem 0 0;
+    color: var(--on-ink-2);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .bstrip__dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 0;
+  }
+
+  .bstrip__dots span {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--a);
+  }
+
+  .bstrip__names {
+    margin: 0.7rem 0 0;
+    color: var(--on-ink-2);
+    font: 640 0.74rem/1.7 var(--mono);
+    letter-spacing: 0.03em;
+  }
+
+  .bstrip__go {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0.75rem 0 0;
+    color: var(--sand);
+    font-weight: 700;
+  }
+
+  .bstrip__go span {
+    transition: transform var(--dur-2) var(--ease);
+  }
+
+  .bstrip:hover .bstrip__go span {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 760px) {
+    .bstrip {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

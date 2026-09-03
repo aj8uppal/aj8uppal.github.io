@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sleep Debt Ledger</title>
+<meta name="description" content="Log when you slept. See your sleep debt as a running balance, with a payoff date.">
+<meta name="theme-color" content="#0B0D10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sleep Ledger">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main>
+
+  <!-- The share moment. Everything else on this page exists to fill it in. -->
+  <section class="card" id="card" aria-live="polite">
+    <p class="eyebrow">14-DAY SLEEP LEDGER</p>
+    <p class="balance" id="balance">—</p>
+    <p class="headline" id="headline">Log last night. Takes ten seconds.</p>
+    <div class="bars" id="bars" role="img" aria-label="Nightly sleep against target"></div>
+    <p class="stats" id="stats"></p>
+  </section>
+
+  <div class="rates">
+    <label class="chip">
+      <span>Target</span>
+      <select id="target" aria-label="Nightly sleep target"></select>
+    </label>
+    <label class="chip">
+      <span>Plan to sleep</span>
+      <select id="payoff" aria-label="Nightly sleep you plan to get from here on"></select>
+    </label>
+  </div>
+
+  <button class="btn primary" id="share">Share my balance</button>
+  <button class="link wide" id="shareWeek">or share this week</button>
+  <p class="share-note" id="shareNote" hidden></p>
+
+  <section class="log">
+    <h2>Add a night</h2>
+    <div class="datestep">
+      <button class="step" id="prevDay" aria-label="Previous night">‹</button>
+      <div class="dateface">
+        <span id="dateLabel">last night</span>
+        <input type="date" id="date" aria-label="Night of (the morning you woke)">
+      </div>
+      <button class="step" id="nextDay" aria-label="Next night">›</button>
+    </div>
+
+    <div class="times">
+      <label class="field">
+        <span>Asleep</span>
+        <input type="time" id="bed" value="23:30" step="300">
+      </label>
+      <label class="field">
+        <span>Awake</span>
+        <input type="time" id="wake" value="07:00" step="300">
+      </label>
+      <p class="duration" id="duration">7h 30m</p>
+    </div>
+
+    <button class="btn" id="logNight">Log this night</button>
+    <p class="hint" id="logHint">Saved nights step you back a day, so a week takes about twenty seconds.</p>
+  </section>
+
+  <section class="recent">
+    <h2>Ledger</h2>
+    <ul id="list"></ul>
+  </section>
+
+  <footer>
+    <p>Counts hours. Nothing more — this is not medical advice.</p>
+    <p>Everything stays on this device. <button class="link" id="reset">Erase my ledger</button></p>
+  </footer>
+</main>
+
+<canvas id="cardCanvas" hidden></canvas>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
