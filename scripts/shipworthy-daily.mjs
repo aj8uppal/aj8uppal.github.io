@@ -56,7 +56,9 @@ const AXES = ['share', 'identity', 'utility', 'timing', 'net', 'speed'];
 
 /** Fails the run with a message that shows on the run page as an annotation, key redacted. */
 function fail(message) {
-  const line = String(message).replace(/sk-ant-[A-Za-z0-9_-]+/g, 'sk-ant-...').replace(/\s+/g, ' ');
+  const line = String(message)
+    .replace(/sk-ant-[A-Za-z0-9_-]+/g, 'sk-ant-...')
+    .replace(/\s+/g, ' ');
   console.log(`::error::${line.slice(0, 900)}`);
   process.exit(1);
 }
