@@ -18,7 +18,7 @@
  * Needs ANTHROPIC_API_KEY. Without it the script says so and exits 0, so the
  * schedule can exist before the key does.
  */
-import { readFile, writeFile } from 'node:fs/promises';
+import { appendFile, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -273,3 +273,10 @@ await writeFile(ARCHIVE, JSON.stringify({ days: kept.slice(-KEEP_DAYS) }, null, 
 
 const titles = ideas.map((i) => i.t).join('; ');
 console.log(`Wrote ${ideas.length} ideas for ${today} (${res.model}): ${titles}`);
+
+/* The Actions run page shows this without anyone opening the logs. */
+if (process.env.GITHUB_STEP_SUMMARY) {
+  const lines = ideas.map((i) => `- **${i.t}** (${i.aud.join(', ')}): ${i.p}`);
+  const summary = `## Drop for ${today}\n\n${lines.join('\n')}\n\nModel: ${res.model}\n`;
+  await appendFile(process.env.GITHUB_STEP_SUMMARY, summary);
+}
