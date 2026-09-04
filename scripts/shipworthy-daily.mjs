@@ -54,6 +54,13 @@ const MECH = ['identity', 'screenshot', 'invite', 'wom', 'ritual', 'wave', 'humo
 const GOAL = ['fun', 'followers', 'money', 'portfolio', 'learn'];
 const AXES = ['share', 'identity', 'utility', 'timing', 'net', 'speed'];
 
+/** Fails the run with a message that shows on the run page as an annotation, key redacted. */
+function fail(message) {
+  const line = String(message).replace(/sk-ant-[A-Za-z0-9_-]+/g, 'sk-ant-...').replace(/\s+/g, ' ');
+  console.log(`::error::${line.slice(0, 900)}`);
+  process.exit(1);
+}
+
 const key = process.env.ANTHROPIC_API_KEY;
 if (!key) {
   console.log('ANTHROPIC_API_KEY is not set, so there is no drop today.');
@@ -231,19 +238,22 @@ const res = await ask({
   fallbacks: 'default',
   messages: [{ role: 'user', content: prompt({ focus, avoid }) }],
   output_config: { format: { type: 'json_schema', schema } },
-});
+}).catch((err) => fail(err.message));
 
 if (res.stop_reason === 'refusal') {
-  console.error('The request was declined on every model in the chain; no drop today.');
-  process.exit(1);
+  fail('The request was declined on every model in the chain; no drop today.');
 }
 if (res.stop_reason !== 'end_turn') {
-  console.error(`Unexpected stop_reason ${res.stop_reason}; not publishing a partial drop.`);
-  process.exit(1);
+  fail(`Unexpected stop_reason ${res.stop_reason}; not publishing a partial drop.`);
 }
 
 const text = res.content.find((b) => b.type === 'text')?.text ?? '';
-const parsed = JSON.parse(text);
+let parsed;
+try {
+  parsed = JSON.parse(text);
+} catch (err) {
+  fail(`The reply was not JSON (${err.message}): ${text.slice(0, 200)}`);
+}
 const ideas = [];
 for (const raw of parsed.ideas ?? []) {
   const idea = clean(raw, taken);
@@ -254,8 +264,7 @@ for (const raw of parsed.ideas ?? []) {
 }
 
 if (ideas.length < 3) {
-  console.error(`Only ${ideas.length} usable ideas came back; keeping the previous drop.`);
-  process.exit(1);
+  fail(`Only ${ideas.length} usable ideas came back; keeping the previous drop.`);
 }
 
 const drop = {
