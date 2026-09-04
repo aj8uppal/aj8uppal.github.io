@@ -66,6 +66,8 @@ if (!key) {
   console.log('ANTHROPIC_API_KEY is not set, so there is no drop today.');
   process.exit(0);
 }
+/* An identity-linked key must also name the workspace it acts in; a plain key needs nothing. */
+const workspace = process.env.ANTHROPIC_WORKSPACE_ID;
 
 const today = new Date().toISOString().slice(0, 10);
 
@@ -171,11 +173,17 @@ async function ask(body) {
       'x-api-key': key,
       'anthropic-version': '2023-06-01',
       'anthropic-beta': 'server-side-fallback-2026-07-01',
+      ...(workspace ? { 'anthropic-workspace-id': workspace } : {}),
     },
     body: JSON.stringify(body),
   });
   const text = await res.text();
-  if (!res.ok) throw new Error(`API ${res.status}: ${text.slice(0, 600)}`);
+  if (!res.ok) {
+    const hint = text.includes('anthropic-workspace-id')
+      ? ' The key is identity-linked: add an ANTHROPIC_WORKSPACE_ID secret with the workspace id from the Console, or use a plain API key.'
+      : '';
+    throw new Error(`API ${res.status}: ${text.slice(0, 600)}${hint}`);
+  }
   return JSON.parse(text);
 }
 

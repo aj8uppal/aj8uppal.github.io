@@ -49,6 +49,8 @@ jobs:
       - name: Ask for today's ideas
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Only needed for an identity-linked key. Not sensitive, so a variable is fine too.
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.ANTHROPIC_WORKSPACE_ID || vars.ANTHROPIC_WORKSPACE_ID }}
         run: |
           if [ -z "$ANTHROPIC_API_KEY" ]; then
             echo "::warning::No ANTHROPIC_API_KEY repository secret, so no drop was generated."
