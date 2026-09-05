@@ -58,10 +58,8 @@ export default function render() {
           })
           .join('')}</div></div>
       </section>
-      <section class="fn-desk" aria-labelledby="fn-desk-title"><div><p class="fn-label">Also on the desk</p><h2 id="fn-desk-title">The habit continues.</h2></div><div class="fn-desk-grid">${[
-        ...homeProjectKeys.slice(3),
-        'eyeshot',
-      ]
+      <section class="fn-desk" aria-labelledby="fn-desk-title"><div><p class="fn-label">Also on the desk</p><h2 id="fn-desk-title">The habit continues.</h2></div><div class="fn-desk-grid">${homeProjectKeys
+        .slice(3)
         .map((key) => {
           const p = project(key);
           return `<article><a class="fn-desk-photo" href="/portfolio/work/${esc(key)}/" aria-label="Explore ${esc(p.name)}">${img(p.image, p.alt, 'loading="lazy"')}</a><p class="fn-label">${esc(p.kind)}</p><h3>${caseLink(key, p.name)}</h3><p>${esc(p.summary)}</p></article>`;
@@ -69,7 +67,7 @@ export default function render() {
         .join(
           '',
         )}</div><a class="fn-collection-link" href="/portfolio/collection/"><span>Turn another page.</span><span>Explore all ${projects.filter((p) => p.key !== 'notable').length} projects <span aria-hidden="true">→</span></span></a></section>
-      <section class="fn-about" id="about" aria-labelledby="fn-about-title"><div class="fn-about-tab" aria-hidden="true">A small personal note</div><div><p class="fn-label">Away from the build</p><h2 id="fn-about-title">Two degrees.<br><em>One curiosity.</em></h2></div><div class="fn-about-copy"><p>I studied computer science and astrophysics at UMass Amherst. I’ve gone from simulating CO₂ cooling for particle detectors to making an ocean you can sail.</p><p>There’s a similar thread outside the screen: heirloom tomatoes, bikes, Pink Floyd. I like things that reward paying attention.</p><p class="fn-signature">AJ</p>${out(contact.resume, 'The full résumé', 'fn-link')}</div></section>
+      <section class="fn-about" id="about" aria-labelledby="fn-about-title"><div class="fn-about-tab" aria-hidden="true">A small personal note</div><div><p class="fn-label">Away from the build</p><h2 id="fn-about-title">Two subjects.<br><em>One curiosity.</em></h2></div><div class="fn-about-copy"><p>I studied computer science and astrophysics at UMass Amherst. I’ve gone from simulating CO₂ cooling for particle detectors to making an ocean you can sail.</p><p>There’s a similar thread outside the screen: heirloom tomatoes, bikes, Pink Floyd. I like things that reward paying attention.</p><p class="fn-signature">AJ</p>${out(contact.resume, 'The full résumé', 'fn-link')}</div></section>
       <section class="fn-correspondence"><p class="fn-label">An open page</p><h2>Let’s make<br><em>something matter.</em></h2>${email('Write to me', 'fn-link')}</section>
     </main><footer class="fn-footer"><a class="fn-monogram" href="#top" aria-label="AJ Uppal, back to top">AJ<span aria-hidden="true">/</span></a><p>Software engineer. Still taking notes.</p><div>${out(contact.github, 'GitHub')}${out(contact.linkedin, 'LinkedIn')}${email('Email')}</div></footer>
   </div>`;

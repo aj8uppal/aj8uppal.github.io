@@ -447,8 +447,8 @@ const core: Project[] = [
     name: 'Eyeshot',
     status: 'live',
     kind: 'Game / daily tests',
-    image: 'built-eyeshot',
-    alt: 'Eyeshot’s Bisect event: a diagonal line on graph paper, waiting for the player to tap its exact midpoint.',
+    image: 'portfolio-eyeshot-feature',
+    alt: 'A close view of Eyeshot’s Angle practice: a 117° target and coral and dark arms on graph paper.',
     summary: 'Five tests of your eye a day, scored against the same raw inputs.',
     role: 'The interaction design, scoring loop and server-rescored leaderboard.',
     constraint:
@@ -459,7 +459,20 @@ const core: Project[] = [
     href: 'https://eyeshot.app/',
     stack: 'Fastify · SQLite · Canvas · Fly.io',
     question: 'Can a quick visual test be fair?',
-    frames: [],
+    frames: [
+      {
+        image: 'portfolio-eyeshot-feature',
+        label: 'A test of your eye',
+        alt: 'The live Angle practice prompt and graph, with a 117° target.',
+        note: 'A detail from a real practice shot. The pointer controls the coral arm; the complete interface is shown below.',
+      },
+      {
+        image: 'portfolio-eyeshot-practice',
+        label: 'The complete practice shot',
+        alt: 'Eyeshot’s full practice interface: header, five tests, Angle prompt, graph, timer and Lock in button.',
+        note: 'Captured at eyeshot.app on September 5, 2026, using the actual Practice flow. No leaderboard score was submitted.',
+      },
+    ],
     details: [],
   },
 ];
@@ -479,7 +492,7 @@ export const projects: Project[] = [
       constraint: app.story?.constraint ?? app.what,
       decision: app.story?.decision ?? app.how,
       evidence: app.story?.evidence ?? app.cap,
-      href: app.href,
+      href: app.local ? null : app.href,
       stack: app.k,
       question: app.story?.question ?? 'A closer look at ' + app.name + '.',
       frames: app.story?.frames ?? [],
@@ -499,14 +512,29 @@ export const particleMeasurement = {
 // Homepage space is deliberate. An app can join the collection without taking
 // a lead slot from a project with stronger evidence and photography.
 export const homeProjectKeys = [
-  'murmuration',
   'saltline',
+  'murmuration',
   'ember',
+  'blockhold',
+  'cubit',
+  'eyeshot',
+];
+export const secondaryProjectKeys = [
+  'beatlayer',
   'boundary',
+  'voidreach',
+  'ai-wrapped',
+  'roomtone',
   'bring-something-home',
+  'slipstream',
 ];
 export const collection: (Built & { image: string; caseKey: string })[] = projects
   .filter((p) => p.key !== 'notable')
+  .sort((a, b) => {
+    const order = [...homeProjectKeys, ...secondaryProjectKeys];
+    const rank = (key: string) => (order.includes(key) ? order.indexOf(key) : order.length);
+    return rank(a.key) - rank(b.key);
+  })
   .map((p) => {
     const app = apps.find((a) => a.key === p.key);
     return {
@@ -517,11 +545,11 @@ export const collection: (Built & { image: string; caseKey: string })[] = projec
         app?.categories ?? (p.key === 'murmuration' ? ['sound', 'systems'] : ['games', 'systems']),
       reach: app?.reach ?? (p.status === 'wip' ? 'read' : 'open'),
       reachLabel: p.local
-        ? 'Local demo'
+        ? 'Playable prototype'
         : (app?.reachLabel ?? (p.status === 'wip' ? 'In progress' : 'Live')),
       href: p.href || '/portfolio/work/' + p.key + '/',
       cta: p.local
-        ? 'Play locally'
+        ? 'Inside the build'
         : (app?.cta ?? (p.status === 'wip' ? 'Explore the build' : 'Open project')),
       what: p.summary,
       how: p.decision,
@@ -529,15 +557,11 @@ export const collection: (Built & { image: string; caseKey: string })[] = projec
       accent: app?.accent ?? '#b5d8c2',
       alt: p.alt,
       cap:
-        app?.cap ??
         p.frames.find((f) => f.image === p.image)?.note ??
+        app?.cap ??
         'A frame from the running project.',
       image: p.image || '',
       caseKey: p.key,
-      selected: ['saltline', 'murmuration', 'ember', 'slipstream', 'eyeshot', 'beatlayer'].includes(
-        p.key,
-      )
-        ? true
-        : undefined,
+      selected: homeProjectKeys.includes(p.key) ? true : undefined,
     };
   });

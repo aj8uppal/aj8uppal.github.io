@@ -1,11 +1,17 @@
-/** The complete local portfolio: content, navigation, pictures and interaction. */
+/** Production portfolio gate; --lab also verifies the four review directions. */
 import { chromium } from 'playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
-import { projects, collection } from '../src/data/portfolio.ts';
-import { pixelContrast } from './portfolio-contrast.mjs';
+import {
+  projects,
+  collection,
+  homeProjectKeys,
+  secondaryProjectKeys,
+} from '../src/data/portfolio.ts';
+import { pixelContrast, surfaceContrast } from './portfolio-contrast.mjs';
 
-const BASE = process.argv[2] || 'http://127.0.0.1:4340';
-const OUT = process.env.PORTFOLIO_QA_OUT || '/tmp/aj-portfolio-final/verification';
+const BASE = process.argv.find((arg) => /^https?:/.test(arg)) || 'http://127.0.0.1:4340';
+const LAB = process.argv.includes('--lab');
+const OUT = process.env.PORTFOLIO_QA_OUT || '/tmp/aj-portfolio-production/verification';
 // The homepage tells a short story; full project pages carry its depth. New
 // projects belong in the shared collection before they earn homepage space.
 const HOME_HEIGHT = { desktop: 6200, phone: 9000 };
@@ -25,13 +31,17 @@ const excluded = [
   'voidborne',
 ];
 const homes = [
-  ['worldbuilder', '/portfolio/'],
-  ['editorial', '/portfolio/editorial/'],
-  ['studio', '/portfolio/studio/'],
-  ['field-notes', '/portfolio/field-notes/'],
-  ['observatory', '/portfolio/observatory/'],
+  ['worldbuilder', '/'],
+  ...(LAB
+    ? [
+        ['editorial', '/portfolio/editorial/'],
+        ['studio', '/portfolio/studio/'],
+        ['field-notes', '/portfolio/field-notes/'],
+        ['observatory', '/portfolio/observatory/'],
+      ]
+    : []),
 ];
-const report = { checks: [], pages: [], failures: [] };
+const report = { mode: LAB ? 'lab' : 'production', checks: [], pages: [], failures: [] };
 function note(ok, name, detail = '') {
   report.checks.push({ ok, name, detail });
   if (!ok) {
@@ -99,7 +109,8 @@ try {
   const routes = [
     ...homes,
     ['collection', '/portfolio/collection/'],
-    ['directions', '/directions/'],
+    ['built-alias', '/built/'],
+    ...(LAB ? [['directions', '/directions/']] : []),
   ];
   for (const [key, route] of routes) {
     for (const width of [320, 390, 768, 1024, 1440]) {
@@ -172,10 +183,170 @@ try {
       );
       note(!data.missing.length, `${p.key} ${width}: real photographs`, data.missing);
       note(!data.fragments.length, `${p.key} ${width}: navigation`, data.fragments);
+      note(
+        (await page.locator('a[href*="127.0.0.1"], a[href*="localhost"]').count()) === 0,
+        `${p.key} ${width}: no workstation-only visitor links`,
+      );
+      if (!LAB && width === 1440)
+        note(
+          (await page.locator('link[rel="canonical"]').getAttribute('href')) ===
+            `https://aj8uppal.github.io/portfolio/work/${p.key}/`,
+          `${p.key}: public canonical`,
+        );
     }
   }
 
-  await page.goto(new URL('/portfolio/', BASE).href, { waitUntil: 'networkidle' });
+  await page.goto(new URL('/', BASE).href, { waitUntil: 'networkidle' });
+  const primary = await page
+    .locator('[data-primary-project]')
+    .evaluateAll((nodes) => nodes.map((n) => n.dataset.primaryProject));
+  const secondary = await page
+    .locator('[data-secondary-project]')
+    .evaluateAll((nodes) => nodes.map((n) => n.dataset.secondaryProject));
+  note(
+    JSON.stringify(primary) === JSON.stringify(homeProjectKeys),
+    'homepage: six primary projects in AJ’s requested order',
+    primary,
+  );
+  note(
+    JSON.stringify(secondary) === JSON.stringify(secondaryProjectKeys),
+    'homepage: seven secondary projects in AJ’s requested order',
+    secondary,
+  );
+  const homepageCases = await page
+    .locator('a[href^="/portfolio/work/"]')
+    .evaluateAll((links) => [...new Set(links.map((a) => a.pathname.split('/')[3]))]);
+  note(
+    homepageCases.length === 14 &&
+      homepageCases.every((key) => ['notable', ...primary, ...secondary].includes(key)),
+    'homepage: the remaining projects belong only in the collection',
+    homepageCases,
+  );
+  note(
+    (await page.locator('.wb-career-grid li').count()) === 4,
+    'homepage: four résumé chapters complement Notable',
+  );
+  note(
+    (await page.locator('.wb-education').textContent()).includes('2022') &&
+      (await page.locator('.wb-toolkit div').count()) === 3,
+    'homepage: education and engineering toolkit are present',
+  );
+  for (const id of [
+    'work',
+    'projects',
+    'more-work',
+    'about',
+    'building',
+    'playground',
+    'skills',
+    'contact',
+  ])
+    note(
+      (await page.locator(`#${id}`).count()) === 1,
+      `homepage: #${id} remains a usable section link`,
+    );
+  const fold = page.locator('.wb-index');
+  const foldSummary = fold.locator('summary');
+  for (const width of [320, 390, 1440]) {
+    await page.setViewportSize({ width, height: width < 720 ? 844 : 1000 });
+    await foldSummary.focus();
+    await page.keyboard.press('Enter');
+    note(await fold.evaluate((el) => el.open), `folding menu ${width}: opens with keyboard`);
+    await page.waitForTimeout(450);
+    const bounds = await page.locator('.wb-fold-sheet').boundingBox();
+    note(
+      bounds.x >= 0 && bounds.x + bounds.width <= width + 1,
+      `folding menu ${width}: fits viewport`,
+      bounds,
+    );
+    await page.screenshot({ path: `${OUT}/folding-menu-${width}.png` });
+    const surfaces = await surfaceContrast(page);
+    note(
+      surfaces.length > 70 && surfaces.every((row) => row.ratio >= row.threshold),
+      `homepage ${width}: résumé, fold and gallery text clear AA`,
+      surfaces.filter((row) => row.ratio < row.threshold),
+    );
+    await page.keyboard.press('Escape');
+    note(
+      (await fold.evaluate((el) => !el.open)) &&
+        (await foldSummary.evaluate((el) => document.activeElement === el)),
+      `folding menu ${width}: Escape closes and restores focus`,
+    );
+  }
+  await foldSummary.click();
+  await page.locator('.wb-fold-sheet a[href="#more-work"]').click();
+  note(
+    (await fold.evaluate((el) => !el.open)) &&
+      (await page.locator('#more-work').evaluate((el) => document.activeElement === el)),
+    'folding menu: section selection closes the fold and moves focus',
+  );
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await foldSummary.click();
+  await page.locator('.wb-hero h1').click();
+  note(await fold.evaluate((el) => !el.open), 'folding menu: clicking outside closes the fold');
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
+    const track = page.locator('.wb-more-track');
+    await track.scrollIntoViewIfNeeded();
+    await track.evaluate((el) => (el.scrollLeft = 0));
+    await page.waitForFunction(() => document.querySelector('[data-gallery-prev]').disabled);
+    const next = page.locator('[data-gallery-next]');
+    let clicks = 0;
+    while ((await next.isEnabled()) && clicks++ < 8) {
+      await next.click();
+      await page.waitForTimeout(500);
+    }
+    note(await next.isDisabled(), `project gallery ${width}: arrows reach the final project`);
+    note(
+      await track.evaluate((el) => el.scrollLeft + el.clientWidth >= el.scrollWidth - 3),
+      `project gallery ${width}: Slipstream is fully reachable`,
+    );
+    await page.screenshot({ path: `${OUT}/secondary-gallery-${width}.png` });
+    await page.locator('[data-gallery-prev]').click();
+    await page.waitForFunction(() => !document.querySelector('[data-gallery-next]').disabled);
+    note(
+      await next.isEnabled(),
+      `project gallery ${width}: previous arrow returns through the gallery`,
+    );
+  }
+  await page.goto(new URL('/', BASE).href, { waitUntil: 'networkidle' });
+  if (!LAB) {
+    note(
+      (await page.locator('link[rel="canonical"]').getAttribute('href')) ===
+        'https://aj8uppal.github.io/',
+      'production: homepage canonical is the public root',
+    );
+    note(
+      (await page.locator('meta[name="robots"]').getAttribute('content')) === 'index, follow',
+      'production: the chosen portfolio is indexable',
+    );
+    const social = await page.locator('meta[property="og:image"]').getAttribute('content');
+    note(
+      social.startsWith('https://aj8uppal.github.io/_astro/') &&
+        (await page.request.get(new URL(new URL(social).pathname, BASE).href)).ok(),
+      'production: sharing uses a real optimized project photograph',
+    );
+    for (const route of [
+      '/directions/',
+      '/alternate/',
+      ...['editorial', 'studio', 'field-notes', 'observatory'].map((key) => `/portfolio/${key}/`),
+    ])
+      note(
+        (await page.request.get(new URL(route, BASE).href)).status() === 404,
+        `production: review route is absent ${route}`,
+      );
+    await page.evaluate(() => sessionStorage.setItem('portfolio-direction', 'editorial'));
+    await page.goto(new URL('/portfolio/work/saltline/', BASE).href, { waitUntil: 'networkidle' });
+    note(
+      (await page.locator('[data-portfolio-back]').getAttribute('href')) === '/#projects',
+      'production: stale review preferences cannot redirect project navigation',
+    );
+    await page.goto(new URL('/portfolio/', BASE).href, { waitUntil: 'networkidle' });
+    note(
+      new URL(page.url()).pathname === '/',
+      'production: the former Worldbuilder URL redirects to the homepage',
+    );
+  }
   note(
     (await page.locator('.wb-cover').getAttribute('data-scene')) === 'murmuration',
     'Murmuration opens the portfolio',
@@ -231,145 +402,150 @@ try {
     }
   }
 
-  await page.goto(new URL('/portfolio/editorial/', BASE).href, { waitUntil: 'networkidle' });
-  for (const gallery of await page.locator('[data-ed-gallery]').all()) {
-    const buttons = gallery.locator('button');
-    await buttons.last().focus();
+  if (LAB) {
+    await page.goto(new URL('/portfolio/editorial/', BASE).href, { waitUntil: 'networkidle' });
+    for (const gallery of await page.locator('[data-ed-gallery]').all()) {
+      const buttons = gallery.locator('button');
+      await buttons.last().focus();
+      await page.keyboard.press('Enter');
+      note(
+        (await buttons.last().getAttribute('aria-pressed')) === 'true' &&
+          (await gallery
+            .locator('[data-ed-image]')
+            .evaluate(
+              (img) =>
+                img.src ===
+                new URL(
+                  img.closest('[data-ed-gallery]').querySelector('button[aria-pressed="true"]')
+                    .dataset.edFrame,
+                  location.href,
+                ).href,
+            )),
+        'editorial: keyboard switches from world to engineering photograph',
+      );
+    }
+    await page.locator('a[href="/portfolio/work/notable/"]').first().click();
+    await page.waitForLoadState('networkidle');
+    note(
+      (await page.locator('[data-portfolio-back]').getAttribute('href')).includes(
+        '/portfolio/editorial/',
+      ),
+      'project pages preserve the chosen portfolio direction',
+    );
+    await page.goto(new URL('/directions/', BASE).href, { waitUntil: 'networkidle' });
+    note(
+      (await page.locator('.directions-shot').first().getAttribute('href')) === '/',
+      'comparison still opens Worldbuilder after exploring an alternative',
+    );
+
+    await page.goto(new URL('/portfolio/studio/', BASE).href, { waitUntil: 'networkidle' });
+    for (const lens of ['systems', 'worlds', 'sound', 'life']) {
+      const button = page.locator(`[data-st-lens="${lens}"]`);
+      await button.focus();
+      await page.keyboard.press('Enter');
+      note(
+        (await button.getAttribute('aria-pressed')) === 'true' &&
+          (await page.locator(`[data-st-panel="${lens}"]`).isVisible()),
+        `studio: ${lens} is keyboard accessible`,
+      );
+    }
+    await page.locator('#st-angle-input').fill('115');
+    await page.locator('[data-st-angle-check]').click();
+    note(
+      (await page.locator('[data-st-angle-result]').textContent()).includes('Exactly 115'),
+      'studio: angle exercise gives accurate success feedback',
+    );
+    await page.locator('#st-angle-input').fill('85');
+    await page.locator('[data-st-angle-check]').click();
+    note(
+      (await page.locator('[data-st-angle-result]').textContent()).includes('30° short'),
+      'studio: angle exercise gives accurate error feedback',
+    );
+
+    await page.goto(new URL('/portfolio/field-notes/', BASE).href, { waitUntil: 'networkidle' });
+    const indexSummary = page.locator('.fn-index summary');
+    await indexSummary.focus();
     await page.keyboard.press('Enter');
     note(
-      (await buttons.last().getAttribute('aria-pressed')) === 'true' &&
-        (await gallery
-          .locator('[data-ed-image]')
-          .evaluate(
-            (img) =>
-              img.src ===
-              new URL(
-                img.closest('[data-ed-gallery]').querySelector('button[aria-pressed="true"]')
-                  .dataset.edFrame,
-                location.href,
-              ).href,
-          )),
-      'editorial: keyboard switches from world to engineering photograph',
+      await page.locator('.fn-index').evaluate((el) => el.open),
+      'field notes: keyboard unfolds the index',
     );
-  }
-  await page.locator('a[href="/portfolio/work/notable/"]').first().click();
-  note(
-    (await page.locator('[data-portfolio-back]').getAttribute('href')).includes(
-      '/portfolio/editorial/',
-    ),
-    'project pages preserve the chosen portfolio direction',
-  );
-  await page.goto(new URL('/directions/', BASE).href, { waitUntil: 'networkidle' });
-  note(
-    (await page.locator('.directions-shot').first().getAttribute('href')) === '/portfolio/',
-    'comparison still opens Worldbuilder after exploring an alternative',
-  );
-
-  await page.goto(new URL('/portfolio/studio/', BASE).href, { waitUntil: 'networkidle' });
-  for (const lens of ['systems', 'worlds', 'sound', 'life']) {
-    const button = page.locator(`[data-st-lens="${lens}"]`);
-    await button.focus();
-    await page.keyboard.press('Enter');
+    await page.keyboard.press('Escape');
     note(
-      (await button.getAttribute('aria-pressed')) === 'true' &&
-        (await page.locator(`[data-st-panel="${lens}"]`).isVisible()),
-      `studio: ${lens} is keyboard accessible`,
+      (await page.locator('.fn-index').evaluate((el) => !el.open)) &&
+        (await indexSummary.evaluate((el) => el === document.activeElement)),
+      'field notes: Escape closes the index and restores focus',
     );
-  }
-  await page.locator('#st-angle-input').fill('115');
-  await page.locator('[data-st-angle-check]').click();
-  note(
-    (await page.locator('[data-st-angle-result]').textContent()).includes('Exactly 115'),
-    'studio: angle exercise gives accurate success feedback',
-  );
-  await page.locator('#st-angle-input').fill('85');
-  await page.locator('[data-st-angle-check]').click();
-  note(
-    (await page.locator('[data-st-angle-result]').textContent()).includes('30° short'),
-    'studio: angle exercise gives accurate error feedback',
-  );
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.locator('#fn-saltline').scrollIntoViewIfNeeded();
+    await page.waitForFunction(
+      () =>
+        document.querySelector('[data-fn-marker="saltline"]')?.getAttribute('aria-current') ===
+        'location',
+    );
+    note(true, 'field notes: the notebook margin follows the visible chapter');
+    await page.locator('.fn-leaf a[href="/portfolio/work/saltline/"]').last().click();
+    await page.waitForLoadState('networkidle');
+    note(
+      (await page.locator('[data-portfolio-back]').getAttribute('href')).includes(
+        '/portfolio/field-notes/',
+      ),
+      'field notes: a full case returns to the notebook',
+    );
 
-  await page.goto(new URL('/portfolio/field-notes/', BASE).href, { waitUntil: 'networkidle' });
-  const indexSummary = page.locator('.fn-index summary');
-  await indexSummary.focus();
-  await page.keyboard.press('Enter');
-  note(
-    await page.locator('.fn-index').evaluate((el) => el.open),
-    'field notes: keyboard unfolds the index',
-  );
-  await page.keyboard.press('Escape');
-  note(
-    (await page.locator('.fn-index').evaluate((el) => !el.open)) &&
-      (await indexSummary.evaluate((el) => el === document.activeElement)),
-    'field notes: Escape closes the index and restores focus',
-  );
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.locator('#fn-saltline').scrollIntoViewIfNeeded();
-  await page.waitForFunction(
-    () =>
-      document.querySelector('[data-fn-marker="saltline"]')?.getAttribute('aria-current') ===
-      'location',
-  );
-  note(true, 'field notes: the notebook margin follows the visible chapter');
-  await page.locator('.fn-leaf a[href="/portfolio/work/saltline/"]').last().click();
-  note(
-    (await page.locator('[data-portfolio-back]').getAttribute('href')).includes(
-      '/portfolio/field-notes/',
-    ),
-    'field notes: a full case returns to the notebook',
-  );
-
-  await page.goto(new URL('/portfolio/observatory/', BASE).href, { waitUntil: 'networkidle' });
-  note(
-    JSON.stringify(
+    await page.goto(new URL('/portfolio/observatory/', BASE).href, { waitUntil: 'networkidle' });
+    note(
+      JSON.stringify(
+        await page
+          .locator('[data-ob-scene]')
+          .evaluateAll((nodes) => nodes.map((n) => n.dataset.obScene)),
+      ) === JSON.stringify(['murmuration', 'saltline', 'ember']),
+      'observatory: the views follow AJ’s requested order',
+    );
+    for (const key of ['saltline', 'ember', 'murmuration']) {
+      const button = page.locator(`[data-ob-scene="${key}"]`);
+      await button.focus();
+      await page.keyboard.press('Enter');
+      await settle(page);
+      note(
+        (await button.getAttribute('aria-pressed')) === 'true' &&
+          (await page.locator(`#ob-scene-${key}`).isVisible()),
+        `observatory: ${key} switches with the keyboard`,
+      );
+    }
+    await page.keyboard.press('End');
+    note(
+      await page.locator('[data-ob-scene="ember"]').evaluate((el) => el === document.activeElement),
+      'observatory: End selects the last view',
+    );
+    await page.keyboard.press('Home');
+    note(
       await page
-        .locator('[data-ob-scene]')
-        .evaluateAll((nodes) => nodes.map((n) => n.dataset.obScene)),
-    ) === JSON.stringify(['murmuration', 'saltline', 'ember']),
-    'observatory: the views follow AJ’s requested order',
-  );
-  for (const key of ['saltline', 'ember', 'murmuration']) {
-    const button = page.locator(`[data-ob-scene="${key}"]`);
-    await button.focus();
+        .locator('[data-ob-scene="murmuration"]')
+        .evaluate((el) => el === document.activeElement),
+      'observatory: Home returns to the first view',
+    );
+    const sky = page.locator('[data-ob-sky]');
+    const motion = page.locator('[data-ob-motion]');
+    await motion.focus();
     await page.keyboard.press('Enter');
-    await settle(page);
+    const pausedSky = await sky.evaluate((canvas) => canvas.toDataURL());
+    await page.waitForTimeout(250);
     note(
-      (await button.getAttribute('aria-pressed')) === 'true' &&
-        (await page.locator(`#ob-scene-${key}`).isVisible()),
-      `observatory: ${key} switches with the keyboard`,
+      pausedSky === (await sky.evaluate((canvas) => canvas.toDataURL())) &&
+        (await motion.textContent()).includes('Resume'),
+      'observatory: Pause stops canvas motion',
+    );
+    await motion.click();
+    note((await motion.textContent()).includes('Pause'), 'observatory: motion can resume');
+    await page.locator('a[href="/portfolio/work/murmuration/"]').first().click();
+    await page.waitForLoadState('networkidle');
+    note(
+      (await page.locator('[data-portfolio-back]').getAttribute('href')) ===
+        '/portfolio/observatory/#projects',
+      'observatory: Back to selected work reaches personal projects',
     );
   }
-  await page.keyboard.press('End');
-  note(
-    await page.locator('[data-ob-scene="ember"]').evaluate((el) => el === document.activeElement),
-    'observatory: End selects the last view',
-  );
-  await page.keyboard.press('Home');
-  note(
-    await page
-      .locator('[data-ob-scene="murmuration"]')
-      .evaluate((el) => el === document.activeElement),
-    'observatory: Home returns to the first view',
-  );
-  const sky = page.locator('[data-ob-sky]');
-  const motion = page.locator('[data-ob-motion]');
-  await motion.focus();
-  await page.keyboard.press('Enter');
-  const pausedSky = await sky.evaluate((canvas) => canvas.toDataURL());
-  await page.waitForTimeout(250);
-  note(
-    pausedSky === (await sky.evaluate((canvas) => canvas.toDataURL())) &&
-      (await motion.textContent()).includes('Resume'),
-    'observatory: Pause stops canvas motion',
-  );
-  await motion.click();
-  note((await motion.textContent()).includes('Pause'), 'observatory: motion can resume');
-  await page.locator('a[href="/portfolio/work/murmuration/"]').first().click();
-  note(
-    (await page.locator('[data-portfolio-back]').getAttribute('href')) ===
-      '/portfolio/observatory/#projects',
-    'observatory: Back to selected work reaches personal projects',
-  );
 
   await page.goto(new URL('/portfolio/work/saltline/', BASE).href, { waitUntil: 'networkidle' });
   const photo = page.locator('[data-photo]').first();
@@ -471,6 +647,17 @@ try {
       `${name}: collection remains reachable without JavaScript`,
     );
   }
+  await noJS.goto(new URL('/', BASE).href, { waitUntil: 'networkidle' });
+  await noJS.locator('.wb-index summary').click();
+  note(
+    (await noJS.locator('.wb-index').evaluate((el) => el.open)) &&
+      (await noJS.locator('.wb-fold-sheet a').count()) === 4,
+    'folding menu: native navigation works without JavaScript',
+  );
+  note(
+    (await noJS.locator('[data-secondary-project]').count()) === 7,
+    'project gallery: all seven builds remain available without JavaScript',
+  );
   await noJS.goto(new URL('/portfolio/collection/', BASE).href, { waitUntil: 'networkidle' });
   note(
     (await noJS.locator('[data-built-card]:visible').count()) === collection.length,

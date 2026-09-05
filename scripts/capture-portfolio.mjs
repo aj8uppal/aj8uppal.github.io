@@ -17,7 +17,7 @@ try {
   page.setDefaultTimeout(20000);
   page.setDefaultNavigationTimeout(20000);
   for (const [name, route] of [
-    ['worldbuilder', '/portfolio/'],
+    ['worldbuilder', '/'],
     ['editorial', '/portfolio/editorial/'],
     ['studio', '/portfolio/studio/'],
     ['field-notes', '/portfolio/field-notes/'],

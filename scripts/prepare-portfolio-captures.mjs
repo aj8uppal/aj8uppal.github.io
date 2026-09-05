@@ -18,6 +18,19 @@ const input =
 const output = path.join(root, 'src/assets');
 const recipes = [
   [
+    'portfolio-eyeshot-feature',
+    'Eyeshot: a close view of the live Angle practice prompt and graph, from an actual pointer interaction over HTTPS. Cropped from the complete practice frame below.',
+    {
+      raw: 'eyeshot-practice-angle-1200x800.png',
+      crop: { left: 275, top: 192, width: 650, height: 356 },
+    },
+  ],
+  [
+    'portfolio-eyeshot-practice',
+    'Eyeshot: the complete 1200 × 800 practice frame, including header, tabs, Angle prompt, graph, timer and Lock in control. No account or leaderboard submission.',
+    { raw: 'eyeshot-practice-angle-1200x800.png' },
+  ],
+  [
     'built-boundary',
     'Boundary 3.1: the actual guided first delivery. Controls and timing cue remain visible.',
   ],
@@ -84,11 +97,13 @@ const recipes = [
 
 await mkdir(output, { recursive: true });
 const records = [];
-for (const [key, source] of recipes) {
-  const filename = `${key}.png`;
+for (const [key, source, options = {}] of recipes) {
+  const filename = options.raw || `${key}.png`;
   const bytes = await readFile(path.join(input, filename));
   const metadata = await sharp(bytes).metadata();
-  const result = await sharp(bytes)
+  let image = sharp(bytes);
+  if (options.crop) image = image.extract(options.crop);
+  const result = await image
     .resize({ width: 1920, withoutEnlargement: true })
     .webp({ quality: 90, effort: 6 })
     .toFile(path.join(output, `${key}.webp`));
@@ -101,7 +116,10 @@ for (const [key, source] of recipes) {
     sourceHeight: metadata.height,
     width: result.width,
     height: result.height,
-    processing: 'Full captured frame; downscale only, WebP quality 90.',
+    ...(options.crop ? { crop: options.crop } : {}),
+    processing: options.crop
+      ? 'Documented detail crop; downscale only, WebP quality 90.'
+      : 'Full captured frame; downscale only, WebP quality 90.',
   });
 }
 await writeFile(

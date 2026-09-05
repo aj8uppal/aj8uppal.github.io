@@ -24,7 +24,7 @@ const short = p.constraint === p.summary;
 
 <Portfolio title={`${p.name} · AJ Uppal`} description={p.summary} navigation>
   <main id="main" class="pc-shell" data-project={p.key}>
-    <a class="pc-back" href="/portfolio/#projects" data-portfolio-back>← Back to selected work</a>
+    <a class="pc-back" href="/#projects" data-portfolio-back>← Back to selected work</a>
     <header class="pc-head">
       <div>
         <p class="ref-eyebrow">
@@ -38,15 +38,15 @@ const short = p.constraint === p.summary;
       <div class="pc-intro">
         <p>{p.summary}</p><div class="pc-actions">
           {
-            p.href && (
+            (p.href || p.local) && (
               <a
                 class="pc-button"
-                href={p.href}
-                target={p.href.startsWith('http') ? '_blank' : undefined}
-                rel={p.href.startsWith('http') ? 'noopener' : undefined}
+                href={p.href || `mailto:${contact.email}?subject=${encodeURIComponent(p.name)}`}
+                target={p.href?.startsWith('http') ? '_blank' : undefined}
+                rel={p.href?.startsWith('http') ? 'noopener' : undefined}
               >
                 {p.local
-                  ? 'Play locally'
+                  ? 'Ask about this build'
                   : p.status === 'wip'
                     ? 'Explore the project'
                     : 'Open project'}{' '}
@@ -57,7 +57,7 @@ const short = p.constraint === p.summary;
           <span class="pc-status"
             >{
               p.local
-                ? 'Playable local build'
+                ? 'Playable prototype · available for a walkthrough'
                 : p.status === 'wip'
                   ? 'Work in progress'
                   : p.key === 'notable'
@@ -294,9 +294,9 @@ const short = p.constraint === p.summary;
       </div>
     </section>
     <footer class="pc-footer">
-      <a class="portfolio-brand" href="/portfolio/">AJ Uppal.</a><p>
-        Have something worth building?
-      </p><a href={`mailto:${contact.email}`}>Let’s talk ↗</a>
+      <a class="portfolio-brand" href="/">AJ Uppal.</a><p>Have something worth building?</p><a
+        href={`mailto:${contact.email}`}>Let’s talk ↗</a
+      >
     </footer>
   </main>
   <dialog class="pc-lightbox" aria-label="Enlarged project photograph">

@@ -1,12 +1,9 @@
 ---
-import Base from '../layouts/Base.astro';
+import Portfolio from '../layouts/Portfolio.astro';
 import Collection from '../components/Collection.astro';
+import { collection } from '../data/portfolio';
 ---
 
-<Base
-  title="The collection · AJ Uppal"
-  description="Explore AJ Uppal’s browser instruments, simulations, games and tools. Real running apps, with the engineering behind each one."
-  elsewhere
->
-  <Collection />
-</Base>
+<Portfolio title="The collection · AJ Uppal" navigation canonicalPath="/portfolio/collection/">
+  <main id="main"><Collection apps={collection} portfolio /></main>
+</Portfolio>

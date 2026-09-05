@@ -33,10 +33,10 @@ async function pixelContrast(page, key, width) {
       ['.wb-occupation span', 4.5],
       ['.wb-brand', 3],
       ['.wb-brand span', 4.5],
-      ['.wb-nav nav a:nth-child(1)', 4.5],
-      ['.wb-nav nav a:nth-child(2)', 4.5],
-      ['.wb-nav nav a:nth-child(3)', 4.5],
-      ['.wb-nav nav a:nth-child(4)', 4.5],
+      ['.wb-index summary', 4.5],
+      ['.wb-nav > nav > a:nth-child(2)', 4.5],
+      ['.wb-nav > nav > a:nth-child(3)', 4.5],
+      ['.wb-nav > nav > a:nth-child(4)', 4.5],
       ['.wb-caption-plate', 4.5],
       ['.wb-scene-caption small', 4.5],
     ].map(([selector, threshold]) => {
@@ -63,7 +63,7 @@ async function pixelContrast(page, key, width) {
   await page.evaluate(() =>
     document
       .querySelectorAll(
-        '.wb-scope, .wb-hero-line, .wb-hero h1, .wb-hero h1 em, .wb-occupation, .wb-occupation span, .wb-brand, .wb-brand span, .wb-nav nav a, .wb-scene-caption, .wb-scene-caption *',
+        '.wb-scope, .wb-hero-line, .wb-hero h1, .wb-hero h1 em, .wb-occupation, .wb-occupation span, .wb-brand, .wb-brand span, .wb-nav > nav > a, .wb-index summary, .wb-fold-mark, .wb-scene-caption, .wb-scene-caption *',
       )
       .forEach((el) => {
         el.dataset.qaColor = el.style.color;
@@ -77,7 +77,7 @@ async function pixelContrast(page, key, width) {
   await page.evaluate(() =>
     document
       .querySelectorAll(
-        '.wb-scope, .wb-hero-line, .wb-hero h1, .wb-hero h1 em, .wb-occupation, .wb-occupation span, .wb-brand, .wb-brand span, .wb-nav nav a, .wb-scene-caption, .wb-scene-caption *',
+        '.wb-scope, .wb-hero-line, .wb-hero h1, .wb-hero h1 em, .wb-occupation, .wb-occupation span, .wb-brand, .wb-brand span, .wb-nav > nav > a, .wb-index summary, .wb-fold-mark, .wb-scene-caption, .wb-scene-caption *',
       )
       .forEach((el) => {
         el.style.color = el.dataset.qaColor || '';
@@ -125,3 +125,58 @@ async function pixelContrast(page, key, width) {
 }
 
 export { pixelContrast };
+
+/** The new paper, gallery and résumé surfaces have flat grounds. Check each
+ * rendered text run, compositing any translucent ancestor colors in order. */
+export async function surfaceContrast(page) {
+  return page.evaluate(() => {
+    const rgb = (color) => {
+      const parts = color.match(/[\d.]+/g)?.map(Number) || [0, 0, 0, 0];
+      return [parts[0], parts[1], parts[2], parts[3] ?? 1];
+    };
+    const mix = (top, under) => [
+      ...top.slice(0, 3).map((c, i) => c * top[3] + under[i] * (1 - top[3])),
+      1,
+    ];
+    const luminance = (color) => {
+      const c = color
+        .slice(0, 3)
+        .map((n) => n / 255)
+        .map((n) => (n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4));
+      return c[0] * 0.2126 + c[1] * 0.7152 + c[2] * 0.0722;
+    };
+    const rows = [];
+    for (const section of document.querySelectorAll(
+      '.wb-career, .wb-fold-sheet, .wb-more, .wb-about',
+    )) {
+      const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT);
+      let text;
+      while ((text = walker.nextNode())) {
+        const el = text.parentElement;
+        if (
+          !text.textContent.trim() ||
+          !el.getClientRects().length ||
+          el.closest('[aria-hidden="true"], button:disabled')
+        )
+          continue;
+        const style = getComputedStyle(el);
+        if (style.visibility !== 'visible') continue;
+        const layers = [];
+        for (let ancestor = el; ancestor; ancestor = ancestor.parentElement)
+          layers.unshift(rgb(getComputedStyle(ancestor).backgroundColor));
+        const ground = layers.reduce((under, top) => mix(top, under), [255, 255, 255, 1]);
+        const ink = mix(rgb(style.color), ground);
+        const [light, dark] = [luminance(ink), luminance(ground)].sort((a, b) => b - a);
+        const size = parseFloat(style.fontSize);
+        const threshold =
+          size >= 24 || (size >= 18.66 && parseInt(style.fontWeight) >= 700) ? 3 : 4.5;
+        rows.push({
+          text: text.textContent.trim().slice(0, 80),
+          ratio: Number(((light + 0.05) / (dark + 0.05)).toFixed(2)),
+          threshold,
+        });
+      }
+    }
+    return rows;
+  });
+}

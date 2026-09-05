@@ -1,7 +1,22 @@
 import { contact, about, roles } from '../data/content.ts';
-import { projects, project, particleMeasurement, homeProjectKeys } from '../data/portfolio.ts';
+import {
+  projects,
+  project,
+  particleMeasurement,
+  homeProjectKeys,
+  secondaryProjectKeys,
+} from '../data/portfolio.ts';
 
-export { contact, about, roles, projects, project, particleMeasurement, homeProjectKeys };
+export {
+  contact,
+  about,
+  roles,
+  projects,
+  project,
+  particleMeasurement,
+  homeProjectKeys,
+  secondaryProjectKeys,
+};
 export const esc = (value) =>
   String(value ?? '')
     .replaceAll('&', '&amp;')

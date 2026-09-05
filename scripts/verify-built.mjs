@@ -1,6 +1,12 @@
 /** Browser gate for the collection, its filters and the homepage shortlist. */
 import { chromium } from 'playwright';
-import { apps, categories, selectedApps } from '../src/data/built.ts';
+import { existsSync } from 'node:fs';
+import { categories } from '../src/data/built.ts';
+import {
+  collection as apps,
+  homeProjectKeys,
+  secondaryProjectKeys,
+} from '../src/data/portfolio.ts';
 
 const BASE = process.argv[2] ?? 'http://127.0.0.1:4321/';
 const failures = [];
@@ -18,7 +24,20 @@ function contrast(a, b) {
   const [light, dark] = [luminance(rgb(a)), luminance(rgb(b))].sort((x, y) => y - x);
   return (light + 0.05) / (dark + 0.05);
 }
-const selected = selectedApps.map((app) => app.key);
+const selected = apps.filter((app) => app.featured || app.selected).map((app) => app.key);
+// Copied apps exercise the staged public files. GitHub project sites can share
+// the production hostname without belonging to this build, so they retain
+// their hosted URL. No game accounts or private state is read.
+const targetURL = (href) => {
+  const url = new URL(href, BASE);
+  const snapshot = new URL(
+    `../public${url.pathname}${url.pathname.endsWith('/') ? 'index.html' : ''}`,
+    import.meta.url,
+  );
+  return url.origin === 'https://aj8uppal.github.io' && existsSync(snapshot)
+    ? new URL(url.pathname + url.search + url.hash, BASE).href
+    : url.href;
+};
 const browser = await chromium.launch();
 try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
@@ -43,7 +62,14 @@ try {
     `${apps.length} projects`,
   );
   note(new Set(apps.map((app) => app.key)).size === apps.length, 'project keys are unique');
+  note(apps.length === 24, 'the collection retains 24 personal projects');
   note(selected.length === 6, 'six projects form the opening selection');
+  note(same(selected, homeProjectKeys), 'the collection opens with the primary homepage tier');
+  note((await page.locator('h1').count()) === 1, 'the collection has one main heading');
+  note(
+    await page.getByRole('searchbox', { name: 'Find a project' }).isVisible(),
+    'search has an accessible label',
+  );
   note(
     same(await visible(), selected),
     'the opening selection is concise and follows the catalogue',
@@ -105,7 +131,8 @@ try {
       `${app.key}: accent and engineering copy clear AA at rest and hover`,
       ratios.map((ratio) => ratio.toFixed(2)).join(' / '),
     );
-    await card.locator('summary').click();
+    await card.locator('summary').focus();
+    await page.keyboard.press('Enter');
     note(
       await card.locator('details').evaluate((detail) => detail.open),
       `${app.key}: capture provenance opens`,
@@ -158,9 +185,7 @@ try {
   note(active.tag !== 'BODY' && !active.hidden, 'keyboard focus lands on a visible control');
 
   for (const href of [...new Set(apps.map((app) => app.href))]) {
-    const response = await page.request
-      .get(new URL(href, BASE).href, { timeout: 30000 })
-      .catch(() => null);
+    const response = await page.request.get(targetURL(href), { timeout: 30000 }).catch(() => null);
     note(
       response?.status() === 200,
       `${href} answers`,
@@ -201,6 +226,8 @@ try {
       `${width}: the opening selection remains six`,
     );
     await phone.locator('[data-filter="sound"]').click();
+    while (await phone.locator('[data-more]').isVisible())
+      await phone.locator('[data-more]').click();
     note(
       (await phone.locator('.bcard:visible').count()) ===
         apps.filter((app) => app.categories.includes('sound')).length,
@@ -238,33 +265,92 @@ try {
   );
   await noJS.close();
 
-  await page.goto(BASE, { waitUntil: 'networkidle' });
-  await page.locator('.bs').scrollIntoViewIfNeeded();
-  await page.waitForTimeout(500);
-  const strip = await page.locator('.bs').evaluate((element) => ({
-    target: element.querySelector('.bs__all').getAttribute('href'),
-    lead: [...element.querySelectorAll('.bs__card')].map((card) => card.getAttribute('href')),
-    rest: element.querySelectorAll('.bs__list a').length,
-    open: element.querySelector('.bs__rest').open,
-  }));
-  note(strip.target === '/built', 'homepage shortlist opens the collection');
+  // The canonical collection and the historical /built URL share one set of cards.
+  await page.goto(new URL('/portfolio/collection/', BASE).href, { waitUntil: 'networkidle' });
   note(
     same(
-      strip.lead,
-      apps.filter((app) => app.featured).map((app) => app.href),
+      await page.locator('.bcard').evaluateAll((cards) => cards.map((card) => card.id)),
+      apps.map((app) => app.key),
     ),
-    'homepage shortlist comes from the same catalogue',
+    'the canonical collection and /built contain the same ordered projects',
   );
-  note(strip.lead.length === 3 && !strip.open, 'homepage stays at three visible cards');
-  note(strip.rest === apps.length - 3, 'remaining projects are all behind the native disclosure');
-  await page.locator('.bs__rest summary').click();
+  const caseLinks = await page
+    .locator('.bcard__h a')
+    .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
   note(
-    await page.locator('.bs__rest').evaluate((detail) => detail.open),
-    'homepage disclosure opens',
+    same(
+      caseLinks,
+      apps.map((app) => `/portfolio/work/${app.caseKey}/`),
+    ),
+    'every collection title opens its engineering case',
   );
-  const home = await page.content();
-  for (const id of ['work', 'building', 'contact'])
-    note(home.includes(`id="${id}"`), `collection’s #${id} return link has a destination`);
+  for (const href of caseLinks) {
+    const response = await page.request.get(new URL(href, BASE).href);
+    note(response.status() === 200, `${href} case answers`, String(response.status()));
+  }
+  const returns = await page
+    .locator('.bt-back a, .bt-foot__go a')
+    .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+  note(
+    returns.includes('/#projects') && returns.includes('/'),
+    'collection return links prefer the production home',
+  );
+  note(returns.includes('/portfolio/work/notable/'), 'professional work has a direct case link');
+
+  await page.goto(new URL('/', BASE).href, { waitUntil: 'networkidle' });
+  note(
+    (await page.locator('[data-portfolio-home="worldbuilder"]').count()) === 1,
+    'Worldbuilder is the production home',
+  );
+  const primary = await page
+    .locator('[data-primary-project]')
+    .evaluateAll((cards) => cards.map((card) => card.dataset.primaryProject));
+  const secondary = await page
+    .locator('[data-secondary-project]')
+    .evaluateAll((cards) => cards.map((card) => card.dataset.secondaryProject));
+  note(
+    primary.length === 6 && same(primary, homeProjectKeys),
+    'six primary projects follow the shared homepage order',
+  );
+  note(
+    secondary.length === 7 && same(secondary, secondaryProjectKeys),
+    'seven secondary projects follow the shared gallery order',
+  );
+  note(new Set([...primary, ...secondary]).size === 13, 'homepage tiers do not repeat projects');
+  note(
+    (await page.locator('.portfolio-collection-link').getAttribute('href')) ===
+      '/portfolio/collection/',
+    'homepage gallery opens the complete collection',
+  );
+  for (const key of [...primary, ...secondary]) {
+    const card = page.locator(`[data-primary-project="${key}"], [data-secondary-project="${key}"]`);
+    note(
+      (await card.locator(`a[href="/portfolio/work/${key}/"]:not([aria-hidden="true"])`).count()) >
+        0,
+      `${key}: homepage has an accessible case link`,
+    );
+    const img = card.locator('img').first();
+    await img.evaluate((image) => {
+      image.loading = 'eager';
+    });
+    await img.evaluate((image) => image.decode());
+    note(await img.evaluate((image) => image.naturalWidth > 0), `${key}: homepage capture loads`);
+  }
+  const track = page.locator('#wb-more-track');
+  await track.focus();
+  const before = await track.evaluate((element) => element.scrollLeft);
+  await page.keyboard.press('ArrowRight');
+  await page.waitForTimeout(350);
+  note(
+    (await track.evaluate((element) => element.scrollLeft)) > before,
+    'the secondary gallery scrolls from the keyboard',
+  );
+  for (const id of ['work', 'projects', 'about'])
+    note(
+      (await page.locator(`#${id}`).count()) === 1,
+      `homepage #${id} return link has a destination`,
+    );
+  note(errors.length === 0, 'no browser errors across collection and homepage', errors.join(' | '));
 } finally {
   await browser.close();
 }

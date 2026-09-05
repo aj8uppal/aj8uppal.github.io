@@ -9,7 +9,7 @@ interface Props {
 const { portfolio = false } = Astro.props;
 const apps: (Built & { image?: string; caseKey?: string })[] = Astro.props.apps || originalApps;
 const selectedApps = apps.filter((app) => app.featured || app.selected);
-const home = portfolio ? '/portfolio/' : '/';
+const home = '/';
 const W = [420, 640, 960, 1280];
 const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
 ---

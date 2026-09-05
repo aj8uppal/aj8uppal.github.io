@@ -2,12 +2,17 @@
 import '../portfolio/shared.css';
 import '../portfolio/portfolio.css';
 import { contact } from '../data/content';
+import { projects } from '../data/portfolio';
+import { asset } from '../lib/images';
+import { getImage } from 'astro:assets';
 interface Props {
   title?: string;
   description?: string;
   direction?: string;
   navigation?: boolean;
   home?: boolean;
+  index?: boolean;
+  canonicalPath?: string;
 }
 const {
   title = 'AJ Uppal — Software engineer',
@@ -15,7 +20,24 @@ const {
   direction = 'worldbuilder',
   navigation = false,
   home = false,
+  canonicalPath = Astro.url.pathname,
+  index = Astro.url.pathname === '/' ||
+    Astro.url.pathname === '/portfolio/collection/' ||
+    Astro.url.pathname.startsWith('/portfolio/work/'),
 } = Astro.props;
+const canonical = new URL(canonicalPath, Astro.site);
+const project = projects.find((item) => item.key === Astro.params.key);
+const socialAsset = asset(project?.image || 'murmuration-lead-ribbon');
+const socialImage = await getImage({
+  src: socialAsset,
+  width: 1200,
+  height: 630,
+  fit: 'cover',
+  format: 'jpeg',
+});
+const socialAlt = project?.image
+  ? project.alt
+  : 'AJ Uppal’s portfolio: violet and white particle ribbons in the running murmuration app.';
 ---
 
 <!doctype html>
@@ -25,7 +47,8 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content="noindex, follow" />
+    <meta name="robots" content={index ? 'index, follow' : 'noindex, follow'} />
+    <link rel="canonical" href={canonical} />
     <meta
       name="theme-color"
       content={direction === 'worldbuilder'
@@ -37,6 +60,14 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(socialImage.src, Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={socialAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={new URL(socialImage.src, Astro.site)} />
+    <meta name="twitter:image:alt" content={socialAlt} />
     <link rel="icon" href="/favicon.ico" sizes="any" />
   </head>
   <body
@@ -49,14 +80,14 @@ const {
       navigation && (
         <header class="portfolio-nav">
           <>
-            <a class="portfolio-brand" href="/portfolio/">
+            <a class="portfolio-brand" href="/">
               AJ Uppal<span>.</span>
             </a>
             <nav aria-label="Main navigation">
               <>
-                <a href="/portfolio/#work">Work</a>
+                <a href="/#work">Work</a>
                 <a href="/portfolio/collection/">Collection</a>
-                <a href="/portfolio/#about">About</a>
+                <a href="/#about">About</a>
                 <a href={`mailto:${contact.email}`}>Contact ↗</a>
               </>
             </nav>
@@ -70,22 +101,29 @@ const {
 
 <script>
   const routes: Record<string, string> = {
-    worldbuilder: '/portfolio/',
-    editorial: '/portfolio/editorial/',
-    studio: '/portfolio/studio/',
-    'field-notes': '/portfolio/field-notes/',
-    observatory: '/portfolio/observatory/',
+    worldbuilder: '/',
   };
+  const review =
+    import.meta.env.DEV || import.meta.env.MODE === 'lab' || import.meta.env.MODE === 'palettes';
+  if (review)
+    Object.assign(routes, {
+      editorial: '/portfolio/editorial/',
+      studio: '/portfolio/studio/',
+      'field-notes': '/portfolio/field-notes/',
+      observatory: '/portfolio/observatory/',
+    });
   // Keep a reader in the direction they chose, including across full project
   // pages. Storage is optional; ordinary URLs remain complete without it.
   try {
     const home = document.body.dataset.portfolioHome;
-    if (home && routes[home]) sessionStorage.setItem('portfolio-direction', home);
-    const selected = sessionStorage.getItem('portfolio-direction') || 'worldbuilder';
+    if (review && home && routes[home]) sessionStorage.setItem('portfolio-direction', home);
+    const selected = (review && sessionStorage.getItem('portfolio-direction')) || 'worldbuilder';
     const route = routes[selected] || routes.worldbuilder!;
     if (document.body.hasAttribute('data-portfolio-context'))
       document
-        .querySelectorAll<HTMLAnchorElement>('a[href="/portfolio/"], a[href^="/portfolio/#"]')
+        .querySelectorAll<HTMLAnchorElement>(
+          'a[href="/"], a[href^="/#"], a[href="/portfolio/"], a[href^="/portfolio/#"]',
+        )
         .forEach((link) => {
           let hash = link.hash;
           if (hash === '#projects' && !['worldbuilder', 'observatory'].includes(selected))

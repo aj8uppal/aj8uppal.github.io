@@ -9,7 +9,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const host = '127.0.0.1';
 export const services = [
-  { key: 'portfolio', label: 'Portfolio preview', port: 4340, route: '/portfolio/' },
+  { key: 'portfolio', label: 'Portfolio preview', port: 4340, route: '/' },
   { key: 'driftfall', label: 'Driftfall', port: 5301, route: '/' },
   { key: 'bring-something-home', label: 'Bring Something Home', port: 5303, route: '/' },
 ];
@@ -21,16 +21,15 @@ const exists = async (file) =>
   );
 
 /** Title plus app-specific health shape prevents reusing an unrelated server. */
-export function matchesService(key, html, health) {
+export function matchesService(key, html, health, mode = 'production') {
   const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim() || '';
   if (key === 'portfolio')
     return (
       /^AJ Uppal\b/.test(title) &&
-      /data-portfolio-home=["'](?:worldbuilder|editorial|studio|field-notes|observatory)["']/.test(
-        html,
-      ) &&
+      /data-portfolio-home=["']worldbuilder["']/.test(html) &&
       !html.includes('/@vite/client') &&
-      health?.directoryIndex === true
+      health?.rootIndex === true &&
+      (mode === 'lab' ? health?.comparisonIndex === true : health?.comparisonAbsent === true)
     );
   if (key === 'driftfall')
     return /^Driftfall\b/.test(title) && health?.name === 'Driftfall' && health.ok === true;
@@ -44,9 +43,15 @@ export function matchesService(key, html, health) {
   return false;
 }
 
-async function readResponse(url) {
+async function readResponse(url, { allowNotFound = false } = {}) {
   const response = await fetch(url, { signal: AbortSignal.timeout(4000), redirect: 'error' });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  if (!response.ok) {
+    if (allowNotFound && response.status === 404) {
+      if (response.body) await response.body.cancel().catch(() => {});
+      return null;
+    }
+    throw new Error(`HTTP ${response.status}`);
+  }
   const reader = response.body.getReader();
   const chunks = [];
   let bytes = 0;
@@ -73,18 +78,27 @@ export async function portAvailable(port) {
   });
 }
 
-export async function inspectService(service) {
+export async function inspectService(service, mode = 'production') {
   if (await portAvailable(service.port)) return 'free';
   try {
     const [html, health] = await Promise.all([
       readResponse(baseURL(service) + service.route),
       service.key === 'portfolio'
-        ? readResponse(baseURL(service) + '/playlist-from-photo/').then((html) => ({
-            directoryIndex: /<title[^>]*>\s*Playlist From a Photo\s*<\/title>/i.test(html),
+        ? Promise.all([
+            readResponse(baseURL(service) + '/'),
+            readResponse(baseURL(service) + '/directions/', {
+              allowNotFound: mode === 'production',
+            }),
+          ]).then(([root, directions]) => ({
+            rootIndex: /data-portfolio-home=["']worldbuilder["']/.test(root),
+            comparisonIndex:
+              typeof directions === 'string' &&
+              /<title[^>]*>\s*\d+ complete directions\b/i.test(directions),
+            comparisonAbsent: directions === null,
           }))
         : readResponse(baseURL(service) + '/api/health').then(JSON.parse),
     ]);
-    return matchesService(service.key, html, health) ? 'matching' : 'occupied';
+    return matchesService(service.key, html, health, mode) ? 'matching' : 'occupied';
   } catch {
     return 'occupied';
   }
@@ -129,16 +143,29 @@ export function portGuardSource(port) {
   return `import { Server } from 'node:net';\nconst original = Server.prototype.listen;\nServer.prototype.listen = function (...args) {\n  const port = typeof args[0] === 'object' ? args[0]?.port : args[0];\n  if (Number(port) !== ${port}) throw new Error('The review requires port ${port}; refusing an alternate listen port.');\n  return original.apply(this, args);\n};\n`;
 }
 
-async function hasPortfolioBuild() {
-  return (
-    (await exists(path.join(repository, 'dist/portfolio/index.html'))) &&
-    (await exists(path.join(repository, 'dist/directions/index.html')))
-  );
+function reviewMode() {
+  const mode = process.env.PORTFOLIO_REVIEW_MODE || 'production';
+  if (mode !== 'production' && mode !== 'lab')
+    throw new Error(`PORTFOLIO_REVIEW_MODE must be production or lab, got ${mode}.`);
+  return mode;
 }
 
-function buildPortfolio(children) {
+async function hasPortfolioBuild(mode) {
+  const labFiles = [
+    'dist/directions/index.html',
+    'dist/alternate/index.html',
+    ...['editorial', 'studio', 'field-notes', 'observatory'].map(
+      (name) => `dist/portfolio/${name}/index.html`,
+    ),
+  ];
+  const root = await exists(path.join(repository, 'dist/index.html'));
+  const lab = await Promise.all(labFiles.map((file) => exists(path.join(repository, file))));
+  return root && (mode === 'lab' ? lab.every(Boolean) : lab.every((found) => !found));
+}
+
+function buildPortfolio(children, mode) {
   return new Promise((resolve, reject) => {
-    const child = spawn('npm', ['run', 'build:lab'], {
+    const child = spawn('npm', ['run', mode === 'lab' ? 'build:lab' : 'build'], {
       cwd: repository,
       env: { ...process.env, ASTRO_TELEMETRY_DISABLED: '1' },
       detached: true,
@@ -160,13 +187,14 @@ export async function startReview({ check = false } = {}) {
     throw new Error('Use Node.js 24.15 or newer for these frozen builds.');
   if (process.platform === 'win32')
     throw new Error('This launcher uses POSIX process groups. Run it on macOS or Linux.');
+  const mode = reviewMode();
   const buildRoot = path.resolve(
     process.env.PORTFOLIO_BUILD_DIR || path.join(repository, '../data/portfolio-builds/2026-09-05'),
   );
   console.log(`Frozen build directory: ${buildRoot}`);
   const plan = await Promise.all(
     services.map(async (service) => {
-      const status = await inspectService(service);
+      const status = await inspectService(service, mode);
       const directory =
         service.key === 'portfolio' ? repository : path.join(buildRoot, service.key);
       const missing =
@@ -181,7 +209,9 @@ export async function startReview({ check = false } = {}) {
   for (const service of plan) {
     if (service.status === 'occupied')
       throw new Error(
-        `Port ${service.port} is occupied, but it does not answer as a healthy ${service.label} server. Resolve that listener yourself, then retry. No alternate port will be used.`,
+        `Port ${service.port} is occupied, but it does not answer as a healthy ${
+          service.key === 'portfolio' ? `${mode} ${service.label.toLowerCase()}` : service.label
+        } server. Resolve that listener yourself, then retry. No alternate port will be used.`,
       );
     if (service.status === 'matching')
       console.log(
@@ -200,11 +230,14 @@ export async function startReview({ check = false } = {}) {
         `${check ? 'Ready to start' : 'Will start'} ${service.label} on port ${service.port}.`,
       );
   }
-  const outputExists = await hasPortfolioBuild();
+  const outputExists = await hasPortfolioBuild(mode);
+  const portfolio = plan.find((service) => service.key === 'portfolio');
   console.log(
     outputExists
-      ? 'Using the existing compiled portfolio in dist/.'
-      : 'Compiled portfolio output is missing. A launch will run npm run build:lab before preview.',
+      ? `Using the existing compiled ${mode} portfolio in dist/.`
+      : portfolio?.status === 'matching'
+        ? `Compiled ${mode} portfolio output is missing, but a matching server is already running and will be reused. Stop it before rebuilding with npm run ${mode === 'lab' ? 'build:lab' : 'build'}.`
+        : `Compiled ${mode} portfolio output is missing. A launch will run npm run ${mode === 'lab' ? 'build:lab' : 'build'} before preview.`,
   );
   if (check) {
     console.log('Check complete. No processes were started and no state was created.');
@@ -254,11 +287,13 @@ export async function startReview({ check = false } = {}) {
       let args = ['start'];
       if (service.key === 'portfolio') {
         if (!outputExists) {
-          console.log('Building the missing portfolio output with npm run build:lab.');
-          await buildPortfolio(children);
+          console.log(
+            `Building the missing ${mode} portfolio output with npm run ${mode === 'lab' ? 'build:lab' : 'build'}.`,
+          );
+          await buildPortfolio(children, mode);
           if (stopping) break;
-          if (!(await hasPortfolioBuild()))
-            throw new Error('The build did not produce the portfolio and directions pages.');
+          if (!(await hasPortfolioBuild(mode)))
+            throw new Error(`The ${mode} build did not produce the required portfolio pages.`);
         }
         // Astro preview does not forward Vite's strictPort option. Restrict
         // this child process to its requested port, including a bind race.
@@ -320,8 +355,9 @@ export async function startReview({ check = false } = {}) {
       await completed;
       return;
     }
-    console.log('\nPortfolio: http://127.0.0.1:4340/portfolio/');
-    console.log('Compare all five directions: http://127.0.0.1:4340/directions/');
+    console.log('\nPortfolio: http://127.0.0.1:4340/');
+    if (mode === 'lab')
+      console.log('Compare all five directions: http://127.0.0.1:4340/directions/');
     for (const service of plan.filter((item) => item.key !== 'portfolio')) {
       if (service.status === 'matching' || !service.missing.length)
         console.log(`${service.label}: ${baseURL(service)}/`);
@@ -375,7 +411,7 @@ if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === imp
       'Starts the portfolio and available frozen local demos. --check inspects ports and snapshot files without starting anything.',
     );
     console.log(
-      'Set PORTFOLIO_BUILD_DIR to override the dated frozen build directory. See docs/portfolio-local-demo.md.',
+      'Set PORTFOLIO_BUILD_DIR to override the dated frozen build directory. Set PORTFOLIO_REVIEW_MODE=lab for comparison routes. See docs/portfolio-local-demo.md.',
     );
   } else {
     startReview({ check: args.includes('--check') }).catch((error) => {

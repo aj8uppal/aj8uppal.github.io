@@ -1,5 +1,33 @@
 [
   {
+    "image": "portfolio-eyeshot-feature",
+    "raw": "eyeshot-practice-angle-1200x800.png",
+    "rawSha256": "94148b1d25057f3b94020359a61deaeed5e0cb02c062d6dc38b138cc834bbf86",
+    "source": "Eyeshot: a close view of the live Angle practice prompt and graph, from an actual pointer interaction over HTTPS. Cropped from the complete practice frame below.",
+    "sourceWidth": 1200,
+    "sourceHeight": 800,
+    "width": 650,
+    "height": 356,
+    "crop": {
+      "left": 275,
+      "top": 192,
+      "width": 650,
+      "height": 356
+    },
+    "processing": "Documented detail crop; downscale only, WebP quality 90."
+  },
+  {
+    "image": "portfolio-eyeshot-practice",
+    "raw": "eyeshot-practice-angle-1200x800.png",
+    "rawSha256": "94148b1d25057f3b94020359a61deaeed5e0cb02c062d6dc38b138cc834bbf86",
+    "source": "Eyeshot: the complete 1200 × 800 practice frame, including header, tabs, Angle prompt, graph, timer and Lock in control. No account or leaderboard submission.",
+    "sourceWidth": 1200,
+    "sourceHeight": 800,
+    "width": 1200,
+    "height": 800,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
     "image": "built-boundary",
     "raw": "built-boundary.png",
     "rawSha256": "085ec2bd56985e675a84d1aee6b7f0264ff876fb71b8b9c00489b4cab20be380",
