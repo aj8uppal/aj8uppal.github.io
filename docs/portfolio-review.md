@@ -85,8 +85,10 @@ full body of work.
 
 ## App release boundaries
 
-[Boundary](apps/boundary.md) is the verified static 3.1.0 release and can ship
-independently of the redesign. [Driftfall](apps/driftfall.md) and
+[Boundary](apps/boundary.md) is the verified static 3.1.0 release, published
+independently at <https://aj8uppal.github.io/boundary/> in `d9e5d98`.
+Its Pages deployment and live HTTPS/offline checks pass.
+[Driftfall](apps/driftfall.md) and
 [Bring Something Home](apps/bring-something-home.md) use frozen production
 snapshots and disposable state through the local launcher. The canonical new
 RPG rebrand is complete; original Ember Wilds remains a separate project.
