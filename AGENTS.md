@@ -113,6 +113,28 @@ The page reads `daily.json` at load and shows the set as today's drop; without i
 The job needs the `ANTHROPIC_API_KEY` repository secret and exits clean without it.
 A commit made with the workflow token does not trigger the deploy, so the job dispatches `deploy.yml` itself when the drop changed.
 
+## Portfolio directions share their depth
+
+`/portfolio/` and its alternative directions are a local review until explicitly
+promoted; `/` remains the published design. Their collection and project pages
+come from `src/data/portfolio.ts`, with app records derived from `built.ts`.
+Curate those records instead of deleting public demo files. Each direction keeps
+its own presentation in `src/portfolio/`; case-page return links remember the
+direction in session storage and still work without JavaScript.
+
+`npm run portfolio:images` reproduces the reviewed photographs from the external
+raw archive; its recipes and provenance manifests are separate from the live
+`built:shots` batch. `npm run portfolio:shots` photographs the directions for the
+comparison page. `npm run verify:portfolio -- <base-url>` checks all directions,
+case pages, narrow layouts, keyboard interaction and reduced motion.
+
+Use `npm run portfolio:review` for the complete local demo, after building. It
+serves compiled output and frozen Node game builds with disposable state. Astro
+development mode does not resolve every `public/` directory index as production
+does. The game links using loopback addresses are deliberate local-review links;
+give them public hosts before promoting the portfolio. See
+`docs/portfolio-local-demo.md` for the launcher and snapshot contract.
+
 ## Maintaining this file
 
 Keep this file for knowledge useful to almost every future agent session in this project.

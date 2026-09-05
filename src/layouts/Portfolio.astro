@@ -1,0 +1,98 @@
+---
+import '../portfolio/shared.css';
+import '../portfolio/portfolio.css';
+import { contact } from '../data/content';
+interface Props {
+  title?: string;
+  description?: string;
+  direction?: string;
+  navigation?: boolean;
+  home?: boolean;
+}
+const {
+  title = 'AJ Uppal — Software engineer',
+  description = 'Healthcare systems, shared worlds and a curious mind. Explore the work and engineering of AJ Uppal.',
+  direction = 'worldbuilder',
+  navigation = false,
+  home = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, follow" />
+    <meta
+      name="theme-color"
+      content={direction === 'worldbuilder'
+        ? '#0d1e25'
+        : direction === 'observatory'
+          ? '#101c28'
+          : '#f3f1ea'}
+    />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+  </head>
+  <body
+    class={`ref-page ref-${direction}`}
+    data-portfolio-home={home ? direction : undefined}
+    data-portfolio-context={navigation ? '' : undefined}
+  >
+    <a class="ref-skip" href="#main">Skip to content</a>
+    {
+      navigation && (
+        <header class="portfolio-nav">
+          <>
+            <a class="portfolio-brand" href="/portfolio/">
+              AJ Uppal<span>.</span>
+            </a>
+            <nav aria-label="Main navigation">
+              <>
+                <a href="/portfolio/#work">Work</a>
+                <a href="/portfolio/collection/">Collection</a>
+                <a href="/portfolio/#about">About</a>
+                <a href={`mailto:${contact.email}`}>Contact ↗</a>
+              </>
+            </nav>
+          </>
+        </header>
+      )
+    }
+    <slot />
+  </body>
+</html>
+
+<script>
+  const routes: Record<string, string> = {
+    worldbuilder: '/portfolio/',
+    editorial: '/portfolio/editorial/',
+    studio: '/portfolio/studio/',
+    'field-notes': '/portfolio/field-notes/',
+    observatory: '/portfolio/observatory/',
+  };
+  // Keep a reader in the direction they chose, including across full project
+  // pages. Storage is optional; ordinary URLs remain complete without it.
+  try {
+    const home = document.body.dataset.portfolioHome;
+    if (home && routes[home]) sessionStorage.setItem('portfolio-direction', home);
+    const selected = sessionStorage.getItem('portfolio-direction') || 'worldbuilder';
+    const route = routes[selected] || routes.worldbuilder!;
+    if (document.body.hasAttribute('data-portfolio-context'))
+      document
+        .querySelectorAll<HTMLAnchorElement>('a[href="/portfolio/"], a[href^="/portfolio/#"]')
+        .forEach((link) => {
+          let hash = link.hash;
+          if (hash === '#projects' && !['worldbuilder', 'observatory'].includes(selected))
+            hash = '#work';
+          link.href = route + hash;
+        });
+  } catch {
+    /* Private browsing can make storage unavailable. */
+  }
+</script>

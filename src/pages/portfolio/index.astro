@@ -1,0 +1,13 @@
+---
+import Portfolio from '../../layouts/Portfolio.astro';
+import Markup from '../../components/PortfolioMarkup.astro';
+import render from '../../portfolio/worldbuilder.mjs';
+import '../../portfolio/worldbuilder.css';
+---
+
+<Portfolio home direction="worldbuilder">
+  <Markup html={render()} />
+</Portfolio>
+<script>
+  import '../../portfolio/worldbuilder.js';
+</script>

@@ -1,0 +1,365 @@
+---
+import { Picture } from 'astro:assets';
+import Portfolio from '../../../layouts/Portfolio.astro';
+import { projects, type Project } from '../../../data/portfolio';
+import { asset } from '../../../lib/images';
+import { contact } from '../../../data/content';
+import '../../../portfolio/case.css';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({ params: { key: project.key }, props: { project } }));
+}
+interface Props {
+  project: Project;
+}
+const { project: p } = Astro.props;
+const frames = p.frames.filter((f) => f.image !== p.image);
+const related = projects
+  .filter((item) => item.key !== p.key && item.key !== 'notable' && item.image)
+  .sort((a, b) => Number(b.kind === p.kind) - Number(a.kind === p.kind))
+  .slice(0, 3);
+const W = [640, 960, 1440, 1920, 2400];
+const short = p.constraint === p.summary;
+---
+
+<Portfolio title={`${p.name} · AJ Uppal`} description={p.summary} navigation>
+  <main id="main" class="pc-shell" data-project={p.key}>
+    <a class="pc-back" href="/portfolio/#projects" data-portfolio-back>← Back to selected work</a>
+    <header class="pc-head">
+      <div>
+        <p class="ref-eyebrow">
+          {
+            p.key === 'notable'
+              ? 'Professional work / Notable Health'
+              : `Personal project / ${p.kind}`
+          }
+        </p><h1>{p.name}<span>.</span></h1>
+      </div>
+      <div class="pc-intro">
+        <p>{p.summary}</p><div class="pc-actions">
+          {
+            p.href && (
+              <a
+                class="pc-button"
+                href={p.href}
+                target={p.href.startsWith('http') ? '_blank' : undefined}
+                rel={p.href.startsWith('http') ? 'noopener' : undefined}
+              >
+                {p.local
+                  ? 'Play locally'
+                  : p.status === 'wip'
+                    ? 'Explore the project'
+                    : 'Open project'}{' '}
+                <span aria-hidden="true">↗</span>
+              </a>
+            )
+          }
+          <span class="pc-status"
+            >{
+              p.local
+                ? 'Playable local build'
+                : p.status === 'wip'
+                  ? 'Work in progress'
+                  : p.key === 'notable'
+                    ? 'August 2022–present'
+                    : 'Live in a browser'
+            }</span
+          >
+        </div>
+      </div>
+    </header>
+
+    {
+      p.image ? (
+        <figure class="pc-lead">
+          <a
+            href={asset(p.image).src}
+            data-photo
+            data-caption={p.frames.find((f) => f.image === p.image)?.note || p.alt}
+            aria-label={`Enlarge the ${p.name} photograph`}
+          >
+            <Picture
+              src={asset(p.image)}
+              alt={p.alt}
+              widths={W}
+              sizes="(min-width: 1400px) 1280px, 95vw"
+              formats={['avif']}
+              fallbackFormat="webp"
+              loading="eager"
+              decoding="sync"
+              fetchpriority="high"
+            />
+            <span class="pc-enlarge" aria-hidden="true">
+              View photograph ↗
+            </span>
+          </a>
+          <figcaption>
+            <>
+              <span>{p.frames.find((f) => f.image === p.image)?.label || p.name}</span>
+              <span>Captured in the running {p.status === 'wip' ? 'build' : 'app'}</span>
+              {p.frames.find((f) => f.image === p.image)?.note && (
+                <p class="pc-source-note">{p.frames.find((f) => f.image === p.image)?.note}</p>
+              )}
+            </>
+          </figcaption>
+        </figure>
+      ) : (
+        <section class="pc-system" aria-label="Professional scope and impact">
+          <div class="pc-system-stat">
+            <>
+              <strong>~250,000</strong>
+              <p>patient calls a month on our team’s voice and conversations platform</p>
+            </>
+          </div>
+          <div class="pc-system-flow">
+            <>
+              <span>
+                Patient identity<small>Verification & trust</small>
+              </span>
+              <b aria-hidden="true">→</b>
+              <span>
+                Conversation routing<small>EHRs, carriers & call centers</small>
+              </span>
+              <b aria-hidden="true">→</b>
+              <span>
+                Continuity<small>Observability & fallback</small>
+              </span>
+            </>
+          </div>
+          <p>Areas of my technical direction at Notable Health.</p>
+        </section>
+      )
+    }
+
+    <div class="pc-ownership">
+      <div><p class="ref-eyebrow">My work</p><p>{p.role}</p></div><div>
+        <p class="ref-eyebrow">Working with</p><p>{p.stack}</p>
+      </div>
+    </div>
+    <section class="pc-engineering" aria-labelledby="pc-question">
+      <div>
+        <p class="ref-eyebrow">Inside the build</p><h2 id="pc-question">
+          {short ? 'How it works.' : p.question}
+        </h2>
+      </div>
+      <div class="pc-decisions">
+        {
+          !short && (
+            <div>
+              <>
+                <h3>The constraint</h3>
+                <p>{p.constraint}</p>
+              </>
+            </div>
+          )
+        }
+        <div><h3>{short ? 'The engineering' : 'The decision'}</h3><p>{p.decision}</p></div>
+        <div class="pc-evidence">
+          <h3>{short ? 'In this photograph' : 'In the work'}</h3><p>{p.evidence}</p>
+        </div>
+      </div>
+    </section>
+
+    {
+      p.details && p.details.length > 0 && (
+        <dl class="pc-details">
+          {p.details.map(([label, value]) => (
+            <div>
+              <dt>{label}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+
+    {
+      frames.length > 0 && (
+        <section class="pc-photographs" aria-labelledby="pc-photographs-title">
+          <>
+            <header>
+              <>
+                <p class="ref-eyebrow">A closer look</p>
+                <h2 id="pc-photographs-title">A few moments inside.</h2>
+              </>
+            </header>
+            <div class="pc-frame-grid">
+              {frames.map((f) => (
+                <figure
+                  data-portrait={asset(f.image).height > asset(f.image).width ? '' : undefined}
+                >
+                  <a
+                    href={asset(f.image).src}
+                    data-photo
+                    data-caption={f.note || f.label}
+                    aria-label={`Enlarge ${f.label}`}
+                  >
+                    <Picture
+                      src={asset(f.image)}
+                      alt={f.alt}
+                      widths={[480, 800, 1200, 1800]}
+                      sizes="(min-width: 900px) 45vw, 92vw"
+                      formats={['avif']}
+                      fallbackFormat="webp"
+                      loading="lazy"
+                    />
+                    <span class="pc-enlarge" aria-hidden="true">
+                      ↗
+                    </span>
+                  </a>
+                  <figcaption>
+                    <strong>{f.label}</strong>
+                    <p>{f.note}</p>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </>
+        </section>
+      )
+    }
+
+    {
+      p.proofFrames && p.proofFrames.length > 0 && (
+        <details class="pc-proof">
+          <>
+            <summary>
+              Under the surface{' '}
+              <>
+                <span>Instruments, interfaces and shared state</span>
+                <b aria-hidden="true">+</b>
+              </>
+            </summary>
+            <div>
+              {p.proofFrames.map((f) => (
+                <figure>
+                  <a
+                    href={asset(f.image).src}
+                    data-photo
+                    data-caption={f.note}
+                    aria-label={`Enlarge ${f.label}`}
+                  >
+                    <Picture
+                      src={asset(f.image)}
+                      alt={f.alt}
+                      widths={[640, 1200, 1800]}
+                      sizes="90vw"
+                      formats={['avif']}
+                      fallbackFormat="webp"
+                      loading="lazy"
+                    />
+                  </a>
+                  <figcaption>
+                    <strong>{f.label}</strong>
+                    <p>{f.note}</p>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </>
+        </details>
+      )
+    }
+
+    <section class="pc-next" aria-labelledby="pc-next-title">
+      <header>
+        <h2 id="pc-next-title">Keep exploring.</h2><a href="/portfolio/collection/"
+          >The whole collection →</a
+        >
+      </header><div>
+        {
+          related.map((item) => (
+            <a href={`/portfolio/work/${item.key}/`}>
+              <>
+                <Picture
+                  src={asset(item.image!)}
+                  alt={item.alt}
+                  widths={[400, 640, 960]}
+                  sizes="(min-width: 720px) 30vw, 90vw"
+                  formats={['avif']}
+                  fallbackFormat="webp"
+                  loading="lazy"
+                />
+                <span>
+                  <>
+                    <strong>{item.name}</strong>
+                    <b aria-hidden="true">↗</b>
+                  </>
+                </span>
+                <small>{item.kind}</small>
+              </>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+    <footer class="pc-footer">
+      <a class="portfolio-brand" href="/portfolio/">AJ Uppal.</a><p>
+        Have something worth building?
+      </p><a href={`mailto:${contact.email}`}>Let’s talk ↗</a>
+    </footer>
+  </main>
+  <dialog class="pc-lightbox" aria-label="Enlarged project photograph">
+    <div class="pc-photo-toolbar">
+      <div data-photo-controls>
+        <button type="button" data-photo-previous aria-label="Previous photograph">←</button>
+        <span data-photo-count role="status"></span>
+        <button type="button" data-photo-next aria-label="Next photograph">→</button>
+      </div>
+      <button type="button" data-photo-close aria-label="Close photograph"
+        >Close <span aria-hidden="true">×</span></button
+      >
+    </div>
+    <figure><img alt="" /><figcaption></figcaption></figure>
+  </dialog>
+</Portfolio>
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('.pc-lightbox');
+  if (dialog) {
+    const image = dialog.querySelector<HTMLImageElement>('img')!;
+    const caption = dialog.querySelector<HTMLElement>('figcaption')!;
+    const count = dialog.querySelector<HTMLElement>('[data-photo-count]')!;
+    const controls = dialog.querySelector<HTMLElement>('[data-photo-controls]')!;
+    const close = dialog.querySelector<HTMLButtonElement>('[data-photo-close]')!;
+    let photographs: HTMLAnchorElement[] = [];
+    let selected = 0;
+    const show = (index: number) => {
+      selected = (index + photographs.length) % photographs.length;
+      const link = photographs[selected]!;
+      image.src = link.href;
+      image.alt = link.querySelector('img')?.alt || '';
+      caption.textContent = link.dataset.caption || '';
+      count.textContent = `${selected + 1} / ${photographs.length}`;
+    };
+    document.querySelectorAll<HTMLAnchorElement>('[data-photo]').forEach((link) =>
+      link.addEventListener('click', (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        photographs = [...document.querySelectorAll<HTMLAnchorElement>('[data-photo]')].filter(
+          (photo) => photo.getClientRects().length > 0,
+        );
+        controls.hidden = photographs.length < 2;
+        show(photographs.indexOf(link));
+        dialog.showModal();
+        close.focus();
+        document.documentElement.style.overflow = 'hidden';
+      }),
+    );
+    close.addEventListener('click', () => dialog.close());
+    dialog
+      .querySelector('[data-photo-previous]')!
+      .addEventListener('click', () => show(selected - 1));
+    dialog.querySelector('[data-photo-next]')!.addEventListener('click', () => show(selected + 1));
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      show(selected + (event.key === 'ArrowLeft' ? -1 : 1));
+    });
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('close', () => {
+      document.documentElement.style.overflow = '';
+    });
+  }
+</script>

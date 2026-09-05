@@ -1,0 +1,13 @@
+---
+import Portfolio from '../../layouts/Portfolio.astro';
+import Markup from '../../components/PortfolioMarkup.astro';
+import render from '../../portfolio/editorial.mjs';
+import '../../portfolio/editorial.css';
+---
+
+<Portfolio home direction="editorial">
+  <Markup html={render()} />
+</Portfolio>
+<script>
+  import '../../portfolio/editorial.js';
+</script>

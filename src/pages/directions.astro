@@ -1,0 +1,271 @@
+---
+import { Picture } from 'astro:assets';
+import Portfolio from '../layouts/Portfolio.astro';
+import { asset } from '../lib/images';
+const directions = [
+  {
+    key: 'worldbuilder',
+    number: '01',
+    name: 'Worldbuilder',
+    href: '/portfolio/',
+    title: 'A person. A few worlds.',
+    body: 'An atmospheric opening, professional depth, and a carefully chosen path through the work.',
+    note: 'The recommended direction',
+  },
+  {
+    key: 'editorial',
+    number: '02',
+    name: 'Editorial',
+    href: '/portfolio/editorial/',
+    title: 'Clear, considered, direct.',
+    body: 'Warm paper, generous photographs and engineering decisions set beside the work.',
+    note: 'For the crispest first read',
+  },
+  {
+    key: 'studio',
+    number: '03',
+    name: 'Open Studio',
+    href: '/portfolio/studio/',
+    title: 'A curious mind at work.',
+    body: 'A more playful introduction, interactive interests, and a small taste of Eyeshot.',
+    note: 'For more personality and play',
+  },
+  {
+    key: 'field-notes',
+    number: '04',
+    name: 'Field Notes',
+    href: '/portfolio/field-notes/',
+    title: 'A question. A working thing.',
+    body: 'A clothbound opening, a folding index, and a notebook margin that follows three short engineering stories.',
+    note: 'For a more personal reading experience',
+  },
+  {
+    key: 'observatory',
+    number: '05',
+    name: 'Observatory',
+    href: '/portfolio/observatory/',
+    title: 'A little room to wonder.',
+    body: 'Midnight ink, arched windows into the work, and a quiet constellation that responds to your presence.',
+    note: 'For atmosphere with a clear introduction',
+  },
+];
+---
+
+<Portfolio title={`${directions.length} complete directions · AJ Uppal`}>
+  <main class="directions" id="main">
+    <header>
+      <a href="/">AJ Uppal<span>Current portfolio ↗</span></a><p>
+        Local design review / September 2026
+      </p>
+    </header>
+    <section class="directions-intro">
+      <p class="ref-eyebrow">One body of work. {directions.length} ways in.</p><h1>
+        Make yourself<br /><em>at home.</em>
+      </h1><p>
+        {directions.length} complete portfolios to explore. Each opens the same curated collection, with
+        real photographs and the engineering behind every project.
+      </p>
+    </section>
+    <div class="directions-grid">
+      {
+        directions.map((d) => (
+          <article>
+            <>
+              <a class="directions-shot" href={d.href}>
+                <>
+                  <Picture
+                    src={asset(`portfolio-direction-${d.key}`)}
+                    alt={`The ${d.name} portfolio, captured at a desktop viewport.`}
+                    widths={[480, 800, 1200]}
+                    sizes="(min-width: 1000px) 30vw, 92vw"
+                    formats={['avif']}
+                    fallbackFormat="webp"
+                    loading="eager"
+                  />
+                  <span>Open {d.name} ↗</span>
+                </>
+              </a>
+              <div class="directions-card-head">
+                <>
+                  <span>{d.number}</span>
+                  <h2>
+                    <a href={d.href}>{d.name}</a>
+                  </h2>
+                </>
+              </div>
+              <h3>{d.title}</h3>
+              <p>{d.body}</p>
+              <small>{d.note}</small>
+            </>
+          </article>
+        ))
+      }
+    </div>
+    <footer>
+      <p>Start with Worldbuilder. Then follow whichever direction feels most like you.</p><a
+        href="/portfolio/collection/?filter=all">Explore the full collection →</a
+      >
+    </footer>
+  </main>
+</Portfolio>
+<style>
+  .directions {
+    width: min(1360px, calc(100% - 96px));
+    margin: auto;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 100px;
+    border-bottom: 1px solid #455d62;
+  }
+  header > a {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font:
+      28px Georgia,
+      serif;
+  }
+  header span,
+  header p {
+    font: 11px/1.5 var(--ref-mono);
+    color: #b1c5c1;
+  }
+  .directions-intro {
+    position: relative;
+    padding-block: 72px 52px;
+  }
+  h1 {
+    font-size: clamp(64px, 7vw, 110px);
+    line-height: 1;
+    margin-block: 22px;
+  }
+  h1 em {
+    color: #bad7c5;
+    font-weight: 400;
+  }
+  .directions-intro > p:last-child {
+    max-width: 48ch;
+    color: #b1c5c1;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+  .directions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+  }
+  article {
+    min-width: 0;
+  }
+  .directions-shot {
+    display: block;
+    overflow: hidden;
+    border: 1px solid #455d62;
+  }
+  .directions-shot img {
+    height: auto;
+    aspect-ratio: 1.44;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+  .directions-shot:hover img {
+    transform: scale(1.02);
+  }
+  .directions-shot > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    background: #18313a;
+    font-size: 13px;
+  }
+  .directions-card-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 26px;
+  }
+  .directions-card-head > span {
+    font: 11px var(--ref-mono);
+    color: #b1c5c1;
+  }
+  h2 {
+    font-size: 32px;
+  }
+  h2 a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  h3 {
+    font:
+      20px/1.35 Georgia,
+      serif;
+    margin-block: 12px;
+  }
+  article > p {
+    color: #b1c5c1;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  article > small {
+    display: block;
+    font: 10px/1.5 var(--ref-mono);
+    color: #bad7c5;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid #455d62;
+  }
+  footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+    align-items: center;
+    padding-block: 36px 52px;
+    margin-top: 60px;
+    border-top: 1px solid #455d62;
+  }
+  footer p {
+    color: #b1c5c1;
+    font-size: 13px;
+  }
+  footer a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+  }
+  @media (max-width: 900px) {
+    .directions {
+      width: calc(100% - 40px);
+    }
+    .directions-grid {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    header p {
+      display: none;
+    }
+    header > a {
+      justify-content: space-between;
+      width: 100%;
+    }
+    .directions-intro {
+      padding-block: 48px;
+    }
+    footer {
+      flex-direction: column;
+      align-items: start;
+      gap: 14px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .directions-shot img {
+      transition: none;
+    }
+  }
+</style>

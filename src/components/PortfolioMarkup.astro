@@ -1,0 +1,34 @@
+---
+import { getImage } from 'astro:assets';
+import { asset } from '../lib/images';
+
+interface Props {
+  html: string;
+}
+let { html } = Astro.props;
+const tokens = [...new Set(html.match(/\/__portfolio-image__\/[\w-]+\.webp/g) || [])];
+const resolved = await Promise.all(
+  tokens.map(async (token) => {
+    const key = token.split('/').pop()!.replace('.webp', '');
+    const src = asset(key);
+    const widths = [480, 800, 1200, 1800, 2400].filter((w) => w <= src.width);
+    const output = await getImage({ src, widths, format: 'webp', quality: 84 });
+    return { token, src, output };
+  }),
+);
+// Real responsive photographs even though the three art directions use string
+// templates. Alternate frame URLs are resolved as well as initial <img> sources.
+for (const { token, src, output } of resolved) {
+  html = html.replaceAll(
+    new RegExp(`<img([^>]*?)src="${token}"([^>]*?)>`, 'g'),
+    (_match, before: string, after: string) => {
+      const scene = /class="wb-scene"/.test(after);
+      const interactive = /data-ed-image/.test(after);
+      return `<img${before}src="${output.src}"${after} width="${src.width}" height="${src.height}"${!scene && !interactive ? ` srcset="${output.srcSet.attribute}" sizes="(min-width: 1100px) 60vw, 100vw"` : ''}>`;
+    },
+  );
+  html = html.replaceAll(token, output.src);
+}
+---
+
+<Fragment set:html={html} />

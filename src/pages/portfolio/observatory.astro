@@ -1,0 +1,13 @@
+---
+import Portfolio from '../../layouts/Portfolio.astro';
+import Markup from '../../components/PortfolioMarkup.astro';
+import render from '../../portfolio/observatory.mjs';
+import '../../portfolio/observatory.css';
+---
+
+<Portfolio home direction="observatory" title="AJ Uppal — The Observatory">
+  <Markup html={render()} />
+</Portfolio>
+<script>
+  import '../../portfolio/observatory.js';
+</script>

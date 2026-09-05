@@ -1,0 +1,19 @@
+{
+  "name": "Boundary Cricket",
+  "short_name": "Boundary",
+  "description": "Read the ball. Find the gap. Run between the wickets.",
+  "start_url": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "background_color": "#111d18",
+  "theme_color": "#111d18",
+  "id": "./",
+  "scope": "./",
+  "orientation": "any",
+  "categories": ["games", "sports"],
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

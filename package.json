@@ -21,7 +21,11 @@
     "format": "prettier --write .",
     "check": "astro check",
     "verify": "node scripts/verify.mjs",
-    "verify:built": "node scripts/verify-built.mjs"
+    "verify:built": "node scripts/verify-built.mjs",
+    "portfolio:shots": "node scripts/capture-portfolio.mjs",
+    "portfolio:images": "node scripts/prepare-portfolio-images.mjs --report src/data/portfolio-saltline.json && node scripts/prepare-portfolio-captures.mjs",
+    "portfolio:review": "node scripts/start-portfolio-review.mjs",
+    "verify:portfolio": "node scripts/verify-portfolio.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

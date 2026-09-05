@@ -1,0 +1,13 @@
+---
+import Portfolio from '../../layouts/Portfolio.astro';
+import Markup from '../../components/PortfolioMarkup.astro';
+import render from '../../portfolio/studio.mjs';
+import '../../portfolio/studio.css';
+---
+
+<Portfolio home direction="studio">
+  <Markup html={render()} />
+</Portfolio>
+<script>
+  import '../../portfolio/studio.js';
+</script>

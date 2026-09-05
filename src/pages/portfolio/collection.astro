@@ -1,0 +1,9 @@
+---
+import Portfolio from '../../layouts/Portfolio.astro';
+import Collection from '../../components/Collection.astro';
+import { collection } from '../../data/portfolio';
+---
+
+<Portfolio title="The collection · AJ Uppal" navigation>
+  <main id="main"><Collection apps={collection} portfolio /></main>
+</Portfolio>

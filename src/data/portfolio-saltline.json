@@ -1,0 +1,44 @@
+{
+  "provenance": "User-supplied Saltline captures; source PNG pixels are not modified.",
+  "records": [
+    {
+      "scene": "moonlight",
+      "input": "saltline-moonlight.png",
+      "output": "portfolio-saltline-moonlight.webp",
+      "sourceSha256": "e80ddf104677a7c6073a69df0ceea87957b47d651da7e604cd66f7886e66b7c0",
+      "source": "3456x2234 png",
+      "crop": {
+        "left": 0,
+        "top": 67,
+        "width": 3456,
+        "height": 1953
+      }
+    },
+    {
+      "scene": "sunrise",
+      "input": "saltline-sunrise.png",
+      "output": "portfolio-saltline-sunrise.webp",
+      "sourceSha256": "671084b5aa46bb86d0e9be070b1acd499aeba406784c95b86e0391bb5eb00e4c",
+      "source": "3456x2234 png",
+      "crop": {
+        "left": 0,
+        "top": 67,
+        "width": 3456,
+        "height": 1953
+      }
+    },
+    {
+      "scene": "morning",
+      "input": "saltline-morning.png",
+      "output": "portfolio-saltline-morning.webp",
+      "sourceSha256": "5c19f404f169d2187bfe7f013925fb773f5b5bfc5d0a1eb9e448ee7e2ccd7013",
+      "source": "3456x2234 png",
+      "crop": {
+        "left": 0,
+        "top": 67,
+        "width": 3456,
+        "height": 1953
+      }
+    }
+  ]
+}
