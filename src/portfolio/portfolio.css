@@ -1,0 +1,199 @@
+/* Shared furniture for the complete portfolio; each home keeps its own art
+   direction. No review controls are rendered inside a visitor's journey. */
+:root {
+  --mono: var(--ref-mono);
+}
+.portfolio-nav {
+  width: min(1280px, calc(100% - 96px));
+  margin: auto;
+  min-height: 96px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid var(--ref-line);
+}
+.portfolio-brand {
+  font:
+    32px/1.1 Georgia,
+    serif;
+  letter-spacing: -0.045em;
+}
+.portfolio-brand span {
+  color: var(--ref-accent);
+}
+.portfolio-nav nav {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.portfolio-nav nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+}
+.portfolio-nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+.portfolio-discovery {
+  margin-top: 88px;
+  padding-block: 50px 70px;
+  border-top: 1px solid var(--ref-line);
+}
+.portfolio-discovery > header {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  align-items: end;
+  gap: 40px;
+  margin-bottom: 32px;
+}
+.portfolio-discovery .ref-eyebrow {
+  margin-bottom: 14px;
+}
+.portfolio-discovery h2 {
+  font-size: clamp(36px, 4vw, 56px);
+}
+.portfolio-discovery > header > p {
+  max-width: 43ch;
+  color: var(--ref-muted);
+  font-size: 14px;
+}
+.portfolio-discovery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+.portfolio-discovery-grid article {
+  min-width: 0;
+}
+.portfolio-discovery-image {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background: var(--ref-card);
+}
+.portfolio-discovery-image img {
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+.portfolio-discovery-image:hover img {
+  transform: scale(1.035);
+}
+.portfolio-discovery-image > span {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  background: #10232de6;
+  color: #fff;
+}
+.portfolio-discovery-grid h3 {
+  font:
+    27px/1.15 Georgia,
+    serif;
+  margin-block: 4px 10px;
+}
+.portfolio-discovery-grid h3 a {
+  font: inherit;
+  border: 0;
+  padding: 0;
+  min-height: 44px;
+}
+.portfolio-discovery-grid h3 a span {
+  font: 18px system-ui;
+}
+.portfolio-discovery-grid article > p:last-child {
+  color: var(--ref-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.portfolio-collection-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 66px;
+  margin-top: 32px;
+  border-block: 1px solid var(--ref-line);
+  font-size: 15px;
+}
+.portfolio-collection-link span {
+  font-size: 24px;
+}
+.ref-worldbuilder {
+  --ref-ink: #edf0e6;
+  --ref-muted: #b1c5c1;
+  --ref-paper: #0d1e25;
+  --ref-line: #455d62;
+  --ref-accent: #bad7c5;
+  --ref-card: #132a32;
+  --ref-soft: #203b43;
+  color: var(--ref-ink);
+  background: var(--ref-paper);
+}
+.ref-worldbuilder .ref-case-link {
+  border-color: var(--ref-line);
+}
+.ref-worldbuilder .portfolio-discovery {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.ref-skip:focus {
+  color: #10232d;
+  background: #fff9eb;
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 720px) {
+  .portfolio-nav {
+    width: calc(100% - 32px);
+    min-height: 112px;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-content: center;
+    padding-block: 16px;
+  }
+  .portfolio-nav nav {
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .portfolio-nav nav a {
+    font-size: 13px;
+  }
+  .portfolio-discovery {
+    margin-top: 48px;
+    padding-block: 36px 40px;
+  }
+  .portfolio-discovery > header {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .portfolio-discovery-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .portfolio-discovery-image img {
+    aspect-ratio: 16 / 9;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-discovery-image img {
+    transition: none;
+  }
+}

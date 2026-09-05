@@ -3,6 +3,38 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 
 /**
+ * Astro 5's setup hook exposes the command, but not the Vite mode. Read the
+ * CLI flag used by build:lab before injecting any review page into the graph.
+ * Keeping these entrypoints outside pages also excludes their hoisted scripts
+ * from an ordinary production build.
+ * @returns {import('astro').AstroIntegration}
+ */
+function reviewRoutes() {
+  const modeFlag = process.argv.findIndex((arg) => arg === '--mode');
+  const mode =
+    process.argv.find((arg) => arg.startsWith('--mode='))?.slice(7) ??
+    (modeFlag >= 0 ? process.argv[modeFlag + 1] : undefined);
+  return {
+    name: 'portfolio-review-routes',
+    hooks: {
+      'astro:config:setup': ({ command, injectRoute }) => {
+        if (command !== 'dev' && mode !== 'lab' && mode !== 'palettes') return;
+        for (const name of ['editorial', 'studio', 'field-notes', 'observatory'])
+          injectRoute({
+            pattern: `/portfolio/${name}/`,
+            entrypoint: new URL(`./src/review/portfolio/${name}.astro`, import.meta.url),
+          });
+        for (const name of ['directions', 'alternate'])
+          injectRoute({
+            pattern: `/${name}/`,
+            entrypoint: new URL(`./src/review/${name}.astro`, import.meta.url),
+          });
+      },
+    },
+  };
+}
+
+/**
  * Resolve the design lab to an empty component unless the build asked for it.
  *
  * Base.astro already gates whether the panel renders, and a plain build has no
@@ -42,7 +74,7 @@ function labOnlyInLabBuilds() {
 // legacy demo URLs (/grinchjump.html, /pewpew/public/index.html, ...) alive.
 export default defineConfig({
   site: 'https://aj8uppal.github.io',
-  integrations: [react()],
+  integrations: [react(), reviewRoutes()],
   build: { inlineStylesheets: 'auto' },
   image: {
     // Sharp emits the responsive AVIF/WebP variants for the project imagery.

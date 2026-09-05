@@ -36,7 +36,7 @@ const {
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 
-const to = (id: string): string => (elsewhere ? `/#${id}` : `#${id}`);
+const to = (id: string): string => (elsewhere ? `/previous/#${id}` : `#${id}`);
 
 /* The design lab is review furniture. A dev server always has it; a build only
    has it when the build was asked for it by name, with `npm run build:lab`,

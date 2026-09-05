@@ -52,9 +52,9 @@ Game-owner verification on this release:
 - All nine public client files match the verified local release byte-for-byte;
   the deployed compiled server entrypoint matches as well.
 
-Portfolio verification passed lint/type checking, `build:lab`, the complete
-`npm run verify` browser gate and all 136 `verify:built` checks, including the
-new capture, its provenance, links, keyboard access, phone layouts and contrast.
+The game-only publication passed the portfolio gates current at that release.
+The Worldbuilder promotion has separate verification scopes documented in
+`docs/portfolio-review.md`.
 
 The portfolio image is a fresh capture from the public 1.4.1 server. It uses a
 new Arcanist and ordinary keyboard/mouse inputs; no prepared gear, level or
@@ -65,6 +65,18 @@ cleanup function that deletes its disposable account after the screenshot.
 CAPTURE_CHANNEL=chrome npm run built:shots -- bring-something-home
 ```
 
-This publication adds the game to the existing `/built/` collection. It does not
-promote the separate `portfolio/curated-worldbuilder` design branch or modify the
-original Ember Wilds deployment.
+Worldbuilder features this game in its second project tier and links to the
+public launch route. Original Ember Wilds remains a separate primary feature.
+
+The project case also preserves two game-owner photographs from the 1.4.0
+playtest: Thalassa phase two and the expedition recap, both with a prepared
+level-20 character. These are clearly captioned separately from the fresh
+public character. `npm run portfolio:images` regenerates the prepared Thalassa
+image as `portfolio-bring-home-thalassa.webp`; it does not overwrite the fresh
+`built-bring-something-home.webp` produced by the live capture command above.
+
+The independent local review snapshot remains version 1.4.0 at
+`../data/portfolio-builds/2026-09-05/bring-something-home-1.4.0.tar.gz`, SHA-256
+`50a0d5d2d9d3a9f89816711a1386281a09320961558b3621b565a2acc560f5a7`.
+`npm run portfolio:review` can run this archive with disposable SQLite state;
+the production portfolio uses the newer public release.

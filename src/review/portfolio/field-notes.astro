@@ -1,0 +1,13 @@
+---
+import Portfolio from '../../layouts/Portfolio.astro';
+import Markup from '../../components/PortfolioMarkup.astro';
+import render from '../../portfolio/field-notes.mjs';
+import '../../portfolio/field-notes.css';
+---
+
+<Portfolio home direction="field-notes" title="AJ Uppal — Field notes from a curious engineer">
+  <Markup html={render()} />
+</Portfolio>
+<script>
+  import '../../portfolio/field-notes.js';
+</script>

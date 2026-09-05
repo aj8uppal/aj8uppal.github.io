@@ -39,25 +39,21 @@ export interface Built {
   alt: string;
   /** What the capture is a picture of. Every one is a real running state. */
   cap: string;
+  /** A complete local build which has not been published to a public host. */
+  local?: boolean;
+  /** Longer project pages reuse these receipts rather than rewriting the card. */
+  story?: {
+    role: string;
+    constraint: string;
+    decision?: string;
+    evidence: string;
+    question: string;
+    frames?: { image: string; label: string; alt: string; note: string }[];
+    details?: string[][];
+  };
 }
 
 export const apps: Built[] = [
-  {
-    key: 'bring-something-home',
-    categories: ['systems', 'games'],
-    name: 'Bring Something Home',
-    kind: 'Cooperative RPG',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: '/bring-something-home/',
-    cta: 'Enter the wilds',
-    what: 'Go out together. Read the storm of projectiles. Bring back something that can outlast this life.',
-    how: 'The browser predicts movement while one realm decides every hit, reward and death. SQLite transactions preserve what you bank. Fullscreen keeps the whole expedition in view.',
-    k: 'Three.js · TypeScript · WebSocket · SQLite',
-    accent: '#cbb7ee',
-    alt: 'Bring Something Home in the Cindermeadow: a new Arcanist explores the 3D realm with equipment, nearby loot and progression beside the battlefield.',
-    cap: 'The public 1.4.1 realm, driven with keyboard and mouse on a fresh Arcanist account. No prepared gear or progression.',
-  },
   {
     key: 'slipstream',
     selected: true,
@@ -74,6 +70,27 @@ export const apps: Built[] = [
     accent: '#84cfbb',
     alt: 'Slipstream’s wind tunnel with smoke streamlines bending around a car-shaped obstacle, velocity controls and live pressure-drag measurements.',
     cap: 'A car preset in smoke view, running in the browser.',
+    story: {
+      role: 'The fluid solver, drawing tools, visualization and shareable shape format.',
+      constraint:
+        'A shape should become a useful experiment immediately, while a browser solves the flow around every edge.',
+      decision:
+        'Run the two-dimensional velocity and pressure fields on the GPU, with a multigrid pressure solve and drawn obstacles represented inside the simulation.',
+      evidence:
+        'The running browser experiment supports drawing, presets, flow visualization and shapes shared through a URL. Its drag readout models pressure only.',
+      question: 'What does the wind do with a shape you just drew?',
+      details: [
+        [
+          'Simulation',
+          'WebGL2 shader passes advance velocity and project the field through a pressure solve.',
+        ],
+        ['Interaction', 'A sketch becomes an obstacle in the same running wind tunnel.'],
+        [
+          'Model boundary',
+          'A two-dimensional, pressure-only experiment; it does not estimate total aerodynamic drag.',
+        ],
+      ],
+    },
   },
 
   {
@@ -119,13 +136,203 @@ export const apps: Built[] = [
     reach: 'open',
     reachLabel: 'Live',
     href: '/voidreach/',
-    cta: 'Fly it',
-    what: 'Fly through 64 generated star systems, alone or with other pilots.',
+    cta: 'Play solo',
+    what: 'Fly through 64 generated star systems in a procedural browser galaxy.',
     how: 'Procedural geometry builds every visible asset. A single-file solo build sits alongside a multiplayer service with persistent progression.',
     k: 'Three.js · WebGL 2 · TypeScript · Node ws',
     accent: '#7fd8f0',
     alt: 'The Voidreach cockpit: a station and a moon ahead, contact markers with distances, and shield, hull and power gauges along the bottom.',
     cap: 'Docking approach at Helios Anchorage, Sol Ascendant',
+    story: {
+      role: 'Flight, procedural worlds, browser rendering and the multiplayer service.',
+      constraint:
+        'A large space game needs places worth visiting without shipping a large library of models and textures.',
+      decision:
+        'Generate the visible geometry procedurally, with a standalone solo edition and a separate multiplayer service for persistent progression.',
+      evidence:
+        'The solo edition is playable here in a browser, with 64 generated star systems to explore.',
+      question: 'How much of a galaxy can a browser make for itself?',
+      details: [
+        ['Worldbuilding', 'Procedural geometry produces the visible ships, stations and worlds.'],
+        [
+          'Delivery',
+          'The public link opens the standalone solo edition. Multiplayer belongs to a separate Node WebSocket service.',
+        ],
+      ],
+    },
+  },
+  {
+    key: 'driftfall',
+    categories: ['systems', 'games'],
+    name: 'Driftfall',
+    kind: 'Space RPG',
+    reach: 'open',
+    reachLabel: 'Playable prototype',
+    local: true,
+    href: '/portfolio/work/driftfall/',
+    cta: 'Inside the build',
+    what: 'Follow a lost signal through a shared frontier. Survive the run, then decide what to bring back.',
+    how: 'A Node server owns movement, combat and progression. The browser predicts flight and smooths snapshots; a six-chapter journey gives the persistent universe a direction.',
+    k: 'Three.js · JavaScript · Node.js · WebSocket',
+    accent: '#99dacb',
+    alt: 'Driftfall in Haven Reach: AJ’s ship raises a spherical barrier during a Frontier run, with a blue planet above the asteroid field.',
+    cap: 'A real Frontier encounter in the local build. The barrier, enemy attack and flight state are running together.',
+    story: {
+      role: 'Flight and combat design, browser rendering, the authoritative server and progression.',
+      constraint:
+        'Spaceflight must feel immediate while the server remains the authority for hits, inventory, rewards and a persistent pilot.',
+      decision:
+        'Predict flight in the browser and reconcile it with server snapshots. Keep combat and reward decisions on the server, with an explicit extraction choice at each run break.',
+      evidence:
+        'The local build passed 239 unit tests and its production build. A separate 64-pilot, 15-second local load smoke completed without disconnects; it is not a production capacity measurement.',
+      question: 'A frontier you can return to.',
+      frames: [
+        {
+          image: 'portfolio-driftfall-flight',
+          label: 'Haven Reach',
+          alt: 'AJ’s ship approaches a ring-shaped station beneath a blue planet in Driftfall.',
+          note: 'A fresh pilot approaching the station, using the game’s free-cursor controls.',
+        },
+        {
+          image: 'portfolio-driftfall-run',
+          label: 'Into the run',
+          alt: 'Driftfall’s chase camera follows a ship at 134 metres per second, with an active hostile patrol and pulse shots across the sky.',
+          note: 'The first Frontier encounter, reached through the ordinary game controls.',
+        },
+      ],
+      details: [
+        [
+          'Flight',
+          'Browser prediction and snapshot smoothing sit around the server’s authoritative movement.',
+        ],
+        [
+          'Progression',
+          'Run rewards stay unbanked until extraction. Banked credits, ship upgrades and records persist.',
+        ],
+        [
+          'Deployment',
+          'A complete local Node build. The multiplayer service needs a server host before it can have a public play link.',
+        ],
+      ],
+    },
+  },
+  {
+    key: 'boundary',
+    categories: ['systems', 'games'],
+    name: 'Boundary',
+    kind: 'Cricket game',
+    reach: 'open',
+    reachLabel: 'Live',
+    href: '/boundary/',
+    cta: 'Take your innings',
+    what: 'Time the stroke, find a gap, and call the run before the throw reaches the stumps.',
+    how: 'A fixed-step simulation keeps the ball, fielders and both runners in one world. Runs follow completed movement; boundaries follow the actual flight of the ball.',
+    k: 'TypeScript · Three.js · Fixed-step physics · PWA',
+    accent: '#d5e983',
+    alt: 'Boundary’s floodlit cricket ground, viewed behind the batter during the guided first delivery. The bat, ball and fielders share the same 3D scene.',
+    cap: 'The guided first delivery in Boundary 3.1. The ball waits at the timing cue while you learn the stroke.',
+    story: {
+      role: 'Game design, the simulation, Three.js rendering and the batting and running controls.',
+      constraint:
+        'A well-timed stroke creates an opportunity. Scoring still has to follow what actually happens on the field.',
+      decision:
+        'Keep the ball, CPU fielders and both runners in one fixed-step simulation. Award runs when both batters reach their creases, and judge a run-out when the wicket is broken.',
+      evidence:
+        'The static 3.1 release builds successfully and passes 72 simulation tests. It supports a guided first run, daily challenges, a club tour and offline play.',
+      question: 'Place the shot. Earn the run.',
+      frames: [
+        {
+          image: 'portfolio-boundary-running',
+          label: 'Earn the run',
+          alt: 'Boundary follows a drive across the outfield as both batters run between the wickets.',
+          note: 'The guided first single. The camera widens to keep the ball and both runners in view.',
+        },
+        {
+          image: 'portfolio-boundary-phone',
+          label: 'The same innings, in your hand',
+          alt: 'Boundary’s running view on a 390-pixel phone, with both batters on the pitch and Call another and Turn back controls.',
+          note: 'Real gameplay in a phone-sized browser, using the on-screen controls.',
+        },
+      ],
+      details: [
+        [
+          'Scoring',
+          'Completed runs and actual ball trajectories decide the score. Fielders chase the ball and return it to a threatened wicket.',
+        ],
+        [
+          'Interaction',
+          'Set placement and intent before each delivery. Keyboard and touch share the same timing cues and actions.',
+        ],
+        [
+          'Delivery',
+          'A static browser game with bundled assets and a service worker. Single-player batting and running, with CPU bowling and fielding.',
+        ],
+      ],
+    },
+  },
+  {
+    key: 'bring-something-home',
+    categories: ['systems', 'games'],
+    name: 'Bring Something Home',
+    kind: 'Cooperative RPG',
+    reach: 'open',
+    reachLabel: 'Live',
+    href: '/bring-something-home/',
+    cta: 'Enter the wilds',
+    what: 'Go out together. Read the storm of projectiles. Bring back something that can outlast this life.',
+    how: 'The browser predicts movement while one realm decides every hit, reward and death. SQLite transactions preserve the boundary between carried loot and what you bank.',
+    k: 'Three.js · TypeScript · WebSocket · SQLite',
+    accent: '#cbb7ee',
+    alt: 'Bring Something Home in Cindermeadow: a new Arcanist explores a 3D realm with equipment, loot and progression beside the battlefield.',
+    cap: 'The public 1.4.1 realm, driven with keyboard and mouse on a fresh Arcanist account. No prepared gear or progression.',
+    story: {
+      role: 'Game design, the browser client, the authoritative realm server and persistence.',
+      constraint:
+        'Dodging must feel immediate while one server decides every hit, reward and death.',
+      decision:
+        'Predict movement in the browser, reconcile against the realm, and commit inventory and death atomically. Shared expeditions give each player personal loot and a reason to make it home.',
+      evidence:
+        'Public version 1.4.1 passed the game owner’s production build, 94 unit tests and 29 native browser scenarios. A fresh public traveler appears in the lead image; the late-game photographs use a prepared character.',
+      question: 'Fast combat. Lasting consequences.',
+      frames: [
+        {
+          image: 'built-bring-something-home',
+          label: 'The first expedition',
+          alt: 'A fresh Arcanist in Cindermeadow, with real projectiles, nearby creatures and the equipment panel.',
+          note: 'The public 1.4.1 realm, using ordinary keyboard and mouse inputs on a new account. No prepared gear or progression.',
+        },
+        {
+          image: 'portfolio-bring-home-thalassa',
+          label: 'Read the storm',
+          alt: 'Thalassa’s second phase in the Elder Convergence, with actual 3D projectiles and timed floor attacks.',
+          note: 'Late-game playtest in version 1.4, using a prepared level-20 character.',
+        },
+        {
+          image: 'portfolio-bring-home-recap',
+          label: 'What comes home',
+          alt: 'Bring Something Home’s expedition recap, showing a completed Elder Convergence and permanent shards earned.',
+          note: 'The same prepared-character playtest after a completed expedition. Permanent shards and carried gold are recorded separately.',
+        },
+      ],
+      details: [
+        [
+          'Movement',
+          'The realm ticks at 20Hz. The browser replays unacknowledged input after reconciling server state; prediction grants neither damage nor loot.',
+        ],
+        [
+          'Projectiles',
+          'Fixed-velocity spawn and removal deltas travel between full baselines. The browser renders their paths in 3D.',
+        ],
+        [
+          'Persistence',
+          'Atomic profile and death writes keep inventory outcomes consistent. Gear swaps validate ownership, distance and capacity.',
+        ],
+        [
+          'Expeditions',
+          'Readable attack patterns, personal loot and a carried-versus-banked progression boundary give cooperative runs their stakes.',
+        ],
+      ],
+    },
   },
   {
     key: 'sixty-seconds',
@@ -140,8 +347,25 @@ export const apps: Built[] = [
     how: 'A Python standard-library WebSocket server records the round as events. The browser rebuilds the drawing, replay and share card from one transcript.',
     k: 'Python stdlib · WebSocket · Canvas · Fly.io',
     accent: '#ff7e8c',
-    alt: 'The Sixty Seconds canvas mid-round: hills, a sun and two birds drawn in orange and blue by two people, with both cursors labelled and thirteen seconds left.',
+    alt: 'The Sixty Seconds canvas mid-round: hills, a sun and two birds drawn in violet and green by two people, with both cursors labelled.',
     cap: 'Two browsers, one round — the capture script joins twice and draws',
+    story: {
+      role: 'The real-time server, shared drawing surface, replay and share card.',
+      constraint:
+        'Strangers need to see the same strokes as they arrive, then keep a faithful record after the round ends.',
+      decision:
+        'Record each round as events. The live drawing, replay and share card all read from that one transcript.',
+      evidence:
+        'A deployed Python WebSocket service connects the browsers. The capture is produced by joining a round from two independent browser contexts.',
+      question: 'What can two strangers make in one minute?',
+      details: [
+        [
+          'One history',
+          'The browser reconstructs both the live canvas and the replay from the recorded round events.',
+        ],
+        ['Small server', 'The WebSocket service uses the Python standard library.'],
+      ],
+    },
   },
   {
     key: 'tab-graveyard',
@@ -158,6 +382,24 @@ export const apps: Built[] = [
     accent: '#c8b98f',
     alt: 'The Tab Graveyard landing page: a headstone card reading “here lie 61, tabs buried this week”, beside a slider and the epitaph it earns.',
     cap: 'The card the extension draws, running on the page — drag the slider',
+    story: {
+      role: 'The browser extension, recovery flow, searchable archive and share card.',
+      constraint:
+        'Closing a crowded browser should feel relieving without losing the pages someone meant to keep.',
+      decision:
+        'Persist each tab before closing it, with searchable restoration and a ten-minute undo for an entire batch.',
+      evidence:
+        'The landing page runs the real headstone generator. The extension is distributed as an unpacked Chrome MV3 installation.',
+      question: 'Can closing a tab feel like keeping something?',
+      details: [
+        [
+          'Order of operations',
+          'Storage precedes closing, so the archive exists before the browser changes.',
+        ],
+        ['Recovery', 'Restore a page from search or undo the entire recent batch.'],
+        ['Permissions', 'The extension asks for two browser permissions.'],
+      ],
+    },
   },
   {
     key: 'run-or-not',
@@ -172,8 +414,18 @@ export const apps: Built[] = [
     how: 'Combines weather, air quality, pollen and daylight against adjustable thresholds. When now is a no, it finds a better hour.',
     k: 'Open-Meteo · vanilla JS · PWA',
     accent: '#3ddc84',
-    alt: 'Run or Not showing GO in green over “Wind 9 mph, AQI 38, sunset in 2h 34m”, with six condition chips underneath.',
+    alt: 'Run or Not showing GO in green, with live wind, air-quality and daylight conditions underneath.',
     cap: 'Sydney, live conditions at the moment of capture',
+    story: {
+      role: 'The conditions pipeline, threshold model, forecast search and offline-capable interface.',
+      constraint:
+        'A useful answer has to reconcile weather, air quality, pollen and daylight without making someone interpret a dashboard.',
+      decision:
+        'Evaluate adjustable thresholds into one verdict, expose the conditions behind it, and search ahead for a better hour when now does not work.',
+      evidence:
+        'The browser app uses live Open-Meteo conditions and lets the reader inspect or adjust the thresholds that change its answer.',
+      question: 'Can a forecast help you make one small decision?',
+    },
   },
   {
     key: 'sleep-debt-ledger',
@@ -188,8 +440,22 @@ export const apps: Built[] = [
     how: 'A rolling fourteen-day ledger distinguishes missing entries from lost sleep. Projections move the window forward instead of accumulating debt forever.',
     k: 'localStorage · no build step · PWA',
     accent: '#f2c14e',
-    alt: 'The Sleep Debt Ledger: a balance of minus sixteen hours twenty-eight minutes, the line “solvent by Sep 13 if you sleep 8h 30m”, and twelve nightly bars.',
+    alt: 'The Sleep Debt Ledger: a balance of minus sixteen hours twenty-eight minutes, a projected date for clearing it, and twelve nightly bars.',
     cap: 'Twelve nights logged, and the date the balance clears',
+    story: {
+      role: 'The rolling ledger, projection model, logging interaction and local persistence.',
+      constraint:
+        'Missing a log is different from missing sleep, and old entries should leave the accounting window.',
+      decision:
+        'Keep a fourteen-day rolling ledger with explicit missing entries, then move that same window forward to calculate the projection.',
+      evidence:
+        'The captured demo uses twelve prepared nights. Entries stay in local browser storage, with no account or server required.',
+      question: 'What changes when a balance remembers to let go?',
+      details: [
+        ['Missing data', 'An unlogged night is not silently counted as a sleepless night.'],
+        ['Projection', 'Older entries expire as the fourteen-day window advances.'],
+      ],
+    },
   },
   {
     key: 'ai-wrapped',
@@ -206,6 +472,24 @@ export const apps: Built[] = [
     accent: '#eb81d5',
     alt: 'An AI Wrapped card: 627,257 in yellow on a violet-to-pink gradient, over the line “words you wrote to an AI”.',
     cap: 'The opening card, on the built-in sample export',
+    story: {
+      role: 'Export parsing, the statistics pipeline and the shareable card renderer.',
+      constraint:
+        'Personal chat exports vary in format and contain data that should not need to leave the reader’s device.',
+      decision:
+        'Read JSON and JSONL exports into memory and render the entire experience in a dependency-free HTML document.',
+      evidence:
+        'The public demo and its built-in sample work without an account or backend. Uploaded conversation history stays in the tab.',
+      question: 'What can a year of questions tell you?',
+      frames: [
+        {
+          image: 'portfolio-ai-wrapped-card',
+          label: 'Made to share',
+          alt: 'The full AI Wrapped opening share card, showing 627,257 words from the built-in synthetic export.',
+          note: 'The actual share card in the running app, using sample data.',
+        },
+      ],
+    },
   },
   {
     key: 'playlist-from-photo',
@@ -220,8 +504,26 @@ export const apps: Built[] = [
     how: 'The full app validates AI suggestions against Apple’s catalogue. This browser demo uses twelve fixed songs; crop, palette and poster respond to your photo.',
     k: 'Claude Opus vision · iTunes catalogue · Canvas',
     accent: '#c495e0',
-    alt: 'A finished poster: a dusk coastline above the title “Long Drive, No Radio” and twelve numbered tracks in two columns.',
-    cap: 'A poster, made from a photograph the capture script painted for it',
+    alt: 'A finished Playlist From a Photo poster: AJ’s Saltline sunrise above the title “Long Drive, No Radio” and twelve numbered tracks.',
+    cap: 'The actual poster canvas, given AJ’s Saltline sunrise capture. The demo’s twelve songs are a fixed set.',
+    story: {
+      role: 'The image-to-music flow, catalogue validation, crop tools and poster renderer.',
+      constraint:
+        'An evocative music suggestion still needs to resolve to a song someone can actually find.',
+      decision:
+        'Validate the full app’s AI suggestions against Apple’s catalogue. Keep the browser demo immediately usable with twelve fixed songs and a photo-responsive poster.',
+      evidence:
+        'The hosted demo lets someone crop a photo, extract its palette and make a poster. Its fixed song list is separate from the full AI-backed app.',
+      question: 'If a photograph had a soundtrack, what would it be?',
+      frames: [
+        {
+          image: 'portfolio-playlist-interface',
+          label: 'From picture to poster',
+          alt: 'Playlist From a Photo running in the browser, with the Saltline sunrise poster, save controls and track list.',
+          note: 'A second creation becomes the input: Saltline’s sunrise, in the working browser demo.',
+        },
+      ],
+    },
   },
   {
     key: 'lifetrack',
@@ -238,42 +540,20 @@ export const apps: Built[] = [
     accent: '#a19df7',
     alt: 'LifeTrack’s Today view: a sidebar of sections, four counters across the top, and columns of tasks and habits for the day.',
     cap: 'The Today view, on the app’s own sample data',
-  },
-  {
-    key: 'papertrader',
-    categories: ['tools'],
-    name: 'Paper Trader',
-    kind: 'Research',
-    reach: 'read',
-    reachLabel: 'Memo',
-    href: '/papertrader/',
-    cta: 'Read the memo',
-    what: 'A backtester and a public research memo about what survived seven rounds of scrutiny.',
-    how: 'The memo compares a momentum-and-trend strategy with benchmarks, including drawdowns and costs. The trading application and account data remain private.',
-    k: 'Python · pandas · Yahoo daily bars',
-    accent: '#41b8b8',
-    alt: 'The research memo: a headline claim, four stat panels, and a log-scale growth chart running 2007 to 2026 with the strategy, SPY and a 60/40 mix overlaid.',
-    cap: 'Growth of $100,000, log scale, against the two benchmarks',
-  },
-  {
-    key: 'throatlight',
-    name: 'Throatlight',
-    kind: 'Instrument',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: '/throatlight/',
-    cta: 'Hum a window',
-    what: 'Hum a note and a rose window opens: pitch shapes the tracery, timbre colours the glass.',
-    how: 'A McLeod pitch detector gates uncertain notes before they reach the geometry. The built-in voice runs through the same analysis as your microphone.',
-    k: 'JavaScript · Web Audio · Canvas',
-    accent: '#6ed6bd',
-    alt: 'Throatlight running its demo voice: a luminous teal rose window with a pink centre, note readout and visible Demo Mode badge.',
-    cap: 'A rose window measured from the app’s synthetic demo voice.',
-    categories: ['sound', 'experiments'],
-    selected: true,
+    story: {
+      role: 'The offline data model, planning interface, service worker and undo system.',
+      constraint:
+        'Tasks, habits and people should remain available without a connection, and everyday mistakes should be easy to reverse.',
+      decision:
+        'Keep the records in IndexedDB, serve the app offline with a service worker, and make changes reversible across its sections.',
+      evidence:
+        'The running Today view uses the app’s sample data. The local-first application does not require a cloud account.',
+      question: 'Can a personal tool stay useful when the network leaves?',
+    },
   },
   {
     key: 'roomtone',
+    selected: true,
     name: 'Roomtone',
     kind: 'Instrument',
     reach: 'open',
@@ -286,6 +566,27 @@ export const apps: Built[] = [
     accent: '#d9b991',
     alt: 'Roomtone’s demo bedroom resolved into five floating colour orbs, the chord name Ember Eleven and five note labels.',
     cap: 'The procedurally drawn demo bedroom, scanned into the chord Ember Eleven.',
+    story: {
+      role: 'Camera interaction, perceptual colour clustering, note mapping and browser synthesis.',
+      constraint:
+        'A camera sees changing light and fleeting objects. A room’s palette should settle before it becomes music.',
+      decision:
+        'Cluster in OKLab and weight colours by persistence, then map the five stable colours to distinct notes with synthesized sound and generated reverb.',
+      evidence:
+        'The demo uses a procedurally drawn bedroom, so the complete colour-to-chord flow can be explored without granting camera access.',
+      question: 'What would this room sound like?',
+      details: [
+        [
+          'Perception',
+          'OKLab gives colour distance a perceptual basis rather than comparing raw RGB channels.',
+        ],
+        [
+          'Continuity',
+          'Persistence weighting limits the influence of a colour that flashes past the camera.',
+        ],
+        ['Sound', 'Web Audio synthesizes the notes and reverb in the browser.'],
+      ],
+    },
     categories: ['sound', 'experiments'],
   },
   {
@@ -302,136 +603,28 @@ export const apps: Built[] = [
     accent: '#dbbd7c',
     alt: 'Filefossil’s parchment specimen plate: a long vertebral skeleton, labelled anatomical traits and byte measurements for the synthetic atlas.zip sample.',
     cap: 'The bundled synthetic atlas.zip bytes, analysed into a specimen.',
+    story: {
+      role: 'Byte analysis, the procedural anatomy system and the mutation interaction.',
+      constraint:
+        'A small edit to a large file should visibly change its creature without rereading every byte.',
+      decision:
+        'Track incremental histograms and a polynomial hash. Entropy, repeated bytes and header signatures then shape the specimen’s anatomy.',
+      evidence:
+        'The captured specimen comes from the bundled synthetic atlas.zip sample. A reader can mutate bytes and see the anatomy respond.',
+      question: 'What kind of creature lives inside a file?',
+      details: [
+        [
+          'Structure',
+          'Header signatures, repetition and entropy provide different anatomical signals.',
+        ],
+        [
+          'Responsiveness',
+          'Incremental statistics keep one-byte mutations from requiring a full rescan.',
+        ],
+      ],
+    },
     categories: ['experiments'],
     selected: true,
-  },
-  {
-    key: 'afterimage',
-    name: 'Afterimage',
-    kind: 'Perception',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: '/afterimage/',
-    cta: 'Make an afterimage',
-    what: 'Stare at an opponent-colour portrait, then let your visual system paint its ghost onto a blank field.',
-    how: 'Oklab inversion and hue-preserving gamut compression build the adapting plate. A timed fixation gives way to a neutral field; the real reveal draws nothing.',
-    k: 'JavaScript · Oklab · Canvas',
-    accent: '#ccadeb',
-    alt: 'Afterimage’s perception bench with a colourful negative portrait, subject choices and adaptation controls.',
-    cap: 'The built-in portrait processed into its opponent-colour adapting plate.',
-    categories: ['experiments'],
-  },
-  {
-    key: 'apologyengine',
-    name: 'Apology Engine',
-    kind: 'Writing',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: '/apologyengine/',
-    cta: 'Open the revisions',
-    what: 'A writing surface where deleted words linger. Open every revision and the letter becomes a corridor of ghosts.',
-    how: 'Document diffs capture deletions across typing, paste and undo. Hesitation and repeated edits set each fragment’s size and depth; the words stay ephemeral.',
-    k: 'JavaScript · Canvas · Input events',
-    accent: '#d4abc0',
-    alt: 'Apology Engine’s exploded revision view, with pale deleted sentences suspended at different depths against a dark field.',
-    cap: 'The app’s demo letter, typed and deleted through the real edit recorder.',
-    categories: ['experiments'],
-  },
-  {
-    key: 'cursorweather',
-    name: 'Cursorweather',
-    kind: 'Instrument',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: '/cursorweather/',
-    cta: 'Make some weather',
-    what: 'Chase rings for five seconds. Your pointer’s pauses, corrections and sweeping arcs become a small weather system.',
-    how: 'Movement statistics drive a curl-noise flow field. Its isobars share the same potential, while recorded clicks and corrections replay as holes and gusts.',
-    k: 'JavaScript · Pointer Events · Canvas',
-    accent: '#89cfe0',
-    alt: 'Cursorweather’s generated weather chart with moving winds, contour lines, a forecast-style report and pointer telemetry.',
-    cap: 'The bundled synthetic pointer’s measured motion, replayed as weather.',
-    categories: ['experiments'],
-  },
-  {
-    key: 'dontblink',
-    name: 'Don’t Blink',
-    kind: 'Game',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: '/dontblink/',
-    cta: 'Enter the corridor',
-    what: 'A corridor horror game that advances when you blink. Keep looking; something at the far end is getting closer.',
-    how: 'Camera blinks come from adaptive contrast and edge measurements without a downloaded model. Space and touch can drive the same twelve-beat story.',
-    k: 'JavaScript · Canvas · Camera API',
-    accent: '#e39d8e',
-    alt: 'Don’t Blink’s dim corridor with the creature close to the camera, seven blinks recorded and demo controls visible.',
-    cap: 'Beat seven, reached with Space in the app’s camera-free demo mode.',
-    categories: ['games', 'experiments'],
-  },
-  {
-    key: 'gravitylies',
-    name: 'Gravity Lies',
-    kind: 'Perception',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: '/gravitylies/',
-    cta: 'Find down',
-    what: 'Tilt a star field through four chapters that pull apart screen-down and world-down.',
-    how: 'A complementary filter blends accelerometer and orientation estimates. Typed-array stars follow competing gravity vectors, then an overlay shows how far the two answers disagree.',
-    k: 'JavaScript · Device Motion · Canvas',
-    accent: '#9fbaea',
-    alt: 'Gravity Lies’ observatory plate with star trails, competing gravity arrows and labelled simulated-angle readouts.',
-    cap: 'The reveal chapter, with the app’s simulated tilt explicitly labelled.',
-    categories: ['experiments'],
-  },
-  {
-    key: 'pulseprint',
-    name: 'Pulseprint',
-    kind: 'Instrument',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: '/pulseprint/',
-    cta: 'Grow a pulseprint',
-    what: 'A covered camera lens becomes a pulse signal; each detected beat adds a luminous mark to a growing print.',
-    how: 'Cascaded filters and adaptive peak detection extract beats, while a lens-coverage gate rejects room flicker. Its simulated pulse exercises the same signal chain.',
-    k: 'JavaScript · Signal processing · Canvas',
-    accent: '#e8a6b9',
-    alt: 'Pulseprint’s luminous circular bloom beside a live pulse trace and a clearly labelled Demo Mode source.',
-    cap: 'A growing print from the app’s simulated pulse; BPM is a toy estimate.',
-    categories: ['experiments'],
-  },
-  {
-    key: 'samebreath',
-    name: 'Samebreath',
-    kind: 'Shared play',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: '/samebreath/',
-    cta: 'Breathe together',
-    what: 'Two people press opposite sides of one screen. Match your rhythms and a translucent creature becomes whole, then hatches.',
-    how: 'Median press intervals estimate each rhythm. Phase and tempo agreement feed a fixed-step spring membrane; simply holding both sides cannot complete the hatch.',
-    k: 'JavaScript · Pointer Events · Canvas',
-    accent: '#bdafea',
-    alt: 'Samebreath’s luminous joined membrane at the hatch, fed by two simulated breathing rhythms in its labelled demo mode.',
-    cap: 'Two simulated breathers converging through the same system as real presses.',
-    categories: ['games', 'experiments'],
-  },
-  {
-    key: 'voidborne',
-    categories: ['systems', 'games'],
-    name: 'Voidborne Online',
-    kind: 'Multiplayer',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: 'https://voidborne-online.fly.dev/',
-    cta: 'Launch a pilot',
-    what: 'A seven-sector frontier with contracts, space combat and other pilots in the same sky.',
-    how: 'A Node service owns rooms and opt-in PvP combat. PvE and progression remain local to your browser: a multiplayer vertical slice with explicit boundaries.',
-    k: 'TypeScript · React · Canvas · WebSocket',
-    accent: '#8db5ee',
-    alt: 'Voidborne in flight: a pilot crossing a violet nebula with nearby contacts, ship status and a sector map.',
-    cap: 'A fresh pilot launched into Orion Fringe on the live server.',
   },
   {
     key: 'shipworthy',
@@ -448,54 +641,23 @@ export const apps: Built[] = [
     accent: '#aeb9f0',
     alt: 'Shipworthy’s idea bench with audience and format filters beside a ranked collection of app ideas.',
     cap: 'The live daily drop, ranked by the default build profile.',
-  },
-  {
-    key: 'dustbound',
-    categories: ['games'],
-    name: 'Dustbound',
-    kind: 'Game',
-    reach: 'open',
-    reachLabel: 'Desktop',
-    href: '/dustbound/',
-    cta: 'Ride into Cinder Creek',
-    what: 'A frontier story in three chapters. Ride, take cover and find your way through.',
-    how: 'A procedural Three.js world combines cover AI, horseback travel and staged encounters. The complete campaign runs in a static browser build with keyboard and mouse.',
-    k: 'Three.js · WebGL 2 · Web Audio',
-    accent: '#e7b98d',
-    alt: 'Dustbound in Cinder Creek: a third-person character on a sunlit frontier street, with a mission objective and weapon HUD.',
-    cap: 'Cinder Creek, in play. This game uses desktop keyboard and mouse controls.',
-  },
-  {
-    key: 'voxel-gods',
-    categories: ['games'],
-    name: 'Realm of the Voxel Gods',
-    kind: 'Game',
-    reach: 'open',
-    reachLabel: 'Desktop',
-    href: '/voxel-gods/',
-    cta: 'Choose a hero',
-    what: 'One hero, one life. Cross the realm, clear the dungeon, and try to make it home.',
-    how: 'Three classes share a complete realm-to-dungeon loop. The hero, vault and graveyard persist locally; permadeath ends the character without erasing the vault and graveyard.',
-    k: 'JavaScript · Three.js · localStorage',
-    accent: '#bfc787',
-    alt: 'Realm of the Voxel Gods: a wizard at the edge of a green woodland, with enemy projectiles, a quest panel and a coastal minimap.',
-    cap: 'A wizard entering the Realm, with live enemies and player shots. Keyboard and mouse controls.',
-  },
-  {
-    key: 'ash-and-iron',
-    categories: ['games'],
-    name: 'Ash & Iron',
-    kind: 'Game',
-    reach: 'open',
-    reachLabel: 'Live',
-    href: '/ash-and-iron/',
-    cta: 'Ride into Red Valley',
-    what: 'A frontier unfolds in ink and dust. Ride into town and follow a debt through the valley.',
-    how: 'A Canvas world ties horseback movement, combat and mission state together. Keyboard, mouse and touch share the same game loop; art and audio are local.',
-    k: 'JavaScript · Canvas · Web Audio',
-    accent: '#e0b88b',
-    alt: 'Ash & Iron: a mounted rider beside a frontier town, with warm brown terrain, a compass and the Chapter I mission HUD.',
-    cap: 'Chapter I, A Debt in Dust: mounted and riding into town.',
+    story: {
+      role: 'The idea bench, generation job, validation, archive and fallback system.',
+      constraint:
+        'A daily generative app should still have something useful to show when an API request is missed or produces unusable results.',
+      decision:
+        'Validate each scheduled drop before publication, archive previous ideas to avoid repeats, and fall back to date-seeded local remixes.',
+      evidence:
+        'The live single-file app reads its daily drop and can produce local remixes when that drop is unavailable.',
+      question: 'Can an idea generator have a quieter day instead of a broken one?',
+      details: [
+        ['Publication', 'A scheduled GitHub Actions job validates and writes the daily ideas.'],
+        [
+          'Continuity',
+          'The archive informs the next request, while local date-seeded remixes cover a missed run.',
+        ],
+      ],
+    },
   },
 ];
 

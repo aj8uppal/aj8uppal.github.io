@@ -57,19 +57,25 @@ on both resting and hovered cards.
 
 ## Verification
 
-`npm run verify` drives the running site in headless Chromium and is the gate before calling visual work done.
-It needs a server already up: `npm run dev` for the source, `npm run preview` for the built output.
+`npm run verify` is the production Worldbuilder gate. Its wrapper is
+`scripts/verify.mjs`, which runs `scripts/verify-portfolio.mjs` against the
+root page; `npm run verify:portfolio:lab` adds the review directions and their
+cases. Run the matching build and keep Astro preview bound to
+`--host 127.0.0.1`; the suite dials that literal address.
 
-Preview the output of `npm run build:lab`, not `npm run build`.
-The suite drives the design lab to prove each hero variant mounts, and a plain build resolves that component away (see below), so four assertions fail on a correct tree.
-`astro preview` also has to be bound with `--host 127.0.0.1`; the suite dials that literal address and the default bind does not answer it.
-Its reduced-motion context is a real `prefers-reduced-motion: reduce` browser context, not a stubbed media query.
+`npm run verify:legacy` is a separate gate for the archived `/previous/` page
+and runs `scripts/verify-legacy.mjs`. Do not use its measurements as the
+production page's budget or route check.
 
-Reduced motion here is a separate code path, not a shorter duration.
-The spring-driven tab indicator is stepped by `requestAnimationFrame` normally and jumps in a single assignment when the query matches, so the assertion that proves it is the absence of intermediate positions - never arrival speed, because React runs the effect after paint and even a jump lands a few frames late.
+Both portfolio verifiers use a real `prefers-reduced-motion: reduce` browser
+context. Reduced motion is a separate code path, not a shorter duration. The
+legacy tab indicator is stepped by `requestAnimationFrame` normally and jumps
+in a single assignment when the query matches, so its assertion checks for no
+intermediate positions.
 
-Nothing drives the compositor in that context, so a screenshot taken straight after a style change can come back with the previous frame still on it.
-Await two `requestAnimationFrame`s in the page before capturing, or an element you just hid will still be in the picture.
+Nothing drives the compositor in that context, so a screenshot taken straight
+after a style change can come back with the previous frame still on it. Await
+two `requestAnimationFrame`s before capturing.
 
 ## Review-only UI has to be gated in three places
 
@@ -80,16 +86,31 @@ Its classes are prefixed `dlab`, because the playground cards already own `.lab`
 
 ## Page length is a standing budget
 
-`npm run verify` fails if the document grows past `HEIGHT_BUDGET` in `scripts/verify.mjs` - the script is the authority on the number; a copy of it here has drifted stale once already.
-It has been raised deliberately, for the block at the foot of the Playground that shows a shortlist and folds the rest; the comment beside the constant says what bought it, and the next change to it should do the same or not happen.
-The budget exists because length regresses by accretion - a paragraph here, a section pad there - and nobody notices until the page is 17,000px again.
+The production and lab homepage limits are `HOME_HEIGHT` in
+`scripts/verify-portfolio.mjs`. The archived `/previous/` limits are
+`HEIGHT_BUDGET` and `MOBILE_BUDGET` in `scripts/verify-legacy.mjs`; the
+constants beside those checks explain their measured content. Keep each page's
+authority separate when changing copy or vertical rhythm.
+
+The budgets exist because length regresses by accretion - a paragraph here, a
+section pad there - and nobody notices until the page is thousands of pixels
+longer.
 When a change pushes it over, the fix is almost always copy or vertical rhythm, not shrinking someone's work: cut prose, or put the frame beside the title instead of above it.
 
 ## Contrast checking sees layers, not ancestors
 
-The WCAG sweep in `scripts/verify.mjs` resolves an element's background by first looking for an absolutely positioned sibling painted underneath it, and only then walking ancestors.
-The selected tab is ink on an acid pill drawn by `.fs__ind`, a sibling; an ancestor walk finds the dark card and reports a false failure at 1.2:1.
-It also measures `-webkit-text-stroke-color` for text with a transparent fill, because the outlined second name line is drawn entirely by its stroke.
+The production/lab gate uses `scripts/portfolio-contrast.mjs` through
+`scripts/verify-portfolio.mjs` to sweep the Worldbuilder type over all three
+hero photographs. The archived `/previous/` WCAG sweep lives in
+`scripts/verify-legacy.mjs`; it resolves an element's background by first
+looking for an absolutely positioned sibling painted underneath it, and only
+then walking ancestors.
+
+That legacy page's selected tab is ink on an acid pill drawn by `.fs__ind`, a
+sibling; an ancestor walk finds the dark card and reports a false failure at
+1.2:1. The legacy sweep also measures `-webkit-text-stroke-color` for text
+with a transparent fill, because the outlined second name line is drawn
+entirely by its stroke.
 
 ## `src/data/receipts.json` is a transcript, not content
 
@@ -112,6 +133,24 @@ The same page is also published as a Claude artifact; that copy is the file minu
 The page reads `daily.json` at load and shows the set as today's drop; without it, or when the ideas fail its own checks, it falls back to remixes seeded by the date, so a missed run is a quieter day and never a broken one.
 The job needs the `ANTHROPIC_API_KEY` repository secret and exits clean without it.
 A commit made with the workflow token does not trigger the deploy, so the job dispatches `deploy.yml` itself when the drop changed.
+
+## Portfolio directions share their depth
+
+The Worldbuilder portfolio is the site root `/`; `/portfolio/` redirects there.
+The four alternatives, `/directions/`, and `/alternate/` are injected only in
+dev mode or `build:lab`/`palettes` output. `/previous/` preserves the archived
+portfolio with its noindex treatment. `/built/` is the shared project
+collection. Project pages and app records come from `src/data/portfolio.ts`,
+with app records derived from `built.ts`; curate those records instead of
+deleting public demo files. `homeProjectKeys` and `secondaryProjectKeys` own
+the two homepage tiers; the hero’s backdrop order is a separate choice.
+
+`npm run portfolio:images` reproduces reviewed photographs from the external raw
+archive; its recipes and provenance manifests are separate from the live
+`built:shots` batch. `npm run portfolio:shots` photographs the comparison
+directions and should run against a lab build when those routes are needed.
+See `docs/portfolio-local-demo.md` for review commands, fixed ports, route
+availability, and frozen game snapshots.
 
 ## Maintaining this file
 

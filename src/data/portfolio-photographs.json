@@ -1,0 +1,228 @@
+[
+  {
+    "image": "portfolio-eyeshot-feature",
+    "raw": "eyeshot-practice-angle-1200x800.png",
+    "rawSha256": "94148b1d25057f3b94020359a61deaeed5e0cb02c062d6dc38b138cc834bbf86",
+    "source": "Eyeshot: a close view of the live Angle practice prompt and graph, from an actual pointer interaction over HTTPS. Cropped from the complete practice frame below.",
+    "sourceWidth": 1200,
+    "sourceHeight": 800,
+    "width": 650,
+    "height": 356,
+    "crop": {
+      "left": 275,
+      "top": 192,
+      "width": 650,
+      "height": 356
+    },
+    "processing": "Documented detail crop; downscale only, WebP quality 90."
+  },
+  {
+    "image": "portfolio-eyeshot-practice",
+    "raw": "eyeshot-practice-angle-1200x800.png",
+    "rawSha256": "94148b1d25057f3b94020359a61deaeed5e0cb02c062d6dc38b138cc834bbf86",
+    "source": "Eyeshot: the complete 1200 × 800 practice frame, including header, tabs, Angle prompt, graph, timer and Lock in control. No account or leaderboard submission.",
+    "sourceWidth": 1200,
+    "sourceHeight": 800,
+    "width": 1200,
+    "height": 800,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "built-boundary",
+    "raw": "built-boundary.png",
+    "rawSha256": "085ec2bd56985e675a84d1aee6b7f0264ff876fb71b8b9c00489b4cab20be380",
+    "source": "Boundary 3.1: the actual guided first delivery. Controls and timing cue remain visible.",
+    "sourceWidth": 1920,
+    "sourceHeight": 1200,
+    "width": 1920,
+    "height": 1200,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "portfolio-boundary-running",
+    "raw": "portfolio-boundary-running.png",
+    "rawSha256": "861902447020a2cc40d5250fbb5effa50a51fa9f0c74b6e910cd075d5d127e23",
+    "source": "Boundary 3.1: the guided first single, using the real batting and running controls.",
+    "sourceWidth": 1920,
+    "sourceHeight": 1200,
+    "width": 1920,
+    "height": 1200,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "portfolio-boundary-phone",
+    "raw": "portfolio-boundary-phone.png",
+    "rawSha256": "c7233334d1c578b58a4032f152c33c2bb41a0f7f1653fb3e800d6c086168da64",
+    "source": "Boundary 3.1: real guided gameplay at a 390 × 844 viewport.",
+    "sourceWidth": 390,
+    "sourceHeight": 844,
+    "width": 390,
+    "height": 844,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "portfolio-bring-home-thalassa",
+    "raw": "built-bring-something-home.png",
+    "rawSha256": "47c4992af662c2ea66ef418dd59f54cd2cc0d904385f9ad3e2d3e112e5fb34a4",
+    "source": "Game-owner capture from the running pre-rebrand 1.4.0 playtest: Thalassa phase two, with a prepared level-20 character. The canonical rebrand preserves the game mechanics.",
+    "sourceWidth": 1440,
+    "sourceHeight": 1000,
+    "width": 1440,
+    "height": 1000,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "portfolio-bring-home-recap",
+    "raw": "portfolio-bring-home-recap.png",
+    "rawSha256": "85da4a910683c56fba4453387375c8e6a67606f30704ef88e1945bf4b1e79e1a",
+    "source": "Game-owner capture from the same prepared-character 1.4.0 playtest, after a completed Elder expedition.",
+    "sourceWidth": 1440,
+    "sourceHeight": 1000,
+    "width": 1440,
+    "height": 1000,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "built-driftfall",
+    "raw": "built-driftfall.png",
+    "rawSha256": "41c1182dcde596cf1e0c7f6e7710c5763d2bcab110c66b4c56f5b98be79f0735",
+    "source": "Driftfall 1.3.1: a fresh AJ pilot raises a barrier during an actual Frontier encounter.",
+    "sourceWidth": 1920,
+    "sourceHeight": 1080,
+    "width": 1920,
+    "height": 1080,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "portfolio-driftfall-flight",
+    "raw": "portfolio-driftfall-flight.png",
+    "rawSha256": "a8751ab1430ceab329ca5a7e5c17c68ee5da59a4dbaeee572e0f66a4ebc56d45",
+    "source": "Driftfall 1.3.1: a fresh AJ pilot approaches the Haven Reach station using free-cursor controls.",
+    "sourceWidth": 1920,
+    "sourceHeight": 1080,
+    "width": 1920,
+    "height": 1080,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "portfolio-driftfall-run",
+    "raw": "portfolio-driftfall-run.png",
+    "rawSha256": "97fe9357311b42195a48acc350bc1a3b276f39a68fbe4bc868aa134d4ee7d7af",
+    "source": "Driftfall 1.3.1: the first Frontier encounter, reached through ordinary game controls.",
+    "sourceWidth": 1920,
+    "sourceHeight": 1080,
+    "width": 1920,
+    "height": 1080,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "built-beatlayer",
+    "raw": "built-beatlayer.png",
+    "rawSha256": "1485a2bcd80342c780a59b33086b7d21abdfe2079d5379e5ab50fe8e1e792e35",
+    "source": "BeatLayer: generated 96 BPM guitar fixture, analysed and playing with synthesized drums.",
+    "sourceWidth": 2880,
+    "sourceHeight": 1800,
+    "width": 1920,
+    "height": 1200,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "built-filefossil",
+    "raw": "built-filefossil.png",
+    "rawSha256": "7655a7a6ebd41280c72cd0dd7982c4e9442e92ce434eada1493baf6b86505540",
+    "source": "Filefossil: the built-in synthetic atlas.zip bytes, rendered by the app.",
+    "sourceWidth": 2880,
+    "sourceHeight": 1800,
+    "width": 1920,
+    "height": 1200,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "built-roomtone",
+    "raw": "built-roomtone.png",
+    "rawSha256": "3d7a5d73665f360891931ee645a42e15a682065d033156984e25755c9f001488",
+    "source": "Roomtone: the procedurally drawn demo bedroom, scanned into the Ember Eleven chord.",
+    "sourceWidth": 2880,
+    "sourceHeight": 1800,
+    "width": 1920,
+    "height": 1200,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "built-shipworthy",
+    "raw": "built-shipworthy.png",
+    "rawSha256": "041536c477bbb1b897f8c56c4332d6cb6eef5d22cf5c481172694641853a512e",
+    "source": "Shipworthy: the live daily drop and default build profile, captured September 5, 2026.",
+    "sourceWidth": 2880,
+    "sourceHeight": 1800,
+    "width": 1920,
+    "height": 1200,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "built-lifetrack",
+    "raw": "built-lifetrack.png",
+    "rawSha256": "9496247aedf28d705aad5f856acfb58bdd61069b2567c0280dec048441ee6e91",
+    "source": "LifeTrack: the app’s own sample data in its Today view.",
+    "sourceWidth": 2880,
+    "sourceHeight": 1800,
+    "width": 1920,
+    "height": 1200,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "built-sleep-debt-ledger",
+    "raw": "built-sleep-debt-ledger.png",
+    "rawSha256": "f1cc19ee77bf9f0fd64246419b1cdc0204b0f64e5afd74ae59df687af56f4668",
+    "source": "Sleep Debt Ledger: twelve prepared nights in a disposable browser context.",
+    "sourceWidth": 2880,
+    "sourceHeight": 1800,
+    "width": 1920,
+    "height": 1200,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "built-tab-graveyard",
+    "raw": "built-tab-graveyard.png",
+    "rawSha256": "2c8e38829fe75d5d5f2a33f8f483758356847da1d3737a4cc6c7f992143f5f06",
+    "source": "Tab Graveyard: the live landing-page card generator using its 61-tab demo.",
+    "sourceWidth": 2880,
+    "sourceHeight": 1800,
+    "width": 1920,
+    "height": 1200,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "built-playlist-from-photo",
+    "raw": "built-playlist-from-photo.png",
+    "rawSha256": "88445c13f320547b32a39e5c598252e528ca0e4b5ac87dbbd7ccf58a93608bbc",
+    "source": "The running poster canvas, given AJ’s Saltline sunrise capture. The browser demo uses a fixed song list.",
+    "sourceWidth": 840,
+    "sourceHeight": 1050,
+    "width": 840,
+    "height": 1050,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "portfolio-playlist-interface",
+    "raw": "portfolio-playlist-interface.png",
+    "rawSha256": "3c0ac26ece2e1a1e35740c397bfb2400b961d58fbd0c0fab91822e21b25c63c7",
+    "source": "The same Saltline sunrise poster in the complete Playlist From a Photo interface.",
+    "sourceWidth": 2200,
+    "sourceHeight": 2000,
+    "width": 1920,
+    "height": 1745,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  },
+  {
+    "image": "portfolio-ai-wrapped-card",
+    "raw": "portfolio-ai-wrapped-card.png",
+    "rawSha256": "5ab670cac86fc5b51ec4a3d9061f65014c529d955ffd194c09c0639fd3a6d211",
+    "source": "The running AI Wrapped share card, using its built-in synthetic chat export.",
+    "sourceWidth": 992,
+    "sourceHeight": 1712,
+    "width": 992,
+    "height": 1712,
+    "processing": "Full captured frame; downscale only, WebP quality 90."
+  }
+]

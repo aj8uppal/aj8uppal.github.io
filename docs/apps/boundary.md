@@ -1,6 +1,6 @@
 # Boundary
 
-[Play Boundary](/boundary/) — a fullscreen 3D cricket batting and running game.
+[Play Boundary](https://aj8uppal.github.io/boundary/) — a fullscreen 3D cricket batting and running game.
 
 This portfolio mount is the preserved static Boundary 3.1.0 release, extracted byte-for-byte from `../data/portfolio-builds/2026-09-05/boundary-production.zip`. The archive SHA-256 is:
 
@@ -14,3 +14,9 @@ Verification for this exact extracted artifact:
 - The mounted `/boundary/` path served every requested JavaScript, CSS, font, icon, manifest, and service-worker asset with HTTP 200 on the local public server.
 - Offline reload succeeded after cache installation; the service-worker scope was `/boundary/` and the playable canvas remained visible.
 - A fresh 1920×1200 gameplay frame was captured from the exact staged archive after contact, while the coach read “Now call Run.”
+
+Published independently of the portfolio redesign in `d9e5d98`.
+[GitHub Pages deployment](https://github.com/aj8uppal/aj8uppal.github.io/actions/runs/33969453601)
+completed successfully. The live HTTPS page loads, its service worker is scoped
+to `/boundary/`, and offline reload retains the playable canvas. All 25 served
+release files match the verified archive byte-for-byte.
