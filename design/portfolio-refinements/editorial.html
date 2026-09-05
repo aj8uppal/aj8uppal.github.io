@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>AJ Uppal — Serious systems. Curious mind.</title>
+    <link rel="stylesheet" href="shared.css" />
+    <link rel="stylesheet" href="editorial.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body class="ref-page ref-editorial">
+    <a class="ref-skip" href="#main">Skip to content</a>
+    <aside class="ref-reviewbar" aria-label="Design review navigation">
+      <a href="index.html">← Four directions</a><span>editorial / refined</span
+      ><a href="../portfolio-candidates/editorial.html">Original round ↗</a>
+    </aside>
+    <div class="ed-shell" id="top">
+      <header class="ed-nav">
+        <a class="ed-brand" href="#top">AJ Uppal<span>.</span></a>
+        <nav aria-label="Main navigation">
+          <a href="#work">Selected work</a><a href="#about">About</a
+          ><a class="" href="mailto:aj8uppal@gmail.com"
+            >Say hello <span aria-hidden="true">↗</span></a
+          >
+        </nav>
+      </header>
+      <main id="main">
+        <section class="ed-hero" aria-labelledby="ed-title">
+          <div class="ed-intro">
+            <p class="ed-label">Software engineer / Bay Area, California</p>
+            <h1 id="ed-title">Serious systems.<br /><em>Curious mind.</em></h1>
+            <p class="ed-lede">
+              I’m AJ. I build healthcare software at Notable Health and, off the clock, worlds that
+              run in a browser.
+            </p>
+            <div class="ed-hero-links">
+              <a class="ed-link" href="#work">Explore my work <span aria-hidden="true">↓</span></a
+              ><a
+                class="ed-link ed-link-quiet"
+                href="https://aj8uppal.github.io/attachments/resume2026.pdf"
+                target="_blank"
+                rel="noopener"
+                >Résumé <span aria-hidden="true">↗</span></a
+              >
+            </div>
+          </div>
+          <aside class="ed-current" aria-label="Current work">
+            <div class="ed-current-top">
+              <span class="ed-label">Currently at Notable Health</span
+              ><span class="ed-star" aria-hidden="true">✳</span>
+            </div>
+            <p>
+              I set technical direction for patient identity, routing, observability and
+              reliability.
+            </p>
+            <div class="ed-scale">
+              <strong>~250k</strong><span>patient calls a month<br />on our team’s platform</span>
+            </div>
+            <a class="ed-link ref-case-link" href="cases/notable.html" data-case="notable"
+              >The work behind the calls <span aria-hidden="true">→</span></a
+            >
+          </aside>
+        </section>
+        <section class="ed-work" id="work" aria-labelledby="ed-work-title">
+          <div class="ed-section-line">
+            <h2 id="ed-work-title">Selected work</h2>
+            <span class="ed-label">Five projects / a few ways I think</span>
+          </div>
+          <article class="ed-project" id="ed-saltline">
+            <div class="ed-project-copy">
+              <p class="ed-label">01 / Simulation / multiplayer</p>
+              <h3>An ocean with rules.</h3>
+              <p class="ed-project-intro">
+                I built the sailing model, renderer, multiplayer and accounts. The part I care
+                about: the sea should be something you can learn to read.
+              </p>
+              <div class="ed-decision">
+                <span class="ed-label">A decision that matters</span>
+                <p>
+                  Thrust follows the point of sail. Wind, heel and velocity made good are visible in
+                  the HUD, so the physics becomes a skill, not a hidden rule.
+                </p>
+              </div>
+              <p class="ed-result">A shared sea for up to 20 players.</p>
+              <div class="ed-project-links">
+                <a class="ed-link ref-case-link" href="cases/saltline.html" data-case="saltline"
+                  >Inside the build <span aria-hidden="true">→</span></a
+                ><a
+                  class="ed-link ed-link-quiet"
+                  href="https://saltline.app/"
+                  target="_blank"
+                  rel="noopener"
+                  >Open saltline <span aria-hidden="true">↗</span></a
+                >
+              </div>
+            </div>
+            <figure class="ed-figure" data-ed-gallery>
+              <div class="ed-image-wrap">
+                <img
+                  src="../../src/assets/saltline-lead-dawn.webp"
+                  alt="saltline at 06:31: an island silhouetted under a blue dawn sky, three named raiders strung along the horizon, a light path on the water, the sloop under full sail. The Ghostgale status panel and the nav chart sit down the right edge."
+                  fetchpriority="high"
+                  data-ed-image
+                />
+              </div>
+              <figcaption>
+                <div class="ed-figure-heading">
+                  <span>saltline</span>
+                  <div
+                    class="ed-gallery-controls"
+                    role="group"
+                    aria-label="saltline photographs"
+                    hidden
+                  >
+                    <button
+                      type="button"
+                      data-ed-frame="../../src/assets/saltline-lead-dawn.webp"
+                      data-alt="saltline at 06:31: an island silhouetted under a blue dawn sky, three named raiders strung along the horizon, a light path on the water, the sloop under full sail. The Ghostgale status panel and the nav chart sit down the right edge."
+                      data-note="Dawn, from the helm of a running game."
+                      aria-pressed="true"
+                    >
+                      The world</button
+                    ><button
+                      type="button"
+                      data-ed-frame="../../src/assets/saltline-proof-panel.webp"
+                      data-alt="Saltline running with its sailing instruments and developer controls visible."
+                      data-note="The instruments expose the sailing model underneath."
+                      aria-pressed="false"
+                    >
+                      The instruments
+                    </button>
+                  </div>
+                  <span class="ed-live">Live in a browser ↗</span>
+                </div>
+                <p data-ed-note>Dawn, from the helm of a running game.</p>
+              </figcaption>
+            </figure>
+          </article>
+          <article class="ed-project" id="ed-ember">
+            <div class="ed-project-copy">
+              <p class="ed-label">02 / Voxel MMORPG</p>
+              <h3>A world we can agree on.</h3>
+              <p class="ed-project-intro">
+                I designed, built and deployed a voxel MMORPG: the browser client, the authoritative
+                realm service and the boundary between them.
+              </p>
+              <div class="ed-decision">
+                <span class="ed-label">A decision that matters</span>
+                <p>
+                  The server owns simulation. Colyseus rooms carry the same quests, loot and combat
+                  state to every browser; the client draws the world.
+                </p>
+              </div>
+              <p class="ed-result">Seven regions. Up to 64 players per realm.</p>
+              <div class="ed-project-links">
+                <a class="ed-link ref-case-link" href="cases/ember.html" data-case="ember"
+                  >Inside the build <span aria-hidden="true">→</span></a
+                ><a
+                  class="ed-link ed-link-quiet"
+                  href="https://emberwilds-web.fly.dev/"
+                  target="_blank"
+                  rel="noopener"
+                  >Open Ember Wilds <span aria-hidden="true">↗</span></a
+                >
+              </div>
+            </div>
+            <figure class="ed-figure" data-ed-gallery>
+              <div class="ed-image-wrap">
+                <img
+                  src="../../src/assets/ember-spread-fallowmere-dusk.webp"
+                  alt="Ember Wilds in Fallowmere at dusk: a level-30 character in a voxel landscape."
+                  loading="lazy"
+                  data-ed-image
+                />
+              </div>
+              <figcaption>
+                <div class="ed-figure-heading">
+                  <span>Ember Wilds</span>
+                  <div
+                    class="ed-gallery-controls"
+                    role="group"
+                    aria-label="Ember Wilds photographs"
+                    hidden
+                  >
+                    <button
+                      type="button"
+                      data-ed-frame="../../src/assets/ember-spread-fallowmere-dusk.webp"
+                      data-alt="Ember Wilds in Fallowmere at dusk: a level-30 character in a voxel landscape."
+                      data-note="Fallowmere at dusk. A place made from voxels."
+                      aria-pressed="true"
+                    >
+                      The world</button
+                    ><button
+                      type="button"
+                      data-ed-frame="../../src/assets/ember-proof-two-players.webp"
+                      data-alt="Two browser windows connected to the same Ember Wilds realm."
+                      data-note="Two browsers, connected to the same running realm."
+                      aria-pressed="false"
+                    >
+                      The shared state
+                    </button>
+                  </div>
+                  <span class="ed-live">Live in a browser ↗</span>
+                </div>
+                <p data-ed-note>Fallowmere at dusk. A place made from voxels.</p>
+              </figcaption>
+            </figure>
+          </article>
+          <div class="ed-studies">
+            <article class="ed-study">
+              <figure>
+                <img
+                  src="../../src/assets/murmuration-lead-ribbon.webp"
+                  alt="murmuration in ribbon style: a dense violet and white form of drawn-out particle streaks against black, filling most of the frame."
+                  loading="lazy"
+                />
+                <figcaption><span>murmuration</span><span class="ed-label">03</span></figcaption>
+              </figure>
+              <h3>Listen, then render.</h3>
+              <p>
+                I built the audio analysis and WebGPU renderer. Chroma, transients and stereo
+                placement give a field of particles more to follow than volume.
+              </p>
+              <p class="ed-study-fact">620k particles · 8.07ms GPU time</p>
+              <a class="ed-link ref-case-link" href="cases/murmuration.html" data-case="murmuration"
+                >Inside the build <span aria-hidden="true">→</span></a
+              >
+            </article>
+            <article class="ed-study">
+              <figure>
+                <img
+                  src="../../src/assets/blockhold-lead-battle.webp"
+                  alt="Blockhold in a live battle: voxel towers defend a road against an incoming wave."
+                  loading="lazy"
+                />
+                <figcaption><span>Blockhold</span><span class="ed-label">04</span></figcaption>
+              </figure>
+              <h3>Build the rules first.</h3>
+              <p>
+                I made the modeler, simulation and campaign. Colored boxes become models; a fixed
+                60Hz loop keeps the battle independent of the frame rate.
+              </p>
+              <p class="ed-study-fact">10 maps · 249 waves · 154 tests</p>
+              <a class="ed-link ref-case-link" href="cases/blockhold.html" data-case="blockhold"
+                >Inside the build <span aria-hidden="true">→</span></a
+              >
+            </article>
+            <article class="ed-study">
+              <figure>
+                <img
+                  src="../../src/assets/cubit-lead-peek.webp"
+                  alt="Cubit: a 3 by 3 by 3 cube of colored tiles, opened to reveal its layers."
+                  loading="lazy"
+                />
+                <figcaption><span>Cubit</span><span class="ed-label">05</span></figcaption>
+              </figure>
+              <h3>Make depth feel obvious.</h3>
+              <p>
+                I built the whole single-file game. Swipes follow the projected cube axes, and
+                translucent tiles let you read what is happening inside.
+              </p>
+              <p class="ed-study-fact">One 553 KB file · 62 tests</p>
+              <a class="ed-link ref-case-link" href="cases/cubit.html" data-case="cubit"
+                >Inside the build <span aria-hidden="true">→</span></a
+              >
+            </article>
+          </div>
+          <div class="ed-unfinished">
+            <span class="ed-label">Still on the desk</span>
+            <p>Pre-lit forests and deterministic worlds.</p>
+            <div>
+              <a class="ed-link ref-case-link" href="cases/hidamari.html" data-case="hidamari"
+                >hidamari · in progress <span aria-hidden="true">→</span></a
+              ><a class="ed-link ref-case-link" href="cases/elderwood.html" data-case="elderwood"
+                >Elderwood Vale · in progress <span aria-hidden="true">→</span></a
+              >
+            </div>
+          </div>
+        </section>
+        <section class="ed-about" id="about" aria-labelledby="ed-about-title">
+          <div class="ed-about-copy">
+            <p class="ed-label">A little context</p>
+            <h2 id="ed-about-title">Two degrees.<br />One habit.</h2>
+            <p>
+              I studied computer science and astrophysics at UMass Amherst. Algorithms and General
+              Relativity landed in the same problem-set pile.
+            </p>
+            <p>
+              In college, I simulated CO₂ cooling for particle detectors. Now I simulate an ocean. I
+              learn things by building them.
+            </p>
+            <p class="ed-personal">
+              Away from the keyboard: heirloom tomatoes, bikes and Pink Floyd, roughly in that
+              order.
+            </p>
+          </div>
+          <div class="ed-record">
+            <p class="ed-label">The professional thread</p>
+            <details>
+              <summary>
+                <span><strong>Notable Health</strong><small>Software Engineer</small></span
+                ><span class="ed-record-date">Aug 2022 - Present<i aria-hidden="true">+</i></span>
+              </summary>
+              <div>
+                <p>
+                  My team owns the voice and conversations platform. I lead technical direction,
+                  mentor engineers and turn incidents into platform fixes.
+                </p>
+                <a class="ed-link ref-case-link" href="cases/notable.html" data-case="notable"
+                  >Read the professional case <span aria-hidden="true">→</span></a
+                >
+              </div>
+            </details>
+            <details>
+              <summary>
+                <span
+                  ><strong>Harvest Fintech, Inc.</strong
+                  ><small>Software Architect and Engineer</small></span
+                ><span class="ed-record-date">Jul 2021 - Jan 2022<i aria-hidden="true">+</i></span>
+              </summary>
+              <div>
+                <p>
+                  First significant engineer on the product. Built the backend and database
+                  engineering for a mobile application and architected its microservices.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>
+                <span
+                  ><strong>UMass Amherst, Physics Department</strong
+                  ><small>Student Software Developer</small></span
+                ><span class="ed-record-date">Jan 2021 - May 2022<i aria-hidden="true">+</i></span>
+              </summary>
+              <div>
+                <p>
+                  Built and maintained the software professors used to acquire and share
+                  demonstrations across 20+ courses and 1000+ students. Ported a legacy WordPress
+                  site with a JSON backend to an Express, React and PostgreSQL application deployed
+                  on site.
+                </p>
+              </div>
+            </details>
+            <a
+              class="ed-link"
+              href="https://aj8uppal.github.io/attachments/resume2026.pdf"
+              target="_blank"
+              rel="noopener"
+              >Full résumé <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </section>
+        <section class="ed-contact" aria-labelledby="ed-contact-title">
+          <div>
+            <p class="ed-label">Correspondence</p>
+            <h2 id="ed-contact-title">What are you working on?</h2>
+          </div>
+          <a class="ed-link" href="mailto:aj8uppal@gmail.com"
+            >Let’s compare notes <span aria-hidden="true">↗</span></a
+          >
+        </section>
+      </main>
+      <footer class="ed-footer">
+        <a class="ed-brand" href="#top">AJ Uppal<span>.</span></a>
+        <p>Software engineer. Still curious.</p>
+        <div>
+          <a class="" href="https://github.com/aj8uppal" target="_blank" rel="noopener"
+            >GitHub <span aria-hidden="true">↗</span></a
+          ><a class="" href="https://www.linkedin.com/in/aj-uppal/" target="_blank" rel="noopener"
+            >LinkedIn <span aria-hidden="true">↗</span></a
+          ><a class="" href="mailto:aj8uppal@gmail.com">Email <span aria-hidden="true">↗</span></a>
+        </div>
+      </footer>
+    </div>
+    <script src="shared.js" defer></script>
+    <script src="editorial.js" defer></script>
+  </body>
+</html>

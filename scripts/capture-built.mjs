@@ -1,15 +1,15 @@
 /**
- * The eleven captures behind the cards on /built/.
+ * The running-app captures behind the cards on /built/.
  *
  * Each app is driven into the one state that says what it is - a GO verdict, a
  * poster made from a real photo, two people on one canvas - and shot at
  * 1440x900 (16:10, the card slot's ratio) at 2x. The PNG is then written
  * straight to src/assets/built-<name>.webp, where astro:assets picks it up.
  *
- *   npm run built:shots            all eleven
+ *   npm run built:shots            the full collection
  *   npm run built:shots eyeshot    just this one
  *
- * The six apps served from this repo are read off a local server, so a shot
+ * Apps served from this repo are read off a local server, so a shot
  * can be taken of a change that has not been pushed yet:
  *
  *   (cd public && python3 -m http.server 8099)
@@ -19,6 +19,9 @@
  * and sixty-seconds' canvas are different every time, on purpose.
  */
 import { chromium } from 'playwright';
+import { createStaticShots } from './capture-experiments.mjs';
+import { createGameShots } from './capture-games.mjs';
+import { captureBeatlayer } from './capture-audio.mjs';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -26,7 +29,7 @@ import sharp from 'sharp';
 
 const OUT = path.resolve(import.meta.dirname, '../src/assets');
 const RAW = mkdtempSync(path.join(tmpdir(), 'built-shots-'));
-const L = 'http://127.0.0.1:8099';
+const L = process.env.CAPTURE_BASE || 'http://127.0.0.1:8099';
 const P = 'https://aj8uppal.github.io';
 const only = process.argv.slice(2);
 
@@ -37,6 +40,13 @@ const W = 1440,
   ASSET_W = 1500;
 
 const shots = {
+  ...createStaticShots({ base: L }),
+  ...createGameShots({ base: L }),
+  async shipworthy(page) {
+    await page.goto(`${L}/shipworthy/`, { waitUntil: 'networkidle' });
+    await page.locator('#ideas .idea').first().waitFor();
+    await page.waitForTimeout(600);
+  },
   /* The memo, at the equity curve — the picture the whole thing is arguing for. */
   async papertrader(page) {
     await page.goto(`${L}/papertrader/`, { waitUntil: 'networkidle' });
@@ -62,8 +72,7 @@ const shots = {
   },
 
   async beatlayer(page) {
-    await page.goto(`${P}/beatlayer/`, { waitUntil: 'networkidle' });
-    await page.waitForTimeout(3000);
+    await captureBeatlayer(page, { base: L });
   },
 
   async voidreach(page) {
@@ -249,9 +258,16 @@ const shots = {
   },
 };
 
+const missing = only.filter((key) => !shots[key]);
+if (missing.length) throw new Error(`No capture recipe for: ${missing.join(', ')}`);
+
 const browser = await chromium.launch({
-  // Voidreach is WebGL 2 and this Mac has no GPU available to a headless run.
-  args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
+  ...(process.env.CAPTURE_CHANNEL ? { channel: process.env.CAPTURE_CHANNEL } : {}),
+  // An installed Chrome can use the native GPU. Bundled Chromium defaults to
+  // software rendering so the capture command also works without one.
+  args: process.env.CAPTURE_CHANNEL
+    ? ['--ignore-gpu-blocklist']
+    : ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
 });
 
 let failed = 0;

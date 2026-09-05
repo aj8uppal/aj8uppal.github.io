@@ -1,590 +1,753 @@
 ---
-/**
- * /built — eleven more projects.
- *
- * A page rather than a section, because eleven more cards is most of a second
- * index and the index has a height budget that `npm run verify` enforces. The
- * main page keeps a door to here with the three that lead, and folds the rest.
- *
- * Three lead. Eyeshot, BeatLayer and Voidreach are the ones a person might
- * send to another person, and each gets a wide card with the frame beside the
- * copy, the way the flagship cards on the index are drawn. The other eight are
- * a grid of the same card at half width. That is the only ranking here.
- */
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import { asset } from '../lib/images';
-import { dots } from '../lib/text';
-import { site } from '../data/content';
-import { apps, built } from '../data/built';
+import { apps, built, categories, selectedApps } from '../data/built';
 
-/* A lead frame runs the wider half of a 1.15/1 split inside the shell: 660px
-   at the maximum. A grid frame is a half card: 610px. Both are 88vw on a phone. */
-const LEAD_W = [480, 660, 990, 1320];
-const LEAD_S = '(min-width: 1400px) 660px, (min-width: 900px) 50vw, 90vw';
-const SHOT_W = [420, 610, 900, 1220];
-const SHOT_S = '(min-width: 1400px) 610px, (min-width: 900px) 46vw, 90vw';
-
-const lead = apps.filter((a) => a.featured);
-const rest = apps.filter((a) => !a.featured);
-if (lead.length !== 3) throw new Error(`built: three lead the page, got ${lead.length}`);
-
-const opens = apps.filter((a) => a.reach === 'open').length;
+const W = [420, 640, 960, 1280];
+const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
 ---
 
 <Base
-  title={`Eleven more · ${site.title}`}
-  description="Eleven more projects — a daily eye test, a drum machine that plays under you, a space sandbox with other people in it, a shared sixty-second canvas, a graveyard for tabs. Nine open in a browser."
+  title="The collection · AJ Uppal"
+  description="Explore AJ Uppal’s browser instruments, simulations, games and tools. Real running apps, with the engineering behind each one."
   elsewhere
 >
-  <section class="sec sec--ink bt-top">
-    <div class="shell">
-      <p class="eyebrow">aj8uppal.github.io &middot; built</p>
-
+  <div class="bt" data-collection data-total={apps.length}>
+    <section class="bt-top bt-shell" aria-labelledby="bt-title">
       <div class="bt-head">
-        <h1 class="display bt-h1">{built.statement}</h1>
+        <h1 id="bt-title">Built from<br /><em>curiosity.</em></h1>
         <div class="bt-head__side">
           <p class="bt-lead">{built.lead}</p>
-          <p class="bt-caveat">{built.caveat}</p>
+          <p class="bt-back">
+            <a href="/#building">The bigger projects <span aria-hidden="true">↗</span></a><a
+              href="/#work">My engineering work <span aria-hidden="true">↗</span></a
+            >
+          </p>
         </div>
       </div>
-
-      <dl class="bt-facts">
-        {
-          built.facts.map((f) => (
-            <div>
-              <dt>{f.k}</dt>
-              <dd>{f.v}</dd>
-            </div>
-          ))
-        }
-      </dl>
-    </div>
-  </section>
-
-  <section class="sec sec--ink-deep bt-body">
-    <div class="shell">
-      <div class="bt-row">
-        <p class="kicker">Three to send to someone</p>
-        <p class="bt-row__p">
-          A game you play in a minute a day, an instrument, and a place. Each one has a reason to
-          open it again tomorrow.
+      <div class="bt-intro-foot">
+        <p>
+          <strong>{apps.length}</strong> projects <span aria-hidden="true">·</span> Start with a few.
+          Follow your curiosity.
         </p>
       </div>
+    </section>
 
-      <div class="bt-leads">
+    <section class="bt-body bt-shell" aria-label="Explore the projects">
+      <div class="bt-controls" hidden>
+        <div class="bt-filter-scroll">
+          <div class="bt-filters" role="group" aria-label="Filter projects">
+            <button type="button" data-filter="selected" aria-pressed="true"
+              >Start here <span>{selectedApps.length}</span></button
+            >
+            <button type="button" data-filter="all" aria-pressed="false"
+              >All projects <span>{apps.length}</span></button
+            >
+            {
+              categories.map((category) => (
+                <button type="button" data-filter={category.key} aria-pressed="false">
+                  {category.label}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+        <label class="bt-search"
+          ><span>Find a project</span><input
+            type="search"
+            name="project"
+            placeholder="Name, idea or technology"
+            aria-controls="bt-gallery"
+            autocomplete="off"
+          /></label
+        >
+      </div>
+      <div class="bt-results">
+        <p class="bt-count" role="status" aria-live="polite" aria-atomic="true">
+          {apps.length} projects to explore
+        </p><span class="bt-results-note">A little of what I make. A little of how.</span>
+      </div>
+
+      <div class="bt-gallery" id="bt-gallery">
         {
-          lead.map((a, i) => (
-            <article class="bcard bcard--lead" id={a.key} style={`--a:${a.accent}`}>
-              <a class="bcard__shot" href={a.href} tabindex="-1" aria-hidden="true">
+          apps.map((app, i) => (
+            <article
+              class="bcard"
+              id={app.key}
+              style={`--a:${app.accent}`}
+              data-built-card
+              data-selected={app.featured || app.selected || undefined}
+              data-categories={app.categories.join(' ')}
+              data-search={`${app.name} ${app.kind} ${app.what} ${app.how} ${app.k}`.toLowerCase()}
+            >
+              <a class="bcard__shot" href={app.href} tabindex="-1" aria-hidden="true">
                 <Picture
-                  src={asset(`built-${a.key}`)}
+                  src={asset(`built-${app.key}`)}
                   alt=""
-                  widths={LEAD_W}
-                  sizes={LEAD_S}
+                  widths={W}
+                  sizes={S}
                   formats={['avif']}
                   fallbackFormat="webp"
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  fetchpriority={i === 0 ? 'high' : undefined}
+                  loading={i < 3 ? 'eager' : 'lazy'}
                   decoding="async"
                 />
+                <span class="bcard__enter" aria-hidden="true">
+                  ↗
+                </span>
               </a>
-
               <div class="bcard__body">
                 <p class="bcard__meta">
-                  <span class="bcard__kind">{a.kind}</span>
-                  <span class:list={['bcard__state', `is-${a.reach}`]}>{a.reachLabel}</span>
+                  <>
+                    <span class="bcard__kind">{app.kind}</span>
+                    <span class={`bcard__state is-${app.reach}`}>{app.reachLabel}</span>
+                  </>
                 </p>
-
-                <h2 class="display bcard__h bcard__h--lead">
-                  <a href={a.href}>{a.name}</a>
+                <h2 class="bcard__h">
+                  <a href={app.href}>{app.name}</a>
                 </h2>
-
-                <p class="bcard__what bcard__what--lead">{a.what}</p>
-                <p class="bcard__how">{a.how}</p>
-
-                <p class="bcard__cap">{a.cap}</p>
-                <p class="stack bcard__k">{dots(a.k)}</p>
-
-                <p class="bcard__go">
-                  <a href={a.href}>
-                    {a.cta}
-                    <span aria-hidden="true">&rarr;</span>
-                  </a>
-                </p>
+                <p class="bcard__what">{app.what}</p>
+                <p class="bcard__how">{app.how}</p>
+                <div class="bcard__foot">
+                  <p class="bcard__k">{app.k}</p>
+                  <p class="bcard__go">
+                    <a href={app.href}>
+                      {app.cta}
+                      <span aria-hidden="true">↗</span>
+                    </a>
+                  </p>
+                </div>
+                <details class="bcard__capture">
+                  <>
+                    <summary>In this frame</summary>
+                    <p>{app.cap}</p>
+                    <p class="sr">{app.alt}</p>
+                  </>
+                </details>
               </div>
             </article>
           ))
         }
       </div>
+      <div class="bt-empty" hidden>
+        <h2>No projects on this shelf.</h2><p>
+          Try another word or explore the whole collection.
+        </p><button type="button" data-reset
+          >Show all projects <span aria-hidden="true">↗</span></button
+        >
+      </div>
+      <div class="bt-more" hidden>
+        <button type="button" data-more>Show more projects <span aria-hidden="true">↓</span></button
+        ><p data-remaining></p>
+      </div>
+      <noscript
+        ><p class="bt-noscript">
+          The whole collection is shown here. Every project opens without the gallery controls.
+        </p></noscript
+      >
+    </section>
 
-      <div class="bt-row bt-row--rest">
-        <p class="kicker">The other eight</p>
-        <p class="bt-row__p">
-          Tools, toys and one memo. Smaller, and each one does its one thing in the first minute.
+    <p class="bt-caveat bt-shell">{built.caveat}</p>
+    <section class="bt-foot bt-shell">
+      <div>
+        <p class="bt-eyebrow">The thread through it all</p><h2>
+          I like making<br /><em>the hard parts work.</em>
+        </h2>
+      </div>
+      <div>
+        <p>
+          By day, I build healthcare software at Notable. These projects are where I follow a
+          question all the way to something you can use.
+        </p><p class="bt-foot__go">
+          <a href="/">Meet the engineer <span aria-hidden="true">↗</span></a><a href="/#contact"
+            >Get in touch <span aria-hidden="true">↗</span></a
+          >
         </p>
       </div>
-
-      <div class="bt-grid">
-        {
-          rest.map((a) => (
-            <article class="bcard" id={a.key} style={`--a:${a.accent}`}>
-              <a class="bcard__shot" href={a.href} tabindex="-1" aria-hidden="true">
-                <Picture
-                  src={asset(`built-${a.key}`)}
-                  alt=""
-                  widths={SHOT_W}
-                  sizes={SHOT_S}
-                  formats={['avif']}
-                  fallbackFormat="webp"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </a>
-
-              <div class="bcard__body">
-                <p class="bcard__meta">
-                  <span class="bcard__kind">{a.kind}</span>
-                  <span class:list={['bcard__state', `is-${a.reach}`]}>{a.reachLabel}</span>
-                </p>
-
-                <h2 class="display bcard__h">
-                  <a href={a.href}>{a.name}</a>
-                </h2>
-
-                <p class="bcard__what">{a.what}</p>
-                <p class="bcard__how">{a.how}</p>
-
-                <p class="bcard__cap">{a.cap}</p>
-                <p class="stack bcard__k">{dots(a.k)}</p>
-
-                <p class="bcard__go">
-                  <a href={a.href}>
-                    {a.cta}
-                    <span aria-hidden="true">&rarr;</span>
-                  </a>
-                </p>
-              </div>
-            </article>
-          ))
-        }
-      </div>
-
-      {
-        /* The alt text is on the list below the cards rather than on each
-          card's own image, which is decorative there: a reader who cannot see
-          the picture has already been told what the app is twice. */
-      }
-      <ul class="sr" aria-label="What each capture shows">
-        {
-          apps.map((a) => (
-            <li>
-              {a.name}: {a.alt}
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
-
-  <section class="sec sec--camel bt-foot">
-    <div class="shell">
-      <p class="kicker">Elsewhere</p>
-      <h2 class="display bt-foot__h">There are seven bigger ones.</h2>
-      <p class="bt-foot__p">
-        The projects that took months &mdash; a multiplayer sailing game, a voxel tower defense, a
-        rendering pipeline &mdash; are on the main page, along with everything else.
-      </p>
-      <p class="bt-foot__go">
-        <a href="/">Back to the site <span aria-hidden="true">&rarr;</span></a>
-        <a href="/#building">Straight to the projects <span aria-hidden="true">&rarr;</span></a>
-      </p>
-      <p class="bt-foot__n">
-        {opens} of the eleven open in a browser with nothing to install and nobody to sign up as.
-      </p>
-    </div>
-  </section>
+    </section>
+  </div>
 </Base>
 
-<style>
-  /* ── Masthead ──────────────────────────────────────────────────────── */
-  .bt-top {
-    padding-block: clamp(4rem, 9vw, 7rem) clamp(2.4rem, 4vw, 3.4rem);
-  }
+<script>
+  const root = document.querySelector<HTMLElement>('[data-collection]');
+  if (root) {
+    const gallery = root.querySelector<HTMLElement>('.bt-gallery')!;
+    const cards = [...root.querySelectorAll<HTMLElement>('[data-built-card]')];
+    const filters = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const search = root.querySelector<HTMLInputElement>('input[type="search"]')!;
+    const status = root.querySelector<HTMLElement>('.bt-count')!;
+    const more = root.querySelector<HTMLElement>('.bt-more')!;
+    const moreButton = more.querySelector<HTMLButtonElement>('button')!;
+    const empty = root.querySelector<HTMLElement>('.bt-empty')!;
+    const pageSize = 6;
+    let active = 'selected';
+    let limit = pageSize;
 
+    function update(writeURL = false) {
+      const query = search.value.trim().toLowerCase();
+      const terms = query.split(/\s+/).filter(Boolean);
+      const matches = cards.filter((card) => {
+        const inCategory =
+          active === 'all' ||
+          (active === 'selected'
+            ? card.hasAttribute('data-selected')
+            : card.dataset.categories?.split(' ').includes(active));
+        return inCategory && terms.every((term) => card.dataset.search?.includes(term));
+      });
+      const visible = matches.slice(0, limit);
+      for (const card of cards) card.hidden = !visible.includes(card);
+      for (const button of filters)
+        button.setAttribute('aria-pressed', String(button.dataset.filter === active));
+      gallery.dataset.ready = '';
+      status.textContent = matches.length
+        ? `${visible.length} of ${matches.length} projects${active === 'selected' ? ' · a few good starting points' : ''}`
+        : 'No matching projects';
+      empty.hidden = matches.length > 0;
+      const remaining = matches.length - visible.length;
+      more.hidden = remaining === 0;
+      moreButton.textContent = `Show ${Math.min(pageSize, remaining)} more ↓`;
+      more.querySelector<HTMLElement>('[data-remaining]')!.textContent =
+        `${remaining} more to discover`;
+      if (writeURL) {
+        const url = new URL(location.href);
+        if (active === 'selected') url.searchParams.delete('filter');
+        else url.searchParams.set('filter', active);
+        if (query) url.searchParams.set('q', search.value.trim());
+        else url.searchParams.delete('q');
+        url.hash = '';
+        history.replaceState(null, '', url);
+      }
+      return visible;
+    }
+
+    function readURL() {
+      const url = new URL(location.href);
+      const requested = url.searchParams.get('filter') || 'selected';
+      active = filters.some((button) => button.dataset.filter === requested)
+        ? requested
+        : 'selected';
+      search.value = url.searchParams.get('q') || '';
+      if (search.value && active === 'selected') active = 'all';
+      limit = pageSize;
+      let target: HTMLElement | undefined;
+      try {
+        target = cards.find((card) => card.id === decodeURIComponent(url.hash.slice(1)));
+      } catch {
+        /* An invalid fragment leaves the selection alone. */
+      }
+      if (target) {
+        active = 'all';
+        search.value = '';
+        limit = Math.ceil((cards.indexOf(target) + 1) / pageSize) * pageSize;
+      }
+      update();
+      if (target) requestAnimationFrame(() => target?.scrollIntoView({ block: 'start' }));
+    }
+
+    filters.forEach((button) =>
+      button.addEventListener('click', () => {
+        active = button.dataset.filter!;
+        limit = pageSize;
+        update(true);
+      }),
+    );
+    search.addEventListener('input', () => {
+      if (active === 'selected' && search.value.trim()) active = 'all';
+      limit = pageSize;
+      update(true);
+    });
+    moreButton.addEventListener('click', () => {
+      const previous = limit;
+      limit += pageSize;
+      const visible = update();
+      visible[previous]?.querySelector<HTMLAnchorElement>('.bcard__h a')?.focus();
+    });
+    root.querySelector<HTMLButtonElement>('[data-reset]')!.addEventListener('click', () => {
+      active = 'all';
+      search.value = '';
+      limit = pageSize;
+      update(true);
+      filters.find((button) => button.dataset.filter === 'all')?.focus();
+    });
+    window.addEventListener('popstate', readURL);
+    window.addEventListener('hashchange', readURL);
+    readURL();
+    root.querySelector<HTMLElement>('.bt-controls')!.hidden = false;
+  }
+</script>
+
+<style>
+  .bt {
+    --bt-ink: #edf0e6;
+    --bt-muted: #b1c5c1;
+    --bt-ground: #0d1e25;
+    --bt-card: #132a32;
+    --bt-hover: #203b43;
+    --bt-line: #455d62;
+    color: var(--bt-ink);
+    background: var(--bt-ground);
+  }
+  .bt [hidden] {
+    display: none !important;
+  }
+  .bt-shell {
+    width: min(1280px, calc(100% - 96px));
+    margin-inline: auto;
+  }
+  .bt-top {
+    padding-block: 96px 20px;
+  }
+  .bt-eyebrow {
+    margin: 0 0 24px;
+    font: 11px/1.5 var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--bt-muted);
+  }
   .bt-head {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(1.6rem, 4vw, 3.4rem);
+    grid-template-columns: 1fr 1fr;
     align-items: end;
-    margin-top: 1.4rem;
+    gap: 48px;
   }
-
-  .bt-h1 {
-    max-width: 9ch;
-    font-size: clamp(3rem, 8.4vw, 7.4rem);
+  .bt-head h1 {
+    margin: 0;
+    font:
+      400 clamp(56px, 7.2vw, 100px)/0.98 Georgia,
+      serif;
+    letter-spacing: -0.055em;
+    text-transform: none;
   }
-
+  .bt-head h1 em,
+  .bt-foot h2 em {
+    color: #bad7c5;
+    font-weight: 400;
+  }
   .bt-head__side {
-    display: grid;
-    gap: 1rem;
+    max-width: 49ch;
+    padding-bottom: 4px;
   }
-
   .bt-lead {
-    max-width: 56ch;
-    margin: 0;
-    font-size: clamp(1.02rem, 1.5vw, 1.2rem);
-    line-height: 1.5;
+    margin: 0 0 16px;
+    font-size: clamp(17px, 1.45vw, 20px);
+    line-height: 1.55;
   }
-
-  /* The one asterisk on the whole page, said once. Set as an aside rather than
-     as another paragraph, because it is about the page and not about the work. */
+  .bt-back {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 24px;
+    margin: 16px 0 0;
+    font-size: 13px;
+  }
+  .bt-back a,
+  .bt-foot__go a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    text-decoration: none;
+    border-bottom: 1px solid var(--bt-line);
+  }
+  .bt-back a:hover,
+  .bt-foot__go a:hover {
+    border-color: #bad7c5;
+  }
+  .bt-intro-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 32px;
+    padding: 26px 0 0;
+    margin-top: 40px;
+    border-top: 1px solid var(--bt-line);
+    color: var(--bt-muted);
+  }
+  .bt-intro-foot p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .bt-intro-foot strong {
+    font-size: 16px;
+    color: var(--bt-ink);
+    font-weight: 500;
+  }
+  .bt-intro-foot span {
+    padding-inline: 8px;
+  }
   .bt-caveat {
-    max-width: 56ch;
-    margin: 0;
-    padding-left: 0.95rem;
-    border-left: 2px solid var(--sand);
-    color: var(--muted);
-    font-size: 0.92rem;
-    line-height: 1.5;
+    color: var(--bt-muted);
+    padding-bottom: 32px;
+    font-size: 12px;
+    line-height: 1.7;
   }
-
-  .bt-facts {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1rem clamp(1.2rem, 3vw, 2.8rem);
-    margin: clamp(2rem, 4vw, 3rem) 0 0;
-    padding-block: 1rem;
-    border-block: 1px solid var(--line-dark);
-  }
-
-  .bt-facts div {
-    display: grid;
-    gap: 0.3rem;
-  }
-
-  .bt-facts dt {
-    color: var(--muted);
-    font: 680 0.66rem/1.4 var(--mono);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .bt-facts dd {
-    margin: 0;
-    font-family: var(--display);
-    font-size: clamp(1.3rem, 2.4vw, 1.9rem);
-    font-weight: 900;
-    letter-spacing: -0.045em;
-    line-height: 1;
-    text-transform: uppercase;
-  }
-
-  /* ── The two rows ──────────────────────────────────────────────────── */
   .bt-body {
-    padding-block: clamp(2.6rem, 5vw, 4rem) clamp(3.4rem, 7vw, 5.5rem);
+    padding-bottom: 64px;
   }
-
-  .bt-row {
-    display: grid;
-    grid-template-columns: minmax(140px, 0.3fr) minmax(0, 1fr);
-    gap: 0.4rem 2rem;
-    align-items: start;
-    margin: 0 0 clamp(1.3rem, 2.6vw, 2rem);
-  }
-
-  .bt-row--rest {
-    margin-top: clamp(2.6rem, 5vw, 4rem);
-  }
-
-  .bt-row__p {
-    max-width: 62ch;
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.96rem;
-    line-height: 1.5;
-  }
-
-  /* Three wide cards, stacked. The frame takes the wider column and the copy
-     the narrower, and every second card swaps them so the eye zigzags down
-     the three rather than reading one column twice. */
-  .bt-leads {
-    display: grid;
-    gap: clamp(1.1rem, 2.2vw, 1.7rem);
-  }
-
-  /* Doubled up on purpose: .bcard below sets display: flex, at the same
-     specificity and later in the sheet, and would win. */
-  .bcard.bcard--lead {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  }
-
-  .bcard--lead:nth-child(even) .bcard__shot {
-    order: 2;
-  }
-
-  .bcard--lead .bcard__shot {
-    border-bottom: 0;
-    border-right: 2px solid var(--a);
-  }
-
-  .bcard--lead:nth-child(even) .bcard__shot {
-    border-right: 0;
-    border-left: 2px solid var(--a);
-  }
-
-  .bcard--lead .bcard__shot img {
-    height: 100%;
-    aspect-ratio: auto;
-    object-position: left top;
-  }
-
-  .bcard__h--lead {
-    font-size: clamp(2rem, 3.6vw, 2.9rem);
-  }
-
-  .bcard__what--lead {
-    font-size: clamp(1.06rem, 1.5vw, 1.2rem);
-  }
-
-  /* ── The cards ─────────────────────────────────────────────────────── */
-  .bt-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(1.1rem, 2.2vw, 1.7rem);
-  }
-
-  .bcard {
+  .bt-controls {
     display: flex;
     flex-direction: column;
+    gap: 20px;
+    padding-block: 20px;
+    border-bottom: 1px solid var(--bt-line);
+  }
+  .bt-filter-scroll {
+    min-width: 0;
+    overflow-x: auto;
+    padding-block: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bt-line) transparent;
+  }
+  .bt-filters {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    gap: 6px;
+  }
+  .bt-filters button {
+    min-height: 44px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    padding: 10px 14px;
+    color: var(--bt-muted);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .bt-filters button span {
+    margin-left: 5px;
+    font-size: 10px;
+    opacity: 0.8;
+  }
+  .bt-filters button:hover {
+    border-color: var(--bt-line);
+    color: var(--bt-ink);
+  }
+  .bt-filters button[aria-pressed='true'] {
+    color: #0d1e25;
+    background: #bad7c5;
+  }
+  .bt-search {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--bt-muted);
+  }
+  .bt-search input {
+    width: min(360px, 100%);
+    min-width: 0;
+    min-height: 44px;
+    border: 1px solid var(--bt-line);
+    border-radius: 4px;
+    background: var(--bt-card);
+    color: var(--bt-ink);
+    padding: 10px 14px;
+    font: inherit;
+    font-size: 14px;
+  }
+  .bt-search input::placeholder {
+    color: var(--bt-muted);
+    opacity: 1;
+  }
+  .bt-results {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 0;
+    font: 11px/1.5 var(--mono);
+    color: var(--bt-muted);
+  }
+  .bt-count {
+    margin: 0;
+  }
+  .bt-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px 24px;
+    align-items: start;
+  }
+  :global(.js) .bt-gallery:not([data-ready]) .bcard:not([data-selected]) {
+    display: none;
+  }
+  .bcard {
     min-width: 0;
     overflow: hidden;
-    border: 1px solid var(--line-dark-2);
-    border-radius: var(--r-md);
-    background: var(--ink-2);
-    box-shadow: 0 10px 26px rgb(0 0 0 / 34%);
+    border: 1px solid var(--bt-line);
+    background: var(--bt-card);
+    border-radius: 5px;
+    scroll-margin-top: 100px;
     transition:
-      background var(--dur-2) var(--ease),
-      border-color var(--dur-2) var(--ease);
+      background 180ms,
+      border-color 180ms;
   }
-
   .bcard:hover,
   .bcard:focus-within {
-    border-color: color-mix(in srgb, var(--a) 60%, transparent);
-    background: var(--ink-2-hi);
+    background: var(--bt-hover);
+    border-color: var(--a);
   }
-
-  /* The capture sits on the screen colour, a step under the card, because it
-     is a picture of a screen and should read as one. */
   .bcard__shot {
     display: block;
     position: relative;
-    background: var(--screen);
-    border-bottom: 2px solid var(--a);
+    overflow: hidden;
+    border-bottom: 1px solid var(--bt-line);
+    background: #09171d;
   }
-
   .bcard__shot img {
+    display: block;
     width: 100%;
     height: auto;
     aspect-ratio: 16 / 10;
     object-fit: cover;
-    object-position: top center;
+    object-position: center;
+    transition: transform 350ms ease;
   }
-
+  .bcard:hover .bcard__shot img {
+    transform: scale(1.025);
+  }
+  .bcard__enter {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #9eafaa;
+    border-radius: 50%;
+    background: #0d1e25e8;
+    color: #edf0e6;
+  }
   .bcard__body {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    padding: clamp(1rem, 1.9vw, 1.45rem);
+    padding: 20px 20px 12px;
   }
-
   .bcard__meta {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.55rem;
-    margin: 0 0 0.7rem;
-    font: 680 0.66rem/1.3 var(--mono);
-    letter-spacing: 0.11em;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 0 12px;
+    font: 10px/1.5 var(--mono);
     text-transform: uppercase;
+    letter-spacing: 0.1em;
   }
-
   .bcard__kind {
     color: var(--a);
-    font-weight: 800;
   }
-
-  /* The one badge that carries information rather than decoration: whether you
-     can press the link at the bottom and be using it. */
   .bcard__state {
-    margin-left: auto;
-    padding: 0.2rem 0.5rem;
-    border: 1px solid var(--line-dark-2);
-    border-radius: var(--r-xs);
-    color: var(--on-ink-2);
+    color: var(--bt-muted);
   }
-
-  .bcard__state.is-open {
-    border-color: color-mix(in srgb, var(--a) 55%, transparent);
-    color: var(--a);
-  }
-
   .bcard__h {
-    margin: 0 0 0.55rem;
-    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    margin: 0 0 10px;
+    font:
+      400 clamp(24px, 2.2vw, 30px)/1.14 Georgia,
+      serif;
+    letter-spacing: -0.025em;
+    text-transform: none;
   }
-
   .bcard__h a {
     text-decoration: none;
+    display: inline-block;
+    padding-block: 4px;
   }
-
-  /* The whole card is the target, and the heading link is what carries it, so
-     a pointer anywhere on the card is over the link. The text of the link is
-     still the only thing a screen reader is offered. */
-  .bcard__h a::after {
-    content: '';
-    position: absolute;
-    inset: 0;
+  .bcard__h a:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
   }
-
-  .bcard {
-    position: relative;
-  }
-
   .bcard__what {
-    margin: 0 0 0.7rem;
-    font-size: 1.02rem;
-    line-height: 1.45;
-  }
-
-  .bcard__how {
-    margin: 0 0 1rem;
-    color: var(--on-ink-2);
-    font-size: 0.9rem;
+    min-height: 3.1em;
+    margin: 0 0 15px;
+    font-size: 15px;
     line-height: 1.55;
   }
-
-  .bcard__cap {
-    margin: 0 0 0.35rem;
-    padding-top: 0.7rem;
-    border-top: 1px solid var(--line-dark);
-    color: var(--muted);
-    font-size: 0.8rem;
-    line-height: 1.4;
+  .bcard__how {
+    min-height: 6.3em;
+    margin: 0 0 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--bt-muted);
   }
-
+  .bcard__foot {
+    border-top: 1px solid var(--bt-line);
+    padding-top: 12px;
+  }
   .bcard__k {
-    margin: 0 0 1rem;
-    color: var(--muted);
-    font: 640 0.68rem/1.4 var(--mono);
-    letter-spacing: 0.05em;
+    min-height: 2.9em;
+    margin: 0;
+    color: var(--bt-muted);
+    font: 10px/1.5 var(--mono);
   }
-
   .bcard__go {
-    margin: auto 0 0;
+    margin: 8px 0 0;
   }
-
   .bcard__go a {
     display: inline-flex;
+    min-height: 44px;
     align-items: center;
-    gap: 0.45rem;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 600;
     color: var(--a);
-    font-weight: 700;
-    font-size: 0.94rem;
     text-decoration: none;
   }
-
-  .bcard__go a span {
-    transition: transform var(--dur-2) var(--ease);
+  .bcard__go a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
-
-  .bcard:hover .bcard__go a span {
-    transform: translateX(4px);
+  .bcard__capture {
+    border-top: 1px solid var(--bt-line);
+    color: var(--bt-muted);
   }
-
-  /* ── Foot ──────────────────────────────────────────────────────────── */
+  .bcard__capture summary {
+    cursor: pointer;
+    width: fit-content;
+    min-height: 44px;
+    padding-block: 14px;
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  .bcard__capture p {
+    font-size: 12px;
+    line-height: 1.55;
+    margin: 0 0 12px;
+  }
+  .bt-empty {
+    padding: 72px 0;
+    text-align: center;
+  }
+  .bt-empty h2 {
+    font:
+      32px/1.2 Georgia,
+      serif;
+    text-transform: none;
+  }
+  .bt-empty p {
+    color: var(--bt-muted);
+  }
+  .bt-empty button,
+  .bt-more button {
+    min-height: 48px;
+    border: 1px solid #bad7c5;
+    border-radius: 4px;
+    background: #bad7c5;
+    color: #0d1e25;
+    padding: 12px 24px;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .bt-more {
+    margin-top: 40px;
+    text-align: center;
+  }
+  .bt-more p,
+  .bt-noscript {
+    margin: 12px 0 0;
+    font-size: 12px;
+    color: var(--bt-muted);
+  }
   .bt-foot {
-    padding-block: clamp(3rem, 6vw, 4.6rem);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    padding-block: 64px 80px;
+    border-top: 1px solid var(--bt-line);
   }
-
-  .bt-foot__h {
-    max-width: 16ch;
-    margin: 0.9rem 0 0;
-    font-size: clamp(2rem, 4.4vw, 3.4rem);
+  .bt-foot h2 {
+    margin: 0;
+    font:
+      400 clamp(32px, 4.2vw, 56px)/1.1 Georgia,
+      serif;
+    text-transform: none;
+    letter-spacing: -0.04em;
   }
-
-  .bt-foot__p {
-    max-width: 56ch;
-    margin: 1rem 0 0;
-    font-size: 1.02rem;
+  .bt-foot > div + div {
+    align-self: end;
+    max-width: 46ch;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--bt-muted);
   }
-
   .bt-foot__go {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem 1.8rem;
-    margin: 1.4rem 0 0;
-    font-weight: 700;
+    gap: 12px 24px;
+    margin: 20px 0 0;
+    font-size: 14px;
+    color: var(--bt-ink);
   }
-
-  .bt-foot__go a {
-    display: inline-flex;
-    gap: 0.4rem;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
+  .bt :is(a, button, input, summary):focus-visible {
+    outline: 2px solid #edf0e6;
+    outline-offset: 4px;
   }
-
-  .bt-foot__n {
-    margin: 1.6rem 0 0;
-    color: var(--muted);
-    font: 640 0.72rem/1.5 var(--mono);
-    letter-spacing: 0.04em;
-  }
-
-  /* ── Narrow ────────────────────────────────────────────────────────── */
-  @media (max-width: 900px) {
-    .bt-grid {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .bt-head {
-      grid-template-columns: minmax(0, 1fr);
-      align-items: start;
-    }
-
-    .bt-facts {
+  @media (max-width: 1100px) {
+    .bt-gallery {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-
-    .bt-row {
+  }
+  @media (max-width: 700px) {
+    .bt-shell {
+      width: calc(100% - 40px);
+    }
+    .bt-top {
+      padding-block: 80px 8px;
+    }
+    .bt-head,
+    .bt-foot {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+    .bt-head h1 {
+      font-size: clamp(56px, 13vw, 80px);
+    }
+    .bt-intro-foot {
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 12px;
+    }
+    .bt-controls {
+      padding-block: 12px;
+      gap: 12px;
+    }
+    .bt-results {
+      padding-block: 12px;
+    }
+    .bt-search {
+      align-items: stretch;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .bt-search input {
+      width: 100%;
+    }
+    .bt-gallery {
       grid-template-columns: minmax(0, 1fr);
     }
-
-    .bcard.bcard--lead {
-      grid-template-columns: minmax(0, 1fr);
+    .bcard__body {
+      padding-inline: 20px;
     }
-
-    .bcard--lead:nth-child(even) .bcard__shot {
-      order: 0;
+    .bcard__what,
+    .bcard__how,
+    .bcard__k {
+      min-height: 0;
     }
-
-    .bcard--lead .bcard__shot,
-    .bcard--lead:nth-child(even) .bcard__shot {
-      border-right: 0;
-      border-left: 0;
-      border-bottom: 2px solid var(--a);
+    .bt-results-note {
+      display: none;
     }
-
-    .bcard--lead .bcard__shot img {
-      height: auto;
-      aspect-ratio: 16 / 10;
+    .bt-foot {
+      padding-block: 40px 56px;
     }
   }
-
-  @media (max-width: 620px) {
-    .bt-h1 {
-      max-width: none;
+  @media (prefers-reduced-motion: reduce) {
+    .bt *,
+    .bt *::before,
+    .bt *::after {
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+    .bcard:hover .bcard__shot img {
+      transform: none;
     }
   }
 </style>

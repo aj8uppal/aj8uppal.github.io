@@ -1,0 +1,563 @@
+.field-notes {
+  background: #ede7d9;
+  color: #303d45;
+}
+.fn-shell {
+  max-width: 1540px;
+  padding: 0 5.55%;
+  margin: auto;
+}
+.fn-nav {
+  height: 107px;
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  border-bottom: 1px solid #afb7a6;
+}
+.fn-brand {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+}
+.fn-brand svg {
+  height: 44px;
+  width: 44px;
+  stroke: currentColor;
+  stroke-width: 0.9;
+  fill: none;
+}
+.fn-brand > span {
+  font:
+    24px/1 Georgia,
+    serif;
+  letter-spacing: -0.7px;
+}
+.fn-brand > span > span {
+  display: block;
+  font: 8px/1.5 monospace;
+  letter-spacing: 0.16em;
+  margin-top: 7px;
+}
+.fn-nav nav {
+  display: flex;
+  gap: 28px;
+  font-size: 11px;
+  margin-left: auto;
+}
+.fn-nav nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.fn-folio {
+  font-size: 8px;
+  border-left: 1px solid #afb7a6;
+  padding-left: 29px;
+}
+.fn-intro {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 19px 60px;
+  padding: 41px 0 42px;
+}
+.fn-intro > .eyebrow {
+  grid-column: 1/-1;
+  color: #58624f;
+}
+.fn-intro h1 {
+  font:
+    600 57px/1.13 'Courier New',
+    monospace;
+  letter-spacing: -3.6px;
+}
+.fn-intro h1 em {
+  color: #9a482f;
+  font-style: normal;
+}
+.fn-intro-note {
+  align-self: end;
+  padding-bottom: 7px;
+}
+.fn-note-star {
+  font:
+    30px/1 Georgia,
+    serif;
+  color: #a14c34;
+  display: block;
+  margin-bottom: 17px;
+}
+.fn-intro-note p {
+  font:
+    15px/1.65 Georgia,
+    serif;
+  max-width: 270px;
+}
+.fn-feature {
+  border-top: 1px solid #7e8a72;
+  display: grid;
+  grid-template-columns: 235px 1fr;
+  gap: 40px;
+  padding: 28px 0 32px;
+  border-bottom: 1px solid #afb7a6;
+}
+.fn-margin {
+  padding-top: 4px;
+}
+.fn-margin > .eyebrow {
+  color: #626b55;
+  font-size: 9px;
+}
+.fn-margin h2 {
+  font:
+    27px/1.15 Georgia,
+    serif;
+  letter-spacing: -0.9px;
+  margin: 19px 0 15px;
+}
+.fn-margin > p:not([class]) {
+  font-size: 12px;
+  color: #535e4c;
+  line-height: 1.7;
+}
+.fn-margin dl {
+  margin: 28px 0 21px;
+  max-width: 183px;
+}
+.fn-margin dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid #c4c9b7;
+  padding: 8px 0;
+  font: 9px/1.5 monospace;
+}
+.fn-margin dt {
+  color: #626b55;
+}
+.fn-pencil {
+  font:
+    italic 16px/1.3 Georgia,
+    serif;
+  color: #a14c34;
+  margin: 20px 0;
+  transform: rotate(-5deg);
+}
+.fn-pencil svg {
+  height: 48px;
+  width: 116px;
+  margin-left: 57px;
+}
+.fn-pencil path {
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+.fn-margin > a {
+  font-size: 11px;
+}
+.fn-experiment {
+  min-width: 0;
+}
+.fn-photo {
+  padding: 11px;
+  background: #e0d7c5;
+  border: 1px solid #b5ad98;
+  position: relative;
+}
+.fn-photo > img {
+  aspect-ratio: 2.17;
+  object-fit: cover;
+}
+.fn-figure-label {
+  position: absolute;
+  left: 26px;
+  bottom: 25px;
+  background: #f0eddf;
+  color: #343d33;
+  padding: 7px 10px;
+  font: 8px/1.5 monospace;
+  letter-spacing: 0.08em;
+}
+.fn-experiment figcaption {
+  padding-top: 21px;
+}
+.fn-clock-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font: 10px/1.5 monospace;
+  letter-spacing: 0.03em;
+}
+.fn-clock-title output {
+  color: #8e472f;
+}
+.fn-experiment input {
+  margin: 7px 0 0;
+  color: #9a482f;
+}
+.fn-clock-ticks {
+  display: flex;
+  justify-content: space-between;
+  font: 8px/1.5 monospace;
+  color: #626b55;
+}
+.fn-experiment figcaption > p {
+  font:
+    11px/1.6 Georgia,
+    serif;
+  color: #626b55;
+  margin-top: 16px;
+}
+.fn-observation {
+  padding: 41px 0 50px;
+  display: grid;
+  grid-template-columns: 235px 1fr 1fr;
+  gap: 40px;
+}
+.fn-observation h2 {
+  font:
+    30px/1.2 Georgia,
+    serif;
+  letter-spacing: -0.9px;
+}
+.fn-observation > div > p {
+  font-size: 12px;
+  line-height: 1.8;
+  margin-bottom: 14px;
+  color: #535e4c;
+}
+.fn-observation > div > a {
+  font-size: 10px;
+  margin-top: 9px;
+}
+.fn-other .section-line {
+  border-color: #7e8a72;
+}
+.fn-studies {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  padding: 20px 0 51px;
+}
+.fn-studies > a {
+  min-width: 0;
+}
+.fn-studies img {
+  aspect-ratio: 1.75;
+  object-fit: cover;
+  margin-top: 17px;
+}
+.fn-studies h3 {
+  font:
+    25px/1.2 Georgia,
+    serif;
+  letter-spacing: -0.7px;
+  margin: 18px 0 13px;
+}
+.fn-studies a:hover h3 {
+  color: #975038;
+}
+.fn-studies h3 > span {
+  font-size: 19px;
+}
+.fn-studies p {
+  font-size: 10px;
+  line-height: 1.6;
+  color: #535e4c;
+}
+.fn-studies .eyebrow {
+  font-size: 8px;
+}
+.fn-record {
+  border-top: 1px solid #afb7a6;
+  padding: 36px 0 60px;
+}
+.fn-record h2 {
+  font:
+    40px/1.1 Georgia,
+    serif;
+  letter-spacing: -1.3px;
+  margin: 22px 0 27px;
+}
+.fn-record-row {
+  display: grid;
+  grid-template-columns: 235px 1fr 1fr;
+  gap: 40px;
+  border-top: 1px solid #c4c9b7;
+  padding: 22px 0;
+}
+.fn-record-row > span {
+  font: 9px/1.7 monospace;
+}
+.fn-record-row h3 {
+  font:
+    20px/1.2 Georgia,
+    serif;
+}
+.fn-record-row p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #535e4c;
+}
+.fn-record > a {
+  margin-top: 16px;
+  font-size: 11px;
+}
+.fn-contact {
+  text-align: center;
+  border-top: 1px solid #afb7a6;
+  padding: 55px 0 72px;
+}
+.fn-contact h2 {
+  font:
+    49px/1.1 Georgia,
+    serif;
+  letter-spacing: -1.7px;
+  margin: 24px 0 27px;
+}
+.field-notes .site-footer {
+  border-color: #afb7a6;
+}
+@media (max-width: 1100px) {
+  .fn-folio {
+    display: none;
+  }
+  .fn-intro {
+    grid-template-columns: 1fr 240px;
+    gap: 20px 35px;
+  }
+  .fn-intro h1 {
+    font-size: 44px;
+    letter-spacing: -2.9px;
+  }
+  .fn-intro-note p {
+    font-size: 14px;
+  }
+  .fn-feature {
+    grid-template-columns: 200px 1fr;
+    gap: 30px;
+  }
+  .fn-photo > img {
+    aspect-ratio: 1.65;
+  }
+  .fn-observation {
+    grid-template-columns: 200px 1fr 1fr;
+    gap: 30px;
+  }
+  .fn-observation h2 {
+    font-size: 26px;
+  }
+  .fn-record-row {
+    grid-template-columns: 200px 1fr 1fr;
+    gap: 30px;
+  }
+  .fn-studies {
+    gap: 25px;
+  }
+  .fn-studies h3 {
+    font-size: 22px;
+  }
+}
+@media (max-width: 800px) {
+  .fn-intro {
+    grid-template-columns: 1fr 185px;
+  }
+  .fn-intro h1 {
+    font-size: 35px;
+    letter-spacing: -2.6px;
+  }
+  .fn-intro-note p {
+    font-size: 12px;
+  }
+  .fn-feature {
+    grid-template-columns: 170px 1fr;
+    gap: 25px;
+  }
+  .fn-margin h2 {
+    font-size: 24px;
+  }
+  .fn-photo > img {
+    aspect-ratio: 1.45;
+  }
+  .fn-observation {
+    grid-template-columns: 170px 1fr;
+    gap: 25px;
+  }
+  .fn-observation > .eyebrow {
+    grid-column: 1/-1;
+  }
+  .fn-record-row {
+    grid-template-columns: 150px 1fr 1fr;
+    gap: 25px;
+  }
+}
+@media (max-width: 680px) {
+  .fn-shell {
+    padding: 0 22px;
+  }
+  .fn-nav {
+    height: 83px;
+    gap: 20px;
+  }
+  .fn-brand {
+    gap: 10px;
+  }
+  .fn-brand svg {
+    width: 33px;
+    height: 33px;
+  }
+  .fn-brand > span {
+    font-size: 23px;
+  }
+  .fn-brand > span > span {
+    font-size: 7px;
+    margin-top: 5px;
+  }
+  .fn-nav nav {
+    gap: 17px;
+    font-size: 10px;
+  }
+  .fn-nav nav a:nth-child(2) {
+    display: none;
+  }
+  .fn-nav nav a:last-child {
+    font-size: 0;
+  }
+  .fn-nav nav a:last-child span {
+    font-size: 21px;
+  }
+  .fn-intro {
+    display: block;
+    padding: 33px 0 27px;
+  }
+  .fn-intro h1 {
+    font-size: clamp(25px, 7.9vw, 51px);
+    letter-spacing: -1.8px;
+    margin-top: 21px;
+  }
+  .fn-intro-note {
+    display: flex;
+    gap: 16px;
+    margin-top: 25px;
+    align-items: start;
+    padding: 0;
+  }
+  .fn-note-star {
+    font-size: 25px;
+    margin: 2px 0 0;
+  }
+  .fn-intro-note p {
+    font-size: 13px;
+    max-width: 320px;
+    line-height: 1.55;
+  }
+  .fn-feature {
+    display: flex;
+    flex-direction: column;
+    padding: 25px 0 28px;
+    gap: 21px;
+  }
+  .fn-margin {
+    display: contents;
+  }
+  .fn-margin > .eyebrow {
+    order: 0;
+  }
+  .fn-margin h2 {
+    order: 1;
+    margin: -10px 0 0;
+    font-size: 29px;
+  }
+  .fn-margin h2 br {
+    display: none;
+  }
+  .fn-margin > p:not([class]) {
+    display: none;
+  }
+  .fn-experiment {
+    order: 2;
+  }
+  .fn-margin dl {
+    order: 3;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 25px;
+    max-width: none;
+    margin: 0;
+  }
+  .fn-margin .fn-pencil {
+    display: none;
+  }
+  .fn-margin > a {
+    order: 4;
+    align-self: start;
+  }
+  .fn-photo {
+    padding: 7px;
+  }
+  .fn-photo > img {
+    aspect-ratio: 1.57;
+  }
+  .fn-figure-label {
+    left: 16px;
+    bottom: 16px;
+    font-size: 6px;
+    padding: 5px 7px;
+  }
+  .fn-experiment figcaption {
+    padding-top: 16px;
+  }
+  .fn-clock-title {
+    font-size: 9px;
+  }
+  .fn-clock-ticks {
+    font-size: 7px;
+  }
+  .fn-experiment figcaption > p {
+    font-size: 11px;
+    margin-top: 15px;
+  }
+  .fn-observation {
+    display: block;
+    padding: 31px 0;
+  }
+  .fn-observation h2 {
+    font-size: 31px;
+    margin: 21px 0;
+  }
+  .fn-studies {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-bottom: 35px;
+  }
+  .fn-studies h3 {
+    font-size: 28px;
+    margin: 15px 0 9px;
+  }
+  .fn-studies h3 br {
+    display: none;
+  }
+  .fn-studies img {
+    margin-top: 13px;
+  }
+  .fn-record {
+    padding: 30px 0 35px;
+  }
+  .fn-record h2 {
+    font-size: 35px;
+  }
+  .fn-record-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 19px 0;
+  }
+  .fn-record-row p {
+    font-size: 12px;
+  }
+  .fn-contact {
+    padding: 36px 0 46px;
+  }
+  .fn-contact h2 {
+    font-size: 37px;
+  }
+}

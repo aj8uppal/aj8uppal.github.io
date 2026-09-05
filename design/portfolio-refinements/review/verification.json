@@ -1,0 +1,2563 @@
+{
+  "verifiedAt": "2026-09-05T02:44:02.860Z",
+  "browser": "Playwright Chromium",
+  "scope": "Isolated portfolio review prototypes",
+  "primary": {
+    "pages": [
+      {
+        "key": "index",
+        "width": 320,
+        "scrollWidth": 320,
+        "height": 3590,
+        "title": "AJ Uppal / portfolio directions refined",
+        "h1": ["Four directions.More of you."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable"],
+        "missingFragments": []
+      },
+      {
+        "key": "index",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 3531,
+        "title": "AJ Uppal / portfolio directions refined",
+        "h1": ["Four directions.More of you."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable"],
+        "missingFragments": []
+      },
+      {
+        "key": "index",
+        "width": 768,
+        "scrollWidth": 768,
+        "height": 4022,
+        "title": "AJ Uppal / portfolio directions refined",
+        "h1": ["Four directions.More of you."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable"],
+        "missingFragments": []
+      },
+      {
+        "key": "index",
+        "width": 1024,
+        "scrollWidth": 1024,
+        "height": 2036,
+        "title": "AJ Uppal / portfolio directions refined",
+        "h1": ["Four directions.More of you."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable"],
+        "missingFragments": []
+      },
+      {
+        "key": "index",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 2202,
+        "title": "AJ Uppal / portfolio directions refined",
+        "h1": ["Four directions.More of you."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable"],
+        "missingFragments": []
+      },
+      {
+        "key": "editorial",
+        "width": 320,
+        "scrollWidth": 320,
+        "height": 5318,
+        "title": "AJ Uppal — Serious systems. Curious mind.",
+        "h1": ["Serious systems.Curious mind."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "saltline",
+          "ember",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "editorial",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 5149,
+        "title": "AJ Uppal — Serious systems. Curious mind.",
+        "h1": ["Serious systems.Curious mind."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "saltline",
+          "ember",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "editorial",
+        "width": 768,
+        "scrollWidth": 768,
+        "height": 3297,
+        "title": "AJ Uppal — Serious systems. Curious mind.",
+        "h1": ["Serious systems.Curious mind."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "saltline",
+          "ember",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "editorial",
+        "width": 1024,
+        "scrollWidth": 1024,
+        "height": 3127,
+        "title": "AJ Uppal — Serious systems. Curious mind.",
+        "h1": ["Serious systems.Curious mind."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "saltline",
+          "ember",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "editorial",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 3290,
+        "title": "AJ Uppal — Serious systems. Curious mind.",
+        "h1": ["Serious systems.Curious mind."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "saltline",
+          "ember",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "studio",
+        "width": 320,
+        "scrollWidth": 320,
+        "height": 5750,
+        "title": "AJ Uppal — Open Studio",
+        "h1": ["Hi, I’m AJ.I learn bybuilding."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "saltline",
+          "murmuration",
+          "ember",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "studio",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 5709,
+        "title": "AJ Uppal — Open Studio",
+        "h1": ["Hi, I’m AJ.I learn bybuilding."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "saltline",
+          "murmuration",
+          "ember",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "studio",
+        "width": 768,
+        "scrollWidth": 768,
+        "height": 3335,
+        "title": "AJ Uppal — Open Studio",
+        "h1": ["Hi, I’m AJ.I learn bybuilding."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "saltline",
+          "murmuration",
+          "ember",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "studio",
+        "width": 1024,
+        "scrollWidth": 1024,
+        "height": 3007,
+        "title": "AJ Uppal — Open Studio",
+        "h1": ["Hi, I’m AJ.I learn bybuilding."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "saltline",
+          "murmuration",
+          "ember",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "studio",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 3124,
+        "title": "AJ Uppal — Open Studio",
+        "h1": ["Hi, I’m AJ.I learn bybuilding."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "saltline",
+          "murmuration",
+          "ember",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "field-notes",
+        "width": 320,
+        "scrollWidth": 320,
+        "height": 4865,
+        "title": "AJ Uppal — Field Notes",
+        "h1": ["Follow the question.Build the answer."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "ember",
+          "saltline",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "notable",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "field-notes",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 4246,
+        "title": "AJ Uppal — Field Notes",
+        "h1": ["Follow the question.Build the answer."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "ember",
+          "saltline",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "notable",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "field-notes",
+        "width": 768,
+        "scrollWidth": 768,
+        "height": 3315,
+        "title": "AJ Uppal — Field Notes",
+        "h1": ["Follow the question.Build the answer."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "ember",
+          "saltline",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "notable",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "field-notes",
+        "width": 1024,
+        "scrollWidth": 1024,
+        "height": 2824,
+        "title": "AJ Uppal — Field Notes",
+        "h1": ["Follow the question.Build the answer."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "ember",
+          "saltline",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "notable",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "field-notes",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 2886,
+        "title": "AJ Uppal — Field Notes",
+        "h1": ["Follow the question.Build the answer."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "ember",
+          "saltline",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "notable",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "worldbuilder",
+        "width": 320,
+        "scrollWidth": 320,
+        "height": 6144,
+        "title": "AJ Uppal — systems & worlds",
+        "h1": ["AJ Uppal."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "ember",
+          "saltline",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "worldbuilder",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 5836,
+        "title": "AJ Uppal — systems & worlds",
+        "h1": ["AJ Uppal."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "ember",
+          "saltline",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "worldbuilder",
+        "width": 768,
+        "scrollWidth": 768,
+        "height": 4303,
+        "title": "AJ Uppal — systems & worlds",
+        "h1": ["AJ Uppal."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "ember",
+          "saltline",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "worldbuilder",
+        "width": 1024,
+        "scrollWidth": 1024,
+        "height": 4091,
+        "title": "AJ Uppal — systems & worlds",
+        "h1": ["AJ Uppal."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "ember",
+          "saltline",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "worldbuilder",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 4120,
+        "title": "AJ Uppal — systems & worlds",
+        "h1": ["AJ Uppal."],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": [
+          "notable",
+          "ember",
+          "saltline",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/notable",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 2825,
+        "title": "Notable Health / AJ Uppal case study",
+        "h1": ["Notable Health"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["saltline", "ember", "murmuration"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/notable",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 2687,
+        "title": "Notable Health / AJ Uppal case study",
+        "h1": ["Notable Health"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["saltline", "ember", "murmuration"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/saltline",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 5126,
+        "title": "saltline / AJ Uppal case study",
+        "h1": ["saltline"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "ember", "murmuration"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/saltline",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 4081,
+        "title": "saltline / AJ Uppal case study",
+        "h1": ["saltline"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "ember", "murmuration"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/ember",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 5602,
+        "title": "Ember Wilds / AJ Uppal case study",
+        "h1": ["Ember Wilds"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "murmuration"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/ember",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 4615,
+        "title": "Ember Wilds / AJ Uppal case study",
+        "h1": ["Ember Wilds"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "murmuration"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/murmuration",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 4221,
+        "title": "murmuration / AJ Uppal case study",
+        "h1": ["murmuration"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/murmuration",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 3789,
+        "title": "murmuration / AJ Uppal case study",
+        "h1": ["murmuration"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/blockhold",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 4172,
+        "title": "Blockhold / AJ Uppal case study",
+        "h1": ["Blockhold"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/blockhold",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 3746,
+        "title": "Blockhold / AJ Uppal case study",
+        "h1": ["Blockhold"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/cubit",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 2961,
+        "title": "Cubit / AJ Uppal case study",
+        "h1": ["Cubit"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/cubit",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 2841,
+        "title": "Cubit / AJ Uppal case study",
+        "h1": ["Cubit"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/hidamari",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 4000,
+        "title": "hidamari / AJ Uppal case study",
+        "h1": ["hidamari"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/hidamari",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 3714,
+        "title": "hidamari / AJ Uppal case study",
+        "h1": ["hidamari"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/elderwood",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 3701,
+        "title": "Elderwood Vale / AJ Uppal case study",
+        "h1": ["Elderwood Vale"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/elderwood",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 3470,
+        "title": "Elderwood Vale / AJ Uppal case study",
+        "h1": ["Elderwood Vale"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/beatlayer",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 2013,
+        "title": "BeatLayer / AJ Uppal case study",
+        "h1": ["BeatLayer"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/beatlayer",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1849,
+        "title": "BeatLayer / AJ Uppal case study",
+        "h1": ["BeatLayer"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/eyeshot",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 2013,
+        "title": "Eyeshot / AJ Uppal case study",
+        "h1": ["Eyeshot"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      },
+      {
+        "key": "cases/eyeshot",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 1826,
+        "title": "Eyeshot / AJ Uppal case study",
+        "h1": ["Eyeshot"],
+        "brokenImages": [],
+        "overflow": [],
+        "headingOverflow": [],
+        "caseKeys": ["notable", "saltline", "ember"],
+        "missingFragments": []
+      }
+    ],
+    "checks": [
+      {
+        "name": "index 320px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 320px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 320px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 320px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 390px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 390px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 768px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 768px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 768px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 768px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 1024px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 1024px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 1024px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 1024px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 1440px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index 1440px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "index browser exceptions",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 320px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 320px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 320px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 320px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 390px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 390px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 768px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 768px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 768px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 768px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 1024px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 1024px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 1024px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 1024px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 1440px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial 1440px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial browser exceptions",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "editorial breadth",
+        "ok": true,
+        "detail": [
+          "notable",
+          "saltline",
+          "ember",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ]
+      },
+      {
+        "name": "editorial named case reader",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "editorial close is initial focus",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "editorial related case stays in reader",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "editorial related case images",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "editorial reader horizontal fit",
+        "ok": true,
+        "detail": {
+          "width": 900,
+          "scroll": 900
+        }
+      },
+      {
+        "name": "editorial Escape restores originating link",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "studio 320px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 320px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 320px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 320px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 390px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 390px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 768px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 768px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 768px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 768px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 1024px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 1024px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 1024px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 1024px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 1440px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio 1440px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio browser exceptions",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "studio breadth",
+        "ok": true,
+        "detail": [
+          "notable",
+          "saltline",
+          "murmuration",
+          "ember",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ]
+      },
+      {
+        "name": "studio named case reader",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "studio close is initial focus",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "studio related case stays in reader",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "studio related case images",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "studio reader horizontal fit",
+        "ok": true,
+        "detail": {
+          "width": 900,
+          "scroll": 900
+        }
+      },
+      {
+        "name": "studio Escape restores originating link",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "field-notes 320px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 320px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 320px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 320px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 390px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 390px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 768px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 768px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 768px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 768px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 1024px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 1024px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 1024px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 1024px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 1440px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes 1440px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes browser exceptions",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "field-notes breadth",
+        "ok": true,
+        "detail": [
+          "ember",
+          "saltline",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "notable",
+          "hidamari",
+          "elderwood"
+        ]
+      },
+      {
+        "name": "field-notes named case reader",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "field-notes close is initial focus",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "field-notes related case stays in reader",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "field-notes related case images",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "field-notes reader horizontal fit",
+        "ok": true,
+        "detail": {
+          "width": 900,
+          "scroll": 900
+        }
+      },
+      {
+        "name": "field-notes Escape restores originating link",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "worldbuilder 320px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 320px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 320px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 320px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 390px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 390px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 768px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 768px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 768px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 768px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 1024px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 1024px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 1024px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 1024px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 1440px horizontal fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder 1440px section links",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder browser exceptions",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "worldbuilder breadth",
+        "ok": true,
+        "detail": [
+          "notable",
+          "ember",
+          "saltline",
+          "murmuration",
+          "blockhold",
+          "cubit",
+          "hidamari",
+          "elderwood"
+        ]
+      },
+      {
+        "name": "worldbuilder named case reader",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "worldbuilder close is initial focus",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "worldbuilder related case stays in reader",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "worldbuilder related case images",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "worldbuilder reader horizontal fit",
+        "ok": true,
+        "detail": {
+          "width": 900,
+          "scroll": 900
+        }
+      },
+      {
+        "name": "worldbuilder Escape restores originating link",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "case notable 390px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case notable 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case notable 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case notable 1440px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case notable 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case notable 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case saltline 390px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case saltline 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case saltline 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case saltline 1440px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case saltline 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case saltline 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case ember 390px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case ember 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case ember 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case ember 1440px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case ember 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case ember 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case murmuration 390px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case murmuration 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case murmuration 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case murmuration 1440px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case murmuration 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case murmuration 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case blockhold 390px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case blockhold 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case blockhold 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case blockhold 1440px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case blockhold 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case blockhold 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case cubit 390px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case cubit 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case cubit 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case cubit 1440px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case cubit 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case cubit 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case hidamari 390px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case hidamari 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case hidamari 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case hidamari 1440px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case hidamari 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case hidamari 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case elderwood 390px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case elderwood 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case elderwood 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case elderwood 1440px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case elderwood 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case elderwood 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case beatlayer 390px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case beatlayer 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case beatlayer 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case beatlayer 1440px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case beatlayer 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case beatlayer 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case eyeshot 390px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case eyeshot 390px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case eyeshot 390px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case eyeshot 1440px fit",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case eyeshot 1440px headings",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "case eyeshot 1440px images",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "comparison mobile previews",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "comparison desktop previews",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "studio keyboard lens systems",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "studio keyboard lens worlds",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "studio keyboard lens sound",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "studio keyboard lens life",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "studio angle success",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "studio angle feedback",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "issues": []
+  },
+  "accessibility": [
+    {
+      "name": "Comparison phone previews show full aspect at390",
+      "ok": true,
+      "detail": [0.4620938628158845, 0.4620938628158845, 0.4620938628158845, 0.4620938628158845]
+    },
+    {
+      "name": "Comparison phone previews show full aspect at1440",
+      "ok": true,
+      "detail": [0.4620938628158845, 0.4620938628158845, 0.4620938628158845, 0.4620938628158845]
+    },
+    {
+      "name": "Standalone related reader has its own accessible title",
+      "ok": true
+    },
+    {
+      "name": "Native dialog traps Tab",
+      "ok": true,
+      "detail": {
+        "forward": true,
+        "backward": true,
+        "restored": true
+      }
+    },
+    {
+      "name": "Standalone related reader restores focus",
+      "ok": true
+    },
+    {
+      "name": "index reduced motion has no animation or transitions",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "editorial reduced motion has no animation or transitions",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "studio reduced motion has no animation or transitions",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "field-notes reduced motion has no animation or transitions",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "worldbuilder reduced motion has no animation or transitions",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "editorial profile without JS",
+      "ok": true
+    },
+    {
+      "name": "editorial case fallback without JS",
+      "ok": true
+    },
+    {
+      "name": "studio profile without JS",
+      "ok": true
+    },
+    {
+      "name": "studio case fallback without JS",
+      "ok": true
+    },
+    {
+      "name": "field-notes profile without JS",
+      "ok": true
+    },
+    {
+      "name": "field-notes case fallback without JS",
+      "ok": true
+    },
+    {
+      "name": "worldbuilder profile without JS",
+      "ok": true
+    },
+    {
+      "name": "worldbuilder case fallback without JS",
+      "ok": true
+    }
+  ],
+  "interactions": [
+    {
+      "name": "Field Notes ember selector/range",
+      "ok": true,
+      "before": "../../src/assets/ember-region-fallowmere.webp",
+      "first": "../../src/assets/ember-region-hearthvale.webp",
+      "end": "../../src/assets/ember-region-black-plateau.webp"
+    },
+    {
+      "name": "Field Notes saltline selector/range",
+      "ok": true,
+      "before": "../../src/assets/saltline-arc-dawn.webp",
+      "first": "../../src/assets/saltline-arc-night.webp",
+      "end": "../../src/assets/saltline-arc-sunset.webp"
+    },
+    {
+      "name": "Field Notes murmuration selector/range",
+      "ok": true,
+      "before": "../../src/assets/murmuration-frame-ribbon.webp",
+      "first": "../../src/assets/murmuration-frame-ribbon.webp",
+      "end": "../../src/assets/murmuration-frame-lull.webp"
+    },
+    {
+      "name": "Field Notes blockhold selector/range",
+      "ok": true,
+      "before": "../../src/assets/blockhold-frame-tidereach.webp",
+      "first": "../../src/assets/blockhold-frame-greenhollow.webp",
+      "end": "../../src/assets/blockhold-frame-tidereach.webp"
+    },
+    {
+      "name": "Field Notes cubit selector/range",
+      "ok": true,
+      "before": "../../src/assets/cubit-lead-peek.webp",
+      "first": "../../src/assets/cubit-lead-peek.webp",
+      "end": "../../src/assets/cubit-inset-board.webp"
+    },
+    {
+      "name": "Worldbuilder ember keyboard",
+      "ok": true
+    },
+    {
+      "name": "Worldbuilder murmuration keyboard",
+      "ok": true
+    },
+    {
+      "name": "Worldbuilder saltline keyboard",
+      "ok": true
+    }
+  ],
+  "contrast": [
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "Software engineer at",
+      "ratio": 13.39,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "Notable Health",
+      "ratio": 13.39,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "Bay Area, California",
+      "ratio": 11.03,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "AJ",
+      "ratio": 12.26,
+      "target": 3
+    },
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "Uppal.",
+      "ratio": 8.74,
+      "target": 3
+    },
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "Systems people trust.",
+      "ratio": 7.75,
+      "target": 3
+    },
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "Worlds worth getting lost in.",
+      "ratio": 5.62,
+      "target": 3
+    },
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "Explore my work",
+      "ratio": 12.21,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "↓",
+      "ratio": 12.21,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "Get in touch",
+      "ratio": 11.21,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "↗",
+      "ratio": 11.19,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "saltline — a world I built",
+      "ratio": 8.06,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "saltline",
+      "text": "Captured in the running app",
+      "ratio": 6.9,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "Software engineer at",
+      "ratio": 13.39,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "Notable Health",
+      "ratio": 13.39,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "Bay Area, California",
+      "ratio": 11.03,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "AJ",
+      "ratio": 11.95,
+      "target": 3
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "Uppal.",
+      "ratio": 10.2,
+      "target": 3
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "Systems people trust.",
+      "ratio": 7.08,
+      "target": 3
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "Worlds worth getting lost in.",
+      "ratio": 5.29,
+      "target": 3
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "Explore my work",
+      "ratio": 12.21,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "↓",
+      "ratio": 12.21,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "Get in touch",
+      "ratio": 12.22,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "↗",
+      "ratio": 13,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "Ember Wilds — a world I built",
+      "ratio": 8.86,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "Ember Wilds — a world I built",
+      "ratio": 12.07,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "ember",
+      "text": "Captured in the running app",
+      "ratio": 9.35,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "Software engineer at",
+      "ratio": 13.39,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "Notable Health",
+      "ratio": 13.39,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "Bay Area, California",
+      "ratio": 11.03,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "AJ",
+      "ratio": 14.2,
+      "target": 3
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "Uppal.",
+      "ratio": 8.39,
+      "target": 3
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "Systems people trust.",
+      "ratio": 8.44,
+      "target": 3
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "Worlds worth getting lost in.",
+      "ratio": 7.5,
+      "target": 3
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "Explore my work",
+      "ratio": 12.21,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "↓",
+      "ratio": 12.21,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "Get in touch",
+      "ratio": 12.92,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "↗",
+      "ratio": 13.11,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "murmuration — a field I built",
+      "ratio": 12.31,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "murmuration — a field I built",
+      "ratio": 11.19,
+      "target": 4.5
+    },
+    {
+      "width": 390,
+      "scene": "murmuration",
+      "text": "Captured in the running app",
+      "ratio": 8.73,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "Software engineer at",
+      "ratio": 9.1,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "Notable Health",
+      "ratio": 8.29,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "Bay Area, California",
+      "ratio": 6.74,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "AJ",
+      "ratio": 6.49,
+      "target": 3
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "Uppal.",
+      "ratio": 3.82,
+      "target": 3
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "Systems people trust.",
+      "ratio": 4.14,
+      "target": 3
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "Worlds worth getting lost in.",
+      "ratio": 3.27,
+      "target": 3
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "Explore my work",
+      "ratio": 12.21,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "↓",
+      "ratio": 12.21,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "Get in touch",
+      "ratio": 10.86,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "↗",
+      "ratio": 10.86,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "saltline — a world I built",
+      "ratio": 5.89,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "saltline",
+      "text": "Captured in the running app",
+      "ratio": 6.81,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "Software engineer at",
+      "ratio": 9.84,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "Notable Health",
+      "ratio": 9.4,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "Bay Area, California",
+      "ratio": 7.39,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "AJ",
+      "ratio": 8.1,
+      "target": 3
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "Uppal.",
+      "ratio": 4.76,
+      "target": 3
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "Systems people trust.",
+      "ratio": 5.76,
+      "target": 3
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "Worlds worth getting lost in.",
+      "ratio": 5.53,
+      "target": 3
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "Explore my work",
+      "ratio": 12.21,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "↓",
+      "ratio": 12.21,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "Get in touch",
+      "ratio": 12.82,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "↗",
+      "ratio": 13.13,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "Ember Wilds — a world I built",
+      "ratio": 10.88,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "ember",
+      "text": "Captured in the running app",
+      "ratio": 11.73,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "Software engineer at",
+      "ratio": 8.43,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "Notable Health",
+      "ratio": 9.34,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "Bay Area, California",
+      "ratio": 6.82,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "AJ",
+      "ratio": 6.5,
+      "target": 3
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "Uppal.",
+      "ratio": 6.35,
+      "target": 3
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "Systems people trust.",
+      "ratio": 6.7,
+      "target": 3
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "Worlds worth getting lost in.",
+      "ratio": 6.44,
+      "target": 3
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "Explore my work",
+      "ratio": 12.21,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "↓",
+      "ratio": 12.21,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "Get in touch",
+      "ratio": 13.37,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "↗",
+      "ratio": 13.33,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "murmuration — a field I built",
+      "ratio": 9.83,
+      "target": 4.5
+    },
+    {
+      "width": 1440,
+      "scene": "murmuration",
+      "text": "Captured in the running app",
+      "ratio": 10.06,
+      "target": 4.5
+    }
+  ],
+  "links": {
+    "checked": 18,
+    "missing": []
+  },
+  "worldbuilderPaint": {
+    "reportedBy": "field_world_astra",
+    "captures": 90,
+    "freshPages": 10,
+    "viewportSequence": [1440, 390, 1440],
+    "scenes": ["saltline", "ember", "murmuration"],
+    "pixelDeviations": 0
+  },
+  "originalRound": {
+    "filesHashed": 24,
+    "changed": 0
+  },
+  "sourceBuild": {
+    "command": "npm run build:lab",
+    "result": "passed"
+  },
+  "productionVerification": {
+    "command": "npm run verify -- http://127.0.0.1:4335/ /tmp/aj-refinement-production/",
+    "result": "one pre-existing assertion failure, outside review scope",
+    "failure": "390 the stacked set is a snapping swipe row: 2 rows, 2 scroll, 2 snap"
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 4,
+    "warningReason": "CLI build/capture progress logging (no-console)"
+  },
+  "formatting": "passed",
+  "fable": {
+    "model": "claude-fable-5-1",
+    "verdict": "All four fit to present; four blockers cleared",
+    "recommended": "worldbuilder"
+  }
+}

@@ -1,0 +1,1441 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Slipstream</title>
+<meta name="description" content="Draw any shape and watch air flow around it in real time. Slipstream is a GPU wind tunnel that runs in your browser and reports drag and lift as you sketch.">
+<meta property="og:title" content="Slipstream — a wind tunnel in your browser">
+<meta property="og:description" content="Draw a shape. Watch the air flow around it. See its drag. Can you beat the teardrop?">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0b0d14">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d14'/%3E%3Cpath d='M3 10h10M3 16h7M3 22h10M19 10c6 0 6 12 0 12M25 12c3 2 3 6 0 8' stroke='%237fd6ff' stroke-width='2.4' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #0b0d14;
+  --panel: rgba(16, 20, 32, 0.78);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --text: #e7ecf3;
+  --muted: #8a94a6;
+  --accent: #7fd6ff;
+  --accent-2: #ffc28a;
+  --good: #7ee0a6;
+  --radius: 14px;
+  --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); overflow: hidden; }
+button { font: inherit; color: inherit; }
+#stage { position: fixed; inset: 0; }
+#gl, #overlay { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#overlay { touch-action: none; cursor: crosshair; }
+#overlay.tool-erase { cursor: cell; }
+
+.panel {
+  position: fixed; z-index: 5;
+  background: var(--panel); border: 1px solid var(--panel-border); border-radius: var(--radius);
+  backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+.brand { top: 16px; left: 16px; padding: 10px 14px; display: flex; align-items: baseline; gap: 10px; }
+.brand h1 { margin: 0; font-size: 18px; letter-spacing: 0.02em; font-weight: 700; }
+.brand h1 span { color: var(--accent); }
+.brand small { color: var(--muted); font-size: 12px; }
+
+.tools { top: 76px; left: 16px; width: 214px; padding: 12px; display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 170px); overflow: auto; }
+.tools h2, .stats h2 { margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 600; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.btn {
+  background: rgba(255, 255, 255, 0.06); border: 1px solid transparent; border-radius: 9px; padding: 8px 10px;
+  cursor: pointer; text-align: center; font-size: 13px; transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover { background: rgba(255, 255, 255, 0.1); }
+.btn.active { background: rgba(127, 214, 255, 0.16); border-color: rgba(127, 214, 255, 0.5); color: #fff; }
+.btn.ghost { background: transparent; border-color: var(--panel-border); }
+.btn.small { padding: 6px 8px; font-size: 12px; }
+.presets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.preset { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 4px; }
+.preset canvas { width: 46px; height: 28px; display: block; }
+.preset span { font-size: 10.5px; color: var(--muted); white-space: nowrap; }
+.preset.active span { color: var(--text); }
+.row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.row label { flex: 0 0 44px; }
+.row output { flex: 0 0 38px; text-align: right; font-family: var(--mono); font-size: 11px; color: var(--text); }
+input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
+.hint { font-size: 11px; color: var(--muted); line-height: 1.4; }
+.rows2 { display: flex; flex-direction: column; gap: 10px; }
+
+.stats { top: 76px; right: 16px; width: 236px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.bigstat { display: flex; align-items: baseline; justify-content: space-between; }
+.bigstat .label { color: var(--muted); font-size: 12px; }
+.bigstat .label .s { display: none; }
+.bigstat .value { font-family: var(--mono); font-size: 30px; font-weight: 600; color: #fff; letter-spacing: -0.02em; }
+.bigstat.sub .value { font-size: 18px; color: var(--text); }
+.stats .settling { color: var(--accent-2); }
+.stats .badge { background: rgba(126, 224, 166, 0.14); border: 1px solid rgba(126, 224, 166, 0.5); color: var(--good); border-radius: 9px; padding: 6px 10px; font-size: 12px; text-align: center; }
+.stats .badge[hidden] { display: none; }
+.rank { display: flex; flex-direction: column; gap: 4px; }
+.rank .r { display: grid; grid-template-columns: 78px 1fr 36px; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+.rank .r.you { color: #fff; }
+.rank .bar { height: 7px; border-radius: 4px; background: rgba(255, 255, 255, 0.18); }
+.rank .r.you .bar { background: var(--accent); }
+.rank .v { font-family: var(--mono); text-align: right; }
+
+.bar-bottom {
+  bottom: 16px; left: 50%; transform: translateX(-50%); padding: 10px 14px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center; max-width: calc(100vw - 32px);
+}
+.bar-bottom .row { width: 210px; }
+.bar-bottom .row label { flex: 0 0 auto; }
+.modes { display: flex; gap: 4px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 3px; }
+.modes .btn { padding: 6px 10px; font-size: 12px; background: transparent; }
+.modes .btn.active { background: rgba(127, 214, 255, 0.18); }
+.actions { display: flex; gap: 6px; }
+
+dialog { background: #121623; color: var(--text); border: 1px solid var(--panel-border); border-radius: 16px; max-width: 560px; width: calc(100vw - 40px); padding: 26px 28px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); }
+dialog::backdrop { background: rgba(4, 6, 12, 0.6); backdrop-filter: blur(4px); }
+dialog h2 { margin: 0 0 6px; font-size: 22px; }
+dialog h3 { margin: 18px 0 6px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+dialog p, dialog li { font-size: 14px; line-height: 1.55; color: #c9d1dd; }
+dialog kbd { font-family: var(--mono); background: rgba(255, 255, 255, 0.08); border-radius: 4px; padding: 1px 6px; font-size: 12px; }
+dialog .close { position: absolute; top: 14px; right: 14px; }
+.toast { position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%); background: #1c2233; border: 1px solid var(--panel-border); padding: 8px 14px; border-radius: 10px; font-size: 13px; z-index: 20; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+.toast.show { opacity: 1; }
+#nogl { position: fixed; inset: 0; display: none; place-items: center; text-align: center; padding: 40px; font-size: 16px; line-height: 1.6; color: var(--muted); }
+
+@media (max-width: 900px) {
+  .brand { top: 10px; left: 10px; padding: 8px 12px; }
+  .brand h1 { font-size: 16px; }
+  .brand small { display: none; }
+  .stats { top: 10px; left: 150px; right: 10px; width: auto; padding: 8px 12px; flex-direction: row; gap: 12px; align-items: center; justify-content: space-around; }
+  .stats h2, .stats .hint, .rank, .stats .badge { display: none; }
+  .bigstat { flex-direction: column; align-items: center; gap: 0; }
+  .bigstat .label { font-size: 11px; white-space: nowrap; }
+  .bigstat .label .l { display: none; }
+  .bigstat .label .s { display: inline; }
+  .bigstat .value { font-size: 20px; }
+  .bigstat.sub .value { font-size: 15px; }
+  .bar-bottom { bottom: auto; top: 66px; left: 10px; right: 10px; transform: none; max-width: none; width: auto; padding: 8px 10px; gap: 8px; justify-content: space-between; }
+  .bar-bottom .row { width: 100%; }
+  .modes .btn { padding: 5px 8px; font-size: 12px; }
+  .actions .btn { padding: 6px 9px; font-size: 12px; }
+  .tools { top: auto; bottom: 10px; left: 10px; right: 10px; width: auto; max-height: none; padding: 10px; gap: 8px; }
+  .tools h2 { display: none; }
+  .tools .hint { display: none; }
+  .tools .seg { grid-template-columns: 1fr 1fr; }
+  .presets { grid-template-columns: repeat(9, 1fr); gap: 4px; }
+  .preset { padding: 4px 0; }
+  .preset canvas { width: 28px; height: 18px; }
+  .preset span { display: none; }
+  .tools .row { font-size: 11px; }
+  .tools .row label { flex: 0 0 38px; }
+  .tools .rows2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+}
+
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="gl"></canvas>
+  <canvas id="overlay" aria-label="Wind tunnel drawing surface"></canvas>
+</div>
+<div id="nogl">Slipstream needs WebGL 2 with float render targets.<br>Try a current Chrome, Firefox, Safari or Edge.</div>
+
+<header class="panel brand"><h1>Slip<span>stream</span></h1><small>a wind tunnel in your browser</small></header>
+
+<aside class="panel tools" id="tools">
+  <h2>Draw</h2>
+  <div class="seg">
+    <button class="btn active" id="tool-draw" title="Draw (D)">✎ Draw</button>
+    <button class="btn" id="tool-erase" title="Erase (E)">⌫ Erase</button>
+  </div>
+  <div class="row"><label for="brush">Brush</label><input id="brush" type="range" min="0.006" max="0.08" step="0.002" value="0.024"><output id="brush-out">2.4</output></div>
+  <h2>Drop in a body</h2>
+  <div class="presets" id="presets"></div>
+  <div class="rows2">
+    <div class="row"><label for="size">Size</label><input id="size" type="range" min="0.06" max="0.6" step="0.005" value="0.17"><output id="size-out">17</output></div>
+    <div class="row"><label for="angle">Angle</label><input id="angle" type="range" min="-20" max="20" step="0.5" value="0"><output id="angle-out">0°</output></div>
+  </div>
+  <div class="seg">
+    <button class="btn ghost small" id="undo" title="Undo (Z)">↶ Undo</button>
+    <button class="btn ghost small" id="clear" title="Clear (C)">Clear</button>
+  </div>
+  <div class="hint">Wind blows left to right. Paint anything on the canvas, or drop in a body and tweak its size and angle.</div>
+</aside>
+
+<aside class="panel stats" id="stats">
+  <h2>Forces on your shape</h2>
+  <div class="bigstat"><span class="label"><span class="l">Drag coefficient </span><b>C<sub>d</sub></b></span><span class="value" id="cd">—</span></div>
+  <div class="bigstat sub"><span class="label"><span class="l">Lift coefficient </span><b>C<sub>l</sub></b></span><span class="value" id="cl">—</span></div>
+  <div class="bigstat sub"><span class="label"><span class="l">Lift / drag</span><b class="s">L / D</b></span><span class="value" id="ld">—</span></div>
+  <div class="hint" id="geom">Draw something to measure it.</div>
+  <div class="badge" id="badge" hidden>🏆 You beat the teardrop</div>
+  <h2>Compared with</h2>
+  <div class="rank" id="rank"></div>
+</aside>
+
+<footer class="panel bar-bottom">
+  <div class="row"><label for="speed">Wind</label><input id="speed" type="range" min="0.25" max="1.0" step="0.01" value="0.6"><output id="speed-out">60</output></div>
+  <div class="modes" id="modes">
+    <button class="btn active" data-mode="0" title="Smoke lines (1)">Smoke</button>
+    <button class="btn" data-mode="1" title="Speed (2)">Speed</button>
+    <button class="btn" data-mode="2" title="Pressure (3)">Pressure</button>
+    <button class="btn" data-mode="3" title="Vorticity (4)">Vorticity</button>
+  </div>
+  <div class="actions">
+    <button class="btn" id="pause" title="Pause (space)">❚❚</button>
+    <button class="btn" id="share" title="Copy a link to this shape">Share</button>
+    <button class="btn" id="png" title="Save a picture">PNG</button>
+    <button class="btn ghost" id="about-btn" title="How it works">?</button>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<dialog id="about">
+  <button class="btn ghost small close" id="about-close">✕</button>
+  <h2>How Slipstream works</h2>
+  <p>Slipstream solves the incompressible Navier–Stokes equations on a grid, on your GPU, every frame. Air enters from the left, your shape is a no-slip wall, and the pressure field that forms around it is integrated over the surface to get drag and lift.</p>
+  <h3>The numbers</h3>
+  <p><b>C<sub>d</sub></b> is drag divided by ½·ρ·U²·A, where A is the frontal height of your shape, corrected for tunnel blockage with Maskell's method, the same correction real wind tunnels apply. A plain cylinder reads about 1.4 and a flat plate about 2, which is what two-dimensional experiments give at this Reynolds number; the familiar three-dimensional numbers (1.2 for a cylinder, 0.3 for a car) are lower because real air can also slip around the sides. <b>C<sub>l</sub></b> uses the streamwise length as its reference, the way airfoils are quoted. Readings are averaged over a couple of seconds, so give a new shape a moment to settle.</p>
+  <h3>What it is not</h3>
+  <p>This is a 2-D, low-Reynolds-number (a few hundred), pressure-only simulation: no skin friction, no turbulence model, no 3-D effects. Bluff bodies (plates, boxes, cars) are represented well; slender bodies read lower than a real tunnel because their drag is mostly skin friction. The ordering between shapes is trustworthy, the third decimal is not.</p>
+  <h3>Under the hood</h3>
+  <ul>
+    <li>Stable-fluids solver with MacCormack advection and vorticity confinement</li>
+    <li>Staggered grid with an exact projection: geometric multigrid, red-black Gauss–Seidel smoothing, 32-bit pressure</li>
+    <li>Everything in WebGL 2 half-float textures; no libraries, no server</li>
+  </ul>
+  <h3>Keys</h3>
+  <p><kbd>D</kbd> draw · <kbd>E</kbd> erase · <kbd>[</kbd> <kbd>]</kbd> brush size · <kbd>1</kbd>–<kbd>4</kbd> views · <kbd>Z</kbd> undo · <kbd>C</kbd> clear · <kbd>Space</kbd> pause</p>
+</dialog>
+
+<script>
+// Generated by e2e/reference.mjs on 2026-09-03 (2400 frames, 800-frame average, wind 0.6).
+window.SLIPSTREAM_REF = {"circle":1.28,"square":2.19,"plate":2.35,"wedge":1.83,"half":1.71,"bus":2.07,"car":1.44,"teardrop":0.96,"airfoil":0.91};
+
+// GLSL sources for the Slipstream solver on a staggered (MAC) grid.
+//
+// Layout: for the cell (i,j) the velocity texture stores
+//   R = u at the cell's left face  (i-1/2, j)
+//   G = v at the cell's bottom face (i, j-1/2)
+// Pressure, dye, obstacle and divergence live at cell centres. Units: cells
+// per sub-step, dt = 1, density = 1.
+//
+// Cell types:
+//   0 fluid   1 Neumann (solid, inlet ghost columns)   2 Dirichlet p=0 (outlet column, open top/bottom rows)
+const SHADERS = (() => {
+  const vert = `#version 300 es
+precision highp float;
+in vec2 aPos; out vec2 vUv;
+void main(){ vUv = aPos*0.5+0.5; gl_Position = vec4(aPos,0.,1.); }`;
+
+  const head = `#version 300 es
+precision highp float; precision highp sampler2D;
+in vec2 vUv; out vec4 o;
+uniform vec2 uTexel; uniform vec2 uSize; uniform float uOpen;
+bool solid(sampler2D obs, vec2 uv){ return texture(obs, uv).r > 0.5; }
+// Ghost bands are defined in the grid's own pixels so every multigrid level
+// keeps its open (Dirichlet) edges and inlet band. Top and bottom are open so
+// the body's pressure field is not squeezed by walls.
+int cellTypeS(sampler2D obs, vec2 uv, vec2 size){
+  vec2 px = uv*size;
+  if (px.x > size.x - 1.0) return 2;
+  if (px.y < 1.0 || px.y > size.y - 1.0) return uOpen > 0.5 ? 2 : 1;
+  if (px.x < 2.0) return 1;
+  return solid(obs, uv) ? 1 : 0;
+}
+int cellType(sampler2D obs, vec2 uv){ return cellTypeS(obs, uv, uSize); }
+// Manual bilinear fetch for unfiltered (32-bit float) textures of the given size.
+float bilerp(sampler2D t, vec2 uv, vec2 size){
+  vec2 p = uv*size - 0.5;
+  vec2 f = fract(p);
+  vec2 c = (floor(p) + 0.5)/size;
+  vec2 tx = vec2(1.0/size.x, 0.), ty = vec2(0., 1.0/size.y);
+  float a = texture(t, c).x, b = texture(t, c+tx).x, d = texture(t, c+ty).x, e = texture(t, c+tx+ty).x;
+  return mix(mix(a,b,f.x), mix(d,e,f.x), f.y);
+}
+// Bilinear velocity at an arbitrary position q (uv of the physical point).
+vec2 velAt(sampler2D vel, vec2 q){
+  return vec2(texture(vel, q + vec2(0.5*uTexel.x, 0.)).x, texture(vel, q + vec2(0., 0.5*uTexel.y)).y);
+}
+`;
+
+  // Inflow, walls, outlet ghost and no-slip solid faces. uFill=1 resets the field.
+  const boundary = head + `
+uniform sampler2D uVel, uObs; uniform float uSpeed, uFill, uTime, uGust;
+void main(){
+  vec2 v = texture(uVel, vUv).xy;
+  vec2 px = vUv*uSize;
+  vec2 dx = vec2(uTexel.x,0.), dy = vec2(0.,uTexel.y);
+  if (uFill > 0.5) v = vec2(uSpeed, 0.0);
+  // Free-stream unsteadiness: a faint, slow transverse flutter at the inlet
+  // (real tunnels have ~1% turbulence) so wake instabilities can start.
+  float gust = uGust * uSpeed * (sin(uTime*0.031) + 0.3*sin(uTime*0.071 + 1.7));
+  if (px.x < 3.0) v.x = uSpeed;                       // inlet faces
+  if (px.x < 2.0) v.y = gust;
+  if (uOpen > 0.5) {
+    if (px.y < 1.0) v = texture(uVel, vUv+dy).xy;       // open bottom: zero gradient
+    if (px.y > uSize.y-1.0) v.x = texture(uVel, vUv-dy).x; // open top (its bottom face is solved)
+  } else {
+    if (px.y < 1.0 || px.y > uSize.y-1.0) v.x = uSpeed; // wall rows
+    if (px.y < 2.0 || px.y > uSize.y-1.0) v.y = 0.0;    // wall faces
+  }
+  if (px.x > uSize.x-1.0) { v.x = max(v.x, 0.0); v.y = texture(uVel, vUv-dx).y; } // outlet ghost
+  bool sC = solid(uObs, vUv), sL = solid(uObs, vUv-dx), sB = solid(uObs, vUv-dy);
+  if (sC || sL) v.x = 0.0;
+  if (sC || sB) v.y = 0.0;
+  o = vec4(v,0.,1.);
+}`;
+
+  // Semi-Lagrangian advection. uStaggered=1: advect the face velocities of
+  // uSrc (each component from its own face position); 0: a cell-centred field.
+  const advect = head + `
+uniform sampler2D uVel, uSrc; uniform float uDt, uStaggered;
+void main(){
+  if (uStaggered > 0.5) {
+    vec2 qu = vUv - vec2(0.5*uTexel.x, 0.);
+    vec2 bu = qu - uDt*velAt(uVel, qu)*uTexel;
+    float u = texture(uSrc, bu + vec2(0.5*uTexel.x, 0.)).x;
+    vec2 qv = vUv - vec2(0., 0.5*uTexel.y);
+    vec2 bv = qv - uDt*velAt(uVel, qv)*uTexel;
+    float v = texture(uSrc, bv + vec2(0., 0.5*uTexel.y)).y;
+    o = vec4(u, v, 0., 1.);
+  } else {
+    vec2 back = vUv - uDt*velAt(uVel, vUv)*uTexel;
+    o = texture(uSrc, back);
+  }
+}`;
+
+  // MacCormack correction for a cell-centred field (dye).
+  const maccormack = head + `
+uniform sampler2D uVel, uPhi0, uPhi1, uPhi2, uObs; uniform float uDt, uDissipation;
+void main(){
+  vec2 back = vUv - uDt*velAt(uVel, vUv)*uTexel;
+  vec4 p0 = texture(uPhi0, vUv), p1 = texture(uPhi1, vUv), p2 = texture(uPhi2, vUv);
+  vec4 r = p1 + 0.5*(p0 - p2);
+  vec2 c = (floor(back*uSize - 0.5) + 0.5)*uTexel;
+  vec4 a = texture(uPhi0, c), b = texture(uPhi0, c + vec2(uTexel.x,0.)),
+       d = texture(uPhi0, c + vec2(0.,uTexel.y)), e = texture(uPhi0, c + uTexel);
+  r = clamp(r, min(min(a,b),min(d,e)), max(max(a,b),max(d,e))) * uDissipation;
+  if (solid(uObs, vUv)) r = vec4(0.);
+  o = r;
+}`;
+
+  // MacCormack correction for the staggered velocity field.
+  const maccormackVel = head + `
+uniform sampler2D uVel, uPhi0, uPhi1, uPhi2; uniform float uDt;
+float corrected(vec2 q, vec2 off, int comp){
+  vec2 back = q - uDt*velAt(uVel, q)*uTexel;
+  vec2 s = back + off;                     // sample uv in this component's grid
+  float p0 = comp == 0 ? texture(uPhi0, vUv).x : texture(uPhi0, vUv).y;
+  float p1 = comp == 0 ? texture(uPhi1, vUv).x : texture(uPhi1, vUv).y;
+  float p2 = comp == 0 ? texture(uPhi2, vUv).x : texture(uPhi2, vUv).y;
+  float r = p1 + 0.5*(p0 - p2);
+  vec2 c = (floor(s*uSize - 0.5) + 0.5)*uTexel;
+  vec2 a = texture(uPhi0, c).xy, b = texture(uPhi0, c + vec2(uTexel.x,0.)).xy,
+       d = texture(uPhi0, c + vec2(0.,uTexel.y)).xy, e = texture(uPhi0, c + uTexel).xy;
+  float mn, mx;
+  if (comp == 0) { mn = min(min(a.x,b.x),min(d.x,e.x)); mx = max(max(a.x,b.x),max(d.x,e.x)); }
+  else { mn = min(min(a.y,b.y),min(d.y,e.y)); mx = max(max(a.y,b.y),max(d.y,e.y)); }
+  return clamp(r, mn, mx);
+}
+void main(){
+  float u = corrected(vUv - vec2(0.5*uTexel.x, 0.), vec2(0.5*uTexel.x, 0.), 0);
+  float v = corrected(vUv - vec2(0., 0.5*uTexel.y), vec2(0., 0.5*uTexel.y), 1);
+  o = vec4(u, v, 0., 1.);
+}`;
+
+  // Cell-centred vorticity from cell-centred velocities.
+  const curl = head + `
+uniform sampler2D uVel;
+void main(){
+  vec2 dx = vec2(uTexel.x,0.), dy = vec2(0.,uTexel.y);
+  float L = velAt(uVel, vUv-dx).y, R = velAt(uVel, vUv+dx).y;
+  float B = velAt(uVel, vUv-dy).x, T = velAt(uVel, vUv+dy).x;
+  o = vec4(0.5*((R-L)-(T-B)),0.,0.,1.);
+}`;
+
+  // Vorticity confinement, evaluated at cell centres and averaged onto faces.
+  const vorticity = head + `
+uniform sampler2D uVel, uCurl, uObs; uniform float uStrength, uDt;
+vec2 conf(vec2 uv){
+  vec2 dx = vec2(uTexel.x,0.), dy = vec2(0.,uTexel.y);
+  float L = texture(uCurl, uv-dx).x, R = texture(uCurl, uv+dx).x;
+  float B = texture(uCurl, uv-dy).x, T = texture(uCurl, uv+dy).x, C = texture(uCurl, uv).x;
+  vec2 f = 0.5*vec2(abs(T)-abs(B), abs(R)-abs(L));
+  f /= length(f) + 1e-4;
+  return uStrength * C * f * vec2(1.,-1.);
+}
+void main(){
+  vec2 dx = vec2(uTexel.x,0.), dy = vec2(0.,uTexel.y);
+  vec2 v = texture(uVel, vUv).xy;
+  vec2 fC = conf(vUv);
+  v.x += 0.5*(fC.x + conf(vUv-dx).x)*uDt;
+  v.y += 0.5*(fC.y + conf(vUv-dy).y)*uDt;
+  bool sC = solid(uObs, vUv);
+  if (sC || solid(uObs, vUv-dx)) v.x = 0.;
+  if (sC || solid(uObs, vUv-dy)) v.y = 0.;
+  o = vec4(v,0.,1.);
+}`;
+
+  // Explicit viscous diffusion of each face component (stable for uNu <= 0.25).
+  const viscosity = head + `
+uniform sampler2D uVel, uObs; uniform float uNu;
+void main(){
+  vec2 dx = vec2(uTexel.x,0.), dy = vec2(0.,uTexel.y);
+  vec2 C = texture(uVel, vUv).xy;
+  vec2 lap = texture(uVel, vUv-dx).xy + texture(uVel, vUv+dx).xy + texture(uVel, vUv-dy).xy + texture(uVel, vUv+dy).xy - 4.0*C;
+  vec2 v = C + uNu*lap;
+  bool sC = solid(uObs, vUv);
+  if (sC || solid(uObs, vUv-dx)) v.x = 0.;
+  if (sC || solid(uObs, vUv-dy)) v.y = 0.;
+  o = vec4(v,0.,1.);
+}`;
+
+  // Exact face-flux divergence of fluid cells; zero elsewhere.
+  const divergence = head + `
+uniform sampler2D uVel, uObs;
+void main(){
+  if (cellType(uObs, vUv) != 0) { o = vec4(0.); return; }
+  vec2 dx = vec2(uTexel.x,0.), dy = vec2(0.,uTexel.y);
+  vec2 C = texture(uVel, vUv).xy;
+  float R = texture(uVel, vUv+dx).x, T = texture(uVel, vUv+dy).y;
+  o = vec4((R - C.x) + (T - C.y),0.,0.,1.);
+}`;
+
+  // Neighbour pressure honouring the boundary type.
+  const nbr = `
+float nb(sampler2D pres, sampler2D obs, vec2 uv, float C){
+  int t = cellType(obs, uv);
+  return t == 1 ? C : (t == 2 ? 0.0 : texture(pres, uv).x);
+}`;
+
+  // Red-black Gauss-Seidel sweep on one parity for the level's (scaled) Poisson
+  // equation. Neumann cells take the mean of their fluid neighbours so the
+  // field stays smooth across solid boundaries for interpolation.
+  const jacobi = head + nbr + `
+uniform sampler2D uPres, uDiv, uObs; uniform float uParity, uOmega, uH2;
+void main(){
+  vec2 dx = vec2(uTexel.x,0.), dy = vec2(0.,uTexel.y);
+  int t = cellType(uObs, vUv);
+  if (t == 2) { o = vec4(0.); return; }
+  if (t == 1) {
+    float sum = 0., n = 0.;
+    if (cellType(uObs, vUv-dx) == 0) { sum += texture(uPres, vUv-dx).x; n += 1.; }
+    if (cellType(uObs, vUv+dx) == 0) { sum += texture(uPres, vUv+dx).x; n += 1.; }
+    if (cellType(uObs, vUv-dy) == 0) { sum += texture(uPres, vUv-dy).x; n += 1.; }
+    if (cellType(uObs, vUv+dy) == 0) { sum += texture(uPres, vUv+dy).x; n += 1.; }
+    o = vec4(n > 0. ? sum/n : texture(uPres, vUv).x, 0., 0., 1.);
+    return;
+  }
+  vec2 px = vUv*uSize;
+  float C = texture(uPres, vUv).x;
+  vec2 cell = floor(px);
+  if (mod(cell.x + cell.y, 2.0) != uParity) { o = vec4(C,0.,0.,1.); return; }
+  float L = nb(uPres, uObs, vUv-dx, C), R = nb(uPres, uObs, vUv+dx, C);
+  float B = nb(uPres, uObs, vUv-dy, C), T = nb(uPres, uObs, vUv+dy, C);
+  float d = texture(uDiv, vUv).x;
+  float gs = (L+R+B+T - uH2*d)*0.25;
+  o = vec4(C + uOmega*(gs - C),0.,0.,1.);
+}`;
+
+  // Residual d - L p / h^2 (diagnostics: r in .x, p in .y).
+  const residual = head + nbr + `
+uniform sampler2D uPres, uDiv, uObs; uniform float uH2;
+void main(){
+  if (cellType(uObs, vUv) != 0) { o = vec4(0.); return; }
+  vec2 dx = vec2(uTexel.x,0.), dy = vec2(0.,uTexel.y);
+  float C = texture(uPres, vUv).x;
+  float L = nb(uPres, uObs, vUv-dx, C), R = nb(uPres, uObs, vUv+dx, C);
+  float B = nb(uPres, uObs, vUv-dy, C), T = nb(uPres, uObs, vUv+dy, C);
+  o = vec4(texture(uDiv, vUv).x - (L+R+B+T-4.0*C)/uH2, C, 0., 1.);
+}`;
+
+  // Multigrid restriction: average of the four fine residuals into the coarse RHS.
+  const restrict = head + `
+uniform sampler2D uPres, uDiv, uObs; uniform vec2 uFineSize, uFineTexel; uniform float uFineH2;
+float fnb(vec2 uv, float C){
+  int t = cellTypeS(uObs, uv, uFineSize);
+  return t == 1 ? C : (t == 2 ? 0.0 : texture(uPres, uv).x);
+}
+float resid(vec2 uv){
+  if (cellTypeS(uObs, uv, uFineSize) != 0) return 0.;
+  vec2 dx = vec2(uFineTexel.x,0.), dy = vec2(0.,uFineTexel.y);
+  float C = texture(uPres, uv).x;
+  float L = fnb(uv-dx, C), R = fnb(uv+dx, C), B = fnb(uv-dy, C), T = fnb(uv+dy, C);
+  return texture(uDiv, uv).x - (L+R+B+T-4.0*C)/uFineH2;
+}
+void main(){
+  vec2 c = floor(vUv*uSize)*2.0;
+  vec2 a = (c + 0.5)*uFineTexel;
+  float r = resid(a) + resid(a + vec2(uFineTexel.x,0.)) + resid(a + vec2(0.,uFineTexel.y)) + resid(a + uFineTexel);
+  o = vec4(0.25*r, 0., 0., 1.);
+}`;
+
+  // Multigrid prolongation: add the interpolated coarse correction.
+  const prolong = head + `
+uniform sampler2D uPres, uCoarse, uObs; uniform vec2 uCoarseSize;
+void main(){
+  if (cellType(uObs, vUv) == 2) { o = vec4(0.); return; }
+  o = vec4(texture(uPres, vUv).x + bilerp(uCoarse, vUv, uCoarseSize), 0., 0., 1.);
+}`;
+
+  // Coarser obstacle mask: solid when at least half of the children are.
+  const downsample = head + `
+uniform sampler2D uObs; uniform vec2 uFineTexel;
+void main(){
+  vec2 c = floor(vUv*uSize)*2.0;
+  vec2 a = (c + 0.5)*uFineTexel;
+  float s = texture(uObs, a).r + texture(uObs, a + vec2(uFineTexel.x,0.)).r + texture(uObs, a + vec2(0.,uFineTexel.y)).r + texture(uObs, a + uFineTexel).r;
+  o = vec4(s >= 2.0 ? 1.0 : 0.0, 0., 0., 1.);
+}`;
+
+  // Subtract the pressure gradient from the faces between two non-Neumann cells.
+  const gradient = head + `
+uniform sampler2D uPres, uVel, uObs;
+void main(){
+  vec2 dx = vec2(uTexel.x,0.), dy = vec2(0.,uTexel.y);
+  vec2 v = texture(uVel, vUv).xy;
+  int tC = cellType(uObs, vUv), tL = cellType(uObs, vUv-dx), tB = cellType(uObs, vUv-dy);
+  float pC = tC == 0 ? texture(uPres, vUv).x : 0.0;
+  if (tC != 1 && tL != 1) v.x -= pC - (tL == 0 ? texture(uPres, vUv-dx).x : 0.0);
+  if (tC != 1 && tB != 1) v.y -= pC - (tB == 0 ? texture(uPres, vUv-dy).x : 0.0);
+  o = vec4(v,0.,1.);
+}`;
+
+  // Smoke rakes at the inlet: evenly spaced soft lines with a gentle hue drift.
+  const inject = head + `
+uniform sampler2D uDye, uObs; uniform float uSpacing, uWidth;
+vec3 lineColor(float i){
+  float h = fract(i*0.381);
+  vec3 a = vec3(0.78,0.92,1.0), b = vec3(1.0,0.86,0.72), c = vec3(0.86,1.0,0.90);
+  return h < 0.5 ? mix(a,b,h*2.) : mix(b,c,h*2.-1.);
+}
+void main(){
+  vec4 d = texture(uDye, vUv);
+  vec2 px = vUv*uSize;
+  if (px.x < 2.5) {
+    float f = px.y/uSpacing; float i = floor(f);
+    float dist = abs((f - i)*uSpacing - uSpacing*0.5);
+    float k = 1.0 - smoothstep(0.0, uWidth, dist);
+    d = vec4(lineColor(i)*k, k);
+  }
+  if (solid(uObs, vUv)) d = vec4(0.);
+  o = d;
+}`;
+
+  // Pressure force each fluid cell exerts on adjacent solid faces (summed on the CPU).
+  const force = head + `
+uniform sampler2D uPres, uObs; uniform float uFilter;
+float pf(vec2 uv, float C){ return solid(uObs, uv) ? C : texture(uPres, uv).x; }
+void main(){
+  if (solid(uObs, vUv)) { o = vec4(0.); return; }
+  vec2 dx = vec2(uTexel.x,0.), dy = vec2(0.,uTexel.y);
+  float C = texture(uPres, vUv).x;
+  float p = C;
+  if (uFilter > 0.5) p = 0.5*C + 0.125*(pf(vUv-dx,C) + pf(vUv+dx,C) + pf(vUv-dy,C) + pf(vUv+dy,C));
+  vec2 f = vec2(0.);
+  if (solid(uObs, vUv+dx)) f.x += p;
+  if (solid(uObs, vUv-dx)) f.x -= p;
+  if (solid(uObs, vUv+dy)) f.y += p;
+  if (solid(uObs, vUv-dy)) f.y -= p;
+  o = vec4(f,0.,1.);
+}`;
+
+  const render = head + `
+uniform sampler2D uDye, uVel, uPres, uCurl, uObs; uniform int uMode; uniform float uSpeed, uMargin;
+vec3 inferno(float t){
+  const vec3 c0 = vec3(0.0002189403691192265, 0.001651004631001012, -0.01948089843709184);
+  const vec3 c1 = vec3(0.1065134194856116, 0.5639564367884091, 3.932712388889277);
+  const vec3 c2 = vec3(11.60249308247187, -3.972853965665698, -15.9423941062914);
+  const vec3 c3 = vec3(-41.70399613139459, 17.43639888205313, 44.35414519872813);
+  const vec3 c4 = vec3(77.162935699427, -33.40235894210092, -81.80730925738993);
+  const vec3 c5 = vec3(-71.31942824499214, 32.62606426397723, 73.20951985803202);
+  const vec3 c6 = vec3(25.13112622477341, -12.24266895238567, -23.07032500287172);
+  return clamp(c0+t*(c1+t*(c2+t*(c3+t*(c4+t*(c5+t*c6))))), 0., 1.);
+}
+vec3 diverging(float x){
+  vec3 bg = vec3(0.055,0.065,0.095);
+  vec3 neg = vec3(0.30,0.62,1.0), pos = vec3(1.0,0.45,0.28);
+  float a = pow(clamp(abs(x), 0., 1.), 0.7);
+  return mix(bg, x < 0. ? neg : pos, a);
+}
+void main(){
+  vec2 uv = vec2(vUv.x, 0.5 + (vUv.y - 0.5)*uMargin);
+  vec3 bg = vec3(0.043,0.051,0.078);
+  vec3 c;
+  if (uMode == 0) {
+    c = bg + texture(uDye, uv).rgb*1.25;
+  } else if (uMode == 1) {
+    float m = length(velAt(uVel, uv))/max(uSpeed,1e-3);
+    c = inferno(clamp(m*0.62, 0., 1.));
+  } else if (uMode == 2) {
+    float p = bilerp(uPres, uv, uSize)/(0.5*uSpeed*uSpeed);
+    c = diverging(p*0.5);
+  } else {
+    float w = texture(uCurl, uv).x/max(uSpeed,1e-3);
+    c = diverging(w*2.5);
+  }
+  if (solid(uObs, uv)) c = mix(c, vec3(0.05,0.06,0.08), 0.9);
+  o = vec4(c,1.);
+}`;
+
+  return { vert, boundary, advect, maccormack, maccormackVel, curl, vorticity, viscosity, divergence, jacobi, residual, restrict, prolong, downsample, gradient, inject, force, render };
+})();
+
+// Minimal WebGL2 helpers: programs, float render targets, full-screen passes.
+const GLU = (() => {
+  function create(canvas) {
+    const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, depth: false, stencil: false, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+    if (!gl) return null;
+    if (!gl.getExtension('EXT_color_buffer_float')) return null;
+    gl.getExtension('OES_texture_float_linear');
+    return gl;
+  }
+
+  function compile(gl, type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      const log = gl.getShaderInfoLog(s);
+      throw new Error('Shader compile failed: ' + log + '\n' + src.split('\n').map((l, i) => (i + 1) + ': ' + l).join('\n'));
+    }
+    return s;
+  }
+
+  function program(gl, vsSrc, fsSrc) {
+    const p = gl.createProgram();
+    gl.attachShader(p, compile(gl, gl.VERTEX_SHADER, vsSrc));
+    gl.attachShader(p, compile(gl, gl.FRAGMENT_SHADER, fsSrc));
+    gl.bindAttribLocation(p, 0, 'aPos');
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error('Link failed: ' + gl.getProgramInfoLog(p));
+    const uniforms = {};
+    const n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+    for (let i = 0; i < n; i++) {
+      const info = gl.getActiveUniform(p, i);
+      uniforms[info.name] = gl.getUniformLocation(p, info.name);
+    }
+    return { p, uniforms };
+  }
+
+  function quad(gl) {
+    const vao = gl.createVertexArray();
+    gl.bindVertexArray(vao);
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.bindVertexArray(null);
+    return vao;
+  }
+
+  // fmt: { internal, format, type }
+  function target(gl, w, h, fmt, filter) {
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D, 0, fmt.internal, w, h, 0, fmt.format, fmt.type, null);
+    const fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (status !== gl.FRAMEBUFFER_COMPLETE) throw new Error('Framebuffer incomplete: ' + status);
+    gl.viewport(0, 0, w, h);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    return { tex, fbo, w, h, dispose() { gl.deleteTexture(tex); gl.deleteFramebuffer(fbo); } };
+  }
+
+  function double(gl, w, h, fmt, filter) {
+    let a = target(gl, w, h, fmt, filter), b = target(gl, w, h, fmt, filter);
+    return {
+      get read() { return a; }, get write() { return b; },
+      swap() { const t = a; a = b; b = t; },
+      dispose() { a.dispose(); b.dispose(); }
+    };
+  }
+
+  // Runs a program into `out` (null = screen). uniforms: number -> 1f,
+  // [x,y] -> 2f, {i: n} -> 1i, {tex} -> sampler bound to next unit.
+  function makeRunner(gl, vao) {
+    return function run(prog, uniforms, out, w, h) {
+      gl.useProgram(prog.p);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, out ? out.fbo : null);
+      gl.viewport(0, 0, out ? out.w : w, out ? out.h : h);
+      let unit = 0;
+      for (const name in uniforms) {
+        const loc = prog.uniforms[name];
+        if (loc === undefined) continue;
+        const v = uniforms[name];
+        if (typeof v === 'number') gl.uniform1f(loc, v);
+        else if (Array.isArray(v)) {
+          if (v.length === 2) gl.uniform2f(loc, v[0], v[1]);
+          else if (v.length === 3) gl.uniform3f(loc, v[0], v[1], v[2]);
+          else gl.uniform4f(loc, v[0], v[1], v[2], v[3]);
+        }
+        else if (v.tex !== undefined) {
+          gl.activeTexture(gl.TEXTURE0 + unit);
+          gl.bindTexture(gl.TEXTURE_2D, v.tex);
+          gl.uniform1i(loc, unit);
+          unit++;
+        } else if (v.i !== undefined) gl.uniform1i(loc, v.i);
+      }
+      gl.bindVertexArray(vao);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gl.bindVertexArray(null);
+    };
+  }
+
+  return { create, program, quad, target, double, makeRunner };
+})();
+
+// The wind tunnel: incompressible Navier-Stokes on a uniform grid
+// (Stam-style stable fluids with MacCormack advection and vorticity
+// confinement), plus pressure-integrated forces on the obstacle.
+class Sim {
+  constructor(gl) {
+    this.gl = gl;
+    this.speed = 0.6;          // free-stream velocity, cells per sub-step
+    this.substeps = 2;
+    this.cycles = 2;           // multigrid V-cycles per sub-step
+    this.preSmooth = 2; this.postSmooth = 2; this.coarseSmooth = 12;
+    this.omega = 1.0;          // red-black Gauss-Seidel relaxation factor
+    this.maxLevels = 8;
+    this.viscosity = 0.06;     // explicit diffusion coefficient (<= 0.25)
+    this.confinement = 0.03;
+    this.useMacCormack = true;
+    this.gust = 0.015;         // inlet flutter amplitude, fraction of U (real tunnels: ~1%)
+    this.kick = 0;             // extra flutter right after a change, counts down in sub-steps
+    this.open = 0;             // 1: open top/bottom (pressure outlet), 0: tunnel walls
+    this.time = 0;
+    this.dyeDissipation = 0.999;
+    this.lineSpacing = 12;     // smoke rake spacing in cells
+    this.lineWidth = 1.1;
+    this.vao = GLU.quad(gl);
+    this.run = GLU.makeRunner(gl, this.vao);
+    const S = SHADERS;
+    this.prog = {};
+    for (const k of ['boundary', 'advect', 'maccormack', 'maccormackVel', 'curl', 'vorticity', 'divergence', 'jacobi', 'residual', 'restrict', 'prolong', 'downsample', 'viscosity', 'gradient', 'inject', 'force', 'render']) {
+      this.prog[k] = GLU.program(gl, S.vert, S[k]);
+    }
+    this.fmt = {
+      vec: { internal: gl.RG16F, format: gl.RG, type: gl.HALF_FLOAT },
+      scalar: { internal: gl.R32F, format: gl.RED, type: gl.FLOAT },
+      dye: { internal: gl.RGBA16F, format: gl.RGBA, type: gl.HALF_FLOAT },
+      force: { internal: gl.RGBA32F, format: gl.RGBA, type: gl.FLOAT },
+    };
+    this.obsTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, this.obsTex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    this.levels = [];
+    this.w = 0; this.h = 0;
+  }
+
+  resize(w, h) {
+    if (w === this.w && h === this.h) return;
+    const gl = this.gl;
+    if (this.vel) { this.vel.dispose(); this.dye.dispose(); this.curl.dispose(); this.tmpA.dispose(); this.tmpB.dispose(); this.dyeA.dispose(); this.dyeB.dispose(); this.forceT.dispose(); }
+    for (const L of this.levels) { L.p.dispose(); L.d.dispose(); if (L.obsT) L.obsT.dispose(); }
+    this.w = w; this.h = h;
+    this.texel = [1 / w, 1 / h];
+    this.size = [w, h];
+    this.vel = GLU.double(gl, w, h, this.fmt.vec, gl.LINEAR);
+    this.tmpA = GLU.target(gl, w, h, this.fmt.vec, gl.LINEAR);
+    this.tmpB = GLU.target(gl, w, h, this.fmt.vec, gl.LINEAR);
+    this.dye = GLU.double(gl, w, h, this.fmt.dye, gl.LINEAR);
+    this.dyeA = GLU.target(gl, w, h, this.fmt.dye, gl.LINEAR);
+    this.dyeB = GLU.target(gl, w, h, this.fmt.dye, gl.LINEAR);
+    // Multigrid hierarchy. Level 0 shares the obstacle texture uploaded by setObstacle.
+    this.levels = [];
+    let lw = w, lh = h;
+    for (let l = 0; l < 8; l++) {
+      const L = { w: lw, h: lh, size: [lw, lh], texel: [1 / lw, 1 / lh], h2: 4 ** l };
+      L.p = GLU.double(gl, lw, lh, this.fmt.scalar, gl.NEAREST);
+      L.d = GLU.target(gl, lw, lh, this.fmt.scalar, gl.NEAREST);
+      if (l === 0) L.obs = this.obsTex;
+      else { L.obsT = GLU.target(gl, lw, lh, { internal: gl.RGBA8, format: gl.RGBA, type: gl.UNSIGNED_BYTE }, gl.NEAREST); L.obs = L.obsT.tex; }
+      this.levels.push(L);
+      if (Math.min(lw, lh) <= 6 || l + 1 >= this.maxLevels) break;
+      lw = Math.ceil(lw / 2); lh = Math.ceil(lh / 2);
+    }
+    this.pres = this.levels[0].p;
+    this.div = this.levels[0].d;
+    this.curl = GLU.target(gl, w, h, this.fmt.scalar, gl.NEAREST);
+    this.forceT = GLU.target(gl, w, h, this.fmt.force, gl.NEAREST);
+    this.forceBuf = new Float32Array(w * h * 4);
+    gl.bindTexture(gl.TEXTURE_2D, this.obsTex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    this.reset();
+  }
+
+  // Upload the obstacle mask from a canvas of size (w, h). Any opaque pixel is solid.
+  setObstacle(canvas) {
+    const gl = this.gl;
+    this.kick = 400;
+    gl.bindTexture(gl.TEXTURE_2D, this.obsTex);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    for (let l = 1; l < this.levels.length; l++) {
+      const F = this.levels[l - 1], C = this.levels[l];
+      this.run(this.prog.downsample, { uTexel: C.texel, uSize: C.size, uObs: { tex: F.obs }, uFineTexel: F.texel }, C.obsT);
+    }
+  }
+
+  smooth(L, sweeps) {
+    for (let i = 0; i < sweeps * 2; i++) {
+      this.run(this.prog.jacobi, { uTexel: L.texel, uSize: L.size, uOpen: this.open, uPres: { tex: L.p.read.tex }, uDiv: { tex: L.d.tex }, uObs: { tex: L.obs }, uParity: i & 1, uOmega: this.omega, uH2: L.h2 }, L.p.write);
+      L.p.swap();
+    }
+  }
+
+  vcycle(l) {
+    const gl = this.gl, L = this.levels[l];
+    if (l === this.levels.length - 1) { this.smooth(L, this.coarseSmooth); return; }
+    this.smooth(L, this.preSmooth);
+    const C = this.levels[l + 1];
+    this.run(this.prog.restrict, { uTexel: C.texel, uSize: C.size, uOpen: this.open, uPres: { tex: L.p.read.tex }, uDiv: { tex: L.d.tex }, uObs: { tex: L.obs }, uFineSize: L.size, uFineTexel: L.texel, uFineH2: L.h2 }, C.d);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, C.p.read.fbo); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    this.vcycle(l + 1);
+    this.run(this.prog.prolong, { uTexel: L.texel, uSize: L.size, uOpen: this.open, uPres: { tex: L.p.read.tex }, uCoarse: { tex: C.p.read.tex }, uCoarseSize: C.size, uObs: { tex: L.obs } }, L.p.write);
+    L.p.swap();
+    this.smooth(L, this.postSmooth);
+  }
+
+  get base() { return { uTexel: this.texel, uSize: this.size, uOpen: this.open }; }
+
+  reset() {
+    const gl = this.gl;
+    const base = this.base;
+    this.run(this.prog.boundary, { ...base, uVel: { tex: this.vel.read.tex }, uObs: { tex: this.obsTex }, uSpeed: this.speed, uFill: 1, uTime: this.time, uGust: 0 }, this.vel.write);
+    this.vel.swap();
+    for (const t of [this.dye.read, this.dye.write, this.pres.read, this.pres.write]) {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, t.fbo);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+    }
+  }
+
+  // Advect `field` along the current velocity. staggered=true for the velocity itself.
+  advectMacCormack(field, tmp1, tmp2, dissipation, staggered) {
+    const base = this.base, st = staggered ? 1 : 0;
+    const v = { tex: this.vel.read.tex };
+    if (!this.useMacCormack) {
+      this.run(this.prog.advect, { ...base, uVel: v, uSrc: { tex: field.read.tex }, uDt: 1, uStaggered: st }, field.write);
+      field.swap();
+      return;
+    }
+    this.run(this.prog.advect, { ...base, uVel: v, uSrc: { tex: field.read.tex }, uDt: 1, uStaggered: st }, tmp1);
+    this.run(this.prog.advect, { ...base, uVel: v, uSrc: { tex: tmp1.tex }, uDt: -1, uStaggered: st }, tmp2);
+    if (staggered) this.run(this.prog.maccormackVel, { ...base, uVel: v, uPhi0: { tex: field.read.tex }, uPhi1: { tex: tmp1.tex }, uPhi2: { tex: tmp2.tex }, uDt: 1 }, field.write);
+    else this.run(this.prog.maccormack, { ...base, uVel: v, uPhi0: { tex: field.read.tex }, uPhi1: { tex: tmp1.tex }, uPhi2: { tex: tmp2.tex }, uObs: { tex: this.obsTex }, uDt: 1, uDissipation: dissipation }, field.write);
+    field.swap();
+  }
+
+  step() {
+    const P = this.prog, base = this.base, obs = { tex: this.obsTex };
+    for (let s = 0; s < this.substeps; s++) {
+      this.time++;
+      // A starting puff after each change seeds the wake instability quickly.
+      const gust = this.gust + (this.kick > 0 ? 0.2 * Math.min(1, this.kick / 200) : 0);
+      if (this.kick > 0) this.kick--;
+      this.run(P.boundary, { ...base, uVel: { tex: this.vel.read.tex }, uObs: obs, uSpeed: this.speed, uFill: 0, uTime: this.time, uGust: gust }, this.vel.write);
+      this.vel.swap();
+      this.advectMacCormack(this.vel, this.tmpA, this.tmpB, 1, true);
+      if (this.viscosity > 0) {
+        this.run(P.viscosity, { ...base, uVel: { tex: this.vel.read.tex }, uObs: obs, uNu: this.viscosity }, this.vel.write);
+        this.vel.swap();
+      }
+      this.run(P.curl, { ...base, uVel: { tex: this.vel.read.tex } }, this.curl);
+      this.run(P.vorticity, { ...base, uVel: { tex: this.vel.read.tex }, uCurl: { tex: this.curl.tex }, uObs: obs, uStrength: this.confinement, uDt: 1 }, this.vel.write);
+      this.vel.swap();
+      // Re-impose boundary faces so the divergence sees u.n = 0 on solids and U at the inlet.
+      this.run(P.boundary, { ...base, uVel: { tex: this.vel.read.tex }, uObs: obs, uSpeed: this.speed, uFill: 0, uTime: this.time, uGust: gust }, this.vel.write);
+      this.vel.swap();
+      this.run(P.divergence, { ...base, uVel: { tex: this.vel.read.tex }, uObs: obs }, this.div);
+      for (let c = 0; c < this.cycles; c++) this.vcycle(0);
+      this.run(P.gradient, { ...base, uPres: { tex: this.pres.read.tex }, uVel: { tex: this.vel.read.tex }, uObs: obs }, this.vel.write);
+      this.vel.swap();
+      this.run(P.inject, { ...base, uDye: { tex: this.dye.read.tex }, uObs: obs, uSpacing: this.lineSpacing, uWidth: this.lineWidth }, this.dye.write);
+      this.dye.swap();
+      this.advectMacCormack(this.dye, this.dyeA, this.dyeB, this.dyeDissipation, false);
+    }
+  }
+
+  // Sum of pressure forces on the obstacle: returns [Fx, Fy] in grid units.
+  readForce(filter = 0) {
+    const gl = this.gl, base = this.base;
+    this.run(this.prog.force, { ...base, uPres: { tex: this.pres.read.tex }, uObs: { tex: this.obsTex }, uFilter: filter }, this.forceT);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.forceT.fbo);
+    gl.readPixels(0, 0, this.w, this.h, gl.RGBA, gl.FLOAT, this.forceBuf);
+    let fx = 0, fy = 0;
+    const b = this.forceBuf, n = this.w * this.h * 4;
+    for (let i = 0; i < n; i += 4) { fx += b[i]; fy += b[i + 1]; }
+    return [fx, fy];
+  }
+
+  // Diagnostics: max speed and mean streamwise velocity over the grid.
+  readVelocityStats() {
+    const gl = this.gl;
+    this.run(this.prog.advect, { ...this.base, uVel: { tex: this.vel.read.tex }, uSrc: { tex: this.vel.read.tex }, uDt: 0, uStaggered: 1 }, this.forceT);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.forceT.fbo);
+    gl.readPixels(0, 0, this.w, this.h, gl.RGBA, gl.FLOAT, this.forceBuf);
+    let max = 0, sum = 0, nan = 0;
+    const b = this.forceBuf, n = this.w * this.h * 4;
+    for (let i = 0; i < n; i += 4) { const m = Math.hypot(b[i], b[i + 1]); if (!Number.isFinite(m)) nan++; else { if (m > max) max = m; sum += b[i]; } }
+    return { max, meanVx: sum / (this.w * this.h), nan };
+  }
+
+  // Diagnostics: residual divergence of the projected field.
+  readDivergenceStats() {
+    const gl = this.gl;
+    this.run(this.prog.divergence, { ...this.base, uVel: { tex: this.vel.read.tex }, uObs: { tex: this.obsTex } }, this.forceT);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.forceT.fbo);
+    gl.readPixels(0, 0, this.w, this.h, gl.RGBA, gl.FLOAT, this.forceBuf);
+    let max = 0, sum = 0;
+    const b = this.forceBuf, n = this.w * this.h * 4;
+    for (let i = 0; i < n; i += 4) { const d = Math.abs(b[i]); if (d > max) max = d; sum += d; }
+    return { max, mean: sum / (this.w * this.h) };
+  }
+
+  // Diagnostics: residual norm and pressure range on one multigrid level.
+  readLevelStats(l) {
+    const gl = this.gl, L = this.levels[l];
+    const t = GLU.target(gl, L.w, L.h, this.fmt.force, gl.NEAREST);
+    this.run(this.prog.residual, { uTexel: L.texel, uSize: L.size, uOpen: this.open, uPres: { tex: L.p.read.tex }, uDiv: { tex: L.d.tex }, uObs: { tex: L.obs }, uH2: L.h2 }, t);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, t.fbo);
+    const buf = new Float32Array(L.w * L.h * 4);
+    gl.readPixels(0, 0, L.w, L.h, gl.RGBA, gl.FLOAT, buf);
+    t.dispose();
+    let rmax = 0, rsum = 0, pmin = Infinity, pmax = -Infinity, nan = 0;
+    for (let i = 0; i < buf.length; i += 4) {
+      const r = buf[i], p = buf[i + 1];
+      if (!Number.isFinite(r) || !Number.isFinite(p)) { nan++; continue; }
+      const a = Math.abs(r); if (a > rmax) rmax = a; rsum += a; if (p < pmin) pmin = p; if (p > pmax) pmax = p;
+    }
+    return { level: l, w: L.w, h: L.h, rmax: +rmax.toExponential(2), rmean: +(rsum / (L.w * L.h)).toExponential(2), pmin: +pmin.toFixed(3), pmax: +pmax.toFixed(3), nan };
+  }
+
+  // margin = visible height / simulated height (the grid extends beyond the screen).
+  render(mode, W, H, margin = 1) {
+    this.run(this.prog.render, {
+      ...this.base, uMargin: margin,
+      uDye: { tex: this.dye.read.tex }, uVel: { tex: this.vel.read.tex }, uPres: { tex: this.pres.read.tex },
+      uCurl: { tex: this.curl.tex }, uObs: { tex: this.obsTex }, uMode: { i: mode }, uSpeed: this.speed
+    }, null, W, H);
+  }
+
+  // Ensure the curl texture matches the current velocity (for the vorticity view when paused).
+  refreshCurl() {
+    this.run(this.prog.curl, { ...this.base, uVel: { tex: this.vel.read.tex } }, this.curl);
+  }
+}
+
+// Obstacle geometry: preset bodies, brush strokes, rendering to masks, and
+// a compact URL encoding. All coordinates are normalised by tunnel width:
+// x in [0,1], y in [0, H/W], radius/size as a fraction of width.
+const SHAPES = (() => {
+  // NACA 4-digit section as a closed polygon in y-up unit-chord coords, centred at x = 0.
+  function naca(m, p, t, n) {
+    const up = [], lo = [];
+    for (let i = 0; i <= n; i++) {
+      const x = 0.5 * (1 - Math.cos(Math.PI * i / n));
+      const yt = 5 * t * (0.2969 * Math.sqrt(x) - 0.1260 * x - 0.3516 * x * x + 0.2843 * x ** 3 - 0.1036 * x ** 4);
+      let yc = 0, dyc = 0;
+      if (m > 0) {
+        if (x < p) { yc = m / (p * p) * (2 * p * x - x * x); dyc = 2 * m / (p * p) * (p - x); }
+        else { yc = m / ((1 - p) ** 2) * ((1 - 2 * p) + 2 * p * x - x * x); dyc = 2 * m / ((1 - p) ** 2) * (p - x); }
+      }
+      const th = Math.atan(dyc);
+      up.push([x - yt * Math.sin(th) - 0.5, yc + yt * Math.cos(th)]);
+      lo.push([x + yt * Math.sin(th) - 0.5, yc - yt * Math.cos(th)]);
+    }
+    return up.reverse().concat(lo.slice(1));
+  }
+
+  function poly(ctx, pts) {
+    ctx.beginPath();
+    pts.forEach(([x, y], i) => i ? ctx.lineTo(x, -y) : ctx.moveTo(x, -y));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  const carBody = [[0.0, 0.10], [0.03, 0.17], [0.10, 0.20], [0.34, 0.21], [0.40, 0.235], [0.48, 0.32], [0.56, 0.35], [0.74, 0.35], [0.86, 0.29], [0.97, 0.245], [1.0, 0.19], [1.0, 0.08], [0.95, 0.05], [0.87, 0.10], [0.73, 0.10], [0.68, 0.045], [0.32, 0.045], [0.27, 0.10], [0.13, 0.10], [0.05, 0.05], [0.0, 0.05]].map(([x, y]) => [x - 0.5, y - 0.19]);
+  const airfoilPts = naca(0.02, 0.4, 0.12, 48);
+  const teardropPts = naca(0, 0, 0.30, 48);
+
+  // Each preset draws itself in unit coordinates (characteristic length 1, centred on origin).
+  const PRESETS = {
+    circle: { label: 'Cylinder', size: 0.17, angle: 0, draw(c) { c.beginPath(); c.arc(0, 0, 0.5, 0, Math.PI * 2); c.fill(); } },
+    square: { label: 'Square', size: 0.15, angle: 0, draw(c) { c.fillRect(-0.5, -0.5, 1, 1); } },
+    plate: { label: 'Flat plate', size: 0.17, angle: 0, draw(c) { c.fillRect(-0.04, -0.5, 0.08, 1); } },
+    wedge: { label: 'Wedge', size: 0.16, angle: 0, draw(c) { poly(c, [[-0.5, 0], [0.5, 0.5], [0.5, -0.5]]); } },
+    half: { label: 'Half-cylinder', size: 0.17, angle: 0, draw(c) { c.beginPath(); c.arc(0.25, 0, 0.5, Math.PI / 2, 3 * Math.PI / 2); c.closePath(); c.fill(); } },
+    bus: { label: 'Bus', size: 0.42, angle: 0, draw(c) { c.beginPath(); c.roundRect(-0.5, -0.19, 1, 0.38, 0.05); c.fill(); } },
+    car: { label: 'Car', size: 0.44, angle: 0, draw(c) { poly(c, carBody); c.beginPath(); c.arc(-0.30, 0.16, 0.085, 0, Math.PI * 2); c.arc(0.30, 0.16, 0.085, 0, Math.PI * 2); c.fill(); } },
+    teardrop: { label: 'Teardrop', size: 0.40, angle: 0, draw(c) { poly(c, teardropPts); } },
+    airfoil: { label: 'Airfoil', size: 0.40, angle: 6, draw(c) { poly(c, airfoilPts); } },
+  };
+  const PRESET_ORDER = ['circle', 'square', 'plate', 'wedge', 'half', 'bus', 'car', 'teardrop', 'airfoil'];
+
+  function drawPreset(ctx, name, cx, cy, size, angle, scale) {
+    const p = PRESETS[name]; if (!p) return;
+    ctx.save();
+    ctx.translate(cx * scale, cy * scale);
+    ctx.rotate(angle * Math.PI / 180);   // canvas y points down, so +angle raises the nose (left end)
+    ctx.scale(size * scale, size * scale);
+    p.draw(ctx);
+    ctx.restore();
+  }
+
+  function drawStrokeSegment(ctx, r, x0, y0, x1, y1, scale) {
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.lineWidth = 2 * r * scale;
+    ctx.beginPath();
+    ctx.moveTo(x0 * scale, y0 * scale);
+    ctx.lineTo(x1 * scale, y1 * scale);
+    ctx.stroke();
+  }
+
+  function drawStroke(ctx, op, scale) {
+    const pts = op.p;
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.lineWidth = 2 * op.r * scale;
+    ctx.beginPath();
+    ctx.moveTo(pts[0] * scale, pts[1] * scale);
+    if (pts.length === 2) ctx.lineTo(pts[0] * scale, pts[1] * scale);
+    for (let i = 2; i < pts.length; i += 2) ctx.lineTo(pts[i] * scale, pts[i + 1] * scale);
+    ctx.stroke();
+  }
+
+  // Render an op list onto ctx. `scale` = pixels per unit width, `oy` = vertical
+  // pixel offset (the simulation grid extends above and below the visible tunnel).
+  function render(ctx, ops, scale, color, oy = 0) {
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.translate(0, oy);
+    ctx.fillStyle = color; ctx.strokeStyle = color;
+    for (const op of ops) {
+      ctx.globalCompositeOperation = op.e ? 'destination-out' : 'source-over';
+      if (op.t === 'p') drawPreset(ctx, op.n, op.x, op.y, op.s, op.a || 0, scale);
+      else if (op.t === 's') drawStroke(ctx, op, scale);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.restore();
+  }
+
+  // Frontal height, chord (streamwise length) and solid cell count from a mask canvas.
+  function measure(canvas) {
+    const w = canvas.width, h = canvas.height;
+    const d = canvas.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, w, h).data;
+    const rows = new Uint8Array(h), cols = new Uint8Array(w);
+    let cells = 0;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      if (d[(y * w + x) * 4 + 3] > 127) { rows[y] = 1; cols[x] = 1; cells++; }
+    }
+    let height = 0, chord = 0;
+    for (let y = 0; y < h; y++) height += rows[y];
+    for (let x = 0; x < w; x++) chord += cols[x];
+    return { height, chord, cells };
+  }
+
+  // ---- URL encoding -------------------------------------------------------
+  const q = v => Math.round(v * 2000);   // 0.5 px precision at 1000-cell width
+  function compact(ops) {
+    return ops.map(op => op.t === 'p'
+      ? ['p', op.n, q(op.x), q(op.y), q(op.s), Math.round((op.a || 0) * 10), op.e ? 1 : 0]
+      : ['s', q(op.r), op.e ? 1 : 0, ...op.p.map(q)]);
+  }
+  function expand(list) {
+    return list.map(a => a[0] === 'p'
+      ? { t: 'p', n: a[1], x: a[2] / 2000, y: a[3] / 2000, s: a[4] / 2000, a: a[5] / 10, e: !!a[6] }
+      : { t: 's', r: a[1] / 2000, e: !!a[2], p: a.slice(3).map(v => v / 2000) });
+  }
+  const b64u = {
+    enc(bytes) { let s = ''; for (const b of bytes) s += String.fromCharCode(b); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); },
+    dec(str) { const s = atob(str.replace(/-/g, '+').replace(/_/g, '/')); const out = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) out[i] = s.charCodeAt(i); return out; }
+  };
+  async function pipe(bytes, Stream) {
+    const st = new Stream('deflate-raw');
+    const w = st.writable.getWriter(); w.write(bytes); w.close();
+    const buf = await new Response(st.readable).arrayBuffer();
+    return new Uint8Array(buf);
+  }
+  async function encode(ops) {
+    const json = JSON.stringify(compact(ops));
+    const raw = new TextEncoder().encode(json);
+    if (typeof CompressionStream === 'function') {
+      try { return 'z' + b64u.enc(await pipe(raw, CompressionStream)); } catch (e) { /* fall through */ }
+    }
+    return 'j' + b64u.enc(raw);
+  }
+  async function decode(str) {
+    if (!str) return null;
+    const kind = str[0], body = str.slice(1);
+    let raw = b64u.dec(body);
+    if (kind === 'z') raw = await pipe(raw, DecompressionStream);
+    const list = JSON.parse(new TextDecoder().decode(raw));
+    return expand(list);
+  }
+
+  // Simplify a stroke: drop points closer than a fraction of the radius.
+  function addPoint(op, x, y) {
+    const p = op.p, n = p.length;
+    if (n >= 2) {
+      const dx = x - p[n - 2], dy = y - p[n - 1];
+      if (dx * dx + dy * dy < (op.r * 0.3) ** 2) return false;
+    }
+    p.push(x, y);
+    return true;
+  }
+
+  return { PRESETS, PRESET_ORDER, drawPreset, drawStrokeSegment, render, measure, encode, decode, addPoint };
+})();
+
+// Slipstream UI: painting, presets, stats readout, sharing, keys.
+(() => {
+  const $ = s => document.querySelector(s);
+  const glCanvas = $('#gl'), overlay = $('#overlay'), nogl = $('#nogl');
+  const gl = GLU.create(glCanvas);
+  if (!gl) { nogl.style.display = 'grid'; return; }
+  let sim;
+  try { sim = new Sim(gl); } catch (e) { console.error(e); nogl.style.display = 'grid'; return; }
+
+  // Reference drag coefficients of the presets, measured in this tunnel at the
+  // default wind speed and size (see e2e/reference.mjs). Cd is normalised so the
+  // cylinder reads 1.2.
+  const REF = window.SLIPSTREAM_REF || {};
+  const CALIB = window.SLIPSTREAM_CALIB || 1;
+
+  const state = { tool: 'draw', brush: 0.024, size: 0.17, angle: 0, mode: 0, paused: false, ops: [], activePreset: null };
+  // The simulated grid is MARGIN times taller than the visible tunnel so the
+  // top and bottom edges sit well away from the body.
+  const MARGIN = 1.6;
+  let W = 0, H = 0, visH = 0, maskOy = 0, aspect = 1, dpr = 1;
+  const mask = document.createElement('canvas');
+  const maskCtx = mask.getContext('2d', { willReadFrequently: true });
+  const view = document.createElement('canvas');
+  const viewCtx = view.getContext('2d');
+  const octx = overlay.getContext('2d');
+  const OBS_COLOR = '#e4e9f1';
+  let geom = { height: 0, chord: 0, cells: 0 };
+  let maskDirty = false, settleUntil = 0, settleStart = 0, frames = 0;
+  let fx = 0, fy = 0, cd = NaN, cl = NaN, ld = NaN;
+
+  // ---- layout --------------------------------------------------------------
+  function layout() {
+    const cw = innerWidth, ch = innerHeight;
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    glCanvas.width = overlay.width = view.width = Math.round(cw * dpr);
+    glCanvas.height = overlay.height = view.height = Math.round(ch * dpr);
+    aspect = ch / cw;
+    W = Math.max(128, Math.min(768, Math.round(Math.sqrt(185000 / (aspect * MARGIN)) / 8) * 8));
+    visH = Math.max(48, Math.round(W * aspect / 2) * 2);
+    H = Math.round(visH * MARGIN / 2) * 2;
+    maskOy = (H - visH) / 2;
+    mask.width = W; mask.height = H;
+    sim.resize(W, H);
+    rebuildMask();
+  }
+
+  function rebuildMask() {
+    SHAPES.render(maskCtx, state.ops, W, '#fff', maskOy);
+    SHAPES.render(viewCtx, state.ops, view.width, OBS_COLOR);
+    sim.setObstacle(mask);
+    maskDirty = false;
+    geom = SHAPES.measure(mask);
+    settleStart = performance.now(); settleUntil = settleStart + 2500;
+    fx = fy = 0;
+    drawOverlay();
+    updateGeomText();
+    updateUndo();
+  }
+
+  function drawOverlay(cursor) {
+    octx.setTransform(1, 0, 0, 1, 0, 0);
+    octx.clearRect(0, 0, overlay.width, overlay.height);
+    octx.save();
+    octx.shadowColor = 'rgba(127,214,255,0.5)';
+    octx.shadowBlur = 16 * dpr;
+    octx.drawImage(view, 0, 0);
+    octx.restore();
+    if (cursor) {
+      octx.beginPath();
+      octx.arc(cursor[0] * view.width, cursor[1] * view.width, state.brush * view.width, 0, Math.PI * 2);
+      octx.strokeStyle = state.tool === 'erase' ? 'rgba(255,140,140,0.9)' : 'rgba(127,214,255,0.9)';
+      octx.lineWidth = 1.5 * dpr;
+      octx.stroke();
+    }
+  }
+
+  // ---- painting ------------------------------------------------------------
+  let stroke = null, lastPt = null;
+  const toUnit = e => { const r = overlay.getBoundingClientRect(); return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.width]; };
+  function paintSegment(x0, y0, x1, y1, erase) {
+    for (const [ctx, scale, color, oy] of [[maskCtx, W, '#fff', maskOy], [viewCtx, view.width, OBS_COLOR, 0]]) {
+      ctx.save();
+      ctx.translate(0, oy);
+      ctx.globalCompositeOperation = erase ? 'destination-out' : 'source-over';
+      ctx.strokeStyle = color;
+      SHAPES.drawStrokeSegment(ctx, state.brush, x0, y0, x1, y1, scale);
+      ctx.restore();
+    }
+    maskDirty = true;
+  }
+  overlay.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    overlay.setPointerCapture(e.pointerId);
+    const [x, y] = toUnit(e);
+    stroke = { t: 's', r: state.brush, e: state.tool === 'erase', p: [x, y] };
+    state.ops.push(stroke);
+    state.activePreset = null;
+    paintSegment(x, y, x, y, stroke.e);
+    lastPt = [x, y];
+    drawOverlay([x, y]);
+  });
+  overlay.addEventListener('pointermove', e => {
+    const [x, y] = toUnit(e);
+    if (stroke && SHAPES.addPoint(stroke, x, y)) { paintSegment(lastPt[0], lastPt[1], x, y, stroke.e); lastPt = [x, y]; }
+    drawOverlay([x, y]);
+  });
+  const endStroke = () => { if (!stroke) return; stroke = null; rebuildMask(); pushHash(); };
+  overlay.addEventListener('pointerup', endStroke);
+  overlay.addEventListener('pointercancel', endStroke);
+  overlay.addEventListener('pointerleave', () => { if (!stroke) drawOverlay(); });
+
+  // ---- presets -------------------------------------------------------------
+  const presetsEl = $('#presets');
+  const presetButtons = {};
+  for (const name of SHAPES.PRESET_ORDER) {
+    const p = SHAPES.PRESETS[name];
+    const b = document.createElement('button');
+    b.className = 'btn preset'; b.title = p.label; b.dataset.preset = name;
+    const c = document.createElement('canvas'); c.width = 92; c.height = 56;
+    const cx = c.getContext('2d'); cx.fillStyle = '#dfe6ef';
+    const long = ['bus', 'car', 'teardrop', 'airfoil'].includes(name);
+    cx.translate(46, 28); cx.rotate(p.angle * Math.PI / 180);
+    const s = long ? 78 : 40; cx.scale(s, s); p.draw(cx);
+    b.appendChild(c);
+    const label = document.createElement('span'); label.textContent = p.label; b.appendChild(label);
+    b.addEventListener('click', () => stampPreset(name));
+    presetsEl.appendChild(b);
+    presetButtons[name] = b;
+  }
+  function stampPreset(name, opts = {}) {
+    const p = SHAPES.PRESETS[name];
+    const op = { t: 'p', n: name, x: 0.36, y: aspect / 2, s: opts.size ?? p.size, a: opts.angle ?? p.angle };
+    state.ops = [op];
+    state.activePreset = op;
+    setSlider('size', op.s); setSlider('angle', op.a);
+    markPreset(name);
+    rebuildMask(); pushHash();
+  }
+  function markPreset(name) {
+    for (const k in presetButtons) presetButtons[k].classList.toggle('active', k === name);
+  }
+
+  // ---- sliders & buttons ---------------------------------------------------
+  const fmt = { brush: v => (v * 100).toFixed(1), size: v => Math.round(v * 100), angle: v => (+v).toFixed(1).replace(/\.0$/, '') + '°', speed: v => Math.round(v * 100) };
+  function setSlider(id, v) { const el = $('#' + id); el.value = v; $('#' + id + '-out').textContent = fmt[id](+el.value); }
+  for (const id of ['brush', 'size', 'angle', 'speed']) {
+    $('#' + id).addEventListener('input', e => {
+      const v = +e.target.value;
+      $('#' + id + '-out').textContent = fmt[id](v);
+      if (id === 'brush') state.brush = v;
+      if (id === 'speed') sim.speed = v;
+      if (id === 'size' || id === 'angle') {
+        state[id] = v;
+        const last = state.ops[state.ops.length - 1];
+        if (state.activePreset && last === state.activePreset) {
+          if (id === 'size') last.s = v; else last.a = v;
+          rebuildMask(); pushHash();
+        }
+      }
+    });
+  }
+  const setTool = t => { state.tool = t; $('#tool-draw').classList.toggle('active', t === 'draw'); $('#tool-erase').classList.toggle('active', t === 'erase'); overlay.classList.toggle('tool-erase', t === 'erase'); };
+  $('#tool-draw').addEventListener('click', () => setTool('draw'));
+  $('#tool-erase').addEventListener('click', () => setTool('erase'));
+  const undo = () => { const op = state.ops.pop(); if (!op) return; if (op === state.activePreset) { state.activePreset = null; markPreset(null); } rebuildMask(); pushHash(); };
+  const clear = () => { state.ops = []; state.activePreset = null; markPreset(null); rebuildMask(); pushHash(); };
+  $('#undo').addEventListener('click', undo);
+  $('#clear').addEventListener('click', clear);
+  function updateUndo() { $('#undo').disabled = state.ops.length === 0; }
+
+  const setMode = m => { state.mode = m; document.querySelectorAll('#modes .btn').forEach(b => b.classList.toggle('active', +b.dataset.mode === m)); };
+  document.querySelectorAll('#modes .btn').forEach(b => b.addEventListener('click', () => setMode(+b.dataset.mode)));
+  const setPaused = p => { state.paused = p; $('#pause').textContent = p ? '▶' : '❚❚'; $('#pause').classList.toggle('active', p); };
+  $('#pause').addEventListener('click', () => setPaused(!state.paused));
+
+  const about = $('#about');
+  $('#about-btn').addEventListener('click', () => about.showModal());
+  $('#about-close').addEventListener('click', () => about.close());
+  about.addEventListener('click', e => { if (e.target === about) about.close(); });
+
+  let toastTimer;
+  function toast(msg, ms = 2200) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), ms); }
+
+  // ---- share / export ------------------------------------------------------
+  let hashTimer;
+  function pushHash() {
+    clearTimeout(hashTimer);
+    hashTimer = setTimeout(async () => {
+      if (!state.ops.length) { history.replaceState(null, '', location.pathname + location.search); return; }
+      const enc = await SHAPES.encode(state.ops);
+      history.replaceState(null, '', '#s=' + enc);
+    }, 250);
+  }
+  $('#share').addEventListener('click', async () => {
+    const enc = state.ops.length ? '#s=' + await SHAPES.encode(state.ops) : '';
+    const url = location.origin + location.pathname + location.search + enc;
+    history.replaceState(null, '', enc || location.pathname + location.search);
+    const text = Number.isFinite(cd) ? `My shape has a drag coefficient of ${cd.toFixed(2)} in Slipstream. Can you beat it?` : 'Slipstream: a wind tunnel in your browser.';
+    if (navigator.share && matchMedia('(pointer: coarse)').matches) {
+      try { await navigator.share({ title: 'Slipstream', text, url }); return; } catch (e) { /* cancelled */ }
+    }
+    try { await navigator.clipboard.writeText(url); toast('Link copied — send it to someone'); }
+    catch (e) { prompt('Copy this link', url); }
+  });
+  $('#png').addEventListener('click', () => {
+    const c = document.createElement('canvas'); c.width = glCanvas.width; c.height = glCanvas.height;
+    const x = c.getContext('2d');
+    x.drawImage(glCanvas, 0, 0); x.drawImage(overlay, 0, 0);
+    x.font = `${14 * dpr}px ${getComputedStyle(document.body).fontFamily}`;
+    x.fillStyle = 'rgba(231,236,243,0.85)';
+    const label = Number.isFinite(cd) ? `Cd ${cd.toFixed(2)}  ·  Cl ${cl.toFixed(2)}  ·  slipstream` : 'slipstream';
+    x.fillText(label, 16 * dpr, c.height - 16 * dpr);
+    c.toBlob(b => {
+      const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'slipstream.png'; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    }, 'image/png');
+  });
+
+  // ---- keys ----------------------------------------------------------------
+  addEventListener('keydown', e => {
+    if (e.target.matches('input, textarea') || about.open) return;
+    const k = e.key.toLowerCase();
+    if (k === 'd') setTool('draw');
+    else if (k === 'e') setTool('erase');
+    else if (k === 'z' || (k === 'z' && (e.metaKey || e.ctrlKey))) undo();
+    else if (k === 'c') clear();
+    else if (k === '[') setSlider('brush', state.brush = Math.max(0.006, state.brush - 0.004));
+    else if (k === ']') setSlider('brush', state.brush = Math.min(0.08, state.brush + 0.004));
+    else if (k >= '1' && k <= '4') setMode(+k - 1);
+    else if (k === ' ') { e.preventDefault(); setPaused(!state.paused); }
+    else if (k === '?') about.showModal();
+    else return;
+  });
+
+  // ---- stats ---------------------------------------------------------------
+  const cdEl = $('#cd'), clEl = $('#cl'), ldEl = $('#ld'), geomEl = $('#geom'), rankEl = $('#rank'), badge = $('#badge');
+  function updateGeomText() {
+    if (!geom.height) { geomEl.textContent = 'Draw something to measure it.'; return; }
+    geomEl.textContent = `Frontal height ${Math.round(100 * geom.height / W)}% of tunnel width · length ${Math.round(100 * geom.chord / W)}%`;
+  }
+  // Maskell's wind-tunnel blockage correction for bluff bodies: the measured
+  // dynamic pressure is raised by (1 + eps * Cd * h/H). H is the full grid height
+  // (the walls sit at the grid's edges).
+  function blockage(cdRaw) { return 1 + 0.96 * Math.max(0, cdRaw) * geom.height / H; }
+  function updateStats(now) {
+    const U = sim.speed, q = 0.5 * U * U;
+    if (!geom.height) { cd = cl = ld = NaN; }
+    else {
+      const cdRaw = CALIB * fx / (q * geom.height), k = blockage(cdRaw);
+      cd = cdRaw / k;
+      cl = CALIB * fy / (q * geom.chord) / k;
+      ld = Math.abs(fx) > 1e-6 ? fy / fx : NaN;
+    }
+    const settling = now < settleUntil, early = now < settleStart + 900;
+    if (early && geom.height) { cdEl.textContent = clEl.textContent = ldEl.textContent = '…'; }
+    else {
+      cdEl.textContent = Number.isFinite(cd) ? cd.toFixed(2) : '—';
+      clEl.textContent = Number.isFinite(cl) ? (cl >= 0 ? '+' : '') + cl.toFixed(2) : '—';
+      ldEl.textContent = Number.isFinite(ld) ? ld.toFixed(2) : '—';
+    }
+    cdEl.classList.toggle('settling', settling);
+    renderRank();
+    const custom = state.ops.some(o => o.t === 's');
+    badge.hidden = !(custom && REF.teardrop && Number.isFinite(cd) && !settling && cd < REF.teardrop * 0.98 && geom.height >= 0.08 * W);
+  }
+  function renderRank() {
+    const rows = Object.keys(REF).map(k => ({ label: SHAPES.PRESETS[k]?.label || k, v: REF[k] }));
+    if (Number.isFinite(cd) && performance.now() > settleStart + 900) rows.push({ label: 'Your shape', v: cd, you: true });
+    rows.sort((a, b) => a.v - b.v);
+    const max = Math.max(0.01, ...rows.map(r => r.v));
+    rankEl.innerHTML = rows.map(r => `<div class="r${r.you ? ' you' : ''}"><span>${r.label}</span><div class="bar" style="width:${Math.max(2, 100 * Math.max(0, r.v) / max)}%"></div><span class="v">${r.v.toFixed(2)}</span></div>`).join('');
+  }
+
+  // ---- main loop -----------------------------------------------------------
+  function frame(now) {
+    if (maskDirty) { sim.setObstacle(mask); maskDirty = false; }
+    if (!state.paused) {
+      sim.step();
+      frames++;
+      if (frames % 3 === 0) {
+        // Skip the impulsive-start transient right after the shape changed.
+        if (now > settleStart + 250) {
+          const [x, y] = sim.readForce();
+          const a = now < settleUntil ? 0.2 : 0.04;
+          fx += (x - fx) * a; fy += (y - fy) * a;
+        }
+        updateStats(now);
+      }
+    } else if (state.mode === 3) sim.refreshCurl();
+    sim.render(state.mode, glCanvas.width, glCanvas.height, visH / H);
+    // Adaptive cost: drop to one sub-step per frame on GPUs that cannot keep up.
+    if (lastFrame) { frameMs += (now - lastFrame - frameMs) * 0.05; if (frames > 120 && frameMs > 30 && sim.substeps > 1) sim.substeps = 1; }
+    lastFrame = now;
+    requestAnimationFrame(frame);
+  }
+  let lastFrame = 0, frameMs = 16;
+
+  // ---- boot ----------------------------------------------------------------
+  async function boot() {
+    layout();
+    let resizeTimer;
+    addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(layout, 120); });
+    const params = new URLSearchParams(location.search);
+    const m = location.hash.match(/^#s=(.+)$/);
+    let loaded = false;
+    if (m) {
+      try { const ops = await SHAPES.decode(m[1]); if (ops && ops.length) { state.ops = ops; loaded = true; rebuildMask(); } } catch (e) { console.warn('Could not read shape from link', e); }
+    }
+    const preset = params.get('shape') || (location.hash.match(/^#p=(\w+)$/) || [])[1];
+    if (!loaded && preset && SHAPES.PRESETS[preset]) { stampPreset(preset, { size: +params.get('size') || undefined, angle: params.has('angle') ? +params.get('angle') : undefined }); loaded = true; }
+    if (!loaded && !params.has('empty')) stampPreset('car');
+    if (params.has('speed')) { setSlider('speed', +params.get('speed')); sim.speed = +params.get('speed'); }
+    // Developer knobs for tuning runs: ?nu=0.06&gust=0.02&conf=0.03&cycles=2
+    if (params.has('nu')) sim.viscosity = +params.get('nu');
+    if (params.has('gust')) sim.gust = +params.get('gust');
+    if (params.has('conf')) sim.confinement = +params.get('conf');
+    if (params.has('cycles')) sim.cycles = +params.get('cycles');
+    if (params.has('walls')) sim.open = 0;
+    if (params.has('mode')) setMode(+params.get('mode'));
+    setSlider('brush', state.brush);
+    if (!loaded && !params.has('empty')) toast('Paint anything into the wind, or drop in a body from the left panel', 3600);
+    requestAnimationFrame(frame);
+  }
+
+  window.slipstream = {
+    state, sim, get stats() { return { cd, cl, ld, fx, fy, height: geom.height, chord: geom.chord, cells: geom.cells, W, H, visH, frames, frameMs }; },
+    setOps(ops) { state.ops = ops; state.activePreset = null; rebuildMask(); }, stampPreset, rebuildMask, setMode, setPaused
+  };
+  boot();
+})();
+
+</script>
+</body>
+</html>

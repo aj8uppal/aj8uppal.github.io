@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Open Studio — AJ Uppal / direction 02</title>
+    <meta
+      name="description"
+      content="Walk in. Pick something up. Try it. A portfolio design exploration for AJ Uppal."
+    />
+    <link rel="stylesheet" href="shared.css" />
+    <link rel="stylesheet" href="studio.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body class="studio">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="review-bar" aria-label="Design review navigation">
+      <a href="index.html">← All four directions</a><span>02 / Open Studio</span
+      ><a href="field-notes.html">03 / Field Notes →</a>
+    </aside>
+
+    <div class="st-shell" id="top">
+      <header class="st-nav">
+        <a class="st-brand" href="#top"
+          ><span aria-hidden="true">a<span class="st-brand-j">j</span></span
+          ><b>AJ UPPAL<br />OPEN STUDIO</b></a
+        >
+        <nav aria-label="Main">
+          <a href="#shelf">The shelf</a><a href="#about">About AJ</a
+          ><a class="" href="mailto:aj8uppal@gmail.com"
+            >Say hey<span aria-hidden="true"> ↗</span></a
+          >
+        </nav>
+      </header>
+      <main id="main">
+        <section class="st-hero">
+          <div class="st-intro">
+            <p class="eyebrow">
+              <span class="square-dot" aria-hidden="true"></span> SOFTWARE ENGINEER. SERIAL MAKER.
+            </p>
+            <h1>
+              Made to<br />be
+              <span class="st-word"
+                >played<svg viewBox="0 0 470 34" aria-hidden="true">
+                  <path d="M8 24Q224 1 458 15M23 31Q224 13 400 25" /></svg
+              ></span>
+              with.
+            </h1>
+            <p>Worlds, instruments, useful little things.<br />I’m AJ. Welcome to the workbench.</p>
+            <a class="st-button" href="#shelf"
+              >Find something to try <span aria-hidden="true">↘</span></a
+            ><span class="st-side-note">Go on. Touch something.</span>
+          </div>
+          <section class="angle-toy" aria-labelledby="toy-title">
+            <div class="toy-header">
+              <span class="eyebrow">A LITTLE WARM-UP</span
+              ><span class="toy-badge">INTERACTIVE</span>
+            </div>
+            <h2 id="toy-title">How’s your eye?</h2>
+            <p>Make this angle <strong>115°</strong>.</p>
+            <svg
+              class="angle-drawing"
+              viewBox="0 0 420 260"
+              role="img"
+              aria-label="An adjustable angle with a horizontal reference arm"
+            >
+              <circle
+                cx="210"
+                cy="190"
+                r="135"
+                fill="none"
+                stroke="currentColor"
+                stroke-opacity=".15"
+                stroke-dasharray="3 7"
+              />
+              <path d="M210 54V220M57 190H361" stroke="currentColor" stroke-opacity=".15" />
+              <path d="M210 190H345" stroke="#253ddd" stroke-width="5" stroke-linecap="round" />
+              <path
+                id="angle-arc"
+                d="M252 190 A42 42 0 0 0 218 149"
+                fill="none"
+                stroke="#f1653e"
+                stroke-width="2"
+              />
+              <g id="angle-arm" transform="rotate(-78 210 190)">
+                <path d="M210 190H345" stroke="#253ddd" stroke-width="5" stroke-linecap="round" />
+                <circle cx="345" cy="190" r="8" fill="#253ddd" />
+              </g>
+              <circle cx="210" cy="190" r="6" fill="#253ddd" /></svg
+            ><label class="sr-only" for="angle-input">Adjust the angle, then check your guess</label
+            ><input
+              id="angle-input"
+              type="range"
+              min="10"
+              max="170"
+              value="78"
+              aria-valuetext="Guess an angle of 115 degrees"
+            />
+            <div class="toy-bottom">
+              <span id="angle-result" aria-live="polite">Slide. Trust your eye.</span
+              ><button id="angle-check" type="button">
+                Check it <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <a class="toy-credit" href="https://eyeshot.app/" target="_blank" rel="noopener"
+              >A taste of Eyeshot. Play the real thing ↗</a
+            >
+          </section>
+        </section>
+        <section class="st-shelf" id="shelf">
+          <div class="st-shelf-head">
+            <h2>Off the workbench<span aria-hidden="true">↙</span></h2>
+            <div class="st-filters" role="group" aria-label="Filter projects">
+              <button type="button" data-filter="all" aria-pressed="true">Everything</button
+              ><button type="button" data-filter="games" aria-pressed="false">Games</button
+              ><button type="button" data-filter="tools" aria-pressed="false">Tools</button
+              ><button type="button" data-filter="sound" aria-pressed="false">Sound</button>
+            </div>
+          </div>
+          <p class="sr-only" id="filter-status" aria-live="polite">6 projects shown</p>
+          <div class="st-grid">
+            <article class="st-card st-card-beatlayer" data-category="sound">
+              <a href="https://aj8uppal.github.io/beatlayer/" target="_blank" rel="noopener"
+                ><div class="st-card-image">
+                  <img
+                    src="../../src/assets/built-beatlayer.webp"
+                    alt="BeatLayer: a waveform pane above a step sequencer, with kick, snare and hat rows lit across one bar and a groove library down the right."
+                  /><span class="st-card-launch" aria-hidden="true">↗</span>
+                </div>
+                <div class="st-card-text">
+                  <span class="eyebrow">INSTRUMENT</span>
+                  <h3>BeatLayer</h3>
+                  <p>
+                    Drop in a guitar take and it lays synthesised drums under it, in your tempo, on
+                    your downbeat.
+                  </p>
+                </div></a
+              >
+            </article>
+            <article class="st-card st-card-eyeshot" data-category="games">
+              <a href="https://eyeshot.app/" target="_blank" rel="noopener"
+                ><div class="st-card-image">
+                  <img
+                    src="../../src/assets/built-eyeshot.webp"
+                    alt="The Eyeshot angle event: a sheet of graph paper with one arm of an angle drawn on it and the target, 115 degrees, above."
+                  /><span class="st-card-launch" aria-hidden="true">↗</span>
+                </div>
+                <div class="st-card-text">
+                  <span class="eyebrow">GAME</span>
+                  <h3>Eyeshot</h3>
+                  <p>
+                    Five tests of your eye a day. Draw a perfect circle. Tap the exact middle of a
+                    line. Stop a timer at ten seconds.
+                  </p>
+                </div></a
+              >
+            </article>
+            <article class="st-card st-card-voidreach" data-category="games">
+              <a href="https://aj8uppal.github.io/voidreach/" target="_blank" rel="noopener"
+                ><div class="st-card-image">
+                  <img
+                    src="../../src/assets/built-voidreach.webp"
+                    alt="The Voidreach cockpit: a station and a moon ahead, contact markers with distances, and shield, hull and power gauges along the bottom."
+                  /><span class="st-card-launch" aria-hidden="true">↗</span>
+                </div>
+                <div class="st-card-text">
+                  <span class="eyebrow">GAME</span>
+                  <h3>Voidreach</h3>
+                  <p>
+                    A first-person space sandbox in a browser tab. Sixty-four star systems, and you
+                    can dock at any of them.
+                  </p>
+                </div></a
+              >
+            </article>
+            <article class="st-card st-card-run-or-not" data-category="tools">
+              <a href="https://aj8uppal.github.io/run-or-not/" target="_blank" rel="noopener"
+                ><div class="st-card-image">
+                  <img
+                    src="../../src/assets/built-run-or-not.webp"
+                    alt="Run or Not showing GO in green over “Wind 9 mph, AQI 38, sunset in 2h 34m”, with six condition chips underneath."
+                    loading="lazy"
+                  /><span class="st-card-launch" aria-hidden="true">↗</span>
+                </div>
+                <div class="st-card-text">
+                  <span class="eyebrow">TOOL</span>
+                  <h3>Run or Not</h3>
+                  <p>One screen, one verdict: should you run outside right now?</p>
+                </div></a
+              >
+            </article>
+            <article class="st-card st-card-sixty-seconds" data-category="games">
+              <a href="https://sixty-seconds.fly.dev/" target="_blank" rel="noopener"
+                ><div class="st-card-image">
+                  <img
+                    src="../../src/assets/built-sixty-seconds.webp"
+                    alt="The Sixty Seconds canvas mid-round: hills, a sun and two birds drawn in orange and blue by two people, with both cursors labelled and thirteen seconds left."
+                    loading="lazy"
+                  /><span class="st-card-launch" aria-hidden="true">↗</span>
+                </div>
+                <div class="st-card-text">
+                  <span class="eyebrow">MULTIPLAYER</span>
+                  <h3>Sixty Seconds</h3>
+                  <p>
+                    Everyone on the page draws the same canvas. After sixty seconds the round
+                    closes, gets a name, and becomes a replay link. Then a new sixty seconds starts.
+                  </p>
+                </div></a
+              >
+            </article>
+            <article class="st-card st-card-lifetrack" data-category="tools">
+              <a href="https://aj8uppal.github.io/lifetrack/" target="_blank" rel="noopener"
+                ><div class="st-card-image">
+                  <img
+                    src="../../src/assets/built-lifetrack.webp"
+                    alt="LifeTrack’s Today view: a sidebar of sections, four counters across the top, and columns of tasks and habits for the day."
+                    loading="lazy"
+                  /><span class="st-card-launch" aria-hidden="true">↗</span>
+                </div>
+                <div class="st-card-text">
+                  <span class="eyebrow">TOOL</span>
+                  <h3>LifeTrack</h3>
+                  <p>
+                    Tasks, projects, habits, workouts, the calendar, the people you keep meaning to
+                    see — one app, and none of it leaves your browser.
+                  </p>
+                </div></a
+              >
+            </article>
+          </div>
+          <a class="st-all" href="https://aj8uppal.github.io/built/" target="_blank" rel="noopener"
+            >The whole shelf, including the odd ones <span aria-hidden="true">↗</span></a
+          >
+        </section>
+        <section class="st-about" id="about">
+          <div>
+            <p class="eyebrow">THERE’S A DAY JOB, TOO.</p>
+            <h2>Playful work.<br />Serious engineering.</h2>
+          </div>
+          <div>
+            <p>
+              I’m a software engineer at Notable Health, working across voice AI, integrations, and
+              the systems under them.
+            </p>
+            <p>Computer science and astrophysics at UMass. Still learning by making things.</p>
+            <div class="st-about-links">
+              <a
+                class=""
+                href="https://aj8uppal.github.io/attachments/resume2026.pdf"
+                target="_blank"
+                rel="noopener"
+                >Résumé<span aria-hidden="true"> ↗</span></a
+              ><a class="" href="https://github.com/aj8uppal" target="_blank" rel="noopener"
+                >GitHub<span aria-hidden="true"> ↗</span></a
+              ><a class="" href="mailto:aj8uppal@gmail.com"
+                >Let’s talk<span aria-hidden="true"> ↗</span></a
+              >
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer class="site-footer">
+        <a href="#top">AJ Uppal </a><span>Software engineer · Bay Area</span>
+        <div>
+          <a class="" href="https://github.com/aj8uppal" target="_blank" rel="noopener"
+            >GitHub<span aria-hidden="true"> ↗</span></a
+          ><a
+            class=""
+            href="https://aj8uppal.github.io/attachments/resume2026.pdf"
+            target="_blank"
+            rel="noopener"
+            >Résumé<span aria-hidden="true"> ↗</span></a
+          ><a class="" href="mailto:aj8uppal@gmail.com">Email<span aria-hidden="true"> ↗</span></a>
+        </div>
+      </footer>
+    </div>
+    <script src="interactions.js" defer></script>
+  </body>
+</html>

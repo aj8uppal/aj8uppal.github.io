@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Cubit / AJ Uppal case study</title>
+    <link rel="stylesheet" href="../shared.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body>
+    <aside class="ref-reviewbar" aria-label="Case study navigation">
+      <a href="../index.html">← Four directions</a><span>Case study / Cubit</span
+      ><a href="../../portfolio-candidates/">Original round ↗</a>
+    </aside>
+    <main class="ref-case-doc">
+      <header class="ref-case-header">
+        <div>
+          <p class="ref-eyebrow">CASE / Game / interaction</p>
+          <h1 id="case-title-cubit">Cubit</h1>
+          <div class="ref-case-header-meta">
+            <span class="ref-case-pill">live</span
+            ><span class="ref-case-pill">Vanilla JS · three.js · Web Audio · node:test</span>
+          </div>
+        </div>
+        <p class="ref-case-summary">
+          2048, cubed: slide and merge inside a 3×3×3 cube, across six directions instead of four.
+        </p>
+      </header>
+      <section class="ref-case-hero">
+        <figure>
+          <img
+            src="../../../src/assets/cubit-lead-peek.webp"
+            alt="Cubit: a 3 by 3 by 3 cube of colored tiles, opened to reveal its layers."
+            loading="lazy"
+          />
+          <figcaption><span>Cubit</span><span>Real project capture</span></figcaption>
+        </figure>
+        <aside class="ref-case-hero-aside">
+          <p class="ref-eyebrow">THE QUESTION</p>
+          <h2>How do you make a third dimension legible?</h2>
+          <div>
+            <a
+              class="ref-link"
+              href="https://aj8uppal.github.io/cubit/"
+              target="_blank"
+              rel="noopener"
+              >Open Cubit <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <dl>
+            <div>
+              <dt>State</dt>
+              <dd>live</dd>
+            </div>
+            <div>
+              <dt>Stack</dt>
+              <dd>Vanilla JS · three.js · Web Audio · node:test</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">HOW IT HOLDS UP</p>
+          <h2>Work with a point of view.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <p>The complete single-file engine, renderer, input and synthesized sound.</p>
+          <div class="ref-case-copy-block">
+            <article class="ref-case-card">
+              <h3>Constraint</h3>
+              <p>
+                Six directions must feel obvious on a flat phone screen, including the hidden axis
+                and the cost of losing sight of interior tiles.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Decision</h3>
+              <p>
+                Score swipes against screen-space projections of the lattice axes, make blocked
+                tiles translucent, and reserve Space plus capped gyro tilt for peeking.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Evidence</h3>
+              <p>Live as one self-contained 553 KB HTML file with 62 tests; saves locally.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">SELECTED PROOF</p>
+          <h2>Details that matter.</h2>
+        </div>
+        <div class="ref-case-facts">
+          <div class="ref-case-fact">
+            <strong>Board</strong><span>27 cells · 3×3×3 · six slide directions</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>Input</strong
+            ><span>Swipes match the on-screen projection of each lattice axis</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>Peek</strong
+            ><span>Space spreads layers; opt-in gyro view is capped at 12°</span>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-frames" aria-labelledby="frames-title">
+        <p class="ref-eyebrow">RECORDED STATES</p>
+        <h2 id="frames-title">A few frames from the work</h2>
+        <div class="ref-case-frame-grid">
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/cubit-inset-board.webp"
+              alt="Cubit with the layers spread apart."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Layers apart</span><span>Space reveals the inside of the board.</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+      <a class="ref-case-back" href="../index.html#directions">Back to the directions ↑</a>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">KEEP READING</p>
+          <h2>Another thread.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <a class="ref-case-link" href="notable.html" data-case="notable"
+            >Notable Health <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="saltline.html" data-case="saltline"
+            >saltline <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="ember.html" data-case="ember"
+            >Ember Wilds <span aria-hidden="true">→</span></a
+          >
+        </div>
+      </section>
+    </main>
+    <script src="../shared.js" defer></script>
+  </body>
+</html>

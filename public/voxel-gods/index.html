@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#171a1c"><link rel="icon" href="data:,"><title>Realm of the Voxel Gods</title><style>.bag-panel .slot[title]:hover:after{left:105%;right:auto}</style>  <script type="module" crossorigin src="./assets/index-Bwyyy7tm.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DCwSkVu0.css">
+</head>
+<body><div id="app"><canvas id="game"></canvas>
+  <section id="home" class="overlay home">
+    <div class="crest">V</div><p class="kicker">REALM OF THE</p><h1>VOXEL GODS</h1><p class="subtitle">A 3D PERMADEATH BULLET HELL</p>
+    <div id="classCards" class="class-cards">
+      <button data-class="wizard"><span class="avatar wizard">••</span><strong>WIZARD</strong><small>Long range · Spellbomb</small></button>
+      <button data-class="archer"><span class="avatar archer">••</span><strong>ARCHER</strong><small>Fast shots · Magic quiver</small></button>
+      <button data-class="knight"><span class="avatar knight">••</span><strong>KNIGHT</strong><small>Heavy armor · Stun</small></button>
+    </div><button id="resumeHero" class="hidden" style="background:#2b7180;border:3px solid #8ce9ef;color:#fff;padding:10px 20px;font-weight:bold;cursor:pointer"></button><p id="record" class="record"></p><small class="choose">CHOOSE A CLASS TO ENTER</small>
+  </section>
+  <main id="hud" class="hidden">
+    <header class="quest"><span id="questBadge">!</span><div><small>CURRENT QUEST</small><strong id="questTitle">Clear the Greenlands</strong><p id="questDetail">0 / 8 lesser gods</p></div><i id="questArrow">▲</i></header>
+    <section id="bossHud" class="boss hidden"><small id="bossPhase">REALM GUARDIAN</small><strong id="bossTitle">ENT ANCIENT</strong><div><i id="bossHealth"></i></div></section>
+    <section id="feed" class="feed"></section>
+    <section id="bagPanel" class="bag-panel hidden"><header><span id="bagSwatch"></span><div><strong id="bagTitle">Loot Bag</strong><small>Click an item to take it</small></div><button id="bagClose">×</button></header><div id="bagSlots" class="bag-slots"></div></section>
+    <aside id="sidebar" class="sidebar">
+      <div class="minimap-wrap"><canvas id="minimap" width="256" height="220"></canvas><b>N</b><span id="areaName">THE REALM</span></div>
+      <div class="character"><span id="portrait" class="avatar wizard">••</span><div><strong id="playerName">Unnamed Hero</strong><p id="classLevel">Wizard · Level 1</p><small>Fame <b id="fameText">0</b></small></div><button id="soundBtn" title="Toggle sound">♪</button></div>
+      <div class="bars"><div class="bar hp"><i id="hpBar"></i><b id="hpLabel">100 / 100</b></div><div class="bar mp"><i id="mpBar"></i><b id="mpLabel">120 / 120</b></div><div class="bar xp"><i id="xpBar"></i><b id="xpLabel">0 / 49 XP</b></div></div>
+      <h2>EQUIPMENT</h2><div id="equipment" class="slots equipment"></div><h2>INVENTORY</h2><div id="inventory" class="slots inventory"></div>
+      <div class="potions"><button id="hpPotion"><kbd>H</kbd><span>♥</span><b id="hpPotionCount">2</b></button><button id="mpPotion"><kbd>M</kbd><span>◆</span><b id="mpPotionCount">2</b></button></div>
+      <div class="stats"><span>ATT<b id="statAttack">0</b></span><span>DEF<b id="statDefense">0</b></span><span>SPD<b id="statSpeed">0</b></span><span>DEX<b id="statDexterity">0</b></span><span>VIT<b id="statVitality">0</b></span><span>WIS<b id="statWisdom">0</b></span><span>MAX HP<b id="statMaxHp">0</b></span><span>MAX MP<b id="statMaxMp">0</b></span></div>
+    </aside>
+    <footer class="hotbar"><div><kbd>LMB</kbd><span>SHOOT</span></div><div><kbd>SPACE / RMB</kbd><span id="abilityName">ABILITY</span><i id="abilityShade"></i></div><div><kbd>F</kbd><span>INTERACT</span></div><div><kbd>Q / E</kbd><span>ROTATE</span></div><div><kbd>R</kbd><span>NEXUS</span></div></footer>
+    <div id="interact" class="interact hidden">PRESS <kbd>F</kbd> TO ENTER</div><div id="announce" class="announce"></div><div id="damageFlash"></div><div id="crosshair" class="crosshair"></div>
+  </main>
+  <section id="pause" class="overlay modal hidden"><small>GAME PAUSED</small><h2>RETURN TO THE REALM</h2><button id="resumeBtn">RESUME</button><button id="abandonBtn" class="danger">ABANDON CHARACTER</button></section>
+  <section id="death" class="overlay modal hidden"><small>A VALIANT HERO HAS FALLEN</small><h2>YOU DIED</h2><div class="grave">†</div><p id="deathSummary"></p><strong id="earnedFame"></strong><button id="newHeroBtn">CREATE A NEW HERO</button></section>
+  <section id="victory" class="overlay modal hidden"><small>THE ABYSSAL VAULT IS SILENT</small><h2>REALM EXALTED</h2><p id="victorySummary"></p><button id="continueBtn">CONTINUE IN THE REALM</button><button id="retireBtn">RETIRE HERO FOR FAME</button></section>
+</div></body></html>

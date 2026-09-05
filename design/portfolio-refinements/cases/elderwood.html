@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Elderwood Vale / AJ Uppal case study</title>
+    <link rel="stylesheet" href="../shared.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body>
+    <aside class="ref-reviewbar" aria-label="Case study navigation">
+      <a href="../index.html">← Four directions</a><span>Case study / Elderwood Vale</span
+      ><a href="../../portfolio-candidates/">Original round ↗</a>
+    </aside>
+    <main class="ref-case-doc">
+      <header class="ref-case-header">
+        <div>
+          <p class="ref-eyebrow">CASE / Simulation / tower defense</p>
+          <h1 id="case-title-elderwood">Elderwood Vale</h1>
+          <div class="ref-case-header-meta">
+            <span class="ref-case-pill">wip</span
+            ><span class="ref-case-pill">TypeScript · three.js · React · fixed tick</span>
+          </div>
+        </div>
+        <p class="ref-case-summary">
+          Browser-native tower defense. Playable greybox, and an architecture argument.
+        </p>
+      </header>
+      <section class="ref-case-hero">
+        <figure>
+          <img
+            src="../../../src/assets/elderwood-default.webp"
+            alt="Elderwood Vale greybox tower defense board with towers and a route."
+            loading="lazy"
+          />
+          <figcaption><span>Elderwood Vale</span><span>Real project capture</span></figcaption>
+        </figure>
+        <aside class="ref-case-hero-aside">
+          <p class="ref-eyebrow">THE QUESTION</p>
+          <h2>What can a game prove when its simulation ignores the browser?</h2>
+          <div><span class="ref-case-pill">Work in progress</span></div>
+          <dl>
+            <div>
+              <dt>State</dt>
+              <dd>wip</dd>
+            </div>
+            <div>
+              <dt>Stack</dt>
+              <dd>TypeScript · three.js · React · fixed tick</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">HOW IT HOLDS UP</p>
+          <h2>Work with a point of view.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <p>The simulation core, renderer, HUD and the boundary between them.</p>
+          <div class="ref-case-copy-block">
+            <article class="ref-case-card">
+              <h3>Constraint</h3>
+              <p>
+                The simulation must remain deterministic and testable without knowing about DOM,
+                rendering, clocks or random globals.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Decision</h3>
+              <p>
+                Enforce the boundary with TypeScript configuration and restricted ESLint paths, then
+                interpolate fixed 1/30s snapshots for a separate three.js renderer.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Evidence</h3>
+              <p>Playable greybox: placement, waves and enough economy to lose.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">SELECTED PROOF</p>
+          <h2>Details that matter.</h2>
+        </div>
+        <div class="ref-case-facts">
+          <div class="ref-case-fact">
+            <strong>Tick</strong><span>Fixed 1/30 s simulation with snapshot interpolation</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>Renderer</strong
+            ><span>three.js is free of the tick rate; React HUD subscribes at 10 Hz</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>Boundary</strong
+            ><span>DOM library removed from tsconfig; restricted paths in ESLint</span>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-frames" aria-labelledby="frames-title">
+        <p class="ref-eyebrow">RECORDED STATES</p>
+        <h2 id="frames-title">A few frames from the work</h2>
+        <div class="ref-case-frame-grid">
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/elderwood-default.webp"
+              alt="Greybox geometry, no art pass."
+              loading="lazy"
+            />
+            <figcaption><span>Default</span><span>Greybox geometry, no art pass.</span></figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/elderwood-coverage.webp"
+              alt="Placement overlay, showing tower reach."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Coverage</span><span>Placement overlay, showing tower reach.</span>
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/elderwood-stress.webp"
+              alt="Stress burst; the tick rate holds."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Stress</span><span>Stress burst; the tick rate holds.</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+      <a class="ref-case-back" href="../index.html#directions">Back to the directions ↑</a>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">KEEP READING</p>
+          <h2>Another thread.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <a class="ref-case-link" href="notable.html" data-case="notable"
+            >Notable Health <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="saltline.html" data-case="saltline"
+            >saltline <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="ember.html" data-case="ember"
+            >Ember Wilds <span aria-hidden="true">→</span></a
+          >
+        </div>
+      </section>
+    </main>
+    <script src="../shared.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>murmuration / AJ Uppal case study</title>
+    <link rel="stylesheet" href="../shared.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body>
+    <aside class="ref-reviewbar" aria-label="Case study navigation">
+      <a href="../index.html">← Four directions</a><span>Case study / murmuration</span
+      ><a href="../../portfolio-candidates/">Original round ↗</a>
+    </aside>
+    <main class="ref-case-doc">
+      <header class="ref-case-header">
+        <div>
+          <p class="ref-eyebrow">CASE / Audio / WebGPU</p>
+          <h1 id="case-title-murmuration">murmuration</h1>
+          <div class="ref-case-header-meta">
+            <span class="ref-case-pill">live</span
+            ><span class="ref-case-pill">WebGPU · compute shaders · Canvas · audio analysis</span>
+          </div>
+        </div>
+        <p class="ref-case-summary">
+          A music visualiser that works out what the music is doing, not just how loud it is.
+        </p>
+      </header>
+      <section class="ref-case-hero">
+        <figure>
+          <img
+            src="../../../src/assets/murmuration-lead-ribbon.webp"
+            alt="murmuration in ribbon style: a dense violet and white form of drawn-out particle streaks against black, filling most of the frame."
+            loading="lazy"
+          />
+          <figcaption><span>murmuration</span><span>Real project capture</span></figcaption>
+        </figure>
+        <aside class="ref-case-hero-aside">
+          <p class="ref-eyebrow">THE QUESTION</p>
+          <h2>Can a field of light hear a song breathe?</h2>
+          <div>
+            <a
+              class="ref-link"
+              href="https://aj8uppal.github.io/murmuration/"
+              target="_blank"
+              rel="noopener"
+              >Open murmuration <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <dl>
+            <div>
+              <dt>State</dt>
+              <dd>live</dd>
+            </div>
+            <div>
+              <dt>Stack</dt>
+              <dd>WebGPU · compute shaders · Canvas · audio analysis</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">HOW IT HOLDS UP</p>
+          <h2>Work with a point of view.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <p>The audio analysis, WebGPU compute renderer and interaction model.</p>
+          <div class="ref-case-copy-block">
+            <article class="ref-case-card">
+              <h3>Constraint</h3>
+              <p>
+                Frequency alone cannot tell a voice from a piano; the field also needs to respond to
+                key, tempo, transients, stereo placement and quiet.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Decision</h3>
+              <p>
+                Combine chroma, autocorrelated spectral flux, per-band attack and
+                centre-versus-sides analysis, then drive velocity-stretched particles in a compute
+                shader.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Evidence</h3>
+              <p>
+                Live, including in a phone browser. Measured GPU time at 1800×3043: 620k particles
+                in 8.07ms; 1.2M in 11.85ms.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">SELECTED PROOF</p>
+          <h2>Details that matter.</h2>
+        </div>
+        <div class="ref-case-facts">
+          <div class="ref-case-fact">
+            <strong>Signal</strong
+            ><span>Chroma key detection · autocorrelated spectral flux for tempo</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>Separation</strong
+            ><span>Centre-versus-sides analysis gives 3.5× separation on the bundled track</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>Styles</strong><span>Nebula · ink · constellation · ribbon · etching</span>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-frames" aria-labelledby="frames-title">
+        <p class="ref-eyebrow">RECORDED STATES</p>
+        <h2 id="frames-title">A few frames from the work</h2>
+        <div class="ref-case-frame-grid">
+          <figure class="ref-case-frame ref-case-proof-frame">
+            <img
+              src="../../../src/assets/murmuration-proof-interface.webp"
+              alt="The full murmuration window: a sparse violet and white constellation of particles on black, and along the bottom a bar reading Pink Floyd - Shine On You Crazy Dia..., 4:21 of 13:35, a waveform, then PARTICLE, CONSTELLATION, SENS 1.6X, FULL, 106 FPS and the key hints beside them."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>The live interface</span
+              ><span
+                >Mode, style, sensitivity, quality and frame rate along the bottom are live
+                controls, not captions. B cycles the render mode, V the style, and the minus and
+                equals keys scale how hard the music drives the field.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/murmuration-frame-ribbon.webp"
+              alt="murmuration, ribbon style."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Ribbon</span
+              ><span
+                >Two styles and a lull, all from one session. Only the style and the music
+                changed.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/murmuration-frame-constellation.webp"
+              alt="murmuration, constellation style."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Constellation</span
+              ><span
+                >Two styles and a lull, all from one session. Only the style and the music
+                changed.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/murmuration-frame-lull.webp"
+              alt="murmuration during a quiet passage."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Quiet passage</span
+              ><span
+                >Two styles and a lull, all from one session. Only the style and the music
+                changed.</span
+              >
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+      <a class="ref-case-back" href="../index.html#directions">Back to the directions ↑</a>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">KEEP READING</p>
+          <h2>Another thread.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <a class="ref-case-link" href="notable.html" data-case="notable"
+            >Notable Health <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="saltline.html" data-case="saltline"
+            >saltline <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="ember.html" data-case="ember"
+            >Ember Wilds <span aria-hidden="true">→</span></a
+          >
+        </div>
+      </section>
+    </main>
+    <script src="../shared.js" defer></script>
+  </body>
+</html>

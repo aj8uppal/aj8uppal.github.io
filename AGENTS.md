@@ -38,24 +38,22 @@ Any rule that shapes one of these images needs `height: auto` alongside it.
 
 ## `/built` has its own capture script and its own gate
 
-The eleven cards on `/built` are photographs of eleven running apps, and they
-are not made by `npm run images`: that script crops a batch of raw captures
-that live outside the repo, and these have no raw batch. `npm run built:shots`
-_is_ the batch - it drives each app into the one state its card shows (a GO
-verdict, a poster made from a real photo, two browsers in one drawing round)
-and writes `src/assets/built-<key>.webp` straight out. Six of the eleven are
-read off `public/` on a local server, so a card can be reshot before the change
-is pushed; the rest are read from the live site. Re-running it changes the
-pictures, because live apps are different every time. That is the point, and
-the page says so.
+`npm run built:shots` drives each app into the state its card shows and writes
+`src/assets/built-<key>.webp` directly. These captures are independent of
+`npm run images`. Recipes live in `scripts/capture-built.mjs` and its imported
+capture modules. Local apps use a server rooted at `public/` on port
+8099 (`CAPTURE_BASE` overrides it); hosted apps use their live URLs. Set
+`CAPTURE_CHANNEL=chrome` to use installed Chrome with native GPU rendering.
+Synthetic inputs must pass through the real app and be disclosed in `cap`.
 
-Nothing on that page is hand-listed twice. The three lead cards, the grid of
-eight, and the block at the foot of the Playground on the index all come off
-`src/data/built.ts` - `featured: true` is the whole ranking - and each app's
-accent colour with them. `npm run verify:built` is the gate: it proves every
-link answers, every capture loads, the index fold opens, and every accent still
-clears AA on both the card's ground and its hover ground, which is the one
-thing that quietly breaks when a palette moves.
+`src/data/built.ts` supplies the collection, categories and homepage strip.
+`featured` keeps the homepage shortlist; `selected` adds collection picks.
+The collection opens with their union, reveals more on request, and renders
+everything without JavaScript. Counts and filter results derive from the data.
+Every entry needs a capture recipe, image, accurate reach label and a concrete
+engineering fact. `npm run verify:built` checks those rendered entries, links,
+captures, filters/search, keyboard focus, no-JS, phone layouts and AA contrast
+on both resting and hovered cards.
 
 ## Verification
 
@@ -83,7 +81,7 @@ Its classes are prefixed `dlab`, because the playground cards already own `.lab`
 ## Page length is a standing budget
 
 `npm run verify` fails if the document grows past `HEIGHT_BUDGET` in `scripts/verify.mjs` - the script is the authority on the number; a copy of it here has drifted stale once already.
-It has been raised deliberately, for the block at the foot of the Playground that carries three of the eleven and folds the rest; the comment beside the constant says what bought it, and the next change to it should do the same or not happen.
+It has been raised deliberately, for the block at the foot of the Playground that shows a shortlist and folds the rest; the comment beside the constant says what bought it, and the next change to it should do the same or not happen.
 The budget exists because length regresses by accretion - a paragraph here, a section pad there - and nobody notices until the page is 17,000px again.
 When a change pushes it over, the fix is almost always copy or vertical rhythm, not shrinking someone's work: cut prose, or put the frame beside the title instead of above it.
 

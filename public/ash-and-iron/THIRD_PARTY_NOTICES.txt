@@ -1,0 +1,18 @@
+Ash & Iron includes these third-party components:
+
+Rye
+---
+Copyright (c) 2011 by Sorkin Type Co (www.sorkintype.com), with Reserved
+Font Name "Rye". SIL Open Font License 1.1. The complete license is shipped
+at licenses/OFL-rye.txt. Font source:
+https://github.com/google/fonts/tree/main/ofl/rye
+
+Source Serif 4
+-------------
+Copyright 2014 The Source Serif 4 Project Authors
+(https://github.com/adobe-fonts/source-serif). SIL Open Font License 1.1.
+The complete license is shipped at licenses/OFL-source-serif-4.txt. Font
+source: https://github.com/google/fonts/tree/main/ofl/sourceserif4
+
+The game code and frontier artwork are original; no third-party game assets,
+dialogue, music, or logos are included.

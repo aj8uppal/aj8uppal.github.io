@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>AJ Uppal — Field Notes</title>
+    <link rel="stylesheet" href="shared.css" />
+    <link rel="stylesheet" href="field-notes.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body class="ref-page ref-field-notes">
+    <a class="ref-skip" href="#main">Skip to content</a>
+    <aside class="ref-reviewbar" aria-label="Design review navigation">
+      <a href="index.html">← Four directions</a><span>field-notes / refined</span
+      ><a href="../portfolio-candidates/field-notes.html">Original round ↗</a>
+    </aside>
+    <div class="fn-shell">
+      <header class="fn-nav">
+        <a class="fn-brand" href="#main"
+          ><svg viewBox="0 0 56 56" aria-hidden="true">
+            <circle cx="28" cy="28" r="18" />
+            <ellipse cx="28" cy="28" rx="11" ry="26" transform="rotate(28 28 28)" />
+            <path d="M2 28h52M28 2v52M9 45 46 10" />
+            <circle cx="40" cy="11" r="3" class="fn-orbit-point" /></svg
+          ><span>AJ Uppal<small>Field notes</small></span></a
+        >
+        <nav aria-label="Main navigation">
+          <a href="#investigations">Investigations</a><a href="#record">The record</a
+          ><a class="" href="mailto:aj8uppal@gmail.com"
+            >Write to me <span aria-hidden="true">↗</span></a
+          >
+        </nav>
+        <span class="fn-volume">Vol. 02 / An open notebook</span>
+      </header>
+      <main id="main">
+        <section class="fn-intro" aria-labelledby="fn-title">
+          <div>
+            <p class="fn-kicker">Software engineering × Astrophysics</p>
+            <h1 id="fn-title">Follow the question.<br /><em>Build the answer.</em></h1>
+            <p class="fn-byline">AJ Uppal · Software engineer at <strong>Notable Health</strong></p>
+          </div>
+          <div class="fn-intro-note">
+            <span aria-hidden="true">✳</span>
+            <p>
+              I learn things by building them. Healthcare systems, shared worlds, a field of light
+              that listens. Different questions; the same curiosity.
+            </p>
+            <a href="#investigations">Open the notebook <span aria-hidden="true">↓</span></a>
+          </div>
+        </section>
+
+        <section
+          id="investigations"
+          class="fn-investigations"
+          aria-labelledby="fn-investigations-title"
+        >
+          <div class="fn-section-rule">
+            <h2 id="fn-investigations-title">Choose a line of inquiry</h2>
+            <span>Five live projects / AJ’s own builds</span>
+          </div>
+          <div class="fn-choices" role="group" aria-label="Choose an investigation" hidden>
+            <button
+              type="button"
+              data-fn-select="ember"
+              aria-pressed="true"
+              aria-controls="fn-study-ember"
+            >
+              <img
+                src="../../src/assets/ember-spread-fallowmere-dusk.webp"
+                alt=""
+                loading="lazy"
+              /><span><small>01 / Shared worlds</small><strong>Ember Wilds</strong></span
+              ><b aria-hidden="true">↙</b></button
+            ><button
+              type="button"
+              data-fn-select="saltline"
+              aria-pressed="false"
+              aria-controls="fn-study-saltline"
+            >
+              <img src="../../src/assets/saltline-lead-dawn.webp" alt="" loading="lazy" /><span
+                ><small>02 / Light &amp; motion</small><strong>saltline</strong></span
+              ><b aria-hidden="true">↙</b></button
+            ><button
+              type="button"
+              data-fn-select="murmuration"
+              aria-pressed="false"
+              aria-controls="fn-study-murmuration"
+            >
+              <img src="../../src/assets/murmuration-lead-ribbon.webp" alt="" loading="lazy" /><span
+                ><small>03 / Quiet passages</small><strong>murmuration</strong></span
+              ><b aria-hidden="true">↙</b></button
+            ><button
+              type="button"
+              data-fn-select="blockhold"
+              aria-pressed="false"
+              aria-controls="fn-study-blockhold"
+            >
+              <img src="../../src/assets/blockhold-lead-battle.webp" alt="" loading="lazy" /><span
+                ><small>04 / Moving rules</small><strong>Blockhold</strong></span
+              ><b aria-hidden="true">↙</b></button
+            ><button
+              type="button"
+              data-fn-select="cubit"
+              aria-pressed="false"
+              aria-controls="fn-study-cubit"
+            >
+              <img src="../../src/assets/cubit-lead-peek.webp" alt="" loading="lazy" /><span
+                ><small>05 / A hidden dimension</small><strong>Cubit</strong></span
+              ><b aria-hidden="true">↙</b>
+            </button>
+          </div>
+          <noscript
+            ><p class="fn-noscript">
+              Every investigation is open below. Jump to <a href="#fn-study-ember">Ember Wilds</a> ·
+              <a href="#fn-study-saltline">saltline</a> ·
+              <a href="#fn-study-murmuration">murmuration</a> ·
+              <a href="#fn-study-blockhold">Blockhold</a> · <a href="#fn-study-cubit">Cubit</a>.
+            </p></noscript
+          >
+          <p class="fn-announcement" role="status" aria-live="polite"></p>
+          <section
+            class="fn-study"
+            id="fn-study-ember"
+            data-study="ember"
+            aria-labelledby="fn-question-ember"
+          >
+            <aside class="fn-margin">
+              <p class="fn-kicker">Investigation 001 / Ember Wilds</p>
+              <h2 id="fn-question-ember">What makes a world the same for everyone?</h2>
+              <p class="fn-study-premise">The landscape changes. The authority does not.</p>
+              <dl>
+                <div>
+                  <dt>World</dt>
+                  <dd>Seven regions</dd>
+                </div>
+                <div>
+                  <dt>Realm</dt>
+                  <dd>Up to 64 players</dd>
+                </div>
+                <div>
+                  <dt>Boundary</dt>
+                  <dd>Client / realm</dd>
+                </div>
+              </dl>
+              <p class="fn-hand-note">
+                Different views.<br />One shared truth.<svg viewBox="0 0 116 37" aria-hidden="true">
+                  <path d="M5 4c28 31 62 31 99 9m-17-3 18 3-9 13" />
+                </svg>
+              </p>
+              <div class="fn-study-source">
+                <a class="ref-case-link" href="cases/ember.html" data-case="ember"
+                  >Open the full case <span aria-hidden="true">→</span></a
+                ><a class="" href="https://emberwilds-web.fly.dev/" target="_blank" rel="noopener"
+                  >Try it yourself <span aria-hidden="true">↗</span></a
+                >
+              </div>
+            </aside>
+            <div class="fn-experiment">
+              <figure>
+                <div class="fn-photo">
+                  <img
+                    src="../../src/assets/ember-region-fallowmere.webp"
+                    alt="Fallowmere in Ember Wilds: a dusty orange plain of voxel trees at dusk, embers drifting, a level thirty character in the centre."
+                    class="fn-study-image"
+                    fetchpriority="high"
+                  /><span class="fn-figure-stamp">Fig. 01 / A recorded state</span>
+                </div>
+                <figcaption>
+                  <div class="fn-frame-heading">
+                    <span class="fn-frame-label">Fallowmere</span
+                    ><span class="fn-frame-count">2 / 7</span>
+                  </div>
+                  <p class="fn-frame-note">
+                    Open country under a dust-orange sky. Direfangs push in from the edges and the
+                    quest log starts counting them.
+                  </p>
+                  <div class="fn-frame-controls" hidden>
+                    <label for="fn-range-ember">Travel between recorded regions</label
+                    ><input
+                      id="fn-range-ember"
+                      type="range"
+                      min="0"
+                      max="6"
+                      value="1"
+                      step="1"
+                      aria-valuetext="Fallowmere"
+                    />
+                    <div class="fn-frame-ends" aria-hidden="true">
+                      <span>Hearthvale</span><span>Black Plateau</span>
+                    </div>
+                  </div>
+                  <p class="fn-capture-source">
+                    Seven region captures from the running game. These are recorded views, not a
+                    live connection to a realm.
+                  </p>
+                </figcaption>
+              </figure>
+              <div class="fn-findings">
+                <div>
+                  <h3>The decision</h3>
+                  <p>
+                    I keep world state, quests and loot in a separate realm service. The browser
+                    renders the world; it does not decide what happened in it.
+                  </p>
+                </div>
+                <div>
+                  <h3>Why it matters</h3>
+                  <p>
+                    A beautiful place is only half a multiplayer game. The other half is making sure
+                    the creature you hit, the item you pick up and the person beside you agree about
+                    the same event.
+                  </p>
+                </div>
+              </div>
+              <div class="fn-evidence">
+                <span>In the work</span>
+                <p>
+                  The two-browser capture in the case study shows two players in the same
+                  Hearthvale.
+                </p>
+              </div>
+            </div>
+            <script type="application/json" class="fn-frame-data">
+              [
+                {
+                  "image": "ember-region-hearthvale",
+                  "label": "Hearthvale",
+                  "alt": "The Hearthvale in Ember Wilds: green voxel meadows split by a river, a level one character on the bank, quest panel at top left.",
+                  "note": "Where everyone starts. A river, a goblin headman, and a field note telling you that you can tilt the camera."
+                },
+                {
+                  "image": "ember-region-fallowmere",
+                  "label": "Fallowmere",
+                  "alt": "Fallowmere in Ember Wilds: a dusty orange plain of voxel trees at dusk, embers drifting, a level thirty character in the centre.",
+                  "note": "Open country under a dust-orange sky. Direfangs push in from the edges and the quest log starts counting them."
+                },
+                {
+                  "image": "ember-region-greenmarch",
+                  "label": "Greenmarch",
+                  "alt": "The Greenmarch in Ember Wilds: pale flats under a bleached sky with a white ruin and a chest, lore lines stacked at bottom left.",
+                  "note": "The lore panel’s own words: a fallen colonnade of Emberhold, garlanded in herb and briar, haunted by something in the Ashen Waste’s livery. It left a blade behind."
+                },
+                {
+                  "image": "ember-region-fenmarch",
+                  "label": "Fenmarch",
+                  "alt": "The Fenmarch in Ember Wilds: a dark, near-monochrome marsh at night lit only by the character’s own glow.",
+                  "note": "The darkest region. The only reliable light source in this frame is the character."
+                },
+                {
+                  "image": "ember-region-ashen-waste",
+                  "label": "Ashen Waste",
+                  "alt": "The Ashen Waste in Ember Wilds: a red-lit waste mid-combat, a white nova ring expanding from the character, damage number 684 above a creature.",
+                  "note": "Nova, mid-detonation. The ring is resolved on the server, and it did 684 damage to the creature it caught."
+                },
+                {
+                  "image": "ember-region-greywall-peaks",
+                  "label": "Greywall Peaks",
+                  "alt": "The Greywall Peaks in Ember Wilds: pale grey stone terraces under flat light, banners, and a cluster of glowing projectiles mid-flight.",
+                  "note": "Bleached stone and banners. Eleven items on the floor is what a fight up here looks like when it goes well."
+                },
+                {
+                  "image": "ember-region-black-plateau",
+                  "label": "Black Plateau",
+                  "alt": "The Black Plateau in Ember Wilds: a dark red-violet plateau with the region title card centred and a lore line beneath it.",
+                  "note": "The last region. The title card puts it plainly: the Watcher is above you now, and there is no more inward."
+                }
+              ]
+            </script>
+          </section>
+          <section
+            class="fn-study"
+            id="fn-study-saltline"
+            data-study="saltline"
+            aria-labelledby="fn-question-saltline"
+          >
+            <aside class="fn-margin">
+              <p class="fn-kicker">Investigation 002 / saltline</p>
+              <h2 id="fn-question-saltline">What makes an ocean feel alive?</h2>
+              <p class="fn-study-premise">Hold the rules still. Move the light.</p>
+              <dl>
+                <div>
+                  <dt>Seed</dt>
+                  <dd>4193</dd>
+                </div>
+                <div>
+                  <dt>Sea state</dt>
+                  <dd>Moderate</dd>
+                </div>
+                <div>
+                  <dt>Wind setting</dt>
+                  <dd>40°</dd>
+                </div>
+              </dl>
+              <p class="fn-hand-note">
+                Same rules.<br />Six different moods.<svg viewBox="0 0 116 37" aria-hidden="true">
+                  <path d="M5 4c28 31 62 31 99 9m-17-3 18 3-9 13" />
+                </svg>
+              </p>
+              <div class="fn-study-source">
+                <a class="ref-case-link" href="cases/saltline.html" data-case="saltline"
+                  >Open the full case <span aria-hidden="true">→</span></a
+                ><a class="" href="https://saltline.app/" target="_blank" rel="noopener"
+                  >Try it yourself <span aria-hidden="true">↗</span></a
+                >
+              </div>
+            </aside>
+            <div class="fn-experiment">
+              <figure>
+                <div class="fn-photo">
+                  <img
+                    src="../../src/assets/saltline-arc-dawn.webp"
+                    alt="saltline half an hour later: the same island under a blue sky with pink cloud, the water turned blue-grey."
+                    class="fn-study-image"
+                    loading="lazy"
+                  /><span class="fn-figure-stamp">Fig. 02 / A recorded state</span>
+                </div>
+                <figcaption>
+                  <div class="fn-frame-heading">
+                    <span class="fn-frame-label">06:31 · Dawn</span
+                    ><span class="fn-frame-count">3 / 6</span>
+                  </div>
+                  <p class="fn-frame-note">14.0 kn through the water · 11.1 kn VMG</p>
+                  <div class="fn-frame-controls" hidden>
+                    <label for="fn-range-saltline">Move through six recorded times of day</label
+                    ><input
+                      id="fn-range-saltline"
+                      type="range"
+                      min="0"
+                      max="5"
+                      value="2"
+                      step="1"
+                      aria-valuetext="06:31 · Dawn"
+                    />
+                    <div class="fn-frame-ends" aria-hidden="true">
+                      <span>04:36 · Moon</span><span>18:02 · Sunset</span>
+                    </div>
+                  </div>
+                  <p class="fn-capture-source">
+                    Six recorded frames. Sea state moderate, wind 40°, seed 4193. Only the
+                    time-of-day setting changed.
+                  </p>
+                </figcaption>
+              </figure>
+              <div class="fn-findings">
+                <div>
+                  <h3>The decision</h3>
+                  <p>
+                    I expose the sailing model in the HUD: point of sail sets thrust; thrust and
+                    heading set velocity toward the mark. The scenery changes how the same rules
+                    feel.
+                  </p>
+                </div>
+                <div>
+                  <h3>Why it matters</h3>
+                  <p>
+                    At golden hour the boat makes 15 knots through the water, but only 2.3 toward
+                    the mark. Speed is not the same thing as progress. The angle you choose is the
+                    game.
+                  </p>
+                </div>
+              </div>
+              <div class="fn-evidence">
+                <span>In the work</span>
+                <p>Live with accounts, persistent cargo and room for up to 20 players per sea.</p>
+              </div>
+            </div>
+            <script type="application/json" class="fn-frame-data">
+              [
+                {
+                  "image": "saltline-arc-night",
+                  "label": "04:36 · Moon",
+                  "alt": "saltline at night: a full moon low over dark water, the sloop under full sail trailing a wide luminous teal wake.",
+                  "note": "14.4 kn through the water · 5.8 kn VMG"
+                },
+                {
+                  "image": "saltline-arc-sunrise",
+                  "label": "06:02 · Sunrise",
+                  "alt": "saltline at sunrise: an orange sky behind a dark island, a line of vessels along the horizon, the sloop running away from the light.",
+                  "note": "13.6 kn through the water · 11.0 kn VMG"
+                },
+                {
+                  "image": "saltline-arc-dawn",
+                  "label": "06:31 · Dawn",
+                  "alt": "saltline half an hour later: the same island under a blue sky with pink cloud, the water turned blue-grey.",
+                  "note": "14.0 kn through the water · 11.1 kn VMG"
+                },
+                {
+                  "image": "saltline-arc-daylight",
+                  "label": "16:46 · Daylight",
+                  "alt": "saltline in flat afternoon daylight: three raiders and a merchant in line off the starboard bow, each with its name over it.",
+                  "note": "14.9 kn through the water · 8.3 kn VMG"
+                },
+                {
+                  "image": "saltline-arc-golden",
+                  "label": "17:15 · Golden hour",
+                  "alt": "saltline at golden hour: a low sun laying a bright path across calm water, the sloop close-reaching towards it.",
+                  "note": "15.0 kn through the water · 2.3 kn VMG"
+                },
+                {
+                  "image": "saltline-arc-sunset",
+                  "label": "18:02 · Sunset",
+                  "alt": "saltline at sunset: the sun on the horizon behind a small island, heavy cloud overhead, the sloop silhouetted against orange.",
+                  "note": "15.8 kn through the water · 2.1 kn VMG"
+                }
+              ]
+            </script>
+          </section>
+          <section
+            class="fn-study"
+            id="fn-study-murmuration"
+            data-study="murmuration"
+            aria-labelledby="fn-question-murmuration"
+          >
+            <aside class="fn-margin">
+              <p class="fn-kicker">Investigation 003 / murmuration</p>
+              <h2 id="fn-question-murmuration">Can a field of light hear a song breathe?</h2>
+              <p class="fn-study-premise">The absence of sound deserves a shape, too.</p>
+              <dl>
+                <div>
+                  <dt>Renderer</dt>
+                  <dd>WebGPU</dd>
+                </div>
+                <div>
+                  <dt>Input</dt>
+                  <dd>Music or mic</dd>
+                </div>
+                <div>
+                  <dt>Study</dt>
+                  <dd>Style / quiet</dd>
+                </div>
+              </dl>
+              <p class="fn-hand-note">
+                Listen between<br />the loud parts.<svg viewBox="0 0 116 37" aria-hidden="true">
+                  <path d="M5 4c28 31 62 31 99 9m-17-3 18 3-9 13" />
+                </svg>
+              </p>
+              <div class="fn-study-source">
+                <a class="ref-case-link" href="cases/murmuration.html" data-case="murmuration"
+                  >Open the full case <span aria-hidden="true">→</span></a
+                ><a
+                  class=""
+                  href="https://aj8uppal.github.io/murmuration/"
+                  target="_blank"
+                  rel="noopener"
+                  >Try it yourself <span aria-hidden="true">↗</span></a
+                >
+              </div>
+            </aside>
+            <div class="fn-experiment">
+              <figure>
+                <div class="fn-photo">
+                  <img
+                    src="../../src/assets/murmuration-frame-ribbon.webp"
+                    alt="murmuration, ribbon style."
+                    class="fn-study-image"
+                    loading="lazy"
+                  /><span class="fn-figure-stamp">Fig. 03 / A recorded state</span>
+                </div>
+                <figcaption>
+                  <div class="fn-frame-heading">
+                    <span class="fn-frame-label">Ribbon</span
+                    ><span class="fn-frame-count">1 / 3</span>
+                  </div>
+                  <p class="fn-frame-note">
+                    Two styles and a lull, all from one session. Only the style and the music
+                    changed.
+                  </p>
+                  <div class="fn-frame-controls" hidden>
+                    <label for="fn-range-murmuration">Compare two styles and a quiet passage</label
+                    ><input
+                      id="fn-range-murmuration"
+                      type="range"
+                      min="0"
+                      max="2"
+                      value="0"
+                      step="1"
+                      aria-valuetext="Ribbon"
+                    />
+                    <div class="fn-frame-ends" aria-hidden="true">
+                      <span>Ribbon</span><span>Quiet passage</span>
+                    </div>
+                  </div>
+                  <p class="fn-capture-source">
+                    Two styles and a lull, captured in one session. The style and music changed;
+                    these frames do not play audio.
+                  </p>
+                </figcaption>
+              </figure>
+              <div class="fn-findings">
+                <div>
+                  <h3>The decision</h3>
+                  <p>
+                    I measure key, tempo, transients and stereo placement alongside volume. Quiet
+                    passages thin, dim and slow the particle field instead of simply turning it
+                    down.
+                  </p>
+                </div>
+                <div>
+                  <h3>Why it matters</h3>
+                  <p>
+                    Frequency cannot separate a voice from a piano when they share the same octaves.
+                    Centre versus sides gives the analysis another way to listen. The renderer
+                    follows that richer signal.
+                  </p>
+                </div>
+              </div>
+              <div class="fn-evidence">
+                <span>In the work</span>
+                <p>Measured GPU time: 620k particles at 8.07ms; 1.2M particles at 11.85ms.</p>
+              </div>
+            </div>
+            <script type="application/json" class="fn-frame-data">
+              [
+                {
+                  "image": "murmuration-frame-ribbon",
+                  "label": "Ribbon",
+                  "alt": "murmuration, ribbon style.",
+                  "note": "Two styles and a lull, all from one session. Only the style and the music changed."
+                },
+                {
+                  "image": "murmuration-frame-constellation",
+                  "label": "Constellation",
+                  "alt": "murmuration, constellation style.",
+                  "note": "Two styles and a lull, all from one session. Only the style and the music changed."
+                },
+                {
+                  "image": "murmuration-frame-lull",
+                  "label": "Quiet passage",
+                  "alt": "murmuration during a quiet passage.",
+                  "note": "Two styles and a lull, all from one session. Only the style and the music changed."
+                }
+              ]
+            </script>
+          </section>
+          <section
+            class="fn-study"
+            id="fn-study-blockhold"
+            data-study="blockhold"
+            aria-labelledby="fn-question-blockhold"
+          >
+            <aside class="fn-margin">
+              <p class="fn-kicker">Investigation 004 / Blockhold</p>
+              <h2 id="fn-question-blockhold">What happens when the board changes its mind?</h2>
+              <p class="fn-study-premise">A good rule can become a useful exception.</p>
+              <dl>
+                <div>
+                  <dt>Campaign</dt>
+                  <dd>Ten maps</dd>
+                </div>
+                <div>
+                  <dt>Waves</dt>
+                  <dd>249 authored</dd>
+                </div>
+                <div>
+                  <dt>Simulation</dt>
+                  <dd>Fixed 60Hz</dd>
+                </div>
+              </dl>
+              <p class="fn-hand-note">
+                The plan is good.<br />Until the tide turns.<svg
+                  viewBox="0 0 116 37"
+                  aria-hidden="true"
+                >
+                  <path d="M5 4c28 31 62 31 99 9m-17-3 18 3-9 13" />
+                </svg>
+              </p>
+              <div class="fn-study-source">
+                <a class="ref-case-link" href="cases/blockhold.html" data-case="blockhold"
+                  >Open the full case <span aria-hidden="true">→</span></a
+                ><a
+                  class=""
+                  href="https://aj8uppal.github.io/blockhold/"
+                  target="_blank"
+                  rel="noopener"
+                  >Try it yourself <span aria-hidden="true">↗</span></a
+                >
+              </div>
+            </aside>
+            <div class="fn-experiment">
+              <figure>
+                <div class="fn-photo">
+                  <img
+                    src="../../src/assets/blockhold-frame-tidereach.webp"
+                    alt="Tidereach Causeway, the widest board in the game: five roads, and a tide that closes them."
+                    class="fn-study-image"
+                    loading="lazy"
+                  /><span class="fn-figure-stamp">Fig. 04 / A recorded state</span>
+                </div>
+                <figcaption>
+                  <div class="fn-frame-heading">
+                    <span class="fn-frame-label">Tidereach</span
+                    ><span class="fn-frame-count">4 / 4</span>
+                  </div>
+                  <p class="fn-frame-note">
+                    Tidereach Causeway, the widest board in the game: five roads, and a tide that
+                    closes them.
+                  </p>
+                  <div class="fn-frame-controls" hidden>
+                    <label for="fn-range-blockhold">Compare four recorded boards</label
+                    ><input
+                      id="fn-range-blockhold"
+                      type="range"
+                      min="0"
+                      max="3"
+                      value="3"
+                      step="1"
+                      aria-valuetext="Tidereach"
+                    />
+                    <div class="fn-frame-ends" aria-hidden="true">
+                      <span>Greenhollow</span><span>Tidereach</span>
+                    </div>
+                  </div>
+                  <p class="fn-capture-source">
+                    Four of ten boards, captured from the running game. Changing the figure shows an
+                    authored map, not a simulated battle.
+                  </p>
+                </figcaption>
+              </figure>
+              <div class="fn-findings">
+                <div>
+                  <h3>The decision</h3>
+                  <p>
+                    I gave the later boards their own constraint. Tidereach closes causeways
+                    mid-battle: enemies reroute, and the defense you paid for is no longer the one
+                    you keep.
+                  </p>
+                </div>
+                <div>
+                  <h3>Why it matters</h3>
+                  <p>
+                    The rules sit on a fixed 60Hz simulation. Models are colored boxes placed in
+                    code; sound is synthesized when it plays. That leaves the complexity budget for
+                    the campaign itself.
+                  </p>
+                </div>
+              </div>
+              <div class="fn-evidence">
+                <span>In the work</span>
+                <p>
+                  Three heroes, three difficulties, endless records and 154 tests. Live and
+                  installable.
+                </p>
+              </div>
+            </div>
+            <script type="application/json" class="fn-frame-data">
+              [
+                {
+                  "image": "blockhold-frame-greenhollow",
+                  "label": "Greenhollow",
+                  "alt": "The first board entire: one road, thirteen plots, and the meadow you learn the trade on.",
+                  "note": "The first board entire: one road, thirteen plots, and the meadow you learn the trade on."
+                },
+                {
+                  "image": "blockhold-frame-veiltide",
+                  "label": "Veiltide surge",
+                  "alt": "Frostmere Pass under a surge: empowered waves, violet sky, both frozen roads engaged.",
+                  "note": "Frostmere Pass under a surge: empowered waves, violet sky, both frozen roads engaged."
+                },
+                {
+                  "image": "blockhold-frame-cinderwake",
+                  "label": "Cinderwake",
+                  "alt": "Cinderwake Caldera: three roads through the glassfire, lava where a plot could have been.",
+                  "note": "Cinderwake Caldera: three roads through the glassfire, lava where a plot could have been."
+                },
+                {
+                  "image": "blockhold-frame-tidereach",
+                  "label": "Tidereach",
+                  "alt": "Tidereach Causeway, the widest board in the game: five roads, and a tide that closes them.",
+                  "note": "Tidereach Causeway, the widest board in the game: five roads, and a tide that closes them."
+                }
+              ]
+            </script>
+          </section>
+          <section
+            class="fn-study"
+            id="fn-study-cubit"
+            data-study="cubit"
+            aria-labelledby="fn-question-cubit"
+          >
+            <aside class="fn-margin">
+              <p class="fn-kicker">Investigation 005 / Cubit</p>
+              <h2 id="fn-question-cubit">How do you make a third dimension legible?</h2>
+              <p class="fn-study-premise">The axis you cannot see is the one that gets you.</p>
+              <dl>
+                <div>
+                  <dt>Board</dt>
+                  <dd>3 × 3 × 3</dd>
+                </div>
+                <div>
+                  <dt>Directions</dt>
+                  <dd>Six</dd>
+                </div>
+                <div>
+                  <dt>Delivery</dt>
+                  <dd>One HTML file</dd>
+                </div>
+              </dl>
+              <p class="fn-hand-note">
+                Make the inside<br />readable.<svg viewBox="0 0 116 37" aria-hidden="true">
+                  <path d="M5 4c28 31 62 31 99 9m-17-3 18 3-9 13" />
+                </svg>
+              </p>
+              <div class="fn-study-source">
+                <a class="ref-case-link" href="cases/cubit.html" data-case="cubit"
+                  >Open the full case <span aria-hidden="true">→</span></a
+                ><a class="" href="https://aj8uppal.github.io/cubit/" target="_blank" rel="noopener"
+                  >Try it yourself <span aria-hidden="true">↗</span></a
+                >
+              </div>
+            </aside>
+            <div class="fn-experiment">
+              <figure>
+                <div class="fn-photo">
+                  <img
+                    src="../../src/assets/cubit-lead-peek.webp"
+                    alt="Cubit: a 3 by 3 by 3 cube of colored tiles, opened to reveal its layers."
+                    class="fn-study-image"
+                    loading="lazy"
+                  /><span class="fn-figure-stamp">Fig. 05 / A recorded state</span>
+                </div>
+                <figcaption>
+                  <div class="fn-frame-heading">
+                    <span class="fn-frame-label">Peek inside</span
+                    ><span class="fn-frame-count">1 / 2</span>
+                  </div>
+                  <p class="fn-frame-note">
+                    The layers spread apart to reveal the interior of the cube.
+                  </p>
+                  <div class="fn-frame-controls" hidden>
+                    <label for="fn-range-cubit">Compare the recorded views</label
+                    ><input
+                      id="fn-range-cubit"
+                      type="range"
+                      min="0"
+                      max="1"
+                      value="0"
+                      step="1"
+                      aria-valuetext="Peek inside"
+                    />
+                    <div class="fn-frame-ends" aria-hidden="true">
+                      <span>Peek inside</span><span>Layers apart</span>
+                    </div>
+                  </div>
+                  <p class="fn-capture-source">
+                    Two captured views of the game. The figure compares visibility; it does not
+                    accept gameplay input.
+                  </p>
+                </figcaption>
+              </figure>
+              <div class="fn-findings">
+                <div>
+                  <h3>The decision</h3>
+                  <p>
+                    I score swipes against the screen-space projection of the cube’s axes. Hidden
+                    tiles become translucent; holding Space spreads the layers apart so you can read
+                    the board.
+                  </p>
+                </div>
+                <div>
+                  <h3>Why it matters</h3>
+                  <p>
+                    Twenty-seven cells and six slide directions make a familiar rule unfamiliar
+                    again. On a phone, a small optional gyro tilt lets you peek without changing
+                    what a swipe means.
+                  </p>
+                </div>
+              </div>
+              <div class="fn-evidence">
+                <span>In the work</span>
+                <p>A self-contained 553KB file, local saves and 62 tests.</p>
+              </div>
+            </div>
+            <script type="application/json" class="fn-frame-data">
+              [
+                {
+                  "image": "cubit-lead-peek",
+                  "label": "Peek inside",
+                  "alt": "Cubit: a 3 by 3 by 3 cube of colored tiles, opened to reveal its layers.",
+                  "note": "The layers spread apart to reveal the interior of the cube."
+                },
+                {
+                  "image": "cubit-inset-board",
+                  "label": "Layers apart",
+                  "alt": "Cubit with the layers spread apart.",
+                  "note": "Space reveals the inside of the board."
+                }
+              ]
+            </script>
+          </section>
+        </section>
+
+        <section id="record" class="fn-record" aria-labelledby="fn-record-title">
+          <div class="fn-record-margin">
+            <p class="fn-kicker">The professional record</p>
+            <h2 id="fn-record-title">A conversation is<br />a systems problem.</h2>
+            <p class="fn-record-date">Notable Health<br />Software Engineer · 2022–present</p>
+            <a class="ref-case-link" href="cases/notable.html" data-case="notable"
+              >Read the work behind it <span aria-hidden="true">→</span></a
+            >
+          </div>
+          <div class="fn-record-story">
+            <p class="fn-record-scale">
+              <strong>~250,000</strong
+              ><span>patient calls a month<br />through my team’s voice platform</span>
+            </p>
+            <p>
+              I set technical direction for patient identity, routing, observability and
+              reliability. A patient conversation crosses healthcare systems, carriers and call
+              centers; the boundaries are part of the work.
+            </p>
+            <div class="fn-record-detail">
+              <span>One decision</span>
+              <p>
+                Make fallback routing configurable, so a caller can stay connected when an upstream
+                provider goes dark.
+              </p>
+            </div>
+            <div class="fn-record-footer">
+              <span>Earlier chapters: Harvest Fintech · UMass Physics</span
+              ><a
+                class=""
+                href="https://aj8uppal.github.io/attachments/resume2026.pdf"
+                target="_blank"
+                rel="noopener"
+                >Read my résumé <span aria-hidden="true">↗</span></a
+              >
+            </div>
+          </div>
+        </section>
+
+        <section class="fn-unfinished" aria-labelledby="fn-unfinished-title">
+          <header class="fn-section-rule">
+            <h2 id="fn-unfinished-title">Pages still in pencil</h2>
+            <span>Work in progress / Not yet released</span>
+          </header>
+          <div class="fn-unfinished-grid">
+            <article>
+              <img
+                src="../../src/assets/hidamari-spread-canopy.webp"
+                alt="An autumn path under a sunlit canopy in hidamari."
+                loading="lazy"
+              />
+              <div>
+                <p class="fn-kicker">Light / hidamari</p>
+                <h3>A place made of light.</h3>
+                <p>
+                  Blender bakes the lighting; the browser reprojects depth. Audio is still being
+                  tuned.
+                </p>
+                <a class="ref-case-link" href="cases/hidamari.html" data-case="hidamari"
+                  >See the working notes <span aria-hidden="true">→</span></a
+                >
+              </div>
+            </article>
+            <article>
+              <img
+                src="../../src/assets/elderwood-default.webp"
+                alt="The Elderwood Vale greybox board: a route and defensive towers."
+                loading="lazy"
+              />
+              <div>
+                <p class="fn-kicker">Boundaries / Elderwood Vale</p>
+                <h3>A simulation on its own.</h3>
+                <p>
+                  A deterministic core that knows nothing of the DOM, the renderer or the clock.
+                </p>
+                <a class="ref-case-link" href="cases/elderwood.html" data-case="elderwood"
+                  >See the working notes <span aria-hidden="true">→</span></a
+                >
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="about" class="fn-about" aria-labelledby="fn-about-title">
+          <div class="fn-about-heading">
+            <p class="fn-kicker">A note from the author</p>
+            <h2 id="fn-about-title">Two degrees.<br />One habit.</h2>
+            <div class="fn-about-orbit">
+              <svg viewBox="0 0 56 56" aria-hidden="true">
+                <circle cx="28" cy="28" r="18" />
+                <ellipse cx="28" cy="28" rx="11" ry="26" transform="rotate(28 28 28)" />
+                <path d="M2 28h52M28 2v52M9 45 46 10" />
+                <circle cx="40" cy="11" r="3" class="fn-orbit-point" /></svg
+              ><span>Still curious.</span>
+            </div>
+          </div>
+          <div class="fn-about-copy">
+            <p>
+              I did computer science and astrophysics at the same time because I couldn’t choose
+              between them. Some weeks meant Algorithms and General Relativity in the same
+              problem-set pile.
+            </p>
+            <p>
+              Now I’m in the Bay Area. Away from code, it’s heirloom tomatoes, bikes and Pink Floyd,
+              roughly in that order. I’ve wanted to be an astronaut since I was four. Still would.
+            </p>
+            <p class="fn-about-invite">
+              Have a question worth following?
+              <a class="" href="mailto:aj8uppal@gmail.com"
+                >Write to me <span aria-hidden="true">↗</span></a
+              >
+            </p>
+          </div>
+        </section>
+      </main>
+      <footer class="fn-footer">
+        <span>AJ Uppal <em>— the notebook stays open.</em></span>
+        <div>
+          <a class="" href="https://github.com/aj8uppal" target="_blank" rel="noopener"
+            >GitHub <span aria-hidden="true">↗</span></a
+          ><a class="" href="https://aj8uppal.github.io/built/" target="_blank" rel="noopener"
+            >Eleven smaller things <span aria-hidden="true">↗</span></a
+          ><a href="#main">Back to the beginning ↑</a>
+        </div>
+      </footer>
+    </div>
+    <script src="shared.js" defer></script>
+    <script src="field-notes.js" defer></script>
+  </body>
+</html>

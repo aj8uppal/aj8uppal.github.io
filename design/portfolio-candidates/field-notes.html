@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Field Notes — AJ Uppal / direction 03</title>
+    <meta
+      name="description"
+      content="The engineer with a physicist’s curiosity. A portfolio design exploration for AJ Uppal."
+    />
+    <link rel="stylesheet" href="shared.css" />
+    <link rel="stylesheet" href="field-notes.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body class="field-notes">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="review-bar" aria-label="Design review navigation">
+      <a href="index.html">← All four directions</a><span>03 / Field Notes</span
+      ><a href="worldbuilder.html">04 / Worldbuilder →</a>
+    </aside>
+
+    <div class="fn-shell" id="top">
+      <header class="fn-nav">
+        <a class="fn-brand" href="#top"
+          ><svg viewBox="0 0 48 48" aria-hidden="true">
+            <circle cx="24" cy="24" r="18" />
+            <ellipse cx="24" cy="24" rx="9" ry="23" transform="rotate(35 24 24)" />
+            <path d="M2 24H46M24 2V46" />
+            <circle cx="37" cy="13" r="3" fill="currentColor" /></svg
+          ><span>AJ Uppal<span>FIELD NOTES</span></span></a
+        >
+        <nav aria-label="Main">
+          <a href="#investigations">Investigations</a><a href="#record">The record</a
+          ><a class="" href="mailto:aj8uppal@gmail.com"
+            >Correspondence<span aria-hidden="true"> ↗</span></a
+          >
+        </nav>
+        <span class="fn-folio eyebrow">VOL. 01 / AN OPEN NOTEBOOK</span>
+      </header>
+      <main id="main">
+        <section class="fn-intro">
+          <p class="eyebrow">SOFTWARE ENGINEERING × ASTROPHYSICS</p>
+          <h1>Follow the question.<br /><em>Build the answer.</em></h1>
+          <div class="fn-intro-note">
+            <span class="fn-note-star" aria-hidden="true">✳</span>
+            <p>
+              I’m AJ. I make software to understand how things work. Sometimes that means a
+              healthcare system. Sometimes, an ocean.
+            </p>
+          </div>
+        </section>
+        <section class="fn-feature" id="investigations" aria-labelledby="fn-question">
+          <aside class="fn-margin">
+            <p class="eyebrow">INVESTIGATION 001</p>
+            <h2 id="fn-question">What makes an<br />ocean feel alive?</h2>
+            <p>Hold the world still.<br />Move the light.</p>
+            <dl>
+              <div>
+                <dt>Project</dt>
+                <dd>saltline</dd>
+              </div>
+              <div>
+                <dt>Seed</dt>
+                <dd>4193</dd>
+              </div>
+              <div>
+                <dt>Sea state</dt>
+                <dd>Moderate</dd>
+              </div>
+              <div>
+                <dt>Wind setting</dt>
+                <dd>40°</dd>
+              </div>
+            </dl>
+            <p class="fn-pencil">
+              Same rules.<br />Six different moods.<svg viewBox="0 0 120 60" aria-hidden="true">
+                <path d="M4 4Q50 60 106 32M90 26L108 32L99 47" />
+              </svg>
+            </p>
+            <a class="text-link" href="https://saltline.app/" target="_blank" rel="noopener"
+              >Sail this ocean<span aria-hidden="true"> ↗</span></a
+            >
+          </aside>
+          <figure class="fn-experiment">
+            <div class="fn-photo">
+              <img
+                src="../../src/assets/saltline-arc-dawn.webp"
+                alt="saltline half an hour later: the same island under a blue sky with pink cloud, the water turned blue-grey."
+                id="clock-image"
+                fetchpriority="high"
+              /><span class="fn-figure-label">FIG. 01 / A CONTROLLED CHANGE</span>
+            </div>
+            <figcaption>
+              <div class="fn-clock-title">
+                <label for="clock-input">Time of day</label
+                ><output id="clock-output" for="clock-input">06:31 / Dawn</output>
+              </div>
+              <input
+                id="clock-input"
+                type="range"
+                min="0"
+                max="5"
+                step="1"
+                value="2"
+                aria-valuetext="06:31, Dawn"
+              />
+              <div class="fn-clock-ticks" aria-hidden="true">
+                <span>04:36</span><span>06:02</span><span>06:31</span><span>16:46</span
+                ><span>17:15</span><span>18:02</span>
+              </div>
+              <p>
+                Drag the clock, or use the arrow keys. Six recorded frames from the running game;
+                only the time-of-day setting changed.
+              </p>
+            </figcaption>
+          </figure>
+        </section>
+        <section class="fn-observation">
+          <p class="eyebrow">THE OBSERVATION</p>
+          <h2>The same code can feel<br />like six different places.</h2>
+          <div>
+            <p>
+              A seeded ocean gives me a controlled starting point. With the sea and wind settings
+              fixed, the clock changes what the water reflects and how far the horizon seems to go.
+            </p>
+            <p>
+              The sailing has its own rules, too: point too close to the wind and the boat stops.
+              The renderer and the simulation have to agree on the world.
+            </p>
+            <a class="text-link" href="https://saltline.app/" target="_blank" rel="noopener"
+              >Explore saltline<span aria-hidden="true"> ↗</span></a
+            >
+          </div>
+        </section>
+        <section class="fn-other">
+          <div class="section-line">
+            <h2>Further investigations</h2>
+            <span>FOLLOW ANOTHER THREAD</span>
+          </div>
+          <div class="fn-studies">
+            <a href="https://aj8uppal.github.io/murmuration/" target="_blank" rel="noopener"
+              ><span class="eyebrow">002 / AUDIO & PERCEPTION</span
+              ><img
+                src="../../src/assets/murmuration-frame-constellation.webp"
+                alt="The full murmuration window: a sparse violet and white constellation of particles on black, and along the bottom a bar reading Pink Floyd - Shine On You Crazy Dia..., 4:21 of 13:35, a waveform, then PARTICLE, CONSTELLATION, SENS 1.6X, FULL, 106 FPS and the key hints beside them."
+                loading="lazy"
+              />
+              <h3>
+                Can a field of light<br />hear a song breathe? <span aria-hidden="true">↗</span>
+              </h3>
+              <p>murmuration · Audio analysis and WebGPU</p></a
+            ><a href="https://emberwilds-web.fly.dev/" target="_blank" rel="noopener"
+              ><span class="eyebrow">003 / SHARED STATE</span
+              ><img
+                src="../../src/assets/ember-proof-two-players.webp"
+                alt="Two browsers connected to the same realm in Ember Wilds."
+                loading="lazy"
+              />
+              <h3>
+                What makes a world<br />the same for everyone? <span aria-hidden="true">↗</span>
+              </h3>
+              <p>Ember Wilds · An authoritative realm server</p></a
+            ><a href="https://aj8uppal.github.io/beatlayer/" target="_blank" rel="noopener"
+              ><span class="eyebrow">004 / RHYTHM & SIGNAL</span
+              ><img
+                src="../../src/assets/built-beatlayer.webp"
+                alt="BeatLayer: a waveform pane above a step sequencer, with kick, snare and hat rows lit across one bar and a groove library down the right."
+                loading="lazy"
+              />
+              <h3>Can the drums follow<br />the player? <span aria-hidden="true">↗</span></h3>
+              <p>BeatLayer · Beat detection and synthesis</p></a
+            >
+          </div>
+        </section>
+        <section class="fn-record" id="record">
+          <p class="eyebrow">A SHORT PROFESSIONAL RECORD</p>
+          <h2>Curiosity, put to work.</h2>
+          <div class="fn-record-row">
+            <span>2022 — PRESENT</span>
+            <h3>Notable Health</h3>
+            <p>
+              Software engineer. Voice AI, healthcare integrations, patient identity, routing, and
+              reliability.
+            </p>
+          </div>
+          <div class="fn-record-row">
+            <span>EDUCATION</span>
+            <h3>UMass Amherst</h3>
+            <p>B.S. Computer Science<br />B.S. Astrophysics</p>
+          </div>
+          <a
+            class="text-link"
+            href="https://aj8uppal.github.io/attachments/resume2026.pdf"
+            target="_blank"
+            rel="noopener"
+            >Read the full résumé<span aria-hidden="true"> ↗</span></a
+          >
+        </section>
+        <section class="fn-contact">
+          <p class="eyebrow">CORRESPONDENCE</p>
+          <h2>What are you wondering about?</h2>
+          <a class="text-link" href="mailto:aj8uppal@gmail.com"
+            >aj8uppal@gmail.com<span aria-hidden="true"> ↗</span></a
+          >
+        </section>
+      </main>
+      <footer class="site-footer">
+        <a href="#top">AJ Uppal </a><span>Software engineer · Bay Area</span>
+        <div>
+          <a class="" href="https://github.com/aj8uppal" target="_blank" rel="noopener"
+            >GitHub<span aria-hidden="true"> ↗</span></a
+          ><a
+            class=""
+            href="https://aj8uppal.github.io/attachments/resume2026.pdf"
+            target="_blank"
+            rel="noopener"
+            >Résumé<span aria-hidden="true"> ↗</span></a
+          ><a class="" href="mailto:aj8uppal@gmail.com">Email<span aria-hidden="true"> ↗</span></a>
+        </div>
+      </footer>
+    </div>
+    <script src="interactions.js" defer></script>
+    <script type="application/json" id="clock-data">
+      [
+        {
+          "key": "night",
+          "time": "04:36",
+          "light": "Moon",
+          "alt": "saltline at night: a full moon low over dark water, the sloop under full sail trailing a wide luminous teal wake.",
+          "speed": "14.4 kn",
+          "rel": "66°",
+          "thrust": "89%",
+          "vmg": "5.8 kn",
+          "src": "../../src/assets/saltline-arc-night.webp"
+        },
+        {
+          "key": "sunrise",
+          "time": "06:02",
+          "light": "Sunrise",
+          "alt": "saltline at sunrise: an orange sky behind a dark island, a line of vessels along the horizon, the sloop running away from the light.",
+          "speed": "13.6 kn",
+          "rel": "-145°",
+          "thrust": "84%",
+          "vmg": "11.0 kn",
+          "src": "../../src/assets/saltline-arc-sunrise.webp"
+        },
+        {
+          "key": "dawn",
+          "time": "06:31",
+          "light": "Dawn",
+          "alt": "saltline half an hour later: the same island under a blue sky with pink cloud, the water turned blue-grey.",
+          "speed": "14.0 kn",
+          "rel": "-143°",
+          "thrust": "85%",
+          "vmg": "11.1 kn",
+          "src": "../../src/assets/saltline-arc-dawn.webp"
+        },
+        {
+          "key": "daylight",
+          "time": "16:46",
+          "light": "Daylight",
+          "alt": "saltline in flat afternoon daylight: three raiders and a merchant in line off the starboard bow, each with its name over it.",
+          "speed": "14.9 kn",
+          "rel": "119°",
+          "thrust": "97%",
+          "vmg": "8.3 kn",
+          "src": "../../src/assets/saltline-arc-daylight.webp"
+        },
+        {
+          "key": "golden",
+          "time": "17:15",
+          "light": "Golden hour",
+          "alt": "saltline at golden hour: a low sun laying a bright path across calm water, the sloop close-reaching towards it.",
+          "speed": "15.0 kn",
+          "rel": "79°",
+          "thrust": "96%",
+          "vmg": "2.3 kn",
+          "src": "../../src/assets/saltline-arc-golden.webp"
+        },
+        {
+          "key": "sunset",
+          "time": "18:02",
+          "light": "Sunset",
+          "alt": "saltline at sunset: the sun on the horizon behind a small island, heavy cloud overhead, the sloop silhouetted against orange.",
+          "speed": "15.8 kn",
+          "rel": "83°",
+          "thrust": "97%",
+          "vmg": "2.1 kn",
+          "src": "../../src/assets/saltline-arc-sunset.webp"
+        }
+      ]
+    </script>
+  </body>
+</html>

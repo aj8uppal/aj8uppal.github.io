@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>The Editorial — AJ Uppal / direction 01</title>
+    <meta
+      name="description"
+      content="A clear introduction. A few undeniable projects. A portfolio design exploration for AJ Uppal."
+    />
+    <link rel="stylesheet" href="shared.css" />
+    <link rel="stylesheet" href="editorial.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body class="editorial">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="review-bar" aria-label="Design review navigation">
+      <a href="index.html">← All four directions</a><span>01 / The Editorial</span
+      ><a href="studio.html">02 / Open Studio →</a>
+    </aside>
+
+    <div class="ed-shell" id="top">
+      <header class="ed-nav">
+        <a class="ed-brand" href="#top">AJ Uppal<span class="brand-dot">.</span></a>
+        <nav aria-label="Main">
+          <a href="#work">Selected work</a><a href="#about">About</a
+          ><a class="" href="mailto:aj8uppal@gmail.com"
+            >Say hello<span aria-hidden="true"> ↗</span></a
+          >
+        </nav>
+      </header>
+      <main id="main">
+        <section class="ed-hero" aria-labelledby="ed-title">
+          <div class="ed-intro">
+            <p class="eyebrow">SOFTWARE ENGINEER / BAY AREA, CA</p>
+            <h1 id="ed-title">Serious systems.<br /><em>Curious mind.</em></h1>
+            <div class="ed-intro-bottom">
+              <p>
+                I’m AJ. I build healthcare software at Notable and, off the clock, worlds that run
+                in a browser.
+              </p>
+              <a class="text-link" href="#work"
+                >A few things I’ve made <span aria-hidden="true">↓</span></a
+              >
+            </div>
+          </div>
+          <aside class="ed-margin">
+            <span class="ed-asterisk" aria-hidden="true">✳</span>
+            <p>Computer science.<br />Astrophysics.<br />A habit of making things.</p>
+            <span class="eyebrow">TWO DEGREES, ONE CURIOSITY</span>
+          </aside>
+        </section>
+        <section class="ed-work" id="work" aria-labelledby="ed-work-title">
+          <div class="section-line">
+            <h2 id="ed-work-title">Selected work</h2>
+            <span>THREE WAYS I THINK THROUGH CODE</span>
+          </div>
+          <article class="ed-project" id="ed-saltline">
+            <div class="ed-project-copy">
+              <p class="eyebrow">01 / SIMULATION / MULTIPLAYER</p>
+              <h3>An ocean with rules.</h3>
+              <p>
+                A sailing game where the wind matters. Built from the physics up, all the way to a
+                shared sea.
+              </p>
+              <details>
+                <summary>Inside saltline <span aria-hidden="true">+</span></summary>
+                <div class="ed-notes">
+                  <strong>What I built</strong>
+                  <p>The sailing model, the renderer, the multiplayer, the accounts.</p>
+                  <strong>The hard part</strong>
+                  <p>
+                    Thrust comes off the point of sail, so aim too close to the wind and you stop.
+                  </p>
+                </div>
+              </details>
+              <a class="text-link" href="https://saltline.app/" target="_blank" rel="noopener"
+                >Open saltline<span aria-hidden="true"> ↗</span></a
+              >
+            </div>
+            <figure>
+              <img
+                src="../../src/assets/saltline-lead-dawn.webp"
+                alt="saltline at 06:31: an island silhouetted under a blue dawn sky, three named raiders strung along the horizon, a light path on the water, the sloop under full sail. The Ghostgale status panel and the nav chart sit down the right edge."
+                fetchpriority="high"
+              />
+              <figcaption>
+                <span>saltline</span
+                ><span>CAPTURED FROM THE RUNNING PROJECT <span aria-hidden="true">↗</span></span>
+              </figcaption>
+            </figure>
+          </article>
+          <article class="ed-project" id="ed-murmuration">
+            <div class="ed-project-copy">
+              <p class="eyebrow">02 / AUDIO / WEBGPU</p>
+              <h3>Light that listens.</h3>
+              <p>
+                A music visualizer that finds the key, the rhythm, and the moments where a song
+                stops to breathe.
+              </p>
+              <details>
+                <summary>Inside murmuration <span aria-hidden="true">+</span></summary>
+                <div class="ed-notes">
+                  <strong>What I built</strong>
+                  <p>The analysis, the WebGPU renderer, the whole thing.</p>
+                  <strong>The hard part</strong>
+                  <p>
+                    Frequency cannot separate a voice from a piano - they share the octaves. Stereo
+                    placement can.
+                  </p>
+                </div>
+              </details>
+              <a
+                class="text-link"
+                href="https://aj8uppal.github.io/murmuration/"
+                target="_blank"
+                rel="noopener"
+                >Open murmuration<span aria-hidden="true"> ↗</span></a
+              >
+            </div>
+            <figure>
+              <img
+                src="../../src/assets/murmuration-lead-ribbon.webp"
+                alt="murmuration in ribbon style: a dense violet and white form of drawn-out particle streaks against black, filling most of the frame."
+                loading="lazy"
+              />
+              <figcaption>
+                <span>murmuration</span
+                ><span>CAPTURED FROM THE RUNNING PROJECT <span aria-hidden="true">↗</span></span>
+              </figcaption>
+            </figure>
+          </article>
+          <article class="ed-project" id="ed-Ember-Wilds">
+            <div class="ed-project-copy">
+              <p class="eyebrow">03 / GAMES / DISTRIBUTED SYSTEMS</p>
+              <h3>One world. Everyone in it.</h3>
+              <p>
+                A browser MMORPG with seven regions and one authoritative realm server holding it
+                together.
+              </p>
+              <details>
+                <summary>Inside Ember Wilds <span aria-hidden="true">+</span></summary>
+                <div class="ed-notes">
+                  <strong>What I built</strong>
+                  <p>Designed it, built it, put it in production.</p>
+                  <strong>The hard part</strong>
+                  <p>
+                    One world staying consistent for everyone in it. The realm server simulates
+                    every player.
+                  </p>
+                </div>
+              </details>
+              <a
+                class="text-link"
+                href="https://emberwilds-web.fly.dev/"
+                target="_blank"
+                rel="noopener"
+                >Open Ember Wilds<span aria-hidden="true"> ↗</span></a
+              >
+            </div>
+            <figure>
+              <img
+                src="../../src/assets/ember-spread-fallowmere-dusk.webp"
+                alt="Ember Wilds running in Fallowmere at dusk: a voxel world, quest panels, and a level-30 character."
+                loading="lazy"
+              />
+              <figcaption>
+                <span>Ember Wilds</span
+                ><span>CAPTURED FROM THE RUNNING PROJECT <span aria-hidden="true">↗</span></span>
+              </figcaption>
+            </figure>
+          </article>
+          <a
+            class="ed-archive"
+            href="https://aj8uppal.github.io/built/"
+            target="_blank"
+            rel="noopener"
+            ><span>There’s more on the workbench.</span
+            ><span>Explore the app archive <span aria-hidden="true">↗</span></span></a
+          >
+        </section>
+        <section class="ed-about" id="about">
+          <p class="eyebrow">THE PERSON BEHIND THE PROJECTS</p>
+          <div>
+            <h2>I learn things<br />by building them.</h2>
+            <p>
+              I did two degrees at once, computer science and astrophysics, because I couldn’t
+              choose between them. Some weeks that meant Algorithms and General Relativity in the
+              same problem-set pile.
+            </p>
+            <p>Off the clock: heirloom tomatoes, bikes, and Pink Floyd, roughly in that order.</p>
+          </div>
+          <div class="ed-record">
+            <details>
+              <summary>
+                <span>Notable Health<small>Software Engineer</small></span
+                ><span>Aug 2022 - Present +</span>
+              </summary>
+              <p>
+                My team owns the voice and conversations platform at a healthcare AI company serving
+                100+ enterprise customers: the AI-driven patient calls and the whole stack under
+                them, from the conversation services and workflow APIs down to carrier-facing
+                telephony. It handles around 250,000 patient calls a month at 99% uptime, and I set
+                the technical direction for patient identity, routing, observability and
+                reliability.
+              </p>
+            </details>
+            <details>
+              <summary>
+                <span>Harvest Fintech, Inc.<small>Software Architect and Engineer</small></span
+                ><span>Jul 2021 - Jan 2022 +</span>
+              </summary>
+              <p>
+                First significant engineer on the product. Built the backend and database
+                engineering for a mobile application and architected its microservices.
+              </p>
+            </details>
+            <details>
+              <summary>
+                <span
+                  >UMass Amherst, Physics Department<small>Student Software Developer</small></span
+                ><span>Jan 2021 - May 2022 +</span>
+              </summary>
+              <p>
+                Built and maintained the software professors used to acquire and share
+                demonstrations across 20+ courses and 1000+ students. Ported a legacy WordPress site
+                with a JSON backend to an Express, React and PostgreSQL application deployed on
+                site.
+              </p>
+            </details>
+            <a
+              class="text-link"
+              href="https://aj8uppal.github.io/attachments/resume2026.pdf"
+              target="_blank"
+              rel="noopener"
+              >The full résumé<span aria-hidden="true"> ↗</span></a
+            >
+          </div>
+        </section>
+        <section class="ed-contact">
+          <p class="eyebrow">SOMETHING INTERESTING IN MIND?</p>
+          <h2>Let’s talk it through.</h2>
+          <a class="text-link" href="mailto:aj8uppal@gmail.com"
+            >aj8uppal@gmail.com<span aria-hidden="true"> ↗</span></a
+          >
+        </section>
+      </main>
+      <footer class="site-footer">
+        <a href="#top">AJ Uppal </a><span>Software engineer · Bay Area</span>
+        <div>
+          <a class="" href="https://github.com/aj8uppal" target="_blank" rel="noopener"
+            >GitHub<span aria-hidden="true"> ↗</span></a
+          ><a
+            class=""
+            href="https://aj8uppal.github.io/attachments/resume2026.pdf"
+            target="_blank"
+            rel="noopener"
+            >Résumé<span aria-hidden="true"> ↗</span></a
+          ><a class="" href="mailto:aj8uppal@gmail.com">Email<span aria-hidden="true"> ↗</span></a>
+        </div>
+      </footer>
+    </div>
+    <script src="interactions.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Ember Wilds / AJ Uppal case study</title>
+    <link rel="stylesheet" href="../shared.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body>
+    <aside class="ref-reviewbar" aria-label="Case study navigation">
+      <a href="../index.html">← Four directions</a><span>Case study / Ember Wilds</span
+      ><a href="../../portfolio-candidates/">Original round ↗</a>
+    </aside>
+    <main class="ref-case-doc">
+      <header class="ref-case-header">
+        <div>
+          <p class="ref-eyebrow">CASE / Voxel MMORPG</p>
+          <h1 id="case-title-ember">Ember Wilds</h1>
+          <div class="ref-case-header-meta">
+            <span class="ref-case-pill">live</span
+            ><span class="ref-case-pill">three.js · Colyseus · WebSocket · Fly.io</span>
+          </div>
+        </div>
+        <p class="ref-case-summary">
+          Browser-based voxel MMORPG. Designed, built, and in production.
+        </p>
+      </header>
+      <section class="ref-case-hero">
+        <figure>
+          <img
+            src="../../../src/assets/ember-spread-fallowmere-dusk.webp"
+            alt="Ember Wilds in Fallowmere at dusk: a level-30 character in a voxel landscape."
+            loading="lazy"
+          />
+          <figcaption><span>Ember Wilds</span><span>Real project capture</span></figcaption>
+        </figure>
+        <aside class="ref-case-hero-aside">
+          <p class="ref-eyebrow">THE QUESTION</p>
+          <h2>What makes a world the same for everyone in it?</h2>
+          <div>
+            <a
+              class="ref-link"
+              href="https://emberwilds-web.fly.dev/"
+              target="_blank"
+              rel="noopener"
+              >Open Ember Wilds <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <dl>
+            <div>
+              <dt>State</dt>
+              <dd>live</dd>
+            </div>
+            <div>
+              <dt>Stack</dt>
+              <dd>three.js · Colyseus · WebSocket · Fly.io</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">HOW IT HOLDS UP</p>
+          <h2>Work with a point of view.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <p>
+            Designed, built and put the web tier and authoritative realm service into production.
+          </p>
+          <div class="ref-case-copy-block">
+            <article class="ref-case-card">
+              <h3>Constraint</h3>
+              <p>
+                Every player needs the same world state, including quests, loot and combat, while
+                the browser remains a responsive renderer.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Decision</h3>
+              <p>
+                Keep simulation in a separate realm service and use Colyseus rooms over WebSocket to
+                distribute authoritative state to the three.js client.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Evidence</h3>
+              <p>Live without install: seven regions and realms that hold up to 64 players.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">SELECTED PROOF</p>
+          <h2>Details that matter.</h2>
+        </div>
+        <div class="ref-case-facts">
+          <div class="ref-case-fact">
+            <strong>Realm</strong><span>Web tier plus separate authoritative realm service</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>Progression</strong
+            ><span>Fame, satchel and tiered gear across seven regions</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>World rule</strong
+            ><span>Classes unlock through beast lore and study, not a skill tree</span>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-frames" aria-labelledby="frames-title">
+        <p class="ref-eyebrow">RECORDED STATES</p>
+        <h2 id="frames-title">A few frames from the work</h2>
+        <div class="ref-case-frame-grid">
+          <figure class="ref-case-frame ref-case-proof-frame">
+            <img
+              src="../../../src/assets/ember-proof-two-players.webp"
+              alt="Two browsers connected to the same realm in Ember Wilds."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Two browsers, one realm</span
+              ><span>The same Hearthvale state rendered in two browsers.</span>
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/ember-region-hearthvale.webp"
+              alt="The Hearthvale in Ember Wilds: green voxel meadows split by a river, a level one character on the bank, quest panel at top left."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Hearthvale</span
+              ><span
+                >Where everyone starts. A river, a goblin headman, and a field note telling you that
+                you can tilt the camera.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/ember-region-fallowmere.webp"
+              alt="Fallowmere in Ember Wilds: a dusty orange plain of voxel trees at dusk, embers drifting, a level thirty character in the centre."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Fallowmere</span
+              ><span
+                >Open country under a dust-orange sky. Direfangs push in from the edges and the
+                quest log starts counting them.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/ember-region-greenmarch.webp"
+              alt="The Greenmarch in Ember Wilds: pale flats under a bleached sky with a white ruin and a chest, lore lines stacked at bottom left."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Greenmarch</span
+              ><span
+                >The lore panel’s own words: a fallen colonnade of Emberhold, garlanded in herb and
+                briar, haunted by something in the Ashen Waste’s livery. It left a blade
+                behind.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/ember-region-fenmarch.webp"
+              alt="The Fenmarch in Ember Wilds: a dark, near-monochrome marsh at night lit only by the character’s own glow."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Fenmarch</span
+              ><span
+                >The darkest region. The only reliable light source in this frame is the
+                character.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/ember-region-ashen-waste.webp"
+              alt="The Ashen Waste in Ember Wilds: a red-lit waste mid-combat, a white nova ring expanding from the character, damage number 684 above a creature."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Ashen Waste</span
+              ><span
+                >Nova, mid-detonation. The ring is resolved on the server, and it did 684 damage to
+                the creature it caught.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/ember-region-greywall-peaks.webp"
+              alt="The Greywall Peaks in Ember Wilds: pale grey stone terraces under flat light, banners, and a cluster of glowing projectiles mid-flight."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Greywall Peaks</span
+              ><span
+                >Bleached stone and banners. Eleven items on the floor is what a fight up here looks
+                like when it goes well.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/ember-region-black-plateau.webp"
+              alt="The Black Plateau in Ember Wilds: a dark red-violet plateau with the region title card centred and a lore line beneath it."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Black Plateau</span
+              ><span
+                >The last region. The title card puts it plainly: the Watcher is above you now, and
+                there is no more inward.</span
+              >
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+      <a class="ref-case-back" href="../index.html#directions">Back to the directions ↑</a>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">KEEP READING</p>
+          <h2>Another thread.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <a class="ref-case-link" href="notable.html" data-case="notable"
+            >Notable Health <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="saltline.html" data-case="saltline"
+            >saltline <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="murmuration.html" data-case="murmuration"
+            >murmuration <span aria-hidden="true">→</span></a
+          >
+        </div>
+      </section>
+    </main>
+    <script src="../shared.js" defer></script>
+  </body>
+</html>

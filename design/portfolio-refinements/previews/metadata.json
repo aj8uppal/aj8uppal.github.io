@@ -1,0 +1,76 @@
+{
+  "base": "http://127.0.0.1:4334/design/portfolio-refinements/",
+  "capturedAt": "2026-09-05T06:33:23.030Z",
+  "sizes": {
+    "editorial-desktop": {
+      "width": 1440,
+      "height": 1000,
+      "fullPage": false
+    },
+    "editorial-full": {
+      "width": 1440,
+      "height": 3290,
+      "fullPage": true
+    },
+    "studio-desktop": {
+      "width": 1440,
+      "height": 1000,
+      "fullPage": false
+    },
+    "studio-full": {
+      "width": 1440,
+      "height": 3124,
+      "fullPage": true
+    },
+    "field-notes-desktop": {
+      "width": 1440,
+      "height": 1000,
+      "fullPage": false
+    },
+    "field-notes-full": {
+      "width": 1440,
+      "height": 2886,
+      "fullPage": true
+    },
+    "worldbuilder-desktop": {
+      "width": 1440,
+      "height": 1000,
+      "fullPage": false
+    },
+    "worldbuilder-full": {
+      "width": 1440,
+      "height": 4844,
+      "fullPage": true
+    },
+    "editorial-mobile": {
+      "width": 390,
+      "height": 844,
+      "fullPage": false
+    },
+    "studio-mobile": {
+      "width": 390,
+      "height": 844,
+      "fullPage": false
+    },
+    "field-notes-mobile": {
+      "width": 390,
+      "height": 844,
+      "fullPage": false
+    },
+    "worldbuilder-mobile": {
+      "width": 390,
+      "height": 844,
+      "fullPage": false
+    },
+    "four-directions": {
+      "width": 1600,
+      "height": 1350,
+      "fullPage": true
+    },
+    "index-full": {
+      "width": 1440,
+      "height": 2202,
+      "fullPage": true
+    }
+  }
+}

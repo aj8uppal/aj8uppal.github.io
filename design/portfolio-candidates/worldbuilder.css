@@ -1,0 +1,516 @@
+.worldbuilder {
+  background: #0d171b;
+  color: #eae9df;
+}
+.wb-cover {
+  position: relative;
+  min-height: 1000px;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  background: #152e3c;
+}
+.wb-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 48% 50%;
+  z-index: -3;
+}
+.wb-wash {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, #061017c7 0%, #07121a6b 57%, #07121a73),
+    linear-gradient(0deg, #0d171b 0%, #0d171b85 20%, transparent 62%, #0d171b8a 100%);
+  z-index: -2;
+}
+.wb-nav {
+  height: 119px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 5.5%;
+  border-bottom: 1px solid #d9e4e34d;
+  gap: 30px;
+}
+.wb-brand {
+  font-size: 21px;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+.wb-brand span {
+  display: block;
+  font: 8px/1.6 monospace;
+  letter-spacing: 0.12em;
+  margin-top: 8px;
+  color: #d3dfdf;
+}
+.wb-nav nav {
+  display: flex;
+  gap: 36px;
+  font-size: 11px;
+}
+.wb-nav nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+.wb-cover > main {
+  flex: 1;
+}
+.wb-hero {
+  padding: 107px 5.5% 49px;
+}
+.wb-hero > .eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+}
+.wb-hero h1 {
+  font:
+    113px/0.97 Georgia,
+    'Times New Roman',
+    serif;
+  letter-spacing: -5px;
+  margin: 25px 0 61px;
+}
+.wb-hero h1 em {
+  color: #c2dad5;
+}
+.wb-hero-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 45px;
+}
+.wb-featured {
+  max-width: 360px;
+}
+.wb-featured > .eyebrow {
+  color: #c2dad5;
+}
+.wb-featured h2 {
+  font:
+    italic 33px/1.3 Georgia,
+    serif;
+  margin: 11px 0 10px;
+  letter-spacing: -1px;
+}
+.wb-featured > p:last-child {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #d3dfdf;
+  max-width: 310px;
+}
+.wb-enter {
+  border: 1px solid #b4cfcc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 231px;
+  gap: 40px;
+  padding: 19px 21px;
+  font-size: 12px;
+  color: #eaf5ee;
+  background: #10242a4d;
+  backdrop-filter: blur(8px);
+}
+.wb-enter > span:last-child {
+  font-size: 23px;
+}
+.wb-enter:hover {
+  background: #c2dad5;
+  color: #0d171b;
+}
+.wb-worlds {
+  padding: 0 5.5% 40px;
+}
+.wb-worlds > .eyebrow {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #d9e4e34d;
+  padding-top: 24px;
+  gap: 20px;
+  font-size: 8px;
+}
+.wb-worlds > .eyebrow span {
+  letter-spacing: 0;
+  color: #b9c6c7;
+}
+.wb-selectors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 22px;
+}
+.wb-selectors button {
+  border: 0;
+  border-bottom: 1px solid #c6d8d24d;
+  padding: 0 0 17px;
+  color: #b8c8c8;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  background: none;
+  text-align: left;
+}
+.wb-selectors button[aria-pressed='true'] {
+  color: #fff;
+  border-color: #d4eadc;
+}
+.wb-selectors button img {
+  width: 101px;
+  height: 61px;
+  object-fit: cover;
+  opacity: 0.58;
+}
+.wb-selectors button[aria-pressed='true'] img {
+  opacity: 1;
+}
+.wb-selectors button > span:not(.wb-select-arrow) {
+  font:
+    19px/1.4 Georgia,
+    serif;
+  letter-spacing: -0.3px;
+}
+.wb-selectors small {
+  display: block;
+  font: 8px/1.5 monospace;
+  color: #b8c8c8;
+  margin-bottom: 4px;
+}
+.wb-select-arrow {
+  margin-left: auto;
+  font-size: 20px;
+}
+.wb-under {
+  max-width: 1440px;
+  margin: auto;
+  padding: 75px 5.5% 79px;
+}
+.wb-under-head {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 40px;
+}
+.wb-under-head > .eyebrow {
+  color: #b8c8c8;
+  padding-top: 10px;
+}
+.wb-under h2 {
+  font:
+    52px/1.1 Georgia,
+    serif;
+  letter-spacing: -2px;
+}
+.wb-under h2 em {
+  color: #a5c5bc;
+}
+.wb-engineering {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 45px;
+  margin-top: 49px;
+}
+.wb-engineering article {
+  border-top: 1px solid #49605f;
+  padding-top: 22px;
+}
+.wb-engineering .eyebrow {
+  color: #a5c5bc;
+  font-size: 8px;
+}
+.wb-engineering p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #c1cccb;
+  margin: 20px 0 25px;
+}
+.wb-engineering a {
+  font-size: 11px;
+}
+.wb-about {
+  padding: 69px 5.5%;
+  background: #17282d;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14%;
+}
+.wb-about h2 {
+  font:
+    60px/1.02 Georgia,
+    serif;
+  letter-spacing: -2px;
+  margin-top: 25px;
+}
+.wb-about h2 em {
+  color: #a5c5bc;
+}
+.wb-about > div:nth-child(2) {
+  padding-top: 28px;
+  max-width: 430px;
+}
+.wb-about p:not(.eyebrow) {
+  font-size: 15px;
+  line-height: 1.9;
+  margin-bottom: 22px;
+  color: #c1cccb;
+}
+.wb-about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+  font-size: 11px;
+  margin-top: 31px;
+}
+.wb-about-links a {
+  padding-bottom: 6px;
+  border-bottom: 1px solid #8aa5a1;
+}
+.wb-contact {
+  text-align: center;
+  padding: 90px 5.5% 100px;
+}
+.wb-contact > .eyebrow {
+  color: #a5c5bc;
+}
+.wb-contact h2 {
+  font:
+    72px/1.1 Georgia,
+    serif;
+  margin: 26px 0 29px;
+  letter-spacing: -3px;
+}
+.wb-contact h2 em {
+  color: #a5c5bc;
+}
+.worldbuilder .site-footer {
+  margin: 0 5.5%;
+  border-color: #49605f;
+  color: #b8c8c8;
+}
+@media (min-width: 1600px) {
+  .wb-cover {
+    min-height: min(100vh, 1200px);
+  }
+  .wb-hero {
+    padding-top: 130px;
+  }
+}
+@media (max-width: 1050px) {
+  .wb-hero h1 {
+    font-size: 94px;
+  }
+  .wb-cover {
+    min-height: 940px;
+  }
+  .wb-hero {
+    padding-top: 93px;
+  }
+  .wb-selectors {
+    gap: 24px;
+  }
+  .wb-selectors button {
+    gap: 12px;
+  }
+  .wb-selectors button img {
+    width: 75px;
+    height: 55px;
+  }
+  .wb-selectors button > span:not(.wb-select-arrow) {
+    font-size: 16px;
+  }
+  .wb-under h2 {
+    font-size: 44px;
+  }
+}
+@media (max-width: 800px) {
+  .wb-nav nav {
+    gap: 22px;
+  }
+  .wb-brand {
+    font-size: 18px;
+  }
+  .wb-brand span {
+    font-size: 7px;
+  }
+  .wb-selectors button img {
+    width: 64px;
+    height: 47px;
+  }
+  .wb-select-arrow {
+    display: none;
+  }
+  .wb-about {
+    gap: 10%;
+  }
+  .wb-about h2 {
+    font-size: 51px;
+  }
+  .wb-about p:not(.eyebrow) {
+    font-size: 13px;
+  }
+}
+@media (max-width: 680px) {
+  .wb-cover {
+    min-height: 850px;
+  }
+  .wb-nav {
+    height: 86px;
+    margin: 0 23px;
+  }
+  .wb-brand {
+    font-size: 18px;
+  }
+  .wb-brand span {
+    font-size: 6px;
+    letter-spacing: 0.09em;
+  }
+  .wb-nav nav {
+    gap: 19px;
+    font-size: 10px;
+  }
+  .wb-nav nav a:nth-child(2) {
+    display: none;
+  }
+  .wb-nav nav a:last-child {
+    font-size: 0;
+  }
+  .wb-nav nav a:last-child span {
+    font-size: 21px;
+  }
+  .wb-scene {
+    object-position: 46% 50%;
+  }
+  .wb-wash {
+    background:
+      linear-gradient(90deg, #07131ab3, #07131a4d),
+      linear-gradient(0deg, #0d171b 0%, #0d171b73 35%, #0d171b1a 62%, #0d171b91 100%);
+  }
+  .wb-hero {
+    padding: 74px 23px 29px;
+  }
+  .wb-hero > .eyebrow {
+    font-size: 7px;
+    letter-spacing: 0.1em;
+  }
+  .wb-hero h1 {
+    font-size: clamp(54px, 14.8vw, 93px);
+    letter-spacing: -2.9px;
+    margin: 23px 0 47px;
+  }
+  .wb-hero-bottom {
+    display: block;
+  }
+  .wb-featured h2 {
+    font-size: 31px;
+    margin-top: 8px;
+  }
+  .wb-featured > .eyebrow {
+    font-size: 8px;
+  }
+  .wb-featured > p:last-child {
+    max-width: 280px;
+    font-size: 12px;
+  }
+  .wb-enter {
+    min-width: 0;
+    width: 213px;
+    padding: 12px 16px;
+    font-size: 11px;
+    margin-top: 23px;
+  }
+  .wb-enter > span:last-child {
+    font-size: 20px;
+  }
+  .wb-worlds {
+    padding: 0 23px 31px;
+  }
+  .wb-worlds > .eyebrow {
+    font-size: 7px;
+    padding-top: 18px;
+  }
+  .wb-worlds > .eyebrow > span {
+    max-width: 142px;
+    font-size: 6px;
+    text-align: right;
+  }
+  .wb-selectors {
+    gap: 14px;
+    margin-top: 17px;
+  }
+  .wb-selectors button {
+    display: block;
+    padding-bottom: 10px;
+  }
+  .wb-selectors button img {
+    width: 100%;
+    height: 49px;
+    margin-bottom: 9px;
+  }
+  .wb-selectors button > span:not(.wb-select-arrow) {
+    font-size: 13px;
+    letter-spacing: -0.4px;
+  }
+  .wb-selectors small {
+    font-size: 7px;
+    margin-bottom: 3px;
+  }
+  .wb-under {
+    padding: 39px 23px 43px;
+  }
+  .wb-under-head {
+    display: block;
+  }
+  .wb-under-head > .eyebrow {
+    font-size: 8px;
+    padding: 0;
+    margin-bottom: 22px;
+  }
+  .wb-under h2 {
+    font-size: 37px;
+    letter-spacing: -1.6px;
+  }
+  .wb-engineering {
+    display: block;
+    margin-top: 31px;
+  }
+  .wb-engineering article {
+    margin-top: 25px;
+    padding-top: 20px;
+  }
+  .wb-engineering p {
+    font-size: 13px;
+    margin: 16px 0;
+  }
+  .wb-about {
+    display: block;
+    padding: 39px 23px 46px;
+  }
+  .wb-about h2 {
+    font-size: 51px;
+    margin-top: 21px;
+  }
+  .wb-about h2 br:nth-child(2) {
+    display: none;
+  }
+  .wb-about > div:nth-child(2) {
+    padding-top: 27px;
+  }
+  .wb-about-links {
+    gap: 19px;
+    font-size: 10px;
+  }
+  .wb-contact {
+    padding: 51px 23px 63px;
+  }
+  .wb-contact h2 {
+    font-size: 45px;
+    letter-spacing: -1.8px;
+    margin-top: 23px;
+  }
+  .worldbuilder .site-footer {
+    margin: 0 23px;
+  }
+}

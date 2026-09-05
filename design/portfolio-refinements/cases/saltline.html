@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>saltline / AJ Uppal case study</title>
+    <link rel="stylesheet" href="../shared.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body>
+    <aside class="ref-reviewbar" aria-label="Case study navigation">
+      <a href="../index.html">← Four directions</a><span>Case study / saltline</span
+      ><a href="../../portfolio-candidates/">Original round ↗</a>
+    </aside>
+    <main class="ref-case-doc">
+      <header class="ref-case-header">
+        <div>
+          <p class="ref-eyebrow">CASE / Simulation / multiplayer</p>
+          <h1 id="case-title-saltline">saltline</h1>
+          <div class="ref-case-header-meta">
+            <span class="ref-case-pill">live</span
+            ><span class="ref-case-pill">Babylon.js · Colyseus · WebSocket · Fly.io</span>
+          </div>
+        </div>
+        <p class="ref-case-summary">
+          Age of sail in a browser, with a real sailing model under it.
+        </p>
+      </header>
+      <section class="ref-case-hero">
+        <figure>
+          <img
+            src="../../../src/assets/saltline-lead-dawn.webp"
+            alt="saltline at 06:31: an island silhouetted under a blue dawn sky, three named raiders strung along the horizon, a light path on the water, the sloop under full sail. The Ghostgale status panel and the nav chart sit down the right edge."
+            loading="lazy"
+          />
+          <figcaption><span>saltline</span><span>Real project capture</span></figcaption>
+        </figure>
+        <aside class="ref-case-hero-aside">
+          <p class="ref-eyebrow">THE QUESTION</p>
+          <h2>What makes an ocean feel alive?</h2>
+          <div>
+            <a class="ref-link" href="https://saltline.app/" target="_blank" rel="noopener"
+              >Open saltline <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <dl>
+            <div>
+              <dt>State</dt>
+              <dd>live</dd>
+            </div>
+            <div>
+              <dt>Stack</dt>
+              <dd>Babylon.js · Colyseus · WebSocket · Fly.io</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">HOW IT HOLDS UP</p>
+          <h2>Work with a point of view.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <p>The sailing model, renderer, multiplayer and account persistence.</p>
+          <div class="ref-case-copy-block">
+            <article class="ref-case-card">
+              <h3>Constraint</h3>
+              <p>
+                Thrust depends on point of sail: the boat must feel like a boat, while a shared sea
+                keeps each player’s state consistent.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Decision</h3>
+              <p>
+                Use point-of-sail thrust and heading to derive VMG, then expose relative wind, heel,
+                thrust and VMG in the HUD so the rule can be learned rather than guessed.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Evidence</h3>
+              <p>
+                Live at saltline.app with accounts and up to 20 players per sea; six recorded frames
+                hold seed 4193 and wind settings constant.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">SELECTED PROOF</p>
+          <h2>Details that matter.</h2>
+        </div>
+        <div class="ref-case-facts">
+          <div class="ref-case-fact">
+            <strong>Controlled input</strong
+            ><span>Sea state moderate · wind 40° · crest sharpness 0.68 · seed 4193</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>Readout</strong
+            ><span>At golden hour: 15 kn through water, 2.3 kn toward the mark</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>Hardening</strong
+            ><span
+              >CSP script-src &#39;self&#39; · frame-ancestors &#39;none&#39; · full
+              Permissions-Policy</span
+            >
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-frames" aria-labelledby="frames-title">
+        <p class="ref-eyebrow">RECORDED STATES</p>
+        <h2 id="frames-title">A few frames from the work</h2>
+        <div class="ref-case-frame-grid">
+          <figure class="ref-case-frame ref-case-proof-frame">
+            <img
+              src="../../../src/assets/saltline-proof-panel.webp"
+              alt="This is the 16:46 frame, uncropped. The panel on the left is the simulation’s actual inputs: time of day, sea state, wind angle, crest sharpness, seed. New seed, new ocean, same rules."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>The development panel</span
+              ><span
+                >This is the 16:46 frame, uncropped. The panel on the left is the simulation’s
+                actual inputs: time of day, sea state, wind angle, crest sharpness, seed. New seed,
+                new ocean, same rules.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/saltline-arc-night.webp"
+              alt="saltline at night: a full moon low over dark water, the sloop under full sail trailing a wide luminous teal wake."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>04:36 · Moon</span><span>14.4 kn through the water · 5.8 kn VMG</span>
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/saltline-arc-sunrise.webp"
+              alt="saltline at sunrise: an orange sky behind a dark island, a line of vessels along the horizon, the sloop running away from the light."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>06:02 · Sunrise</span><span>13.6 kn through the water · 11.0 kn VMG</span>
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/saltline-arc-dawn.webp"
+              alt="saltline half an hour later: the same island under a blue sky with pink cloud, the water turned blue-grey."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>06:31 · Dawn</span><span>14.0 kn through the water · 11.1 kn VMG</span>
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/saltline-arc-daylight.webp"
+              alt="saltline in flat afternoon daylight: three raiders and a merchant in line off the starboard bow, each with its name over it."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>16:46 · Daylight</span><span>14.9 kn through the water · 8.3 kn VMG</span>
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/saltline-arc-golden.webp"
+              alt="saltline at golden hour: a low sun laying a bright path across calm water, the sloop close-reaching towards it."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>17:15 · Golden hour</span><span>15.0 kn through the water · 2.3 kn VMG</span>
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/saltline-arc-sunset.webp"
+              alt="saltline at sunset: the sun on the horizon behind a small island, heavy cloud overhead, the sloop silhouetted against orange."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>18:02 · Sunset</span><span>15.8 kn through the water · 2.1 kn VMG</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+      <a class="ref-case-back" href="../index.html#directions">Back to the directions ↑</a>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">KEEP READING</p>
+          <h2>Another thread.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <a class="ref-case-link" href="notable.html" data-case="notable"
+            >Notable Health <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="ember.html" data-case="ember"
+            >Ember Wilds <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="murmuration.html" data-case="murmuration"
+            >murmuration <span aria-hidden="true">→</span></a
+          >
+        </div>
+      </section>
+    </main>
+    <script src="../shared.js" defer></script>
+  </body>
+</html>

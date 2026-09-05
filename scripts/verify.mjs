@@ -849,12 +849,11 @@ await run(
       };
     });
 
-    /* One row, because it was the only set left stacked: the arc, the region
-       switcher and the deviation card each carry a horizontal grammar of their
-       own, and the pattern was lifted out of the last of them. */
+    /* Rendezvous and the collection shortlist both use the shared swipe row.
+       Each must scroll and snap; the two independent rows must both survive. */
     note(
-      mob.rows === 1 && mob.scrolls === 1 && mob.snaps === 1,
-      '390 the stacked set is a snapping swipe row',
+      mob.rows === 2 && mob.scrolls === 2 && mob.snaps === 2,
+      '390 both stacked sets are snapping swipe rows',
       `${mob.rows} rows, ${mob.scrolls} scroll, ${mob.snaps} snap`,
     );
     note(mob.peek, '390 a swipe card is ~78vw, so the next one peeks', '');

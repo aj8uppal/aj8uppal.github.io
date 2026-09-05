@@ -1,0 +1,26 @@
+{
+  "name": "Dustbound — An Original Frontier Tale",
+  "short_name": "Dustbound",
+  "description": "A cinematic original frontier action game for the browser.",
+  "id": ".",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#100c09",
+  "theme_color": "#9f3120",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

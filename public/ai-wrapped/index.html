@@ -150,9 +150,9 @@
 
     <button id="drop" type="button">
       <span class="big">Drop your export here</span>
-      <span class="small">.zip or .json &nbsp;·&nbsp; or tap to choose a file</span>
+      <span class="small">.zip or .json &nbsp;·&nbsp; several parts at once are fine</span>
     </button>
-    <input id="file" type="file" accept=".json,.zip,application/json,application/zip" hidden>
+    <input id="file" type="file" accept=".json,.jsonl,.zip,application/json,application/zip" multiple hidden>
 
     <button class="ghost" id="demo" type="button">or see it with sample data →</button>
 
@@ -519,7 +519,7 @@ async function unzip(file) {
     const lho = dv.getUint32(p + 42, true);
     const name = new TextDecoder().decode(buf.subarray(p + 46, p + 46 + nameLen));
     p += 46 + nameLen + dv.getUint16(p + 30, true) + dv.getUint16(p + 32, true);
-    if (!/\.json$/i.test(name) || name.startsWith('__MACOSX')) continue;
+    if (!/\.jsonl?$/i.test(name) || name.startsWith('__MACOSX')) continue;
     const start = lho + 30 + dv.getUint16(lho + 26, true) + dv.getUint16(lho + 28, true);
     out.push({ name, method, data: buf.subarray(start, start + csize) });
   }
@@ -642,7 +642,21 @@ function scavenge(root) {
   return [{ id: 'all', title: 'Your conversations', createdAt: msgs[0].at, messages: msgs }];
 }
 
+/* Claude's export is a manifest of per-category zips, each link single-use.
+   People drop the manifest first, so name the file they actually need. */
+function manifestError(json) {
+  if (!json || Array.isArray(json) || !Array.isArray(json.data_files)) return null;
+  const conv = json.data_files.find(f => /conversations/i.test(f.category || f.filename || ''));
+  const e = new Error("That's the export manifest, not the export itself. Open the download link for "
+    + (conv ? conv.filename : 'the conversations part') + " listed inside it, then drop that .zip here. "
+    + "Each link in a manifest works only once.");
+  e.priority = true;
+  return e;
+}
+
 function parseExport(json) {
+  const manifest = manifestError(json);
+  if (manifest) throw manifest;
   let data = json;
   // unwrap the common containers
   for (const key of ['conversations', 'chats', 'data', 'items', 'history']) {
@@ -874,15 +888,25 @@ async function step(pct, msg) {
 }
 
 function parseJSON(text, hint) {
-  try { return JSON.parse(text); }
-  catch (e) { throw new Error(hint || "That file isn't valid JSON. Drop the conversations.json from your export."); }
+  try { return JSON.parse(text); } catch (e) {}
+  // some exports ship line-delimited JSON
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  if (lines.length > 1) {
+    try {
+      const rows = lines.map(l => JSON.parse(l));
+      if (rows.length) return rows;
+    } catch (e) {}
+  }
+  throw new Error(hint || "That file isn't valid JSON. Drop the conversations.json from your export.");
 }
 
 async function readJSON(file) {
   if (/\.zip$/i.test(file.name) || file.type === 'application/zip') {
     const entries = await unzip(file);
     if (!entries.length) throw new Error("No .json files inside that zip.");
-    const pickEntry = entries.find(e => /conversations\.json$/i.test(e.name))
+    // a parts zip may hold conversations.json under a folder
+    const byName = e => /conversations\.jsonl?$/i.test(e.name);
+    const pickEntry = entries.find(byName)
       || entries.sort((a, b) => b.data.length - a.data.length)[0];
     return parseJSON(new TextDecoder().decode(await inflate(pickEntry)),
       "Couldn't read " + pickEntry.name + " out of that zip. Try unzipping it and dropping the .json.");
@@ -890,16 +914,29 @@ async function readJSON(file) {
   return parseJSON(await file.text());
 }
 
-async function run(file) {
+async function run(files) {
   $('err').textContent = '';
   show('loading');
   $('progress').style.width = '0%';
   try {
-    await step(12, file ? 'Reading your export…' : 'Inventing a plausible year…');
-    const json = file ? await readJSON(file) : sampleExport();
+    const list = files ? Array.from(files) : null;
+    await step(12, !list ? 'Inventing a plausible year…'
+      : list.length > 1 ? `Reading ${list.length} files…` : 'Reading your export…');
+    const jsons = list ? await Promise.all(list.map(f => readJSON(f))) : [sampleExport()];
 
     await step(42, 'Finding your conversations…');
-    const { source, convos } = parseExport(json);
+    // an export can arrive in parts, and some parts hold no messages at all
+    const convos = [], sources = new Set();
+    let manifest = null, lastErr = null;
+    for (const j of jsons) {
+      try {
+        const r = parseExport(j);
+        convos.push(...r.convos);
+        sources.add(r.source);
+      } catch (e) { if (e.priority) manifest = e; else lastErr = e; }
+    }
+    if (!convos.length) throw manifest || lastErr || new Error("Couldn't find any messages in those files.");
+    const source = [...sources].join(' + ');
 
     await step(72, 'Counting every word you typed…');
     const stats = analyze(convos, source);
@@ -979,7 +1016,7 @@ $('share').onclick = async function () {
 $('drop').onclick = () => $('file').click();
 $('demo').onclick = () => { location.hash = 'demo'; run(null); };
 if (location.hash === '#demo') run(null);   // shareable demo link
-$('file').onchange = e => { const f = e.target.files[0]; if (f) run(f); e.target.value = ''; };
+$('file').onchange = e => { if (e.target.files.length) run(e.target.files); e.target.value = ''; };
 
 let dragDepth = 0;
 addEventListener('dragenter', e => { e.preventDefault(); if (++dragDepth) $('drop').classList.add('hot'); });
@@ -987,8 +1024,7 @@ addEventListener('dragover', e => e.preventDefault());
 addEventListener('dragleave', () => { if (--dragDepth <= 0) { dragDepth = 0; $('drop').classList.remove('hot'); } });
 addEventListener('drop', e => {
   e.preventDefault(); dragDepth = 0; $('drop').classList.remove('hot');
-  const f = e.dataTransfer.files[0];
-  if (f) run(f);
+  if (e.dataTransfer.files.length) run(e.dataTransfer.files);
 });
 </script>
 </body>

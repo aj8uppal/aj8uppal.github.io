@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Blockhold / AJ Uppal case study</title>
+    <link rel="stylesheet" href="../shared.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body>
+    <aside class="ref-reviewbar" aria-label="Case study navigation">
+      <a href="../index.html">← Four directions</a><span>Case study / Blockhold</span
+      ><a href="../../portfolio-candidates/">Original round ↗</a>
+    </aside>
+    <main class="ref-case-doc">
+      <header class="ref-case-header">
+        <div>
+          <p class="ref-eyebrow">CASE / Voxel tower defense</p>
+          <h1 id="case-title-blockhold">Blockhold</h1>
+          <div class="ref-case-header-meta">
+            <span class="ref-case-pill">live</span
+            ><span class="ref-case-pill">JavaScript · WebAudio · SVG · fixed-step simulation</span>
+          </div>
+        </div>
+        <p class="ref-case-summary">
+          Voxel tower defense. Ten maps, 249 authored waves, and three boards that each break a rule
+          the other nine keep.
+        </p>
+      </header>
+      <section class="ref-case-hero">
+        <figure>
+          <img
+            src="../../../src/assets/blockhold-lead-battle.webp"
+            alt="Blockhold in a live battle: voxel towers defend a road against an incoming wave."
+            loading="lazy"
+          />
+          <figcaption><span>Blockhold</span><span>Real project capture</span></figcaption>
+        </figure>
+        <aside class="ref-case-hero-aside">
+          <p class="ref-eyebrow">THE QUESTION</p>
+          <h2>How much game can code describe?</h2>
+          <div>
+            <a
+              class="ref-link"
+              href="https://aj8uppal.github.io/blockhold/"
+              target="_blank"
+              rel="noopener"
+              >Open Blockhold <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <dl>
+            <div>
+              <dt>State</dt>
+              <dd>live</dd>
+            </div>
+            <div>
+              <dt>Stack</dt>
+              <dd>JavaScript · WebAudio · SVG · fixed-step simulation</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">HOW IT HOLDS UP</p>
+          <h2>Work with a point of view.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <p>The voxel modeler, fixed-step sim, ten maps, authored waves and balance.</p>
+          <div class="ref-case-copy-block">
+            <article class="ref-case-card">
+              <h3>Constraint</h3>
+              <p>
+                A campaign with branching towers, multiple roads, heroes and endless mode must stay
+                small enough to load while remaining deterministic and testable.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Decision</h3>
+              <p>
+                Generate 3D models from colored boxes, synthesize sound in WebAudio, draw icons as
+                SVG, and keep a fixed 60Hz accumulator behind the render loop.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Evidence</h3>
+              <p>
+                Live and installable: ten maps, 249 authored waves, three heroes, endless mode and
+                154 tests.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">SELECTED PROOF</p>
+          <h2>Details that matter.</h2>
+        </div>
+        <div class="ref-case-facts">
+          <div class="ref-case-fact">
+            <strong>Campaign</strong
+            ><span>Four tower families · three tiers · two elite branches · two crowns</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>Special boards</strong
+            ><span
+              >Sunderfall has four roads at four heights; Tidereach reroutes when causeways
+              close</span
+            >
+          </div>
+          <div class="ref-case-fact">
+            <strong>Review</strong
+            ><span>154 Vitest tests · six adversarial code rounds · three design rounds</span>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-frames" aria-labelledby="frames-title">
+        <p class="ref-eyebrow">RECORDED STATES</p>
+        <h2 id="frames-title">A few frames from the work</h2>
+        <div class="ref-case-frame-grid">
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/blockhold-frame-greenhollow.webp"
+              alt="The first board entire: one road, thirteen plots, and the meadow you learn the trade on."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Greenhollow</span
+              ><span
+                >The first board entire: one road, thirteen plots, and the meadow you learn the
+                trade on.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/blockhold-frame-veiltide.webp"
+              alt="Frostmere Pass under a surge: empowered waves, violet sky, both frozen roads engaged."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Veiltide surge</span
+              ><span
+                >Frostmere Pass under a surge: empowered waves, violet sky, both frozen roads
+                engaged.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/blockhold-frame-cinderwake.webp"
+              alt="Cinderwake Caldera: three roads through the glassfire, lava where a plot could have been."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Cinderwake</span
+              ><span
+                >Cinderwake Caldera: three roads through the glassfire, lava where a plot could have
+                been.</span
+              >
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/blockhold-frame-tidereach.webp"
+              alt="Tidereach Causeway, the widest board in the game: five roads, and a tide that closes them."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Tidereach</span
+              ><span
+                >Tidereach Causeway, the widest board in the game: five roads, and a tide that
+                closes them.</span
+              >
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+      <a class="ref-case-back" href="../index.html#directions">Back to the directions ↑</a>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">KEEP READING</p>
+          <h2>Another thread.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <a class="ref-case-link" href="notable.html" data-case="notable"
+            >Notable Health <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="saltline.html" data-case="saltline"
+            >saltline <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="ember.html" data-case="ember"
+            >Ember Wilds <span aria-hidden="true">→</span></a
+          >
+        </div>
+      </section>
+    </main>
+    <script src="../shared.js" defer></script>
+  </body>
+</html>

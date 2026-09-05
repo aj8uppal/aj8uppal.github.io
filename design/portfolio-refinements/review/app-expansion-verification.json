@@ -1,0 +1,599 @@
+{
+  "url": "http://127.0.0.1:4334/design/portfolio-refinements/worldbuilder.html",
+  "widths": [320, 390, 768, 1440],
+  "checks": [
+    {
+      "name": "320px initial murmuration",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"src\":\"../../src/assets/murmuration-lead-ribbon.webp\",\"alt\":\"Violet and white particles form a luminous ribbon in murmuration.\",\"caption\":\"murmuration · audio in light\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":1999}"
+    },
+    {
+      "name": "320px no document overflow",
+      "pass": true,
+      "detail": "{\"scrollWidth\":320,\"clientWidth\":320,\"bodyScrollWidth\":320}"
+    },
+    {
+      "name": "320px all raster images decoded",
+      "pass": true,
+      "detail": "12 images"
+    },
+    {
+      "name": "320px scope identity text visible",
+      "pass": true,
+      "detail": "{\"text\":\"\\n            I build voice AI infrastructure at Notable, and browser worlds off the clock.\\n          \",\"rect\":{\"x\":24.890625,\"y\":349.59375,\"width\":270.21875,\"height\":39,\"top\":349.59375,\"right\":295.109375,\"bottom\":388.59375,\"left\":24.890625},\"color\":\"rgb(220, 232, 222)\",\"visibility\":\"visible\"}"
+    },
+    {
+      "name": "320px saltline scene",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"src\":\"../../src/assets/saltline-lead-dawn.webp\",\"alt\":\"A sailboat crossing a luminous ocean at dawn in saltline.\",\"caption\":\"saltline · my open sea\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":2776}"
+    },
+    {
+      "name": "320px ember scene",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"src\":\"../../src/assets/ember-spread-fallowmere-dusk.webp\",\"alt\":\"Ember Wilds: a character in an amber voxel landscape at dusk.\",\"caption\":\"Ember Wilds · a shared world\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":3000}"
+    },
+    {
+      "name": "320px murmuration scene",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"src\":\"../../src/assets/murmuration-lead-ribbon.webp\",\"alt\":\"Violet and white particles form a luminous ribbon in murmuration.\",\"caption\":\"murmuration · audio in light\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":1999}"
+    },
+    {
+      "name": "320px pointer gallery scroll",
+      "pass": true,
+      "detail": "{\"before\":{\"scrollLeft\":4,\"scrollWidth\":729,\"clientWidth\":280},\"after\":{\"scrollLeft\":449,\"scrollWidth\":729,\"clientWidth\":280},\"cards\":[{\"left\":-425,\"right\":-196.53125,\"width\":228.46875,\"visible\":false},{\"left\":-178.53125,\"right\":49.9375,\"width\":228.46875,\"visible\":true},{\"left\":67.9375,\"right\":296.40625,\"width\":228.46875,\"visible\":true}]}"
+    },
+    {
+      "name": "320px keyboard focuses all 3 collection cards",
+      "pass": true,
+      "detail": "Slipstream → Throatlight → Filefossil"
+    },
+    {
+      "name": "390px initial murmuration",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"src\":\"../../src/assets/murmuration-lead-ribbon.webp\",\"alt\":\"Violet and white particles form a luminous ribbon in murmuration.\",\"caption\":\"murmuration · audio in light\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":1999}"
+    },
+    {
+      "name": "390px no document overflow",
+      "pass": true,
+      "detail": "{\"scrollWidth\":390,\"clientWidth\":390,\"bodyScrollWidth\":390}"
+    },
+    {
+      "name": "390px all raster images decoded",
+      "pass": true,
+      "detail": "12 images"
+    },
+    {
+      "name": "390px scope identity text visible",
+      "pass": true,
+      "detail": "{\"text\":\"\\n            I build voice AI infrastructure at Notable, and browser worlds off the clock.\\n          \",\"rect\":{\"x\":59.890625,\"y\":379.40625,\"width\":270.21875,\"height\":39,\"top\":379.40625,\"right\":330.109375,\"bottom\":418.40625,\"left\":59.890625},\"color\":\"rgb(220, 232, 222)\",\"visibility\":\"visible\"}"
+    },
+    {
+      "name": "390px saltline scene",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"src\":\"../../src/assets/saltline-lead-dawn.webp\",\"alt\":\"A sailboat crossing a luminous ocean at dawn in saltline.\",\"caption\":\"saltline · my open sea\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":2776}"
+    },
+    {
+      "name": "390px ember scene",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"src\":\"../../src/assets/ember-spread-fallowmere-dusk.webp\",\"alt\":\"Ember Wilds: a character in an amber voxel landscape at dusk.\",\"caption\":\"Ember Wilds · a shared world\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":3000}"
+    },
+    {
+      "name": "390px murmuration scene",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"src\":\"../../src/assets/murmuration-lead-ribbon.webp\",\"alt\":\"Violet and white particles form a luminous ribbon in murmuration.\",\"caption\":\"murmuration · audio in light\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":1999}"
+    },
+    {
+      "name": "390px pointer gallery scroll",
+      "pass": true,
+      "detail": "{\"before\":{\"scrollLeft\":4,\"scrollWidth\":906,\"clientWidth\":350},\"after\":{\"scrollLeft\":556,\"scrollWidth\":906,\"clientWidth\":350},\"cards\":[{\"left\":-532,\"right\":-244.734375,\"width\":287.265625,\"visible\":false},{\"left\":-226.734375,\"right\":60.53125,\"width\":287.265625,\"visible\":true},{\"left\":78.53125,\"right\":365.796875,\"width\":287.265625,\"visible\":true}]}"
+    },
+    {
+      "name": "390px keyboard focuses all 3 collection cards",
+      "pass": true,
+      "detail": "Slipstream → Throatlight → Filefossil"
+    },
+    {
+      "name": "390px murmuration scene",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"src\":\"../../src/assets/murmuration-lead-ribbon.webp\",\"alt\":\"Violet and white particles form a luminous ribbon in murmuration.\",\"caption\":\"murmuration · audio in light\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":1999}"
+    },
+    {
+      "name": "390px murmuration .wb-scope conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-scope\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":2194,\"opaqueTextPixels\":1264,\"minRatio\":8.3}"
+    },
+    {
+      "name": "390px murmuration .wb-hero-line conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-hero-line\",\"threshold\":3,\"visible\":true,\"changedPixels\":5342,\"opaqueTextPixels\":3520,\"minRatio\":11.56}"
+    },
+    {
+      "name": "390px murmuration .wb-hero h1 conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-hero h1\",\"threshold\":3,\"visible\":true,\"changedPixels\":6470,\"opaqueTextPixels\":5505,\"minRatio\":12.19}"
+    },
+    {
+      "name": "390px murmuration .wb-hero h1 em conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-hero h1 em\",\"threshold\":3,\"visible\":true,\"changedPixels\":4798,\"opaqueTextPixels\":4201,\"minRatio\":10.02}"
+    },
+    {
+      "name": "390px murmuration .wb-occupation conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-occupation\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":1994,\"opaqueTextPixels\":1135,\"minRatio\":13.39}"
+    },
+    {
+      "name": "390px murmuration .wb-occupation span conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-occupation span\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":562,\"opaqueTextPixels\":322,\"minRatio\":11.03}"
+    },
+    {
+      "name": "390px murmuration .wb-brand conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-brand\",\"threshold\":3,\"visible\":true,\"changedPixels\":335,\"opaqueTextPixels\":225,\"minRatio\":14.2}"
+    },
+    {
+      "name": "390px murmuration .wb-brand span conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-brand span\",\"threshold\":4.5,\"visible\":false,\"changedPixels\":0,\"opaqueTextPixels\":0,\"minRatio\":null}"
+    },
+    {
+      "name": "390px murmuration .wb-nav nav a:nth-child(1) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-nav nav a:nth-child(1)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":192,\"opaqueTextPixels\":122,\"minRatio\":14.2}"
+    },
+    {
+      "name": "390px murmuration .wb-nav nav a:nth-child(2) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-nav nav a:nth-child(2)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":318,\"opaqueTextPixels\":177,\"minRatio\":14.2}"
+    },
+    {
+      "name": "390px murmuration .wb-nav nav a:nth-child(3) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-nav nav a:nth-child(3)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":354,\"opaqueTextPixels\":194,\"minRatio\":14.2}"
+    },
+    {
+      "name": "390px murmuration .wb-caption-plate conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-caption-plate\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":1589,\"opaqueTextPixels\":884,\"minRatio\":9.83}"
+    },
+    {
+      "name": "390px murmuration .wb-scene-caption small conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":390,\"target\":\".wb-scene-caption small\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":644,\"opaqueTextPixels\":354,\"minRatio\":9.83}"
+    },
+    {
+      "name": "390px saltline .wb-scope conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-scope\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":2188,\"opaqueTextPixels\":1314,\"minRatio\":6.91}"
+    },
+    {
+      "name": "390px saltline .wb-hero-line conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-hero-line\",\"threshold\":3,\"visible\":true,\"changedPixels\":5343,\"opaqueTextPixels\":3554,\"minRatio\":10.18}"
+    },
+    {
+      "name": "390px saltline .wb-hero h1 conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-hero h1\",\"threshold\":3,\"visible\":true,\"changedPixels\":6470,\"opaqueTextPixels\":5506,\"minRatio\":12.56}"
+    },
+    {
+      "name": "390px saltline .wb-hero h1 em conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-hero h1 em\",\"threshold\":3,\"visible\":true,\"changedPixels\":4798,\"opaqueTextPixels\":4205,\"minRatio\":10.51}"
+    },
+    {
+      "name": "390px saltline .wb-occupation conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-occupation\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":1994,\"opaqueTextPixels\":1135,\"minRatio\":13.39}"
+    },
+    {
+      "name": "390px saltline .wb-occupation span conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-occupation span\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":562,\"opaqueTextPixels\":322,\"minRatio\":11.03}"
+    },
+    {
+      "name": "390px saltline .wb-brand conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-brand\",\"threshold\":3,\"visible\":true,\"changedPixels\":335,\"opaqueTextPixels\":225,\"minRatio\":14.2}"
+    },
+    {
+      "name": "390px saltline .wb-brand span conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-brand span\",\"threshold\":4.5,\"visible\":false,\"changedPixels\":0,\"opaqueTextPixels\":0,\"minRatio\":null}"
+    },
+    {
+      "name": "390px saltline .wb-nav nav a:nth-child(1) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-nav nav a:nth-child(1)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":192,\"opaqueTextPixels\":122,\"minRatio\":14.2}"
+    },
+    {
+      "name": "390px saltline .wb-nav nav a:nth-child(2) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-nav nav a:nth-child(2)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":318,\"opaqueTextPixels\":177,\"minRatio\":14.2}"
+    },
+    {
+      "name": "390px saltline .wb-nav nav a:nth-child(3) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-nav nav a:nth-child(3)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":354,\"opaqueTextPixels\":194,\"minRatio\":14.2}"
+    },
+    {
+      "name": "390px saltline .wb-caption-plate conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-caption-plate\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":1343,\"opaqueTextPixels\":770,\"minRatio\":7.45}"
+    },
+    {
+      "name": "390px saltline .wb-scene-caption small conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":390,\"target\":\".wb-scene-caption small\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":643,\"opaqueTextPixels\":366,\"minRatio\":7.29}"
+    },
+    {
+      "name": "390px ember .wb-scope conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-scope\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":2191,\"opaqueTextPixels\":1275,\"minRatio\":8.71}"
+    },
+    {
+      "name": "390px ember .wb-hero-line conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-hero-line\",\"threshold\":3,\"visible\":true,\"changedPixels\":5344,\"opaqueTextPixels\":3535,\"minRatio\":9.89}"
+    },
+    {
+      "name": "390px ember .wb-hero h1 conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-hero h1\",\"threshold\":3,\"visible\":true,\"changedPixels\":6470,\"opaqueTextPixels\":5508,\"minRatio\":12.86}"
+    },
+    {
+      "name": "390px ember .wb-hero h1 em conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-hero h1 em\",\"threshold\":3,\"visible\":true,\"changedPixels\":4798,\"opaqueTextPixels\":4205,\"minRatio\":10.86}"
+    },
+    {
+      "name": "390px ember .wb-occupation conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-occupation\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":1994,\"opaqueTextPixels\":1135,\"minRatio\":13.39}"
+    },
+    {
+      "name": "390px ember .wb-occupation span conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-occupation span\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":562,\"opaqueTextPixels\":322,\"minRatio\":11.03}"
+    },
+    {
+      "name": "390px ember .wb-brand conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-brand\",\"threshold\":3,\"visible\":true,\"changedPixels\":335,\"opaqueTextPixels\":225,\"minRatio\":14.2}"
+    },
+    {
+      "name": "390px ember .wb-brand span conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-brand span\",\"threshold\":4.5,\"visible\":false,\"changedPixels\":0,\"opaqueTextPixels\":0,\"minRatio\":null}"
+    },
+    {
+      "name": "390px ember .wb-nav nav a:nth-child(1) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-nav nav a:nth-child(1)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":192,\"opaqueTextPixels\":122,\"minRatio\":14.2}"
+    },
+    {
+      "name": "390px ember .wb-nav nav a:nth-child(2) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-nav nav a:nth-child(2)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":318,\"opaqueTextPixels\":177,\"minRatio\":14.2}"
+    },
+    {
+      "name": "390px ember .wb-nav nav a:nth-child(3) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-nav nav a:nth-child(3)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":354,\"opaqueTextPixels\":194,\"minRatio\":14.2}"
+    },
+    {
+      "name": "390px ember .wb-caption-plate conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-caption-plate\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":1635,\"opaqueTextPixels\":918,\"minRatio\":10.52}"
+    },
+    {
+      "name": "390px ember .wb-scene-caption small conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":390,\"target\":\".wb-scene-caption small\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":644,\"opaqueTextPixels\":352,\"minRatio\":9.89}"
+    },
+    {
+      "name": "768px initial murmuration",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"src\":\"../../src/assets/murmuration-lead-ribbon.webp\",\"alt\":\"Violet and white particles form a luminous ribbon in murmuration.\",\"caption\":\"murmuration · audio in light\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":1999}"
+    },
+    {
+      "name": "768px no document overflow",
+      "pass": true,
+      "detail": "{\"scrollWidth\":768,\"clientWidth\":768,\"bodyScrollWidth\":768}"
+    },
+    {
+      "name": "768px all raster images decoded",
+      "pass": true,
+      "detail": "12 images"
+    },
+    {
+      "name": "768px scope identity text visible",
+      "pass": true,
+      "detail": "{\"text\":\"\\n            I build voice AI infrastructure at Notable, and browser worlds off the clock.\\n          \",\"rect\":{\"x\":172.359375,\"y\":448.40625,\"width\":423.28125,\"height\":42,\"top\":448.40625,\"right\":595.640625,\"bottom\":490.40625,\"left\":172.359375},\"color\":\"rgb(220, 232, 222)\",\"visibility\":\"visible\"}"
+    },
+    {
+      "name": "768px saltline scene",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"src\":\"../../src/assets/saltline-lead-dawn.webp\",\"alt\":\"A sailboat crossing a luminous ocean at dawn in saltline.\",\"caption\":\"saltline · my open sea\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":2776}"
+    },
+    {
+      "name": "768px ember scene",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"src\":\"../../src/assets/ember-spread-fallowmere-dusk.webp\",\"alt\":\"Ember Wilds: a character in an amber voxel landscape at dusk.\",\"caption\":\"Ember Wilds · a shared world\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":3000}"
+    },
+    {
+      "name": "768px murmuration scene",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"src\":\"../../src/assets/murmuration-lead-ribbon.webp\",\"alt\":\"Violet and white particles form a luminous ribbon in murmuration.\",\"caption\":\"murmuration · audio in light\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":1999}"
+    },
+    {
+      "name": "768px pointer gallery scroll",
+      "pass": true,
+      "detail": "desktop gallery has no horizontal overflow by design"
+    },
+    {
+      "name": "768px keyboard focuses all 3 collection cards",
+      "pass": true,
+      "detail": "Slipstream → Throatlight → Filefossil"
+    },
+    {
+      "name": "1440px initial murmuration",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"src\":\"../../src/assets/murmuration-lead-ribbon.webp\",\"alt\":\"Violet and white particles form a luminous ribbon in murmuration.\",\"caption\":\"murmuration · audio in light\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":1999}"
+    },
+    {
+      "name": "1440px no document overflow",
+      "pass": true,
+      "detail": "{\"scrollWidth\":1440,\"clientWidth\":1440,\"bodyScrollWidth\":1440}"
+    },
+    {
+      "name": "1440px all raster images decoded",
+      "pass": true,
+      "detail": "12 images"
+    },
+    {
+      "name": "1440px scope identity text visible",
+      "pass": true,
+      "detail": "{\"text\":\"\\n            I build voice AI infrastructure at Notable, and browser worlds off the clock.\\n          \",\"rect\":{\"x\":508.359375,\"y\":529.046875,\"width\":423.28125,\"height\":42,\"top\":529.046875,\"right\":931.640625,\"bottom\":571.046875,\"left\":508.359375},\"color\":\"rgb(220, 232, 222)\",\"visibility\":\"visible\"}"
+    },
+    {
+      "name": "1440px saltline scene",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"src\":\"../../src/assets/saltline-lead-dawn.webp\",\"alt\":\"A sailboat crossing a luminous ocean at dawn in saltline.\",\"caption\":\"saltline · my open sea\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":2776}"
+    },
+    {
+      "name": "1440px ember scene",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"src\":\"../../src/assets/ember-spread-fallowmere-dusk.webp\",\"alt\":\"Ember Wilds: a character in an amber voxel landscape at dusk.\",\"caption\":\"Ember Wilds · a shared world\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":3000}"
+    },
+    {
+      "name": "1440px murmuration scene",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"src\":\"../../src/assets/murmuration-lead-ribbon.webp\",\"alt\":\"Violet and white particles form a luminous ribbon in murmuration.\",\"caption\":\"murmuration · audio in light\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":1999}"
+    },
+    {
+      "name": "1440px pointer gallery scroll",
+      "pass": true,
+      "detail": "desktop gallery has no horizontal overflow by design"
+    },
+    {
+      "name": "1440px keyboard focuses all 3 collection cards",
+      "pass": true,
+      "detail": "Slipstream → Throatlight → Filefossil"
+    },
+    {
+      "name": "1440px murmuration scene",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"src\":\"../../src/assets/murmuration-lead-ribbon.webp\",\"alt\":\"Violet and white particles form a luminous ribbon in murmuration.\",\"caption\":\"murmuration · audio in light\",\"decoding\":\"sync\",\"complete\":true,\"naturalWidth\":1999}"
+    },
+    {
+      "name": "1440px murmuration .wb-scope conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-scope\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":2572,\"opaqueTextPixels\":1528,\"minRatio\":8.99}"
+    },
+    {
+      "name": "1440px murmuration .wb-hero-line conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-hero-line\",\"threshold\":3,\"visible\":true,\"changedPixels\":8090,\"opaqueTextPixels\":5800,\"minRatio\":11.04}"
+    },
+    {
+      "name": "1440px murmuration .wb-hero h1 conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-hero h1\",\"threshold\":3,\"visible\":true,\"changedPixels\":27829,\"opaqueTextPixels\":25551,\"minRatio\":8.56}"
+    },
+    {
+      "name": "1440px murmuration .wb-hero h1 em conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-hero h1 em\",\"threshold\":3,\"visible\":true,\"changedPixels\":20699,\"opaqueTextPixels\":19300,\"minRatio\":7.23}"
+    },
+    {
+      "name": "1440px murmuration .wb-occupation conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-occupation\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":1977,\"opaqueTextPixels\":1162,\"minRatio\":8.41}"
+    },
+    {
+      "name": "1440px murmuration .wb-occupation span conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-occupation span\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":558,\"opaqueTextPixels\":349,\"minRatio\":7.16}"
+    },
+    {
+      "name": "1440px murmuration .wb-brand conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-brand\",\"threshold\":3,\"visible\":true,\"changedPixels\":1010,\"opaqueTextPixels\":638,\"minRatio\":15.66}"
+    },
+    {
+      "name": "1440px murmuration .wb-brand span conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-brand span\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":588,\"opaqueTextPixels\":317,\"minRatio\":15.66}"
+    },
+    {
+      "name": "1440px murmuration .wb-nav nav a:nth-child(1) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-nav nav a:nth-child(1)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":195,\"opaqueTextPixels\":118,\"minRatio\":15.67}"
+    },
+    {
+      "name": "1440px murmuration .wb-nav nav a:nth-child(2) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-nav nav a:nth-child(2)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":320,\"opaqueTextPixels\":176,\"minRatio\":15.67}"
+    },
+    {
+      "name": "1440px murmuration .wb-nav nav a:nth-child(3) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-nav nav a:nth-child(3)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":354,\"opaqueTextPixels\":192,\"minRatio\":15.66}"
+    },
+    {
+      "name": "1440px murmuration .wb-caption-plate conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-caption-plate\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":2844,\"opaqueTextPixels\":1177,\"minRatio\":9.06}"
+    },
+    {
+      "name": "1440px murmuration .wb-scene-caption small conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"murmuration\",\"width\":1440,\"target\":\".wb-scene-caption small\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":750,\"opaqueTextPixels\":345,\"minRatio\":11.51}"
+    },
+    {
+      "name": "1440px saltline .wb-scope conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-scope\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":2547,\"opaqueTextPixels\":1657,\"minRatio\":6.44}"
+    },
+    {
+      "name": "1440px saltline .wb-hero-line conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-hero-line\",\"threshold\":3,\"visible\":true,\"changedPixels\":8076,\"opaqueTextPixels\":5959,\"minRatio\":7.54}"
+    },
+    {
+      "name": "1440px saltline .wb-hero h1 conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-hero h1\",\"threshold\":3,\"visible\":true,\"changedPixels\":27784,\"opaqueTextPixels\":25776,\"minRatio\":6.12}"
+    },
+    {
+      "name": "1440px saltline .wb-hero h1 em conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-hero h1 em\",\"threshold\":3,\"visible\":true,\"changedPixels\":20655,\"opaqueTextPixels\":19498,\"minRatio\":5.16}"
+    },
+    {
+      "name": "1440px saltline .wb-occupation conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-occupation\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":1972,\"opaqueTextPixels\":1173,\"minRatio\":7.76}"
+    },
+    {
+      "name": "1440px saltline .wb-occupation span conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-occupation span\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":553,\"opaqueTextPixels\":353,\"minRatio\":6.39}"
+    },
+    {
+      "name": "1440px saltline .wb-brand conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-brand\",\"threshold\":3,\"visible\":true,\"changedPixels\":1007,\"opaqueTextPixels\":651,\"minRatio\":12.83}"
+    },
+    {
+      "name": "1440px saltline .wb-brand span conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-brand span\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":587,\"opaqueTextPixels\":328,\"minRatio\":12.83}"
+    },
+    {
+      "name": "1440px saltline .wb-nav nav a:nth-child(1) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-nav nav a:nth-child(1)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":192,\"opaqueTextPixels\":123,\"minRatio\":13.18}"
+    },
+    {
+      "name": "1440px saltline .wb-nav nav a:nth-child(2) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-nav nav a:nth-child(2)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":318,\"opaqueTextPixels\":177,\"minRatio\":12.55}"
+    },
+    {
+      "name": "1440px saltline .wb-nav nav a:nth-child(3) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-nav nav a:nth-child(3)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":354,\"opaqueTextPixels\":194,\"minRatio\":14.02}"
+    },
+    {
+      "name": "1440px saltline .wb-caption-plate conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-caption-plate\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":5969,\"opaqueTextPixels\":1002,\"minRatio\":5.62}"
+    },
+    {
+      "name": "1440px saltline .wb-scene-caption small conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"saltline\",\"width\":1440,\"target\":\".wb-scene-caption small\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":2167,\"opaqueTextPixels\":361,\"minRatio\":6.85}"
+    },
+    {
+      "name": "1440px ember .wb-scope conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-scope\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":2565,\"opaqueTextPixels\":1543,\"minRatio\":9.36}"
+    },
+    {
+      "name": "1440px ember .wb-hero-line conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-hero-line\",\"threshold\":3,\"visible\":true,\"changedPixels\":8094,\"opaqueTextPixels\":5839,\"minRatio\":8.73}"
+    },
+    {
+      "name": "1440px ember .wb-hero h1 conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-hero h1\",\"threshold\":3,\"visible\":true,\"changedPixels\":27825,\"opaqueTextPixels\":25572,\"minRatio\":6.61}"
+    },
+    {
+      "name": "1440px ember .wb-hero h1 em conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-hero h1 em\",\"threshold\":3,\"visible\":true,\"changedPixels\":20694,\"opaqueTextPixels\":19335,\"minRatio\":5.58}"
+    },
+    {
+      "name": "1440px ember .wb-occupation conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-occupation\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":1981,\"opaqueTextPixels\":1147,\"minRatio\":7.48}"
+    },
+    {
+      "name": "1440px ember .wb-occupation span conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-occupation span\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":562,\"opaqueTextPixels\":345,\"minRatio\":6.16}"
+    },
+    {
+      "name": "1440px ember .wb-brand conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-brand\",\"threshold\":3,\"visible\":true,\"changedPixels\":1010,\"opaqueTextPixels\":650,\"minRatio\":10.32}"
+    },
+    {
+      "name": "1440px ember .wb-brand span conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-brand span\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":588,\"opaqueTextPixels\":327,\"minRatio\":10.32}"
+    },
+    {
+      "name": "1440px ember .wb-nav nav a:nth-child(1) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-nav nav a:nth-child(1)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":192,\"opaqueTextPixels\":122,\"minRatio\":10.58}"
+    },
+    {
+      "name": "1440px ember .wb-nav nav a:nth-child(2) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-nav nav a:nth-child(2)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":318,\"opaqueTextPixels\":178,\"minRatio\":11.41}"
+    },
+    {
+      "name": "1440px ember .wb-nav nav a:nth-child(3) conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-nav nav a:nth-child(3)\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":354,\"opaqueTextPixels\":198,\"minRatio\":11.89}"
+    },
+    {
+      "name": "1440px ember .wb-caption-plate conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-caption-plate\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":3259,\"opaqueTextPixels\":1254,\"minRatio\":7.27}"
+    },
+    {
+      "name": "1440px ember .wb-scene-caption small conservative AA contrast",
+      "pass": true,
+      "detail": "{\"scene\":\"ember\",\"width\":1440,\"target\":\".wb-scene-caption small\",\"threshold\":4.5,\"visible\":true,\"changedPixels\":977,\"opaqueTextPixels\":350,\"minRatio\":9.9}"
+    },
+    {
+      "name": "no-JS case and original links remain available",
+      "pass": true,
+      "detail": "{\"caseLinks\":13,\"original\":\"../portfolio-candidates/worldbuilder.html\"}"
+    },
+    {
+      "name": "reduced-motion removes representative animation and transitions",
+      "pass": true,
+      "detail": "[{\"selector\":\".wb-scene\",\"animationName\":\"none\",\"transitionDuration\":\"0s\",\"transitionProperty\":\"none\"},{\"selector\":\".wb-collection-image img\",\"animationName\":\"none\",\"transitionDuration\":\"0s\",\"transitionProperty\":\"none\"},{\"selector\":\".wb-button\",\"animationName\":\"none\",\"transitionDuration\":\"0s\",\"transitionProperty\":\"none\"}]"
+    }
+  ],
+  "failures": [],
+  "files": ["worldbuilder- desktop/phone fold + full screenshots", "run.mjs"],
+  "generatedAt": "2026-09-05T06:31:43.066Z"
+}

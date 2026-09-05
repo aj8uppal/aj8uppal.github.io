@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>hidamari / AJ Uppal case study</title>
+    <link rel="stylesheet" href="../shared.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body>
+    <aside class="ref-reviewbar" aria-label="Case study navigation">
+      <a href="../index.html">← Four directions</a><span>Case study / hidamari</span
+      ><a href="../../portfolio-candidates/">Original round ↗</a>
+    </aside>
+    <main class="ref-case-doc">
+      <header class="ref-case-header">
+        <div>
+          <p class="ref-eyebrow">CASE / Rendering / ambient</p>
+          <h1 id="case-title-hidamari">hidamari</h1>
+          <div class="ref-case-header-meta">
+            <span class="ref-case-pill">wip</span
+            ><span class="ref-case-pill">Blender Cycles · depth reprojection · AVIF · PWA</span>
+          </div>
+        </div>
+        <p class="ref-case-summary">
+          Ambient app. Japanese for a sunny spot, the pool of light you stand in.
+        </p>
+      </header>
+      <section class="ref-case-hero">
+        <figure>
+          <img
+            src="../../../src/assets/hidamari-spread-canopy.webp"
+            alt="Hidamari: an autumn canopy path rendered as layered depth plates."
+            loading="lazy"
+          />
+          <figcaption><span>hidamari</span><span>Real project capture</span></figcaption>
+        </figure>
+        <aside class="ref-case-hero-aside">
+          <p class="ref-eyebrow">THE QUESTION</p>
+          <h2>How can a browser hold onto a place that was never there?</h2>
+          <div><span class="ref-case-pill">Work in progress</span></div>
+          <dl>
+            <div>
+              <dt>State</dt>
+              <dd>wip</dd>
+            </div>
+            <div>
+              <dt>Stack</dt>
+              <dd>Blender Cycles · depth reprojection · AVIF · PWA</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">HOW IT HOLDS UP</p>
+          <h2>Work with a point of view.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <p>The offline bake, runtime reprojection and PWA delivery.</p>
+          <div class="ref-case-copy-block">
+            <article class="ref-case-card">
+              <h3>Constraint</h3>
+              <p>
+                Photoreal light must run on hardware that cannot path-trace a frame in the browser.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Decision</h3>
+              <p>
+                Bake lighting in Blender Cycles and reproject depth against pre-lit plates; reserve
+                the runtime for compositing and parallax.
+              </p>
+            </article>
+            <article class="ref-case-card">
+              <h3>Evidence</h3>
+              <p>
+                Playable prototype reaches 116fps; audio is still being tuned before public release.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">SELECTED PROOF</p>
+          <h2>Details that matter.</h2>
+        </div>
+        <div class="ref-case-facts">
+          <div class="ref-case-fact">
+            <strong>Offline</strong><span>Blender Cycles bakes the light into plates</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>Runtime</strong
+            ><span>Depth reprojection adds parallax while the browser composites</span>
+          </div>
+          <div class="ref-case-fact">
+            <strong>Delivery</strong><span>PWA · service worker · AVIF with PNG fallback</span>
+          </div>
+        </div>
+      </section>
+      <section class="ref-case-frames" aria-labelledby="frames-title">
+        <p class="ref-eyebrow">RECORDED STATES</p>
+        <h2 id="frames-title">A few frames from the work</h2>
+        <div class="ref-case-frame-grid">
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/hidamari-depth-0-sky.webp"
+              alt="Hidamari depth layer 0."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Depth 0</span><span>Baked plate used by the runtime reprojection.</span>
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/hidamari-depth-1-trees.webp"
+              alt="Hidamari depth layer 1."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Depth 1</span><span>Baked plate used by the runtime reprojection.</span>
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/hidamari-depth-2-arch.webp"
+              alt="Hidamari depth layer 2."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Depth 2</span><span>Baked plate used by the runtime reprojection.</span>
+            </figcaption>
+          </figure>
+          <figure class="ref-case-frame">
+            <img
+              src="../../../src/assets/hidamari-depth-3-canopy.webp"
+              alt="Hidamari depth layer 3."
+              loading="lazy"
+            />
+            <figcaption>
+              <span>Depth 3</span><span>Baked plate used by the runtime reprojection.</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+      <a class="ref-case-back" href="../index.html#directions">Back to the directions ↑</a>
+      <section class="ref-case-sections">
+        <div>
+          <p class="ref-eyebrow">KEEP READING</p>
+          <h2>Another thread.</h2>
+        </div>
+        <div class="ref-case-copy">
+          <a class="ref-case-link" href="notable.html" data-case="notable"
+            >Notable Health <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="saltline.html" data-case="saltline"
+            >saltline <span aria-hidden="true">→</span></a
+          ><a class="ref-case-link" href="ember.html" data-case="ember"
+            >Ember Wilds <span aria-hidden="true">→</span></a
+          >
+        </div>
+      </section>
+    </main>
+    <script src="../shared.js" defer></script>
+  </body>
+</html>

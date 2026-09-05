@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Worldbuilder — AJ Uppal / direction 04</title>
+    <meta
+      name="description"
+      content="A browser tab as a place you can go. A portfolio design exploration for AJ Uppal."
+    />
+    <link rel="stylesheet" href="shared.css" />
+    <link rel="stylesheet" href="worldbuilder.css" />
+    <script>
+      if (new URLSearchParams(location.search).has('capture'))
+        document.documentElement.dataset.capture = '';
+    </script>
+  </head>
+  <body class="worldbuilder">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="review-bar" aria-label="Design review navigation">
+      <a href="index.html">← All four directions</a><span>04 / Worldbuilder</span
+      ><a href="editorial.html">01 / The Editorial →</a>
+    </aside>
+
+    <div id="top">
+      <section class="wb-cover">
+        <img
+          class="wb-scene"
+          id="world-image"
+          src="../../src/assets/saltline-lead-dawn.webp"
+          alt="saltline at 06:31: an island silhouetted under a blue dawn sky, three named raiders strung along the horizon, a light path on the water, the sloop under full sail. The Ghostgale status panel and the nav chart sit down the right edge."
+          fetchpriority="high"
+        />
+        <div class="wb-wash" aria-hidden="true"></div>
+        <header class="wb-nav">
+          <a class="wb-brand" href="#top">AJ UPPAL<span>SOFTWARE ENGINEER & WORLD MAKER</span></a>
+          <nav aria-label="Main">
+            <a href="#worlds">The worlds</a><a href="#about">The engineer</a
+            ><a class="" href="mailto:aj8uppal@gmail.com"
+              >Get in touch<span aria-hidden="true"> ↗</span></a
+            >
+          </nav>
+        </header>
+        <main id="main">
+          <div class="wb-hero">
+            <p class="eyebrow">IMAGINED, ENGINEERED, AND RUNNING IN A TAB.</p>
+            <h1>Small tabs.<br /><em>Whole worlds.</em></h1>
+            <div class="wb-hero-bottom">
+              <div class="wb-featured" aria-live="polite">
+                <p class="eyebrow" id="world-kind">01 / A SIMULATED SEA</p>
+                <h2 id="world-name">saltline</h2>
+                <p id="world-description">
+                  Captain a sloop. Read the wind. Find out what’s beyond the next island.
+                </p>
+              </div>
+              <a
+                class="wb-enter"
+                id="world-link"
+                href="https://saltline.app"
+                target="_blank"
+                rel="noopener"
+                ><span id="world-link-label">Enter saltline</span
+                ><span aria-hidden="true">↗</span></a
+              >
+            </div>
+          </div>
+        </main>
+        <div class="wb-worlds" id="worlds" aria-label="Choose a featured world">
+          <p class="eyebrow">CHOOSE A WORLD<span>Actual captures. Yours to explore.</span></p>
+          <div class="wb-selectors" role="group" aria-label="Featured world">
+            <button type="button" data-world="0" aria-pressed="true">
+              <img src="../../src/assets/saltline-lead-dawn.webp" alt="" /><span
+                ><small>01</small>saltline</span
+              ><span class="wb-select-arrow" aria-hidden="true">↗</span></button
+            ><button type="button" data-world="1" aria-pressed="false">
+              <img src="../../src/assets/ember-spread-fallowmere-dusk.webp" alt="" /><span
+                ><small>02</small>Ember Wilds</span
+              ><span class="wb-select-arrow" aria-hidden="true">↗</span></button
+            ><button type="button" data-world="2" aria-pressed="false">
+              <img src="../../src/assets/murmuration-lead-ribbon.webp" alt="" /><span
+                ><small>03</small>murmuration</span
+              ><span class="wb-select-arrow" aria-hidden="true">↗</span>
+            </button>
+          </div>
+        </div>
+      </section>
+      <section class="wb-under">
+        <div class="wb-under-head">
+          <p class="eyebrow">BEHIND THE ATMOSPHERE</p>
+          <h2>A world only works<br />if the <em>system does.</em></h2>
+        </div>
+        <div class="wb-engineering">
+          <article>
+            <span class="eyebrow">01 / SALTLINE</span>
+            <p>The sailing model, the renderer, and a shared sea for up to twenty players.</p>
+            <a class="text-link" href="https://saltline.app/" target="_blank" rel="noopener"
+              >Explore saltline<span aria-hidden="true"> ↗</span></a
+            >
+          </article>
+          <article>
+            <span class="eyebrow">02 / EMBER WILDS</span>
+            <p>
+              A web tier and an authoritative realm service keep one world consistent for everyone
+              in it.
+            </p>
+            <a
+              class="text-link"
+              href="https://emberwilds-web.fly.dev/"
+              target="_blank"
+              rel="noopener"
+              >Explore Ember Wilds<span aria-hidden="true"> ↗</span></a
+            >
+          </article>
+          <article>
+            <span class="eyebrow">03 / MURMURATION</span>
+            <p>
+              Audio analysis and a WebGPU particle renderer, written from the signal to the screen.
+            </p>
+            <a
+              class="text-link"
+              href="https://aj8uppal.github.io/murmuration/"
+              target="_blank"
+              rel="noopener"
+              >Explore murmuration<span aria-hidden="true"> ↗</span></a
+            >
+          </article>
+        </div>
+      </section>
+      <section class="wb-about" id="about">
+        <div>
+          <p class="eyebrow">THE ENGINEER</p>
+          <h2>I’m AJ.<br />I like making<br />things <em>work.</em></h2>
+        </div>
+        <div>
+          <p>
+            By day, I build across the stack at Notable Health: healthcare integrations, voice AI,
+            and the systems underneath.
+          </p>
+          <p>
+            I studied computer science and astrophysics. I’m still following the same curiosity,
+            from patient conversations to simulated oceans.
+          </p>
+          <div class="wb-about-links">
+            <a
+              class=""
+              href="https://aj8uppal.github.io/attachments/resume2026.pdf"
+              target="_blank"
+              rel="noopener"
+              >Résumé<span aria-hidden="true"> ↗</span></a
+            ><a class="" href="https://github.com/aj8uppal" target="_blank" rel="noopener"
+              >GitHub<span aria-hidden="true"> ↗</span></a
+            ><a class="" href="https://aj8uppal.github.io/built/" target="_blank" rel="noopener"
+              >The smaller experiments<span aria-hidden="true"> ↗</span></a
+            >
+          </div>
+        </div>
+      </section>
+      <section class="wb-contact">
+        <p class="eyebrow">HAVE A WORLD IN MIND?</p>
+        <h2>Let’s make it <em>real.</em></h2>
+        <a class="text-link" href="mailto:aj8uppal@gmail.com"
+          >aj8uppal@gmail.com<span aria-hidden="true"> ↗</span></a
+        >
+      </section>
+      <footer class="site-footer">
+        <a href="#top">AJ Uppal </a><span>Software engineer · Bay Area</span>
+        <div>
+          <a class="" href="https://github.com/aj8uppal" target="_blank" rel="noopener"
+            >GitHub<span aria-hidden="true"> ↗</span></a
+          ><a
+            class=""
+            href="https://aj8uppal.github.io/attachments/resume2026.pdf"
+            target="_blank"
+            rel="noopener"
+            >Résumé<span aria-hidden="true"> ↗</span></a
+          ><a class="" href="mailto:aj8uppal@gmail.com">Email<span aria-hidden="true"> ↗</span></a>
+        </div>
+      </footer>
+    </div>
+    <script src="interactions.js" defer></script>
+    <script type="application/json" id="world-data">
+      [
+        {
+          "key": "saltline",
+          "name": "saltline",
+          "kind": "01 / A SIMULATED SEA",
+          "src": "../../src/assets/saltline-lead-dawn.webp",
+          "alt": "saltline at 06:31: an island silhouetted under a blue dawn sky, three named raiders strung along the horizon, a light path on the water, the sloop under full sail. The Ghostgale status panel and the nav chart sit down the right edge.",
+          "description": "Captain a sloop. Read the wind. Find out what’s beyond the next island.",
+          "href": "https://saltline.app",
+          "note": "The sailing model, the renderer, and a shared sea for up to twenty players."
+        },
+        {
+          "key": "ember",
+          "name": "Ember Wilds",
+          "kind": "02 / A SHARED REALM",
+          "src": "../../src/assets/ember-spread-fallowmere-dusk.webp",
+          "alt": "Ember Wilds running in Fallowmere at dusk: a voxel world, quest panels, and a level-30 character.",
+          "description": "Seven regions. One shared world. A browser tab is all it takes to step inside.",
+          "href": "https://emberwilds-web.fly.dev",
+          "note": "A web tier and an authoritative realm service keep one world consistent for everyone in it."
+        },
+        {
+          "key": "murmuration",
+          "name": "murmuration",
+          "kind": "03 / A FIELD THAT LISTENS",
+          "src": "../../src/assets/murmuration-lead-ribbon.webp",
+          "alt": "murmuration in ribbon style: a dense violet and white form of drawn-out particle streaks against black, filling most of the frame.",
+          "description": "Give it a song. Watch a field of light find the rhythm, the key, and the breath.",
+          "href": "https://aj8uppal.github.io/murmuration/",
+          "note": "Audio analysis and a WebGPU particle renderer, written from the signal to the screen."
+        }
+      ]
+    </script>
+  </body>
+</html>

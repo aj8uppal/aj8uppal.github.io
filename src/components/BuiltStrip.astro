@@ -1,18 +1,5 @@
 ---
-/**
- * The eleven, on the index.
- *
- * They have a page of their own (/built), because eleven cards is most of a
- * second index and the index has a height budget that says so. What the index
- * owes them is presence, not a summary: the three that lead get a frame and a
- * line each, right here, and the other eight fold behind one disclosure so a
- * reader who wants the list has it without the page paying for it when they
- * do not.
- *
- * A dark plate, on a section that is standing on sand. Everything else in the
- * Playground is a frame with something running in it; this is the one thing
- * on the page that sends you off it, and it should not look like the others.
- */
+/** Three selected frames lead to the collection; the rest stay folded. */
 import { Picture } from 'astro:assets';
 import { asset } from '../lib/images';
 import { apps } from '../data/built';
@@ -28,13 +15,13 @@ const S = '(min-width: 1400px) 380px, (min-width: 760px) 30vw, 88vw';
 <div class="bs" data-reveal>
   <div class="bs__head">
     <div>
-      <p class="kicker bs__k">Eleven more</p>
+      <p class="kicker bs__k">The wider collection</p>
       <p class="bs__t">
-        Smaller, finished, <span>and open</span>
+        Things to try. <span>Ideas to follow.</span>
       </p>
     </div>
     <a class="bs__all" href="/built"
-      >All eleven, with pictures <span aria-hidden="true">&rarr;</span></a
+      >All {apps.length}, with pictures <span aria-hidden="true">&rarr;</span></a
     >
   </div>
 
@@ -75,15 +62,15 @@ const S = '(min-width: 1400px) 380px, (min-width: 760px) 30vw, 88vw';
 
   {
     /* Closed by default, and the page is measured closed. Open, it is a list
-      of eight names with one line each: the same eight the page shows as
+      of names with one line each: the same catalogue the page shows as
       cards, in the same order, keyed by the same colours. */
   }
   <details class="bs__rest">
     <summary>
       <span class="bs__sum">
-        The other eight
+        {rest.length} more to discover
         <span class="bs__dots" aria-hidden="true">
-          {rest.map((a) => <i style={`--a:${a.accent}`} />)}
+          {rest.slice(0, 8).map((a) => <i style={`--a:${a.accent}`} />)}
         </span>
       </span>
       <span class="bs__chev" aria-hidden="true"></span>
