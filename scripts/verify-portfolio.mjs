@@ -214,6 +214,28 @@ try {
   }
 
   await page.goto(new URL('/', BASE).href, { waitUntil: 'networkidle' });
+  const skip = page.locator('.ref-skip');
+  note(
+    await skip.evaluate((link) => getComputedStyle(link).clipPath === 'inset(50%)'),
+    'skip link: clipped while unfocused, including long captures',
+  );
+  await page.keyboard.press('Tab');
+  note(
+    await skip.evaluate(
+      (link) => document.activeElement === link && getComputedStyle(link).clipPath === 'none',
+    ),
+    'skip link: first Tab reveals a visible shortcut',
+  );
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('Tab');
+  note(
+    await page
+      .locator('.wb-hero-actions a')
+      .first()
+      .evaluate((link) => document.activeElement === link),
+    'skip link: activation bypasses navigation and reaches the hero actions',
+  );
+  await page.goto(new URL('/', BASE).href, { waitUntil: 'networkidle' });
   const primary = await page
     .locator('[data-primary-project]')
     .evaluateAll((nodes) => nodes.map((n) => n.dataset.primaryProject));
@@ -229,6 +251,16 @@ try {
     JSON.stringify(secondary) === JSON.stringify(secondaryProjectKeys),
     'homepage: seven secondary projects in AJ’s requested order',
     secondary,
+  );
+  note(
+    await page.locator('.wb-live').evaluateAll((labels) =>
+      labels.every((label) => {
+        const box = label.getBoundingClientRect();
+        const card = label.closest('.wb-project').getBoundingClientRect();
+        return box.x >= card.x && box.right <= card.right + 0.5 && box.right <= innerWidth;
+      }),
+    ),
+    'primary cards: live indicators fit inside their cards and viewport',
   );
   const homepageCases = await page
     .locator('a[href^="/portfolio/work/"]')
@@ -270,6 +302,12 @@ try {
     await page.keyboard.press('Enter');
     note(await fold.evaluate((el) => el.open), `folding menu ${width}: opens with keyboard`);
     await page.waitForTimeout(450);
+    note(
+      await page
+        .locator('.wb-fold-sheet a')
+        .evaluateAll((links) => links.every((link) => getComputedStyle(link).transform === 'none')),
+      `folding menu ${width}: finished folds return to flat layout`,
+    );
     const bounds = await page.locator('.wb-fold-sheet').boundingBox();
     note(
       bounds.x >= 0 && bounds.x + bounds.width <= width + 1,

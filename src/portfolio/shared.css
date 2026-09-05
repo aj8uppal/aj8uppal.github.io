@@ -144,13 +144,14 @@ svg {
   position: fixed;
   z-index: 1000;
   left: 16px;
-  top: -100px;
+  top: 16px;
+  clip-path: inset(50%);
   padding: 10px 14px;
   background: var(--ref-ink);
-  color: white;
+  color: var(--ref-paper);
 }
 .ref-skip:focus {
-  top: 16px;
+  clip-path: none;
 }
 .ref-link {
   display: inline-flex;

@@ -139,10 +139,11 @@ A commit made with the workflow token does not trigger the deploy, so the job di
 The Worldbuilder portfolio is the site root `/`; `/portfolio/` redirects there.
 The four alternatives, `/directions/`, and `/alternate/` are injected only in
 dev mode or `build:lab`/`palettes` output. `/previous/` preserves the archived
-portfolio with its noindex treatment. `/built/` is the shared 24-project
+portfolio with its noindex treatment. `/built/` is the shared project
 collection. Project pages and app records come from `src/data/portfolio.ts`,
 with app records derived from `built.ts`; curate those records instead of
-deleting public demo files.
+deleting public demo files. `homeProjectKeys` and `secondaryProjectKeys` own
+the two homepage tiers; the hero’s backdrop order is a separate choice.
 
 `npm run portfolio:images` reproduces reviewed photographs from the external raw
 archive; its recipes and provenance manifests are separate from the live

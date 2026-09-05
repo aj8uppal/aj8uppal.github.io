@@ -1420,7 +1420,7 @@
   background: #f0f0df;
 }
 .wb-index[open] .wb-fold-sheet a {
-  animation: wb-unfold 0.24s ease-out both;
+  animation: wb-unfold 0.24s ease-out backwards;
 }
 .wb-index[open] .wb-fold-sheet a:nth-child(2) {
   animation-delay: 0.04s;
@@ -1437,7 +1437,7 @@
     opacity: 0;
   }
   to {
-    transform: rotateX(0);
+    transform: none;
     opacity: 1;
   }
 }

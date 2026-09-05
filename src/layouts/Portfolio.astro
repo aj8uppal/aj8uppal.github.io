@@ -75,7 +75,9 @@ const socialAlt = project?.image
     data-portfolio-home={home ? direction : undefined}
     data-portfolio-context={navigation ? '' : undefined}
   >
-    <a class="ref-skip" href="#main">Skip to content</a>
+    <a class="ref-skip" href={home && direction === 'worldbuilder' ? '#wb-name' : '#main'}
+      >Skip to content</a
+    >
     {
       navigation && (
         <header class="portfolio-nav">

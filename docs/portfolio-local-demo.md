@@ -23,18 +23,20 @@ PORTFOLIO_REVIEW_MODE=lab npm run portfolio:review
 
 `build:lab` injects `/portfolio/editorial/`, `/portfolio/studio/`, `/portfolio/field-notes/`, `/portfolio/observatory/`, `/directions/`, and `/alternate/`. Dev mode resolves those routes too. They are not expected to exist in a plain production build. The launcher checks the requested mode when reusing port 4340: a lab review will not reuse a production-only server, and a production review never advertises comparison routes.
 
-| Destination                 | URL                                        | Availability                          |
-| --------------------------- | ------------------------------------------ | ------------------------------------- |
-| Worldbuilder portfolio      | http://127.0.0.1:4340/                     | production and lab                    |
-| Five-direction comparison   | http://127.0.0.1:4340/directions/          | dev or lab                            |
-| Alternative directions      | http://127.0.0.1:4340/portfolio/editorial/ | dev or lab                            |
-| Collection                  | http://127.0.0.1:4340/built/               | production and lab                    |
-| Archived previous portfolio | http://127.0.0.1:4340/previous/            | production and lab                    |
-| Boundary                    | http://127.0.0.1:4340/boundary/            | when `public/boundary/` is staged     |
-| Driftfall                   | http://127.0.0.1:5301/                     | when its frozen snapshot is available |
-| Bring Something Home        | http://127.0.0.1:5303/                     | when its frozen snapshot is available |
+| Destination                           | URL                                        | Availability                          |
+| ------------------------------------- | ------------------------------------------ | ------------------------------------- |
+| Worldbuilder portfolio                | http://127.0.0.1:4340/                     | production and lab                    |
+| Five-direction comparison             | http://127.0.0.1:4340/directions/          | dev or lab                            |
+| Alternative directions                | http://127.0.0.1:4340/portfolio/editorial/ | dev or lab                            |
+| Collection                            | http://127.0.0.1:4340/built/               | production and lab                    |
+| Archived previous portfolio           | http://127.0.0.1:4340/previous/            | production and lab                    |
+| Boundary                              | http://127.0.0.1:4340/boundary/            | when `public/boundary/` is staged     |
+| Driftfall                             | http://127.0.0.1:5301/                     | when its frozen snapshot is available |
+| Bring Something Home (1.4.0 snapshot) | http://127.0.0.1:5303/                     | when its frozen snapshot is available |
 
 The launcher reuses a server only when its title and app-specific health response identify the expected app. Reused processes remain owned by whoever started them; Ctrl+C stops only processes created by this launcher. It never changes a review port or kills an unrelated listener.
+
+The portfolio’s Bring Something Home card opens the newer [public 1.4.1 release](https://bring-something-home.fly.dev/). The local snapshot below is retained for isolated review.
 
 ## Frozen game builds
 
