@@ -43,6 +43,22 @@ export interface Built {
 
 export const apps: Built[] = [
   {
+    key: 'bring-something-home',
+    categories: ['systems', 'games'],
+    name: 'Bring Something Home',
+    kind: 'Cooperative RPG',
+    reach: 'open',
+    reachLabel: 'Live',
+    href: '/bring-something-home/',
+    cta: 'Enter the wilds',
+    what: 'Go out together. Read the storm of projectiles. Bring back something that can outlast this life.',
+    how: 'The browser predicts movement while one realm decides every hit, reward and death. SQLite transactions preserve what you bank. Fullscreen keeps the whole expedition in view.',
+    k: 'Three.js · TypeScript · WebSocket · SQLite',
+    accent: '#cbb7ee',
+    alt: 'Bring Something Home in the Cindermeadow: a new Arcanist explores the 3D realm with equipment, nearby loot and progression beside the battlefield.',
+    cap: 'The public 1.4.1 realm, driven with keyboard and mouse on a fresh Arcanist account. No prepared gear or progression.',
+  },
+  {
     key: 'slipstream',
     selected: true,
     categories: ['systems', 'experiments'],

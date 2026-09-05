@@ -22,6 +22,7 @@ import { chromium } from 'playwright';
 import { createStaticShots } from './capture-experiments.mjs';
 import { createGameShots } from './capture-games.mjs';
 import { captureBeatlayer } from './capture-audio.mjs';
+import { captureBringHome } from './capture-bring-home.mjs';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -40,6 +41,7 @@ const W = 1440,
   ASSET_W = 1500;
 
 const shots = {
+  'bring-something-home': captureBringHome,
   ...createStaticShots({ base: L }),
   ...createGameShots({ base: L }),
   async shipworthy(page) {
@@ -275,8 +277,9 @@ for (const [name, drive] of Object.entries(shots)) {
   if (only.length && !only.includes(name)) continue;
   const ctx = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 2 });
   const page = await ctx.newPage();
+  let cleanup;
   try {
-    await drive(page, ctx, browser);
+    cleanup = await drive(page, ctx, browser);
     // Two frames, so a style change made a moment ago is actually on screen.
     await page.evaluate(
       () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
@@ -294,6 +297,15 @@ for (const [name, drive] of Object.entries(shots)) {
   } catch (e) {
     failed += 1;
     console.log(`FAIL ${name}: ${e.message.split('\n')[0]}`);
+  } finally {
+    if (typeof cleanup === 'function') {
+      try {
+        await cleanup();
+      } catch (e) {
+        failed += 1;
+        console.log(`FAIL ${name} cleanup: ${e.message.split('\n')[0]}`);
+      }
+    }
   }
   await ctx.close();
 }
