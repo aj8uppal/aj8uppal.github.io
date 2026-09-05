@@ -276,16 +276,15 @@ export const apps: Built[] = [
     name: 'Bring Something Home',
     kind: 'Cooperative RPG',
     reach: 'open',
-    reachLabel: 'Playable prototype',
-    local: true,
-    href: '/portfolio/work/bring-something-home/',
-    cta: 'Inside the build',
+    reachLabel: 'Live',
+    href: '/bring-something-home/',
+    cta: 'Enter the wilds',
     what: 'Go out together. Read the storm of projectiles. Bring back something that can outlast this life.',
     how: 'The browser predicts movement while one realm decides every hit, reward and death. SQLite transactions preserve the boundary between carried loot and what you bank.',
     k: 'Three.js · TypeScript · WebSocket · SQLite',
     accent: '#cbb7ee',
-    alt: 'Bring Something Home during the Thalassa encounter: orange projectiles, timed floor rings and the player’s cyan shots cross a 3D chamber.',
-    cap: 'Thalassa, Elder of Tides. A running 1.4 playtest with a prepared level-20 character.',
+    alt: 'Bring Something Home in Cindermeadow: a new Arcanist explores a 3D realm with equipment, loot and progression beside the battlefield.',
+    cap: 'The public 1.4.1 realm, driven with keyboard and mouse on a fresh Arcanist account. No prepared gear or progression.',
     story: {
       role: 'Game design, the browser client, the authoritative realm server and persistence.',
       constraint:
@@ -293,11 +292,17 @@ export const apps: Built[] = [
       decision:
         'Predict movement in the browser, reconcile against the realm, and commit inventory and death atomically. Shared expeditions give each player personal loot and a reason to make it home.',
       evidence:
-        'The branded 1.4 release passed the game owner’s production build, 94 unit tests and 28 native browser scenarios. The late-game photograph uses a prepared character; the complete build is playable locally.',
+        'Public version 1.4.1 passed the game owner’s production build, 94 unit tests and 29 native browser scenarios. A fresh public traveler appears in the lead image; the late-game photographs use a prepared character.',
       question: 'Fast combat. Lasting consequences.',
       frames: [
         {
           image: 'built-bring-something-home',
+          label: 'The first expedition',
+          alt: 'A fresh Arcanist in Cindermeadow, with real projectiles, nearby creatures and the equipment panel.',
+          note: 'The public 1.4.1 realm, using ordinary keyboard and mouse inputs on a new account. No prepared gear or progression.',
+        },
+        {
+          image: 'portfolio-bring-home-thalassa',
           label: 'Read the storm',
           alt: 'Thalassa’s second phase in the Elder Convergence, with actual 3D projectiles and timed floor attacks.',
           note: 'Late-game playtest in version 1.4, using a prepared level-20 character.',

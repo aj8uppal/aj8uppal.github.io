@@ -137,7 +137,23 @@ try {
         );
       if (width === 390 || width === 1440)
         await page.screenshot({ path: `${OUT}/${key}-${width}.png`, fullPage: true });
-      if (key === 'worldbuilder')
+      if (key === 'worldbuilder') {
+        note(
+          await page
+            .locator('.wb-brand, .wb-index summary, .wb-nav > nav > a')
+            .evaluateAll((links) =>
+              links
+                .filter((link) => link.getClientRects().length)
+                .map((link) => link.getBoundingClientRect())
+                .every(
+                  (box, index, boxes) =>
+                    box.x >= 0 &&
+                    box.right <= innerWidth &&
+                    (!index || box.x >= boxes[index - 1].right),
+                ),
+            ),
+          `worldbuilder ${width}: every header control fits without overlap`,
+        );
         note(
           await page
             .locator('.wb-hero-actions a')
@@ -150,6 +166,7 @@ try {
             }),
           `worldbuilder ${width}: résumé is in the opening screen`,
         );
+      }
       if (key === 'observatory' && width < 720)
         note(
           await page.locator('.ob-nav').evaluate((header) => {

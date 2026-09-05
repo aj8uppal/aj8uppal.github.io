@@ -1527,3 +1527,10 @@
     font-size: 21px;
   }
 }
+@media (max-width: 350px) {
+  /* The folding index already includes Meet AJ; keep the direct contact link
+     comfortably inside the smallest phone header, including Safari fonts. */
+  .wb-nav > nav > a[href='#about'] {
+    display: none;
+  }
+}

@@ -40,8 +40,9 @@ const recipes = [
   ],
   ['portfolio-boundary-phone', 'Boundary 3.1: real guided gameplay at a 390 × 844 viewport.'],
   [
-    'built-bring-something-home',
+    'portfolio-bring-home-thalassa',
     'Game-owner capture from the running pre-rebrand 1.4.0 playtest: Thalassa phase two, with a prepared level-20 character. The canonical rebrand preserves the game mechanics.',
+    { raw: 'built-bring-something-home.png' },
   ],
   [
     'portfolio-bring-home-recap',
