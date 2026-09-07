@@ -159,6 +159,90 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* Small controls shared by project previews and full galleries. */
+.pg-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: max-content;
+  color: var(--ref-ink);
+  background: var(--ref-paper);
+  border: 1px solid var(--ref-line);
+  border-radius: 6px;
+  padding: 3px;
+}
+.pg-controls button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+}
+.pg-controls button:hover,
+.pg-controls button:focus-visible {
+  background: var(--ref-soft);
+}
+.pg-controls [data-gallery-count] {
+  min-width: 48px;
+  text-align: center;
+  font: 11px/1 var(--ref-mono);
+  color: var(--ref-muted);
+  font-variant-numeric: tabular-nums;
+}
+.pg-controls button:focus-visible {
+  outline-offset: -3px;
+}
+.pg-feedback {
+  grid-column: 1 / -1;
+  font-size: 13px;
+  color: var(--ref-ink);
+}
+.portfolio-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 112px;
+  padding: 8px 12px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  color: inherit;
+  background: transparent;
+  font-size: 13px;
+}
+.portfolio-copy:hover {
+  background: #ffffff10;
+}
+.portfolio-copy-error {
+  flex-basis: 100%;
+  font-size: 12px;
+}
+.ref-worldbuilder :is(.pc-button, .wb-button, .pg-controls button, .portfolio-copy) {
+  transition:
+    background 160ms,
+    border-color 160ms,
+    transform 160ms;
+}
+.ref-worldbuilder :is(.pc-button, .wb-button, .pg-controls button, .portfolio-copy):active {
+  transform: translateY(1px);
+}
+.ref-worldbuilder :is(.portfolio-collection-link, .pc-back, .ref-case-link) {
+  transition:
+    color 160ms,
+    border-color 160ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ref-worldbuilder *,
+  .ref-worldbuilder *::before,
+  .ref-worldbuilder *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
 @media (max-width: 720px) {
   .portfolio-nav {
     width: calc(100% - 32px);

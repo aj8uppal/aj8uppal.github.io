@@ -6,18 +6,75 @@
   if (!cover || !scene || !selector || !caption) return;
   selector.hidden = false;
   const buttons = [...selector.querySelectorAll('button')];
-  buttons.forEach((button) => {
-    button.addEventListener('click', () => {
-      cover.dataset.scene = button.dataset.sceneKey;
-      scene.src = button.dataset.sceneImage;
-      scene.alt = button.dataset.sceneAlt;
-      caption.textContent = button.dataset.sceneCaption;
-      buttons.forEach((item) => {
-        const active = item === button;
-        item.setAttribute('aria-pressed', String(active));
-        item.querySelector('b').textContent = active ? '−' : '+';
-      });
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  let revision = 0;
+  let outgoing;
+  let animation;
+  const clearTransition = () => {
+    animation?.cancel();
+    outgoing?.remove();
+    outgoing = undefined;
+  };
+  const choose = async (button) => {
+    const request = ++revision;
+    selector.setAttribute('aria-busy', 'true');
+    const next = new Image();
+    next.src = button.dataset.sceneImage;
+    try {
+      await next.decode();
+    } catch {
+      if (request === revision) selector.setAttribute('aria-busy', 'false');
+      return;
+    }
+    if (request !== revision) return;
+    clearTransition();
+    if (!reduced.matches && cover.dataset.scene !== button.dataset.sceneKey) {
+      outgoing = scene.cloneNode();
+      outgoing.className = 'wb-scene-outgoing';
+      outgoing.alt = '';
+      outgoing.setAttribute('aria-hidden', 'true');
+      outgoing.style.objectPosition = getComputedStyle(scene).objectPosition;
+      scene.parentElement.append(outgoing);
+    }
+    cover.dataset.scene = button.dataset.sceneKey;
+    scene.src = button.dataset.sceneImage;
+    scene.alt = button.dataset.sceneAlt;
+    caption.textContent = button.dataset.sceneCaption;
+    buttons.forEach((item) => {
+      const active = item === button;
+      item.setAttribute('aria-pressed', String(active));
+      item.querySelector('b').textContent = active ? '−' : '+';
     });
+    selector.setAttribute('aria-busy', 'false');
+    if (outgoing) {
+      const old = outgoing;
+      animation = old.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 380,
+        easing: 'ease-out',
+      });
+      animation.finished.then(() => old.remove()).catch(() => old.remove());
+    }
+  };
+  buttons.forEach((button) =>
+    button.addEventListener('click', () => {
+      void choose(button);
+    }),
+  );
+  selector.addEventListener('keydown', (event) => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const current = buttons.indexOf(document.activeElement);
+    const index =
+      event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? buttons.length - 1
+          : (current + buttons.length + (event.key === 'ArrowLeft' ? -1 : 1)) % buttons.length;
+    buttons[index].focus();
+    void choose(buttons[index]);
+  });
+  reduced.addEventListener('change', () => {
+    if (reduced.matches) clearTransition();
   });
 })();
 

@@ -3,6 +3,15 @@
 import sharp from 'sharp';
 const waitPaint = (page) =>
   page.evaluate(async () => {
+    while (document.querySelector('.wb-scene-selector')?.getAttribute('aria-busy') === 'true') {
+      await new Promise(requestAnimationFrame);
+    }
+    await Promise.all(
+      document
+        .querySelector('.wb-scene-wrap')
+        ?.getAnimations({ subtree: true })
+        .map((animation) => animation.finished.catch(() => {})) || [],
+    );
     await document.fonts.ready;
     await document
       .querySelector('.wb-scene')

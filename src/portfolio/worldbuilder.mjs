@@ -98,7 +98,19 @@ const cards = [
 function card(item, index) {
   const p = project(item.key);
   return `<article class="wb-project wb-project-${p.key}" data-primary-project="${p.key}">
-    <a class="wb-project-image" href="/portfolio/work/${p.key}/" aria-label="Read the ${esc(p.name)} case study">${img(item.image, p.frames.find((f) => f.image === item.image)?.alt || p.alt, 'loading="lazy"')}<span class="wb-image-label">${String(index + 1).padStart(2, '0')} / ${esc(p.kind)}</span><span class="wb-image-open" aria-hidden="true">↗</span></a>
+    <div class="wb-project-visual" data-gallery role="group" aria-label="${esc(p.name)} screenshots">
+      <div data-gallery-stage id="preview-${p.key}">${[
+        item.image,
+        ...p.frames.map((f) => f.image).filter((image) => image !== item.image),
+      ]
+        .slice(0, 3)
+        .map((image, frameIndex) => {
+          const f = p.frames.find((f) => f.image === image);
+          return `<a class="wb-project-image" data-gallery-frame data-label="${esc(f?.label || p.name)}" ${frameIndex ? 'hidden' : ''} href="/portfolio/work/${p.key}/" aria-label="Read the ${esc(p.name)} case study">${img(image, f?.alt || p.alt, 'loading="lazy"')}<span class="wb-image-label">${String(index + 1).padStart(2, '0')} / ${esc(p.kind)}</span><span class="wb-image-open" aria-hidden="true">↗</span></a>`;
+        })
+        .join('')}</div>
+      <div class="wb-preview-tools" data-gallery-tools hidden><div class="pg-controls"><button type="button" data-gallery-previous aria-label="Previous ${esc(p.name)} screenshot" aria-controls="preview-${p.key}">←</button><span data-gallery-count aria-hidden="true">1 / ${Math.min(p.frames.filter((f) => f.image !== item.image).length + 1, 3)}</span><button type="button" data-gallery-next aria-label="Next ${esc(p.name)} screenshot" aria-controls="preview-${p.key}">→</button></div><span class="sr" data-gallery-status role="status" aria-atomic="true"></span></div>
+    </div>
     <div class="wb-project-copy"><div class="wb-project-title"><h3>${esc(p.name)}</h3><span class="wb-live">${p.local ? 'Prototype' : 'Live'}</span></div><p class="wb-project-note">${esc(item.note)}</p><p class="wb-project-role">My work / ${esc(item.role)}</p><p class="wb-project-decision">${esc(item.decision)}</p><p class="wb-project-evidence">${esc(item.evidence)}</p><div class="wb-project-links">${caseLink(p.key, 'Inside the build')}${out(p.href, p.local ? 'Inside the build' : 'Open project')}</div></div>
   </article>`;
 }
@@ -142,7 +154,7 @@ export default function render() {
   <section class="wb-cover" aria-labelledby="wb-name" data-scene="murmuration">
     <div class="wb-scene-wrap">${img(scenes[0].image, scenes[0].alt, 'class="wb-scene" fetchpriority="high" decoding="sync"')}</div><div class="wb-wash" aria-hidden="true"></div>
     <header class="wb-nav wb-shell"><a class="wb-brand" href="#main" aria-label="AJ Uppal, home">AJ<span>Software engineer</span></a><nav aria-label="Main navigation">${foldingIndex()}<a href="/portfolio/collection/">Collection</a><a href="#about">Meet AJ</a>${email('Contact')}</nav></header>
-    <div class="wb-hero wb-shell"><p class="wb-occupation">Software engineer at <strong>Notable Health</strong><span>Bay Area, California</span></p><h1 id="wb-name">AJ <em>Uppal.</em></h1><p class="wb-hero-line">Games, instruments<br>and browser experiments.</p><div class="wb-hero-actions"><a class="wb-button" href="#work">Explore my work <span aria-hidden="true">↓</span></a>${out(contact.resume, 'Résumé', 'wb-text-link')}</div></div>
+    <div class="wb-hero wb-shell"><p class="wb-occupation">Software engineer at <strong>Notable Health</strong><span>Bay Area, California</span></p><h1 id="wb-name">AJ <em>Uppal</em></h1><p class="wb-hero-line">Games, instruments<br>and browser experiments.</p><div class="wb-hero-actions"><a class="wb-button" href="#work">Explore my work <span aria-hidden="true">↓</span></a>${out(contact.resume, 'Résumé', 'wb-text-link')}</div></div>
     <p class="wb-scene-caption wb-shell"><span class="wb-caption-plate"><span data-scene-caption>${esc(scenes[0].caption)}</span><small>From the app</small></span></p>
     <div class="wb-scene-selector wb-shell" hidden><p class="wb-caption">A change of scenery <span>Three of my projects.</span></p><div class="wb-scenes" role="group" aria-label="Choose the portfolio backdrop">${scenes.map((s, i) => `<button type="button" data-scene-key="${s.key}" data-scene-image="${asset(s.image)}" data-scene-alt="${esc(s.alt)}" data-scene-caption="${esc(s.caption)}" aria-pressed="${i === 0}">${img(s.image, '', 'loading="lazy"')}<span><small>0${i + 1}</small>${esc(s.title)}</span><b aria-hidden="true">${i === 0 ? '−' : '+'}</b></button>`).join('')}</div></div>
   </section>
@@ -157,8 +169,8 @@ export default function render() {
     .map(card)
     .join('')}</div>${moreWork()}</section>
 
-  <section id="about" class="wb-about"><div class="wb-shell wb-about-inner"><div><p class="wb-kicker">About me</p><h2>A little<br><em>about me.</em></h2></div><div class="wb-about-copy"><p>I studied computer science and astrophysics at UMass Amherst. My research there focused on simulations of CO₂ cooling for particle detectors.</p><p>Away from the keyboard, I grow heirloom tomatoes, ride bikes and listen to Pink Floyd. I’ve wanted to be an astronaut since I was four.</p><div class="wb-education"><p class="wb-kicker">Education</p><h3>${esc(education.subjects)}</h3><p>${esc(education.institution)}</p><small>${esc(education.note)}</small></div><dl class="wb-toolkit" id="skills">${toolkit.map(([label, value]) => `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl><div class="wb-about-links">${email('Say hello', 'wb-text-link')}${out(contact.resume, 'Résumé', 'wb-text-link')}${out(contact.github, 'GitHub', 'wb-text-link')}</div></div></div></section>
-  <footer class="wb-footer wb-shell" id="contact"><a href="#main" class="wb-signature">AJ Uppal.</a><span>Bay Area, California</span><a href="#main">Back to top ↑</a></footer>
+  <section id="about" class="wb-about"><div class="wb-shell wb-about-inner"><div><p class="wb-kicker">About me</p><h2>A little<br><em>about me.</em></h2></div><div class="wb-about-copy"><p>I studied computer science and astrophysics at UMass Amherst. My research there focused on simulations of CO₂ cooling for particle detectors.</p><p>Away from the keyboard, I grow heirloom tomatoes, ride bikes and listen to Pink Floyd. I’ve wanted to be an astronaut since I was four.</p><div class="wb-education"><p class="wb-kicker">Education</p><h3>${esc(education.subjects)}</h3><p>${esc(education.institution)}</p><small>${esc(education.note)}</small></div><dl class="wb-toolkit" id="skills">${toolkit.map(([label, value]) => `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl><div class="wb-about-links">${email('Say hello', 'wb-text-link')}<button type="button" class="portfolio-copy" data-copy-email="${esc(contact.email)}" hidden>Copy email</button><span class="sr" data-copy-status role="status"></span>${out(contact.resume, 'Résumé', 'wb-text-link')}${out(contact.github, 'GitHub', 'wb-text-link')}</div></div></div></section>
+  <footer class="wb-footer wb-shell" id="contact"><a href="#main" class="wb-signature">AJ Uppal</a><span>Bay Area, California</span><a href="#main">Back to top ↑</a></footer>
   </main>`;
   return frame('worldbuilder', body, {
     scripts: ['worldbuilder.js'],

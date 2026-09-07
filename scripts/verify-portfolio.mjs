@@ -8,6 +8,7 @@ import {
   secondaryProjectKeys,
 } from '../src/data/portfolio.ts';
 import { pixelContrast, surfaceContrast } from './portfolio-contrast.mjs';
+import { verifyInteractions } from './portfolio-interactions.mjs';
 
 const BASE = process.argv.find((arg) => /^https?:/.test(arg)) || 'http://127.0.0.1:4340';
 const LAB = process.argv.includes('--lab');
@@ -344,8 +345,10 @@ try {
     const track = page.locator('.wb-more-track');
     await track.scrollIntoViewIfNeeded();
     await track.evaluate((el) => (el.scrollLeft = 0));
-    await page.waitForFunction(() => document.querySelector('[data-gallery-prev]').disabled);
-    const next = page.locator('[data-gallery-next]');
+    await page.waitForFunction(
+      () => document.querySelector('.wb-gallery-controls [data-gallery-prev]').disabled,
+    );
+    const next = page.locator('.wb-gallery-controls [data-gallery-next]');
     let clicks = 0;
     while ((await next.isEnabled()) && clicks++ < 8) {
       await next.click();
@@ -357,8 +360,10 @@ try {
       `project gallery ${width}: Slipstream is fully reachable`,
     );
     await page.screenshot({ path: `${OUT}/secondary-gallery-${width}.png` });
-    await page.locator('[data-gallery-prev]').click();
-    await page.waitForFunction(() => !document.querySelector('[data-gallery-next]').disabled);
+    await page.locator('.wb-gallery-controls [data-gallery-prev]').click();
+    await page.waitForFunction(
+      () => !document.querySelector('.wb-gallery-controls [data-gallery-next]').disabled,
+    );
     note(
       await next.isEnabled(),
       `project gallery ${width}: previous arrow returns through the gallery`,
@@ -418,6 +423,12 @@ try {
     const control = page.locator(`[data-scene-key="${key}"]`);
     await control.focus();
     await page.keyboard.press('Enter');
+    await page.waitForFunction(
+      (key) =>
+        document.querySelector(`[data-scene-key="${key}"]`)?.getAttribute('aria-pressed') ===
+        'true',
+      key,
+    );
     await settle(page);
     note(
       (await control.getAttribute('aria-pressed')) === 'true' &&
@@ -606,6 +617,9 @@ try {
   const photo = page.locator('[data-photo]').first();
   await photo.focus();
   await page.keyboard.press('Enter');
+  await page.waitForFunction(
+    () => document.querySelector('.pc-lightbox')?.getAttribute('aria-busy') === 'false',
+  );
   note(await page.getByRole('dialog').isVisible(), 'photograph enlarges in a named dialog');
   note(
     await page
@@ -615,12 +629,18 @@ try {
   );
   const firstImage = await page.locator('.pc-lightbox img').getAttribute('src');
   await page.keyboard.press('ArrowRight');
+  await page.waitForFunction(
+    () => document.querySelector('.pc-lightbox')?.getAttribute('aria-busy') === 'false',
+  );
   note(
     (await page.locator('.pc-lightbox img').getAttribute('src')) !== firstImage &&
       (await page.locator('[data-photo-count]').textContent()).startsWith('2 /'),
     'photo gallery: ArrowRight opens the next real capture',
   );
   await page.keyboard.press('ArrowLeft');
+  await page.waitForFunction(
+    () => document.querySelector('.pc-lightbox')?.getAttribute('aria-busy') === 'false',
+  );
   note(
     (await page.locator('.pc-lightbox img').getAttribute('src')) === firstImage,
     'photo gallery: ArrowLeft returns to the first capture',
@@ -751,6 +771,7 @@ try {
     }
   }
   await reduced.close();
+  await verifyInteractions(browser, BASE, note, OUT);
 } catch (error) {
   note(false, 'verification completed', error.stack);
 } finally {

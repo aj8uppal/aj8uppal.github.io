@@ -36,6 +36,14 @@
   object-fit: cover;
   object-position: 36% 50%;
 }
+.wb-scene-outgoing {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
 .wb-wash {
   z-index: 1;
   background:
@@ -397,6 +405,37 @@
 .wb-project {
   min-width: 0;
 }
+.wb-project-visual {
+  position: relative;
+  border: 1px solid #455d62;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.wb-project-visual:focus-within {
+  border-color: #bad7c5;
+}
+.wb-project-image:focus-visible {
+  outline-offset: -4px;
+}
+.wb-preview-tools {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+}
+.wb-preview-tools .pg-controls {
+  background: #0b202df5;
+  border-color: #617b7e;
+}
+.wb-preview-tools .pg-feedback {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  width: 220px;
+  padding: 10px;
+  background: #0b202d;
+  border: 1px solid #617b7e;
+  border-radius: 4px;
+}
 .wb-project-image {
   display: block;
   overflow: hidden;
@@ -429,8 +468,9 @@
   bottom: 14px;
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
   background: #dce5d7;
   color: #163438;
   font-size: 22px;

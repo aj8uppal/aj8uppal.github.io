@@ -36,6 +36,11 @@ Re-run it after changing a crop rather than editing an intermediate by hand.
 `<Picture>` emits `width` and `height` attributes, which are definite enough that `aspect-ratio` is ignored.
 Any rule that shapes one of these images needs `height: auto` alongside it.
 
+`src/portfolio/gallery.ts` reserves the tallest caption's height so changing
+screenshots does not move the controls. Schedule those size writes in an animation
+frame after `ResizeObserver` delivers; writing inside the observer causes Safari
+to report a layout loop.
+
 ## `/built` has its own capture script and its own gate
 
 `npm run built:shots` drives each app into the state its card shows and writes

@@ -1,0 +1,101 @@
+---
+import { Picture } from 'astro:assets';
+import { asset } from '../lib/images';
+import type { Project, PortfolioFrame } from '../data/portfolio';
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+const lead: PortfolioFrame = project.frames.find((frame) => frame.image === project.image) || {
+  image: project.image!,
+  label: project.name,
+  alt: project.alt,
+  note: '',
+};
+const frames = [lead, ...project.frames.filter((frame) => frame.image !== lead.image)];
+---
+
+<section class="pc-gallery" data-gallery aria-label={`${project.name} screenshots`}>
+  <div class="pc-gallery-stage" data-gallery-stage id="project-photographs">
+    {
+      frames.map((frame, index) => (
+        <figure class="pc-lead" data-gallery-frame data-label={frame.label}>
+          <a
+            href={asset(frame.image).src}
+            data-photo
+            data-caption={frame.note || frame.label}
+            aria-label={`Enlarge ${frame.label}`}
+          >
+            <Picture
+              src={asset(frame.image)}
+              alt={frame.alt}
+              widths={[640, 960, 1440, 1920, 2400]}
+              sizes="(min-width: 1400px) 1280px, 95vw"
+              formats={['avif']}
+              fallbackFormat="webp"
+              loading={index === 0 ? 'eager' : 'lazy'}
+              fetchpriority={index === 0 ? 'high' : 'auto'}
+            />
+            <span class="pc-enlarge" aria-hidden="true">
+              Enlarge ↗
+            </span>
+          </a>
+          <figcaption>
+            <strong>{frame.label}</strong>
+            {frame.note && <p>{frame.note}</p>}
+          </figcaption>
+        </figure>
+      ))
+    }
+  </div>
+  {
+    frames.length > 1 && (
+      <div class="pc-gallery-tools" data-gallery-tools hidden>
+        <div class="pc-thumbnails" role="group" aria-label="Choose a screenshot">
+          {frames.map((frame, index) => (
+            <button
+              type="button"
+              data-gallery-select={index}
+              aria-pressed={index === 0 ? 'true' : 'false'}
+              aria-controls="project-photographs"
+              aria-label={frame.label}
+            >
+              <Picture
+                src={asset(frame.image)}
+                alt=""
+                widths={[128, 256]}
+                sizes="96px"
+                formats={['avif']}
+                fallbackFormat="webp"
+                loading="lazy"
+              />
+            </button>
+          ))}
+        </div>
+        <div class="pg-controls">
+          <button
+            type="button"
+            data-gallery-previous
+            aria-label="Previous screenshot"
+            aria-controls="project-photographs"
+          >
+            ←
+          </button>
+          <span data-gallery-count aria-hidden="true">
+            1 / {frames.length}
+          </span>
+          <button
+            type="button"
+            data-gallery-next
+            aria-label="Next screenshot"
+            aria-controls="project-photographs"
+          >
+            →
+          </button>
+        </div>
+        <span class="sr" data-gallery-status role="status" aria-atomic="true" />
+      </div>
+    )
+  }
+</section>

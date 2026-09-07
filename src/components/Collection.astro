@@ -59,15 +59,24 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
           }
         </div>
       </div>
-      <label class="bt-search"
-        ><span>Find a project</span><input
-          type="search"
-          name="project"
-          placeholder="Name, idea or technology"
-          aria-controls="bt-gallery"
-          autocomplete="off"
-        /></label
-      >
+      <div class="bt-search">
+        <label for="project-search">Find a project</label>
+        <div class="bt-search-field">
+          <input
+            id="project-search"
+            type="search"
+            name="project"
+            placeholder="Name, idea or technology"
+            aria-controls="bt-gallery"
+            autocomplete="off"
+          /><kbd data-search-hint aria-hidden="true">/</kbd><button
+            type="button"
+            data-search-clear
+            aria-label="Clear search"
+            hidden>×</button
+          >
+        </div>
+      </div>
     </div>
     <div class="bt-results">
       <p class="bt-count" role="status" aria-live="polite" aria-atomic="true">
@@ -174,6 +183,10 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
         <a href={home}>Meet the engineer <span aria-hidden="true">↗</span></a><a
           href={`mailto:aj8uppal@gmail.com`}>Get in touch <span aria-hidden="true">↗</span></a
         >
+        <button type="button" class="portfolio-copy" data-copy-email="aj8uppal@gmail.com" hidden
+          >Copy email</button
+        >
+        <span class="sr" data-copy-status role="status"></span>
       </p>
     </div>
   </section>
@@ -195,6 +208,8 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
 
     function update(writeURL = false) {
       const query = search.value.trim().toLowerCase();
+      root!.querySelector<HTMLButtonElement>('[data-search-clear]')!.hidden = !search.value;
+      root!.querySelector<HTMLElement>('[data-search-hint]')!.hidden = !!search.value;
       const terms = query.split(/\s+/).filter(Boolean);
       const matches = cards.filter((card) => {
         const inCategory =
@@ -265,6 +280,32 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
       if (active === 'selected' && search.value.trim()) active = 'all';
       limit = pageSize;
       update(true);
+    });
+    const clearSearch = () => {
+      search.value = '';
+      limit = pageSize;
+      update(true);
+      search.focus({ preventScroll: true });
+    };
+    root.querySelector('[data-search-clear]')!.addEventListener('click', clearSearch);
+    search.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && search.value) {
+        event.preventDefault();
+        clearSearch();
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      const target = event.target as HTMLElement;
+      if (
+        event.key !== '/' ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.altKey ||
+        target.closest('input, textarea, select, [contenteditable], dialog')
+      )
+        return;
+      event.preventDefault();
+      search.focus();
     });
     moreButton.addEventListener('click', () => {
       const previous = limit;
@@ -417,11 +458,16 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
     padding-bottom: 64px;
   }
   .bt-controls {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding-block: 20px;
     border-bottom: 1px solid var(--bt-line);
+    background: var(--bt-ground);
+    box-shadow: 0 12px 16px -16px #000;
   }
   .bt-filter-scroll {
     min-width: 0;
@@ -473,17 +519,51 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
     font-size: 12px;
     color: var(--bt-muted);
   }
+  .bt-search-field {
+    position: relative;
+    width: min(400px, 100%);
+  }
+  .bt-search-field kbd {
+    position: absolute;
+    right: 14px;
+    top: 11px;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    border: 1px solid var(--bt-line);
+    border-radius: 3px;
+    font: 13px/22px var(--mono);
+    pointer-events: none;
+  }
+  .bt-search-field button {
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 3px;
+    color: var(--bt-ink);
+    background: transparent;
+    font-size: 24px;
+  }
+  .bt-search-field button:hover {
+    background: var(--bt-hover);
+  }
   .bt-search input {
-    width: min(360px, 100%);
+    width: 100%;
     min-width: 0;
-    min-height: 44px;
+    min-height: 48px;
     border: 1px solid var(--bt-line);
     border-radius: 4px;
     background: var(--bt-card);
     color: var(--bt-ink);
-    padding: 10px 14px;
+    padding: 10px 52px 10px 14px;
     font: inherit;
     font-size: 14px;
+  }
+  .bt-search input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
   }
   .bt-search input::placeholder {
     color: var(--bt-muted);
@@ -515,7 +595,7 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
     border: 1px solid var(--bt-line);
     background: var(--bt-card);
     border-radius: 5px;
-    scroll-margin-top: 100px;
+    scroll-margin-top: 200px;
     transition:
       background 180ms,
       border-color 180ms;
@@ -759,6 +839,9 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
     .bt-search input {
       width: 100%;
     }
+    .bt-search-field {
+      width: 100%;
+    }
     .bt-gallery {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -775,6 +858,11 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
     }
     .bt-foot {
       padding-block: 40px 56px;
+    }
+  }
+  @media (hover: none) {
+    .bt-search-field kbd {
+      display: none;
     }
   }
   @media (prefers-reduced-motion: reduce) {

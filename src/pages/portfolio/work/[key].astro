@@ -1,6 +1,7 @@
 ---
 import { Picture } from 'astro:assets';
 import Portfolio from '../../../layouts/Portfolio.astro';
+import ProjectGallery from '../../../components/ProjectGallery.astro';
 import { projects, type Project } from '../../../data/portfolio';
 import { asset } from '../../../lib/images';
 import { contact } from '../../../data/content';
@@ -13,12 +14,10 @@ interface Props {
   project: Project;
 }
 const { project: p } = Astro.props;
-const frames = p.frames.filter((f) => f.image !== p.image);
 const related = projects
   .filter((item) => item.key !== p.key && item.key !== 'notable' && item.image)
   .sort((a, b) => Number(b.kind === p.kind) - Number(a.kind === p.kind))
   .slice(0, 3);
-const W = [640, 960, 1440, 1920, 2400];
 const short = p.constraint === p.summary;
 ---
 
@@ -71,38 +70,7 @@ const short = p.constraint === p.summary;
 
     {
       p.image ? (
-        <figure class="pc-lead">
-          <a
-            href={asset(p.image).src}
-            data-photo
-            data-caption={p.frames.find((f) => f.image === p.image)?.note || p.alt}
-            aria-label={`Enlarge the ${p.name} photograph`}
-          >
-            <Picture
-              src={asset(p.image)}
-              alt={p.alt}
-              widths={W}
-              sizes="(min-width: 1400px) 1280px, 95vw"
-              formats={['avif']}
-              fallbackFormat="webp"
-              loading="eager"
-              decoding="sync"
-              fetchpriority="high"
-            />
-            <span class="pc-enlarge" aria-hidden="true">
-              View photograph ↗
-            </span>
-          </a>
-          <figcaption>
-            <>
-              <span>{p.frames.find((f) => f.image === p.image)?.label || p.name}</span>
-              <span>Captured in the running {p.status === 'wip' ? 'build' : 'app'}</span>
-              {p.frames.find((f) => f.image === p.image)?.note && (
-                <p class="pc-source-note">{p.frames.find((f) => f.image === p.image)?.note}</p>
-              )}
-            </>
-          </figcaption>
-        </figure>
+        <ProjectGallery project={p} />
       ) : (
         <section class="pc-system" aria-label="Professional scope and impact">
           <div class="pc-system-stat">
@@ -170,52 +138,6 @@ const short = p.constraint === p.summary;
             </div>
           ))}
         </dl>
-      )
-    }
-
-    {
-      frames.length > 0 && (
-        <section class="pc-photographs" aria-labelledby="pc-photographs-title">
-          <>
-            <header>
-              <>
-                <p class="ref-eyebrow">A closer look</p>
-                <h2 id="pc-photographs-title">More screenshots.</h2>
-              </>
-            </header>
-            <div class="pc-frame-grid">
-              {frames.map((f) => (
-                <figure
-                  data-portrait={asset(f.image).height > asset(f.image).width ? '' : undefined}
-                >
-                  <a
-                    href={asset(f.image).src}
-                    data-photo
-                    data-caption={f.note || f.label}
-                    aria-label={`Enlarge ${f.label}`}
-                  >
-                    <Picture
-                      src={asset(f.image)}
-                      alt={f.alt}
-                      widths={[480, 800, 1200, 1800]}
-                      sizes="(min-width: 900px) 45vw, 92vw"
-                      formats={['avif']}
-                      fallbackFormat="webp"
-                      loading="lazy"
-                    />
-                    <span class="pc-enlarge" aria-hidden="true">
-                      ↗
-                    </span>
-                  </a>
-                  <figcaption>
-                    <strong>{f.label}</strong>
-                    <p>{f.note}</p>
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-          </>
-        </section>
       )
     }
 
@@ -294,9 +216,13 @@ const short = p.constraint === p.summary;
       </div>
     </section>
     <footer class="pc-footer">
-      <a class="portfolio-brand" href="/">AJ Uppal.</a><p>Have a project in mind?</p><a
+      <a class="portfolio-brand" href="/">AJ Uppal</a><p>Have a project in mind?</p><a
         href={`mailto:${contact.email}`}>Let’s talk ↗</a
       >
+      <button type="button" class="portfolio-copy" data-copy-email={contact.email} hidden
+        >Copy email</button
+      >
+      <span class="sr" data-copy-status role="status"></span>
     </footer>
   </main>
   <dialog class="pc-lightbox" aria-label="Enlarged project photograph">
@@ -310,56 +236,13 @@ const short = p.constraint === p.summary;
         >Close <span aria-hidden="true">×</span></button
       >
     </div>
-    <figure><img alt="" /><figcaption></figcaption></figure>
+    <figure data-photo-stage><img alt="" /><figcaption></figcaption></figure>
+    <p class="pc-photo-feedback" data-photo-feedback role="status" aria-live="polite"></p>
+    <a class="pc-photo-original" data-photo-original target="_blank" rel="noopener" hidden
+      >Open original image ↗</a
+    >
   </dialog>
 </Portfolio>
 <script>
-  const dialog = document.querySelector<HTMLDialogElement>('.pc-lightbox');
-  if (dialog) {
-    const image = dialog.querySelector<HTMLImageElement>('img')!;
-    const caption = dialog.querySelector<HTMLElement>('figcaption')!;
-    const count = dialog.querySelector<HTMLElement>('[data-photo-count]')!;
-    const controls = dialog.querySelector<HTMLElement>('[data-photo-controls]')!;
-    const close = dialog.querySelector<HTMLButtonElement>('[data-photo-close]')!;
-    let photographs: HTMLAnchorElement[] = [];
-    let selected = 0;
-    const show = (index: number) => {
-      selected = (index + photographs.length) % photographs.length;
-      const link = photographs[selected]!;
-      image.src = link.href;
-      image.alt = link.querySelector('img')?.alt || '';
-      caption.textContent = link.dataset.caption || '';
-      count.textContent = `${selected + 1} / ${photographs.length}`;
-    };
-    document.querySelectorAll<HTMLAnchorElement>('[data-photo]').forEach((link) =>
-      link.addEventListener('click', (event) => {
-        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-        event.preventDefault();
-        photographs = [...document.querySelectorAll<HTMLAnchorElement>('[data-photo]')].filter(
-          (photo) => photo.getClientRects().length > 0,
-        );
-        controls.hidden = photographs.length < 2;
-        show(photographs.indexOf(link));
-        dialog.showModal();
-        close.focus();
-        document.documentElement.style.overflow = 'hidden';
-      }),
-    );
-    close.addEventListener('click', () => dialog.close());
-    dialog
-      .querySelector('[data-photo-previous]')!
-      .addEventListener('click', () => show(selected - 1));
-    dialog.querySelector('[data-photo-next]')!.addEventListener('click', () => show(selected + 1));
-    dialog.addEventListener('keydown', (event) => {
-      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-      event.preventDefault();
-      show(selected + (event.key === 'ArrowLeft' ? -1 : 1));
-    });
-    dialog.addEventListener('click', (event) => {
-      if (event.target === dialog) dialog.close();
-    });
-    dialog.addEventListener('close', () => {
-      document.documentElement.style.overflow = '';
-    });
-  }
+  import '../../../portfolio/lightbox';
 </script>
