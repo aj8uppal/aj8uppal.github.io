@@ -407,49 +407,172 @@
 }
 .wb-project-visual {
   position: relative;
+}
+.wb-preview-surface {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
   border: 1px solid #455d62;
   border-radius: 6px;
-  overflow: hidden;
+  background: #10202a;
 }
-.wb-project-visual:focus-within {
+.wb-preview-surface:focus-within {
   border-color: #bad7c5;
 }
-.wb-project-image:focus-visible {
-  outline-offset: -4px;
+.wb-preview-poster,
+.wb-preview-surface video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.wb-preview-poster {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+.wb-preview-surface video {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+[data-preview-state='playing'] video,
+[data-preview-state='paused'] video {
+  opacity: 1;
 }
 .wb-preview-tools {
   position: absolute;
   left: 12px;
   bottom: 12px;
+  display: flex;
+  gap: 7px;
 }
-.wb-preview-tools .pg-controls {
+.wb-preview-tools button {
+  min-height: 44px;
+  border: 1px solid #698187;
+  border-radius: 5px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
   background: #0b202df5;
-  border-color: #617b7e;
+  color: #e4ece0;
+  font: 12px/1 var(--ref-sans);
+  cursor: pointer;
 }
-.wb-preview-tools .pg-feedback {
+.wb-preview-tools button:hover {
+  background: #23404b;
+  border-color: #bad7c5;
+}
+.wb-preview-play {
+  min-width: 82px;
+}
+.wb-play-icon {
+  font-size: 11px;
+  width: 10px;
+}
+.wb-preview-feedback {
   position: absolute;
-  bottom: calc(100% + 8px);
-  left: 0;
-  width: 220px;
-  padding: 10px;
+  left: 12px;
+  right: 12px;
+  bottom: 65px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid #698187;
   background: #0b202d;
-  border: 1px solid #617b7e;
+  color: #e4ece0;
+  font-size: 13px;
+}
+.wb-style-swatch,
+.wb-style-chip {
+  display: inline-block;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #c5d4c380;
+  background: linear-gradient(135deg, var(--swatch, #16344b 50%, #e5b27f 50%));
+}
+.wb-style-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 4;
+  padding: 8px 12px 14px;
+  border: 1px solid #698187;
+  border-radius: 7px;
+  background: #102731;
+  color: #e4ece0;
+  box-shadow: 0 12px 30px #0005;
+}
+.wb-style-panel header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+.wb-style-panel header button {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 25px;
+  cursor: pointer;
+}
+.wb-style-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+.wb-style-options button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px;
+  min-height: 44px;
+  border: 1px solid #536e74;
   border-radius: 4px;
+  background: transparent;
+  color: #d5e3da;
+  font: 11px/1.2 var(--ref-sans);
+  cursor: pointer;
+  text-align: left;
 }
-.wb-project-image {
-  display: block;
-  overflow: hidden;
-  position: relative;
-  background: #17313b;
+.wb-style-options button:hover {
+  border-color: #bad7c5;
+  background: #28434a;
 }
-.wb-project-image > img {
-  aspect-ratio: 1.83;
-  object-fit: cover;
-  height: auto;
-  transition: transform 0.55s ease;
+.wb-style-options button[aria-pressed='true'] {
+  background: #dce5d7;
+  color: #163438;
+  border-color: #dce5d7;
 }
-.wb-project-image:hover > img {
-  transform: scale(1.025);
+.wb-preview-surface a:focus-visible,
+.wb-preview-surface button:focus-visible {
+  outline-offset: 3px;
+}
+@media (max-width: 580px) {
+  .wb-style-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .wb-preview-tools {
+    left: 8px;
+    bottom: 8px;
+    gap: 5px;
+  }
+  .wb-preview-tools button {
+    padding: 0 9px;
+    gap: 6px;
+  }
+  .wb-preview-play {
+    min-width: 74px;
+  }
 }
 .wb-image-label {
   position: absolute;
@@ -464,8 +587,8 @@
 }
 .wb-image-open {
   position: absolute;
-  right: 14px;
-  bottom: 14px;
+  right: 12px;
+  bottom: 12px;
   display: grid;
   place-items: center;
   width: 44px;
@@ -1554,5 +1677,17 @@
      comfortably inside the smallest phone header, including Safari fonts. */
   .wb-nav > nav > a[href='#about'] {
     display: none;
+  }
+}
+
+@media (max-width: 580px) {
+  .wb-image-open {
+    right: 8px;
+    bottom: 8px;
+  }
+}
+@media (max-width: 360px) {
+  .wb-style-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

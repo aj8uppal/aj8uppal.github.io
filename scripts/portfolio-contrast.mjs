@@ -155,7 +155,7 @@ export async function surfaceContrast(page) {
     };
     const rows = [];
     for (const section of document.querySelectorAll(
-      '.wb-career, .wb-fold-sheet, .wb-more, .wb-about',
+      '.wb-career, .wb-fold-sheet, .wb-more, .wb-about, .wb-preview-tools, .wb-style-panel',
     )) {
       const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT);
       let text;

@@ -1,3 +1,5 @@
+import './motion';
+
 (() => {
   const cover = document.querySelector('.wb-cover');
   const scene = document.querySelector('.wb-scene');

@@ -13,6 +13,7 @@ import {
   secondaryProjectKeys,
 } from './shared.mjs';
 import { career, education, toolkit } from '../data/career.ts';
+import { saltlineStyles, previewAlts } from '../data/portfolio-motion.mjs';
 
 const scenes = [
   {
@@ -98,18 +99,19 @@ const cards = [
 function card(item, index) {
   const p = project(item.key);
   return `<article class="wb-project wb-project-${p.key}" data-primary-project="${p.key}">
-    <div class="wb-project-visual" data-gallery role="group" aria-label="${esc(p.name)} screenshots">
-      <div data-gallery-stage id="preview-${p.key}">${[
-        item.image,
-        ...p.frames.map((f) => f.image).filter((image) => image !== item.image),
-      ]
-        .slice(0, 3)
-        .map((image, frameIndex) => {
-          const f = p.frames.find((f) => f.image === image);
-          return `<a class="wb-project-image" data-gallery-frame data-label="${esc(f?.label || p.name)}" ${frameIndex ? 'hidden' : ''} href="/portfolio/work/${p.key}/" aria-label="Read the ${esc(p.name)} case study">${img(image, f?.alt || p.alt, 'loading="lazy"')}<span class="wb-image-label">${String(index + 1).padStart(2, '0')} / ${esc(p.kind)}</span><span class="wb-image-open" aria-hidden="true">↗</span></a>`;
-        })
-        .join('')}</div>
-      <div class="wb-preview-tools" data-gallery-tools hidden><div class="pg-controls"><button type="button" data-gallery-previous aria-label="Previous ${esc(p.name)} screenshot" aria-controls="preview-${p.key}">←</button><span data-gallery-count aria-hidden="true">1 / ${Math.min(p.frames.filter((f) => f.image !== item.image).length + 1, 3)}</span><button type="button" data-gallery-next aria-label="Next ${esc(p.name)} screenshot" aria-controls="preview-${p.key}">→</button></div><span class="sr" data-gallery-status role="status" aria-atomic="true"></span></div>
+    <div class="wb-project-visual" data-preview="${p.key}" data-preview-name="${esc(p.name)}" data-preview-src="/media/previews/${p.key === 'saltline' ? 'saltline-classic' : p.key}.mp4" role="group" aria-label="${esc(p.name)} preview">
+      <div class="wb-preview-surface">
+        ${img(`preview-${p.key === 'saltline' ? 'saltline-classic' : p.key}`, previewAlts[p.key], 'class="wb-preview-poster" data-preview-poster loading="lazy"')}
+        <video data-preview-video width="1280" height="720" muted playsinline preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+        <span class="wb-image-label">${String(index + 1).padStart(2, '0')} / ${esc(p.kind)}</span>
+        <div class="wb-preview-tools" data-preview-tools hidden>
+          <button type="button" class="wb-preview-play" data-preview-play aria-label="Play ${esc(p.name)} preview"><span class="wb-play-icon" aria-hidden="true">▶</span><span data-preview-label>Play</span></button>
+          ${p.key === 'saltline' ? '<button type="button" class="wb-style-toggle" data-style-toggle aria-label="Change Saltline style, currently Original" aria-expanded="false" aria-controls="saltline-styles"><span class="wb-style-swatch" aria-hidden="true"></span><span data-style-name>Original</span><span aria-hidden="true">⌄</span></button>' : ''}
+        </div>
+        <a class="wb-image-open" href="/portfolio/work/${p.key}/" aria-label="Read about ${esc(p.name)}">↗</a>
+        <p class="wb-preview-feedback" data-preview-feedback role="status" hidden></p>
+      </div>
+      ${p.key === 'saltline' ? `<div class="wb-style-panel" id="saltline-styles" hidden><header><span>Saltline styles</span><button type="button" data-style-close aria-label="Close style picker">×</button></header><div class="wb-style-options" role="group" aria-label="Saltline visual style">${saltlineStyles.map((style, index) => `<button type="button" data-style="${style.key}" data-style-poster="${asset(`preview-saltline-${style.key}`)}" data-style-src="/media/previews/saltline-${style.key}.mp4" aria-pressed="${index === 0}"><span class="wb-style-chip" style="--swatch:${style.swatch}" aria-hidden="true"></span><span>${esc(style.label)}</span></button>`).join('')}</div><span class="sr" data-style-status role="status"></span></div>` : ''}
     </div>
     <div class="wb-project-copy"><div class="wb-project-title"><h3>${esc(p.name)}</h3><span class="wb-live">${p.local ? 'Prototype' : 'Live'}</span></div><p class="wb-project-note">${esc(item.note)}</p><p class="wb-project-role">My work / ${esc(item.role)}</p><p class="wb-project-decision">${esc(item.decision)}</p><p class="wb-project-evidence">${esc(item.evidence)}</p><div class="wb-project-links">${caseLink(p.key, 'Inside the build')}${out(p.href, p.local ? 'Inside the build' : 'Open project')}</div></div>
   </article>`;

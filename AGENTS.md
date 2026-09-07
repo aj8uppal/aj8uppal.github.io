@@ -41,6 +41,12 @@ screenshots does not move the controls. Schedule those size writes in an animati
 frame after `ResizeObserver` delivers; writing inside the observer causes Safari
 to report a layout loop.
 
+Homepage preview clips have a separate capture/encode workflow documented in
+`docs/portfolio-motion.md`. Their stills come from the first decoded frame of the
+final MP4; regenerate the pair together. Keep raw footage outside Git and video
+sources detached until interaction. Use current element geometry for the first
+Play click: IntersectionObserver can still report the frame before scrolling.
+
 ## `/built` has its own capture script and its own gate
 
 `npm run built:shots` drives each app into the state its card shows and writes

@@ -1,4 +1,5 @@
 import { projects } from '../src/data/portfolio.ts';
+import { verifyMotion } from './portfolio-motion-checks.mjs';
 
 export async function verifyInteractions(browser, base, note, out) {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
@@ -76,23 +77,7 @@ export async function verifyInteractions(browser, base, note, out) {
     (await page.locator('#wb-name').innerText()).replace(/\s+/g, ' ').trim() === 'AJ Uppal',
     'homepage: AJ Uppal has no trailing period',
   );
-  for (const gallery of await page.locator('.wb-project-visual').all()) {
-    const frames = gallery.locator('[data-gallery-frame]');
-    const count = await frames.count();
-    const before = await gallery.boundingBox();
-    for (let index = 1; index < count; index++) {
-      await gallery.locator('[data-gallery-next]').click();
-      await ready(gallery, index);
-    }
-    await gallery.locator('[data-gallery-next]').click();
-    await ready(gallery, 0);
-    const after = await gallery.boundingBox();
-    note(
-      (await frames.filter({ visible: true }).count()) === 1 &&
-        Math.abs(before.height - after.height) < 2,
-      `${await gallery.getAttribute('aria-label')}: preview cycles without stacking or resizing`,
-    );
-  }
+  await verifyMotion(browser, base, note, out);
 
   // Fast requests must leave the most recently requested photograph selected.
   await page.locator('[data-scene-key="saltline"]').evaluate((el) => el.click());
