@@ -1,7 +1,10 @@
 /* Boundary offline cache. Generated during the production build. */
 const PREFIX = 'boundary:' + self.registration.scope + ':';
-const CACHE = PREFIX + '91605c9c5230';
-const ASSETS = ["index.html","favicon.svg","manifest.webmanifest","THIRD_PARTY_LICENSES.txt","icon-192.png","icon-512.png","apple-touch-icon.png","assets/index-DcR2uzOo.js","assets/scene-CjlBLdxs.js","assets/three-DaB0coTg.js","assets/barlow-condensed-latin-500-normal-BgYH2mbd.woff2","assets/barlow-condensed-latin-600-normal-DepVgxBB.woff2","assets/dm-sans-latin-400-normal-CW0RaeGs.woff2","assets/dm-sans-latin-500-normal-B9HHJjqV.woff2","assets/dm-sans-latin-600-normal-Aqo67rzb.woff2","assets/dm-sans-latin-700-normal-DvUfVpUG.woff2","assets/index-seqeFhgw.css"];
+const CACHE = PREFIX + 'bd8c007235be';
+const ASSETS = ["index.html","favicon.svg","manifest.webmanifest","THIRD_PARTY_LICENSES.txt","icon-192.png","icon-512.png","apple-touch-icon.png","assets/index-D8xGs5pg.js","assets/scene-TTzQ5aEG.js","assets/three-DaB0coTg.js","assets/barlow-condensed-latin-500-normal-BgYH2mbd.woff2","assets/barlow-condensed-latin-600-normal-DepVgxBB.woff2","assets/dm-sans-latin-400-normal-CW0RaeGs.woff2","assets/dm-sans-latin-500-normal-B9HHJjqV.woff2","assets/dm-sans-latin-600-normal-Aqo67rzb.woff2","assets/dm-sans-latin-700-normal-DvUfVpUG.woff2","assets/index-CcuEO84z.css"];
+self.addEventListener('message', event => {
+  if (event.data?.type === 'ACTIVATE_UPDATE') self.skipWaiting();
+});
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS.map(path => new URL(path, self.registration.scope).href))));
 });
