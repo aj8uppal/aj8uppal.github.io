@@ -223,10 +223,10 @@ export async function verifyMotion(browser, base, note, out) {
   const noJS = await browser.newPage({ javaScriptEnabled: false });
   await noJS.goto(base, { waitUntil: 'networkidle' });
   note(
-    (await noJS.locator('[data-preview-poster]').count()) === 6 &&
+    (await noJS.locator('[data-preview-poster]').count()) === 10 &&
       (await noJS.locator('[data-preview-tools]:visible').count()) === 0 &&
-      (await noJS.locator('.wb-image-open[href]').count()) === 6,
-    'no JavaScript: all six stills and case links remain available',
+      (await noJS.locator('.wb-image-open[href]').count()) === 10,
+    'no JavaScript: all ten stills and case links remain available',
   );
   await noJS.close();
   note(errors.length === 0, 'previews: no browser errors', errors);

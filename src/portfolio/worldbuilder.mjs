@@ -94,6 +94,44 @@ const cards = [
     evidence: 'Five daily tests. A shared leaderboard. Live at eyeshot.app.',
     image: 'portfolio-eyeshot-feature',
   },
+  {
+    key: 'boundary',
+    note: 'Bat, bowl and run between the wickets.',
+    role: 'Game design · fixed-step simulation · Three.js · PWA',
+    decision:
+      'The ball, fielders and both batters share a fixed-step simulation. Runs count when both batters reach their creases.',
+    evidence: 'Offline solo play and private online matches.',
+    image: 'built-boundary',
+  },
+  {
+    key: 'voidreach',
+    note: 'Spaceflight through 64 generated star systems.',
+    role: 'Flight · procedural geometry · browser rendering',
+    decision:
+      'The solo build generates visible ships, stations and worlds in the browser, with a separate multiplayer service sharing the same procedural approach.',
+    evidence: 'A playable solo edition with 64 generated star systems.',
+    image: 'built-voidreach',
+  },
+  {
+    key: 'bring-something-home',
+    note: 'Cooperative expeditions where loot has to make it home.',
+    role: 'Game design · client · authoritative realm · persistence',
+    decision:
+      'The browser predicts movement while one realm resolves hits, rewards and death; inventory outcomes are saved atomically.',
+    evidence:
+      'A live cooperative realm with personal loot, persistent upgrades and expedition recaps.',
+    image: 'built-bring-something-home',
+  },
+  {
+    key: 'voidborne',
+    note: 'Space combat across seven connected sectors.',
+    role: 'Flight HUD · combat loop · contracts · pilot progression',
+    decision:
+      'A Node WebSocket service owns enemies, missions, rewards and pilot records while the browser renders flight and shared sector snapshots.',
+    evidence:
+      'Seven connected sectors, persistent pilots, shared PvE and opt-in pilot combat in the live alpha.',
+    image: 'built-voidborne',
+  },
 ];
 
 function card(item, index) {
@@ -119,8 +157,6 @@ function card(item, index) {
 
 const moreNotes = {
   beatlayer: 'Add synthesized drums to a guitar recording, with beat tracking and audio export.',
-  boundary: 'A cricket game with batting, running, CPU fielders and keyboard or touch controls.',
-  voidreach: 'Fly through 64 generated star systems, with procedural ships and stations.',
   'ai-wrapped':
     'Turn a chat export into statistics and shareable cards. The data stays in the browser.',
   roomtone: 'Scan a room’s colors and turn its palette into a five-note chord.',

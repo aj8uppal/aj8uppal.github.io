@@ -1,6 +1,6 @@
 # Portfolio preview recordings
 
-The six selected project cards use actual app footage. `src/portfolio/motion.ts`
+The ten selected project cards use actual app footage. `src/portfolio/motion.ts`
 attaches a video source only on hover or explicit Play. A phone uses Play/Pause;
 reduced motion and Save-Data disable hover playback. Only one clip plays at a
 time. Leaving, scrolling away or hiding the tab restores the still. A clip plays
@@ -30,18 +30,24 @@ Both commands accept project keys. `capture saltline` records all twelve styles;
 `../data/portfolio-videos/2026-09-06` relative to the repository.
 
 The capture script opens disposable browser profiles. It does not modify app
-source, personal saves or shared games. Saltline and Blockhold require the source
+source or existing personal saves. The public game recipes use fresh guest
+pilots; the Bring Something Home guest is deleted afterward, while the Voidborne
+guest follows the normal server pilot lifecycle. Saltline and Blockhold require the source
 servers because their capture recipes use the apps' own development handles.
-The other four are captured over HTTPS from their public apps.
+The other eight are captured over HTTPS from their public apps.
 
-| Project     | Actual scene and input                                                                                                                                                                                                                                                                    |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Saltline    | Offline seed 4193, fair sea at time of day 0.735, full sail. The same capture view is reset for each of twelve actual visual styles. Physics and water continue during recording.                                                                                                         |
-| Murmuration | Built-in track at 55%, ribbon style, zoom 1.15. Audio drives the particles; audio is excluded from the recording.                                                                                                                                                                         |
-| Ember Wilds | Fresh Wanderer, tutorial completed and multiplayer presence disabled in disposable local storage. Walk through the Wood's pool into the Hearthvale, use ordinary zoom/tilt controls, then walk through the village.                                                                       |
-| Blockhold   | Prepared level-40 account and 2,800 gold in a disposable profile; ten basic towers placed through the real build function. Tidereach's authored wave 27 runs normally. Enemy introductions are marked seen to keep their tutorial dialogs from pausing the battle. No score is submitted. |
-| Cubit       | A fresh game played with 49 keyboard moves, then real slides, a mouse orbit and the Space layer fan. No leaderboard submission.                                                                                                                                                           |
-| Eyeshot     | Actual Angle playground challenge, seed 4193, with a 64-degree target. Pointer input adjusts the arm, then Enter locks it in. The compositor is recorded because the grid is CSS behind a transparent canvas; frames are cropped to the challenge and retain their capture timestamps.    |
+| Project              | Actual scene and input                                                                                                                                                                                                                                                                    |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Saltline             | Offline seed 4193, fair sea at time of day 0.735, full sail. The same capture view is reset for each of twelve actual visual styles. Physics and water continue during recording.                                                                                                         |
+| Murmuration          | Built-in track at 55%, ribbon style, zoom 1.15. Audio drives the particles; audio is excluded from the recording.                                                                                                                                                                         |
+| Ember Wilds          | Fresh Wanderer, tutorial completed and multiplayer presence disabled in disposable local storage. Walk through the Wood's pool into the Hearthvale, use ordinary zoom/tilt controls, then walk through the village.                                                                       |
+| Blockhold            | Prepared level-40 account and 2,800 gold in a disposable profile; ten basic towers placed through the real build function. Tidereach's authored wave 27 runs normally. Enemy introductions are marked seen to keep their tutorial dialogs from pausing the battle. No score is submitted. |
+| Cubit                | A fresh game played with 49 keyboard moves, then real slides, a mouse orbit and the Space layer fan. No leaderboard submission.                                                                                                                                                           |
+| Eyeshot              | Actual Angle playground challenge, seed 4193, with a 64-degree target. Pointer input adjusts the arm, then Enter locks it in. The compositor is recorded because the grid is CSS behind a transparent canvas; frames are cropped to the challenge and retain their capture timestamps.    |
+| Boundary             | Public 5.0.1 free-nets delivery: begin recording at the “Hit now” cue, bat 130ms later, then call the run 300ms after live play begins. The existing case photograph remains a separate historic 3.1 capture.                                                                             |
+| Voidreach            | Public solo launch and undock in the Sparrow, then throttle and roll (W and D) toward an icy planet in Sol Ascendant. `debugLookAt` establishes the reviewed station-to-planet starting composition in the disposable solo scene.                                                         |
+| Bring Something Home | Fresh public Arcanist account in Cindermeadow. Ordinary movement, autofire, dodge, nova and tonic inputs are recorded with the compositor: 531 frames across 9.96 seconds, including the held tail. No equipment interaction is recorded.                                                 |
+| Voidborne            | Fresh public pilot in Orion Fringe with pilot combat at its default off state. The 10-second canvas clip records ordinary thrust, targeting, cannon, missile, phase-pulse input, lasers, hostiles, station and starfield; the flight HUD belongs to the separate 2.0 still capture.       |
 
 Opaque canvas apps are recorded with `captureStream(60)`. Cubit and Eyeshot use
 the browser compositor to retain their CSS backgrounds. Eyeshot's compositor delivered

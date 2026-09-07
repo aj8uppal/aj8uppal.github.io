@@ -237,7 +237,7 @@ export const apps: Built[] = [
       decision:
         'The ball, CPU fielders and both runners share a fixed-step simulation. Runs are awarded when both batters reach their creases; run-outs are checked when a wicket is broken.',
       evidence:
-        'The public 3.1 release includes a guided first run, daily challenges, a club tour and offline play.',
+        'The public 5.0.1 release includes a guided first run, daily challenges, a club tour, offline solo play and private online matches.',
       question: 'From a shot to a score.',
       frames: [
         {
@@ -329,6 +329,43 @@ export const apps: Built[] = [
         [
           'Expeditions',
           'Expeditions award personal loot. Carried gold, banked gold and permanent shards are tracked separately.',
+        ],
+      ],
+    },
+  },
+  {
+    key: 'voidborne',
+    categories: ['systems', 'games'],
+    name: 'Voidborne Online',
+    kind: 'Space RPG',
+    reach: 'open',
+    reachLabel: 'Live alpha',
+    href: 'https://voidborne-online.fly.dev/',
+    cta: 'Enter the frontier',
+    what: 'Space combat across seven connected sectors.',
+    how: 'A Node server owns enemies, combat, contracts, rewards and pilot progression while the browser renders flight over WebSocket.',
+    k: 'React · TypeScript · Canvas · WebSocket · Node.js',
+    accent: '#8eb5df',
+    alt: 'A new Voidborne Online pilot at Orion Anchorage, with the ship, tracked contract and flight HUD visible beneath the station.',
+    cap: 'A new pilot at Orion Anchorage in the live 2.0 build, with a tracked contract and flight HUD.',
+    story: {
+      role: 'The browser flight HUD, server-owned combat loop, contracts and persistent pilot progression.',
+      constraint:
+        'The browser needs responsive flight controls while the server resolves shared enemies, combat, rewards and the pilot record.',
+      decision:
+        'A Node WebSocket service owns PvE state, missions, purchases and progression. The browser reports movement and renders server snapshots, with sector rooms sharing the active frontier.',
+      evidence:
+        'The live alpha has seven connected sectors, persistent pilots, contracts, shared PvE encounters and opt-in pilot combat in two lawless sectors.',
+      question: 'A persistent frontier in a browser.',
+      details: [
+        ['World', 'Seven hand-authored sectors connected by server-checked jump lanes.'],
+        [
+          'Authority',
+          'The server owns enemies, projectiles, damage, missions, rewards and pilot progression.',
+        ],
+        [
+          'Multiplayer',
+          'Sector rooms share PvE state, chat and nearby pilots; sorties support up to four pilots.',
         ],
       ],
     },

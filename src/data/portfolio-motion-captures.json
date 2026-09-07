@@ -257,6 +257,66 @@
       "frames": 427,
       "seconds": 7.117,
       "audio": false
+    },
+    {
+      "key": "boundary",
+      "raw": "boundary.webm",
+      "rawSha256": "5b089304cb050bcc7c5effb10d75db5f5d8f63f6a6ade422bff8ebe245396de7",
+      "video": "/media/previews/boundary.mp4",
+      "bytes": 2244071,
+      "poster": "preview-boundary.webp",
+      "posterFrom": "First decoded frame of the final MP4",
+      "width": 1280,
+      "height": 720,
+      "fps": 60,
+      "frames": 479,
+      "seconds": 7.983,
+      "audio": false
+    },
+    {
+      "key": "voidreach",
+      "raw": "voidreach.webm",
+      "rawSha256": "3366a7fb0c497a08d65a38c9a70f20ba68a439e19de02e30344b23126faebf69",
+      "video": "/media/previews/voidreach.mp4",
+      "bytes": 1627005,
+      "poster": "preview-voidreach.webp",
+      "posterFrom": "First decoded frame of the final MP4",
+      "width": 1280,
+      "height": 720,
+      "fps": 60,
+      "frames": 599,
+      "seconds": 9.983,
+      "audio": false
+    },
+    {
+      "key": "bring-something-home",
+      "raw": "bring-something-home.webm",
+      "rawSha256": "05e9cb5b1ecd7c2ecf6eaba097147fa9b8d25ad4ebc7fd8734135e0e40f22532",
+      "video": "/media/previews/bring-something-home.mp4",
+      "bytes": 1977060,
+      "poster": "preview-bring-something-home.webp",
+      "posterFrom": "First decoded frame of the final MP4",
+      "width": 1280,
+      "height": 720,
+      "fps": 60,
+      "frames": 629,
+      "seconds": 10.483,
+      "audio": false
+    },
+    {
+      "key": "voidborne",
+      "raw": "voidborne.webm",
+      "rawSha256": "dcdccc44482397f323a17089e867bb18c4f174860a721dbf5bc94712610454f5",
+      "video": "/media/previews/voidborne.mp4",
+      "bytes": 826539,
+      "poster": "preview-voidborne.webp",
+      "posterFrom": "First decoded frame of the final MP4",
+      "width": 1280,
+      "height": 720,
+      "fps": 60,
+      "frames": 599,
+      "seconds": 9.983,
+      "audio": false
     }
   ]
 }

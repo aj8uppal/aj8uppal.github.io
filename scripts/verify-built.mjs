@@ -62,8 +62,8 @@ try {
     `${apps.length} projects`,
   );
   note(new Set(apps.map((app) => app.key)).size === apps.length, 'project keys are unique');
-  note(apps.length === 24, 'the collection retains 24 personal projects');
-  note(selected.length === 6, 'six projects form the opening selection');
+  note(apps.length === 25, 'the collection retains 25 personal projects');
+  note(selected.length === 10, 'ten projects form the opening selection');
   note(same(selected, homeProjectKeys), 'the collection opens with the primary homepage tier');
   note((await page.locator('h1').count()) === 1, 'the collection has one main heading');
   note(
@@ -71,8 +71,8 @@ try {
     'search has an accessible label',
   );
   note(
-    same(await visible(), selected),
-    'the opening selection is concise and follows the catalogue',
+    same(await visible(), selected.slice(0, 6)),
+    'the opening selection starts with the first six projects in catalogue order',
   );
 
   await page.locator('[data-filter="all"]').click();
@@ -309,14 +309,14 @@ try {
     .locator('[data-secondary-project]')
     .evaluateAll((cards) => cards.map((card) => card.dataset.secondaryProject));
   note(
-    primary.length === 6 && same(primary, homeProjectKeys),
-    'six primary projects follow the shared homepage order',
+    primary.length === 10 && same(primary, homeProjectKeys),
+    'ten primary projects follow the shared homepage order',
   );
   note(
-    secondary.length === 7 && same(secondary, secondaryProjectKeys),
-    'seven secondary projects follow the shared gallery order',
+    secondary.length === 4 && same(secondary, secondaryProjectKeys),
+    'four secondary projects follow the shared gallery order',
   );
-  note(new Set([...primary, ...secondary]).size === 13, 'homepage tiers do not repeat projects');
+  note(new Set([...primary, ...secondary]).size === 14, 'homepage tiers do not repeat projects');
   note(
     (await page.locator('.portfolio-collection-link').getAttribute('href')) ===
       '/portfolio/collection/',

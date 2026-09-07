@@ -84,24 +84,122 @@ import './motion';
   const index = document.querySelector('.wb-index');
   if (!index) return;
   const summary = index.querySelector('summary');
+  const sheet = index.querySelector('.wb-fold-sheet');
+  const items = sheet ? [...sheet.querySelectorAll('a')] : [];
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  let state = index.open ? 'open' : 'closed';
+  let animations = [];
+  let closeToken = 0;
+
+  const setState = (next) => {
+    state = next;
+    index.dataset.foldState = next;
+    if (sheet) sheet.inert = next === 'closing';
+  };
+  const stopAnimations = () => {
+    animations.forEach((animation) => animation.cancel());
+    animations = [];
+  };
+  const visualState = (item) => {
+    const style = getComputedStyle(item);
+    return {
+      transform: style.transform === 'none' ? 'none' : style.transform,
+      opacity: style.opacity,
+    };
+  };
+  const animateItems = (opening, preserveCurrent = false) => {
+    const current = new Map(items.map((item) => [item, visualState(item)]));
+    stopAnimations();
+    if (reduced.matches || !items.length) return Promise.resolve();
+    const order = opening ? items : [...items].reverse();
+    const duration = 260;
+    animations = order.map((item, position) => {
+      const from = preserveCurrent
+        ? current.get(item)
+        : opening
+          ? { transform: 'rotateX(-55deg)', opacity: '0' }
+          : current.get(item);
+      const to = opening
+        ? { transform: 'none', opacity: '1' }
+        : { transform: 'rotateX(-55deg)', opacity: '0' };
+      return item.animate([from, to], {
+        duration,
+        delay: position * 38,
+        easing: 'cubic-bezier(.2,.75,.25,1)',
+        fill: 'both',
+      });
+    });
+    return Promise.all(animations.map((animation) => animation.finished.catch(() => undefined)));
+  };
+  const open = () => {
+    const wasClosing = state === 'closing';
+    const token = ++closeToken;
+    index.open = true;
+    setState('opening');
+    if (reduced.matches) {
+      setState('open');
+      return;
+    }
+    void animateItems(true, wasClosing).then(() => {
+      if (token === closeToken && state === 'opening') {
+        stopAnimations();
+        setState('open');
+      }
+    });
+  };
+  const close = ({ focus = false } = {}) => {
+    const token = ++closeToken;
+    if (!index.open && state === 'closed') return;
+    setState('closing');
+    if (reduced.matches) {
+      index.open = false;
+      setState('closed');
+      if (focus) summary.focus();
+      return;
+    }
+    void animateItems(false).then(() => {
+      if (token !== closeToken || state !== 'closing') return;
+      stopAnimations();
+      index.open = false;
+      setState('closed');
+      if (focus) summary.focus();
+    });
+  };
+  const toggle = () => (index.open && state !== 'closing' ? close() : open());
+
+  index.dataset.foldState = index.open ? 'open' : 'closed';
+  summary.addEventListener('click', (event) => {
+    event.preventDefault();
+    toggle();
+  });
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && index.open) {
-      index.open = false;
-      summary.focus();
+      close({ focus: true });
     }
   });
   document.addEventListener('pointerdown', (event) => {
-    if (index.open && !index.contains(event.target)) index.open = false;
+    if (index.open && !index.contains(event.target)) close();
   });
-  index.querySelectorAll('a').forEach((link) => {
+  items.forEach((link) => {
     link.addEventListener('click', () => {
-      index.open = false;
+      close();
       const target = document.querySelector(link.hash);
       if (target) {
         target.setAttribute('tabindex', '-1');
         target.focus({ preventScroll: true });
       }
     });
+  });
+  reduced.addEventListener('change', () => {
+    if (reduced.matches && state === 'closing') {
+      stopAnimations();
+      index.open = false;
+      setState('closed');
+    } else if (reduced.matches && state === 'opening') {
+      stopAnimations();
+      index.open = true;
+      setState('open');
+    }
   });
 })();
 

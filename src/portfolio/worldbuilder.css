@@ -1564,27 +1564,8 @@
   color: #173934;
   background: #f0f0df;
 }
-.wb-index[open] .wb-fold-sheet a {
-  animation: wb-unfold 0.24s ease-out backwards;
-}
-.wb-index[open] .wb-fold-sheet a:nth-child(2) {
-  animation-delay: 0.04s;
-}
-.wb-index[open] .wb-fold-sheet a:nth-child(3) {
-  animation-delay: 0.08s;
-}
-.wb-index[open] .wb-fold-sheet a:nth-child(4) {
-  animation-delay: 0.12s;
-}
-@keyframes wb-unfold {
-  from {
-    transform: rotateX(-55deg);
-    opacity: 0;
-  }
-  to {
-    transform: none;
-    opacity: 1;
-  }
+.wb-index[data-fold-state='closing'] .wb-fold-sheet a {
+  pointer-events: none;
 }
 @media (max-width: 1100px) {
   .wb-career-grid {

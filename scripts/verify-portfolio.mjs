@@ -15,7 +15,9 @@ const LAB = process.argv.includes('--lab');
 const OUT = process.env.PORTFOLIO_QA_OUT || '/tmp/aj-portfolio-production/verification';
 // The homepage tells a short story; full project pages carry its depth. New
 // projects belong in the shared collection before they earn homepage space.
-const HOME_HEIGHT = { desktop: 6200, phone: 9000 };
+// Four additional full gameplay cards add two desktop rows and the measured
+// phone gallery height. Keep these budgets below accidental copy/spacing growth.
+const HOME_HEIGHT = { desktop: 7400, phone: 11000 };
 const excluded = [
   'throatlight',
   'papertrader',
@@ -29,7 +31,6 @@ const excluded = [
   'dustbound',
   'voxel-gods',
   'ash-and-iron',
-  'voidborne',
 ];
 const homes = [
   ['worldbuilder', '/'],
@@ -95,10 +96,10 @@ const geometry = (page) =>
 try {
   note(
     excluded.every((key) => !projects.some((p) => p.key === key)),
-    'all thirteen exclusions are absent from the catalogue',
+    'all twelve exclusions are absent from the catalogue',
   );
   note(
-    ['voidreach', 'driftfall', 'boundary', 'bring-something-home'].every((key) =>
+    ['voidreach', 'driftfall', 'boundary', 'bring-something-home', 'voidborne'].every((key) =>
       projects.some((p) => p.key === key),
     ),
     'the requested new and retained games have real project records',
@@ -245,12 +246,12 @@ try {
     .evaluateAll((nodes) => nodes.map((n) => n.dataset.secondaryProject));
   note(
     JSON.stringify(primary) === JSON.stringify(homeProjectKeys),
-    'homepage: six primary projects in AJ’s requested order',
+    'homepage: ten primary projects in AJ’s requested order',
     primary,
   );
   note(
     JSON.stringify(secondary) === JSON.stringify(secondaryProjectKeys),
-    'homepage: seven secondary projects in AJ’s requested order',
+    'homepage: four secondary projects in AJ’s requested order',
     secondary,
   );
   note(
@@ -267,7 +268,7 @@ try {
     .locator('a[href^="/portfolio/work/"]')
     .evaluateAll((links) => [...new Set(links.map((a) => a.pathname.split('/')[3]))]);
   note(
-    homepageCases.length === 14 &&
+    homepageCases.length === 15 &&
       homepageCases.every((key) => ['notable', ...primary, ...secondary].includes(key)),
     'homepage: the remaining projects belong only in the collection',
     homepageCases,
@@ -297,12 +298,62 @@ try {
     );
   const fold = page.locator('.wb-index');
   const foldSummary = fold.locator('summary');
+  const observeClosingFold = () =>
+    page.evaluate(
+      () =>
+        new Promise((resolve) => {
+          const details = document.querySelector('.wb-index');
+          const sheet = details?.querySelector('.wb-fold-sheet');
+          const rows = sheet ? [...sheet.querySelectorAll('a')] : [];
+          const deadline = performance.now() + 500;
+          const tick = () => {
+            const last = rows.at(-1);
+            const first = rows[0];
+            const lastStyle = last && getComputedStyle(last);
+            const firstStyle = first && getComputedStyle(first);
+            const flat = (transform) =>
+              transform === 'none' || new DOMMatrixReadOnly(transform).isIdentity;
+            const lastMoving =
+              !!lastStyle && (Number(lastStyle.opacity) < 0.99 || !flat(lastStyle.transform));
+            const firstStill =
+              !!firstStyle && Number(firstStyle.opacity) >= 0.99 && flat(firstStyle.transform);
+            if (
+              details?.open &&
+              details.dataset.foldState === 'closing' &&
+              sheet?.getClientRects().length &&
+              lastMoving &&
+              firstStill
+            ) {
+              resolve(true);
+              return;
+            }
+            if (performance.now() >= deadline) {
+              resolve(false);
+              return;
+            }
+            requestAnimationFrame(tick);
+          };
+          tick();
+        }),
+    );
   for (const width of [320, 390, 1440]) {
     await page.setViewportSize({ width, height: width < 720 ? 844 : 1000 });
     await foldSummary.focus();
     await page.keyboard.press('Enter');
     note(await fold.evaluate((el) => el.open), `folding menu ${width}: opens with keyboard`);
-    await page.waitForTimeout(450);
+    note(
+      await page.evaluate(() => {
+        const state = document.querySelector('.wb-index')?.dataset.foldState;
+        const links = [...document.querySelectorAll('.wb-fold-sheet a')];
+        return (
+          state === 'opening' && links.some((link) => Number(getComputedStyle(link).opacity) < 0.99)
+        );
+      }),
+      `folding menu ${width}: opening exposes an intermediate fold`,
+    );
+    await page.waitForFunction(
+      () => document.querySelector('.wb-index')?.dataset.foldState === 'open',
+    );
     note(
       await page
         .locator('.wb-fold-sheet a')
@@ -324,13 +375,45 @@ try {
     );
     await page.keyboard.press('Escape');
     note(
+      await observeClosingFold(),
+      `folding menu ${width}: Escape visibly retracts the last row first`,
+    );
+    await page.waitForFunction(
+      () => document.querySelector('.wb-index')?.dataset.foldState === 'closed',
+    );
+    note(
       (await fold.evaluate((el) => !el.open)) &&
         (await foldSummary.evaluate((el) => document.activeElement === el)),
       `folding menu ${width}: Escape closes and restores focus`,
     );
   }
   await foldSummary.click();
+  await page.waitForFunction(
+    () => document.querySelector('.wb-index')?.dataset.foldState === 'open',
+  );
+  await foldSummary.click();
+  note(await observeClosingFold(), 'folding menu: summary toggle visibly retracts before closing');
+  await page.waitForFunction(
+    () => document.querySelector('.wb-index')?.dataset.foldState === 'closing',
+  );
+  await foldSummary.click();
+  await page.waitForFunction(
+    () => document.querySelector('.wb-index')?.dataset.foldState === 'open',
+  );
+  note(await fold.evaluate((el) => el.open), 'folding menu: rapid close and reopen recovers');
+  await foldSummary.click();
+  await page.waitForFunction(
+    () => document.querySelector('.wb-index')?.dataset.foldState === 'closed',
+  );
+  await foldSummary.click();
+  await page.waitForFunction(
+    () => document.querySelector('.wb-index')?.dataset.foldState === 'open',
+  );
   await page.locator('.wb-fold-sheet a[href="#more-work"]').click();
+  note(await observeClosingFold(), 'folding menu: section link visibly retracts before closing');
+  await page.waitForFunction(
+    () => document.querySelector('.wb-index')?.dataset.foldState === 'closed',
+  );
   note(
     (await fold.evaluate((el) => !el.open)) &&
       (await page.locator('#more-work').evaluate((el) => document.activeElement === el)),
@@ -338,7 +421,14 @@ try {
   );
   await page.evaluate(() => window.scrollTo(0, 0));
   await foldSummary.click();
+  await page.waitForFunction(
+    () => document.querySelector('.wb-index')?.dataset.foldState === 'open',
+  );
   await page.locator('.wb-hero h1').click();
+  note(await observeClosingFold(), 'folding menu: outside click visibly retracts before closing');
+  await page.waitForFunction(
+    () => document.querySelector('.wb-index')?.dataset.foldState === 'closed',
+  );
   note(await fold.evaluate((el) => !el.open), 'folding menu: clicking outside closes the fold');
   for (const width of [390, 1440]) {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
@@ -730,8 +820,8 @@ try {
     'folding menu: native navigation works without JavaScript',
   );
   note(
-    (await noJS.locator('[data-secondary-project]').count()) === 7,
-    'project gallery: all seven builds remain available without JavaScript',
+    (await noJS.locator('[data-secondary-project]').count()) === 4,
+    'project gallery: all four secondary builds remain available without JavaScript',
   );
   await noJS.goto(new URL('/portfolio/collection/', BASE).href, { waitUntil: 'networkidle' });
   note(
@@ -759,6 +849,19 @@ try {
       ),
       `${name}: real reduced-motion context has no animation`,
     );
+    if (name === 'worldbuilder') {
+      const reducedFold = reduced.locator('.wb-index');
+      await reducedFold.locator('summary').click();
+      note(
+        await reducedFold.evaluate((el) => el.open && el.dataset.foldState === 'open'),
+        'worldbuilder: reduced-motion fold opens immediately',
+      );
+      await reducedFold.locator('summary').click();
+      note(
+        await reducedFold.evaluate((el) => !el.open && el.dataset.foldState === 'closed'),
+        'worldbuilder: reduced-motion fold closes immediately',
+      );
+    }
     if (name === 'observatory') {
       const canvas = reduced.locator('[data-ob-sky]');
       const before = await canvas.evaluate((el) => el.toDataURL());

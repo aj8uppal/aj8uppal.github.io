@@ -514,16 +514,12 @@ export const homeProjectKeys = [
   'blockhold',
   'cubit',
   'eyeshot',
-];
-export const secondaryProjectKeys = [
-  'beatlayer',
   'boundary',
   'voidreach',
-  'ai-wrapped',
-  'roomtone',
   'bring-something-home',
-  'slipstream',
+  'voidborne',
 ];
+export const secondaryProjectKeys = ['beatlayer', 'ai-wrapped', 'roomtone', 'slipstream'];
 export const collection: (Built & { image: string; caseKey: string })[] = projects
   .filter((p) => p.key !== 'notable')
   .sort((a, b) => {

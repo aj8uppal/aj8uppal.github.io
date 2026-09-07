@@ -9,6 +9,7 @@ import { chromium } from 'playwright';
 import path from 'node:path';
 import { captureEyeshotMotion } from './capture-eyeshot-motion.mjs';
 import { recordCompositor } from './record-compositor.mjs';
+import { capturePortfolioGame, portfolioGameKeys } from './capture-portfolio-games-motion.mjs';
 import fs from 'node:fs/promises';
 const raw =
   process.env.PORTFOLIO_MOTION_RAW ||
@@ -17,7 +18,7 @@ await fs.mkdir(raw, { recursive: true });
 const keys = process.argv.slice(2);
 for (const key of keys.length
   ? keys
-  : ['saltline', 'murmuration', 'ember', 'blockhold', 'cubit', 'eyeshot']) {
+  : ['saltline', 'murmuration', 'ember', 'blockhold', 'cubit', 'eyeshot', ...portfolioGameKeys]) {
   if (key === 'eyeshot') {
     await captureEyeshotMotion(raw);
     continue;
@@ -84,6 +85,10 @@ for (const key of keys.length
     console.log('RECORDED', key, Buffer.byteLength(data, 'base64'));
   }
   try {
+    if (portfolioGameKeys.includes(key)) {
+      await capturePortfolioGame(key, { page, raw, record });
+      continue;
+    }
     if (key === 'murmuration') {
       await context.addInitScript(() => localStorage.setItem('murmuration.style', '3'));
       await page.goto('https://aj8uppal.github.io/murmuration/', { waitUntil: 'domcontentloaded' });

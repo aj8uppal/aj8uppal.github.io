@@ -22,4 +22,9 @@ export const previewAlts = {
   blockhold: 'Towers defending the waterways and roads of Tidereach in Blockhold.',
   cubit: 'Numbered tiles spread across the three layers of Cubit.',
   eyeshot: 'The Angle challenge in Eyeshot, with a coral arm and a 64-degree target.',
+  boundary: 'Boundary’s floodlit cricket ground, seen from behind the batter.',
+  voidreach: 'The Sparrow facing an icy planet against a star-filled sky in Voidreach.',
+  'bring-something-home':
+    'A fresh Arcanist in Cindermeadow, with creatures, projectiles and the equipment panel visible.',
+  voidborne: 'A cyan ship and a hostile drone beside a blue planet in Voidborne Online.',
 };

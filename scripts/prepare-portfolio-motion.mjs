@@ -21,6 +21,10 @@ const keys = [
   'blockhold',
   'cubit',
   'eyeshot',
+  'boundary',
+  'voidreach',
+  'bring-something-home',
+  'voidborne',
 ];
 const only = process.argv.slice(2).filter((arg) => !arg.startsWith('--'));
 const manifestPath = path.join(root, 'src/data/portfolio-motion-captures.json');
