@@ -138,13 +138,6 @@
   text-wrap: balance;
   color: #fff9eb;
 }
-.wb-scope {
-  max-width: 48ch;
-  margin: 14px auto 0;
-  color: #dce8de;
-  font-size: 14px;
-  line-height: 1.5;
-}
 .wb-hero-actions {
   display: flex;
   justify-content: center;
@@ -335,12 +328,6 @@
   color: #355551;
   font-size: 15px;
   line-height: 1.65;
-}
-.wb-professional-proof {
-  margin-top: 15px;
-  color: #355551;
-  font-size: 14px;
-  line-height: 1.55;
 }
 .wb-system {
   display: grid;
@@ -801,11 +788,6 @@
   .wb-hero-line {
     font-size: 27px;
     line-height: 1.18;
-  }
-  .wb-scope {
-    max-width: 33ch;
-    margin-top: 12px;
-    font-size: 13px;
   }
   .wb-hero-actions {
     gap: 17px;

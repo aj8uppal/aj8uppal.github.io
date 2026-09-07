@@ -11,29 +11,29 @@ const groups = [
   {
     state: 'runs' as const,
     title: 'Self-contained',
-    note: 'Needs nothing off this domain. Open it and it does what it did.',
+    note: 'These projects run entirely on this site.',
   },
   {
     state: 'opens' as const,
     title: 'Partly elsewhere',
-    note: 'Still served and still draws, but something it loaded lived on another host, and that host has closed.',
+    note: 'These pages still load, but some features depend on services that are no longer available.',
   },
   {
     state: 'stopped' as const,
     title: 'Stopped',
-    note: 'Served, and nothing happens. Left up because the URL is still the URL, not because it works.',
+    note: 'These older pages are still at their original addresses, but no longer run.',
   },
 ].map((g) => ({ ...g, rows: legacy.filter((l) => l.state === g.state) }));
 ---
 
 <Base
   title={`Not found · ${site.title}`}
-  description="No page at this address. What this site still serves, and which of it still works."
+  description="That page is not here. Browse the playground or find an older project."
   elsewhere
 >
   <section class="sec sec--ink buoy">
     <div class="shell">
-      <p class="eyebrow buoy__label">404 &middot; nothing at this address</p>
+      <p class="eyebrow buoy__label">404 &middot; page not found</p>
 
       {
         /* Filled from location.pathname, and hidden until it is. Without
@@ -47,8 +47,7 @@ const groups = [
           script replaces it with the specific one. */
       }
       <p class="buoy__say" data-buoy-say>
-        This site does not serve that address. Everything it does serve from before the 2026 rebuild
-        is listed below, with what still works.
+        That page isn’t here. Try the playground, or browse older projects below.
       </p>
 
       <p class="buoy__go">
@@ -56,12 +55,11 @@ const groups = [
       </p>
 
       <details class="notes buoy__notes">
-        <summary>Everything still served from the old site</summary>
+        <summary>Browse older project addresses</summary>
         <div class="buoy__list">
           <p class="buoy__how">
-            Twenty-five addresses, opened one at a time in a headless browser on 7 August 2026 and
-            sorted by what actually happened: what each page fetched from other hosts, what it threw
-            on the way up, and whether anything was drawn two seconds later.
+            Some older projects still work; others depend on services that have gone away. They’re
+            grouped below by what you can still use.
           </p>
           {
             groups.map((g) => (
@@ -94,8 +92,6 @@ const groups = [
           }
         </div>
       </details>
-
-      <p class="buoy__close">Not every wreck is republished.</p>
     </div>
   </section>
 </Base>
@@ -196,17 +192,17 @@ const groups = [
         /* One of the eight has a caveat anyway, and swallowing it here to keep
            the sentence tidy would be the row below calling this line a liar. */
         const caveat = why ? ` ${why[0]?.toUpperCase()}${why.slice(1)}.` : '';
-        say.textContent = `Close to ${name}, which is still here and still runs on its own.${caveat}`;
+        say.textContent = `You may be looking for ${name}. You can open it below.${caveat}`;
         go.href = path;
         go.textContent = `Open ${name}`;
       } else {
         /* Named, because knowing what you nearly reached is the answer to the
            question. Not offered, because the offer has to be something that
            works, and this one is short a host. */
-        say.textContent = `Close to ${name}, at ${path}. It is still served, but ${why}.`;
+        say.textContent = `You may be looking for ${name}, at ${path}. The page still loads, but ${why}.`;
       }
     } else {
-      say.textContent = 'Nothing on this site is close to that address.';
+      say.textContent = 'I couldn’t match that address to an older project. Try the playground.';
     }
   }
 </script>

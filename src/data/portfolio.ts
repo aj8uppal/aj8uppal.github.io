@@ -35,28 +35,27 @@ const core: Project[] = [
     status: 'live',
     kind: 'Healthcare AI',
     image: null,
-    alt: 'Notable Health is represented by a systems card rather than a fabricated product screenshot.',
+    alt: 'Caller verification, routing and reliability at Notable Health.',
     summary: 'Healthcare voice and conversations infrastructure for patient calls.',
-    role: 'I set technical direction for patient identity, routing, observability and reliability on the team that owns the voice and conversations platform.',
+    role: 'I work on caller verification, call routing, transfers and monitoring for the voice and conversations platform.',
     constraint:
       'Notable serves 100+ enterprise customers. Our team’s voice and conversations platform handles around 250,000 patient calls a month across EHR, FHIR, carrier and customer call-center boundaries.',
     decision:
-      'Specify the telephony integration down to SIP, TLS, SRTP, caller ID, DTMF and DID routing, then pair it with auditable one-time-code verification and configurable fallback routing.',
+      'I wrote the inbound SIP integration specification, covering TLS, SRTP, caller ID, DTMF and DID routing. My work also includes patient lookup, SMS verification and configurable fallback routing.',
     evidence:
-      'The integration specification has driven more than $1M in ARR, and caller verification spans 5+ health systems.',
+      'Inbound SIP currently accounts for $240k in ARR. Expansion opportunities I unlocked could take it above $1M. Caller verification is used across 5+ health systems.',
     href: null,
     stack:
       'Python · TypeScript · Node.js · React · PostgreSQL · BigQuery · SIP · GCP · Kubernetes · Terraform',
-    question:
-      'How do you make a patient conversation dependable across systems you do not control?',
+    question: 'Connecting health systems and phone networks.',
     frames: [],
     details: [
       [
         'Incident practice',
-        'I lead voice incident debriefs and turn failure modes into fixes, including customer-configurable fallback routing',
+        'I lead voice incident debriefs and work on recovery measures, including customer-configurable fallback routing',
       ],
       [
-        'Flow confidence',
+        'Flow testing',
         'I lead AI-powered testing for the flow builder; flow success rates are above 90%',
       ],
       [
@@ -72,22 +71,22 @@ const core: Project[] = [
     kind: 'Simulation / multiplayer',
     image: 'portfolio-saltline-sunrise',
     alt: 'A sailboat beneath a rising sun, with a warm path of light across the ocean in Saltline.',
-    summary: 'Age of sail in a browser, with a real sailing model under it.',
+    summary: 'A multiplayer sailing game with wind-driven physics and persistent cargo.',
     role: 'The sailing model, renderer, multiplayer and account persistence.',
     constraint:
-      'Thrust depends on point of sail: the boat must feel like a boat, while a shared sea keeps each player’s state consistent.',
+      'Wind angle affects thrust, while the multiplayer service keeps players in the same sea.',
     decision:
-      'Use point-of-sail thrust and heading to derive VMG, then expose relative wind, heel, thrust and VMG in the HUD so the rule can be learned rather than guessed.',
+      'Point of sail and heading determine thrust and speed toward a mark. The HUD shows relative wind, heel and velocity while you sail.',
     evidence: 'Live at saltline.app with accounts, persistent cargo and up to 20 players per sea.',
     href: 'https://saltline.app',
     stack: 'Babylon.js · Colyseus · WebSocket · Fly.io',
-    question: 'What makes an ocean feel alive?',
+    question: 'Sailing physics and multiplayer.',
     proofFrames: [
       {
         image: 'saltline-proof-panel',
         label: 'The development panel',
-        alt: 'This is the 16:46 frame, uncropped. The panel on the left is the simulation’s actual inputs: time of day, sea state, wind angle, crest sharpness, seed. New seed, new ocean, same rules.',
-        note: 'This is the 16:46 frame, uncropped. The panel on the left is the simulation’s actual inputs: time of day, sea state, wind angle, crest sharpness, seed. New seed, new ocean, same rules.',
+        alt: 'The uncropped 16:46 capture, with controls for time of day, sea state, wind angle, crest sharpness and seed.',
+        note: 'The uncropped 16:46 capture, with controls for time of day, sea state, wind angle, crest sharpness and seed.',
         proof: true,
       },
     ],
@@ -122,16 +121,16 @@ const core: Project[] = [
     kind: 'Voxel MMORPG',
     image: 'ember-spread-fallowmere-dusk',
     alt: 'Ember Wilds in Fallowmere at dusk: a level-30 character in a voxel landscape.',
-    summary: 'Browser-based voxel MMORPG. Designed, built, and in production.',
-    role: 'Designed, built and put the web tier and authoritative realm service into production.',
+    summary: 'A multiplayer voxel RPG with seven regions, quests and combat.',
+    role: 'World design, the browser client and the realm service.',
     constraint:
       'Every player needs the same world state, including quests, loot and combat, while the browser remains a responsive renderer.',
     decision:
-      'Keep simulation in a separate realm service and use Colyseus rooms over WebSocket to distribute authoritative state to the three.js client.',
+      'A separate realm service runs the simulation. Colyseus rooms send shared state over WebSocket to the three.js client.',
     evidence: 'Live without install: seven regions and realms that hold up to 64 players.',
     href: 'https://emberwilds-web.fly.dev',
     stack: 'three.js · Colyseus · WebSocket · Fly.io',
-    question: 'What makes a world the same for everyone in it?',
+    question: 'Keeping a shared world in sync.',
     proofFrames: [
       {
         image: 'ember-proof-two-players',
@@ -146,19 +145,19 @@ const core: Project[] = [
         image: 'ember-region-hearthvale',
         label: 'Hearthvale',
         alt: 'The Hearthvale in Ember Wilds: green voxel meadows split by a river, a level one character on the bank, quest panel at top left.',
-        note: 'Where everyone starts. A river, a goblin headman, and a field note telling you that you can tilt the camera.',
+        note: 'The starting region, with a river, goblins and the first quests.',
       },
       {
         image: 'ember-region-fallowmere',
         label: 'Fallowmere',
         alt: 'Fallowmere in Ember Wilds: a dusty orange plain of voxel trees at dusk, embers drifting, a level thirty character in the centre.',
-        note: 'Open country under a dust-orange sky. Direfangs push in from the edges and the quest log starts counting them.',
+        note: 'Fallowmere at dusk, with direfangs near the player and an active quest log.',
       },
       {
         image: 'ember-region-greenmarch',
         label: 'Greenmarch',
         alt: 'The Greenmarch in Ember Wilds: pale flats under a bleached sky with a white ruin and a chest, lore lines stacked at bottom left.',
-        note: 'The lore panel’s own words: a fallen colonnade of Emberhold, garlanded in herb and briar, haunted by something in the Ashen Waste’s livery. It left a blade behind.',
+        note: 'Greenmarch, with pale terrain, a ruined colonnade and a chest.',
       },
       {
         image: 'ember-region-fenmarch',
@@ -170,19 +169,19 @@ const core: Project[] = [
         image: 'ember-region-ashen-waste',
         label: 'Ashen Waste',
         alt: 'The Ashen Waste in Ember Wilds: a red-lit waste mid-combat, a white nova ring expanding from the character, damage number 684 above a creature.',
-        note: 'Nova, mid-detonation. The ring is resolved on the server, and it did 684 damage to the creature it caught.',
+        note: 'A nova attack in the Ashen Waste, with a 684 damage marker.',
       },
       {
         image: 'ember-region-greywall-peaks',
         label: 'Greywall Peaks',
         alt: 'The Greywall Peaks in Ember Wilds: pale grey stone terraces under flat light, banners, and a cluster of glowing projectiles mid-flight.',
-        note: 'Bleached stone and banners. Eleven items on the floor is what a fight up here looks like when it goes well.',
+        note: 'Greywall Peaks after combat, with banners, dropped items and projectiles still visible.',
       },
       {
         image: 'ember-region-black-plateau',
         label: 'Black Plateau',
         alt: 'The Black Plateau in Ember Wilds: a dark red-violet plateau with the region title card centred and a lore line beneath it.',
-        note: 'The last region. The title card puts it plainly: the Watcher is above you now, and there is no more inward.',
+        note: 'The title card for Black Plateau, the seventh region.',
       },
     ],
     details: [
@@ -198,23 +197,23 @@ const core: Project[] = [
     kind: 'Audio / WebGPU',
     image: 'murmuration-lead-ribbon',
     alt: 'murmuration in ribbon style: a dense violet and white form of drawn-out particle streaks against black, filling most of the frame.',
-    summary: 'A music visualiser that works out what the music is doing, not just how loud it is.',
+    summary: 'A music visualizer that maps pitch, rhythm and stereo movement to particles.',
     role: 'The audio analysis, WebGPU compute renderer and interaction model.',
     constraint:
-      'Frequency alone cannot tell a voice from a piano; the field also needs to respond to key, tempo, transients, stereo placement and quiet.',
+      'The particle field responds to several features of a track: pitch, tempo, transients, stereo position and quiet passages.',
     decision:
-      'Combine chroma, autocorrelated spectral flux, per-band attack and centre-versus-sides analysis, then drive velocity-stretched particles in a compute shader.',
+      'Chroma, spectral flux, per-band attack and center-versus-sides analysis produce separate signals. A compute shader uses them to move and stretch the particles.',
     evidence:
       'Live in a browser. A recorded run at 1800 × 3043 measured 620k particles in 8.07ms of GPU time; 1.2M in 11.85ms. Hardware was not recorded.',
     href: 'https://aj8uppal.github.io/murmuration/',
     stack: 'WebGPU · compute shaders · Canvas · audio analysis',
-    question: 'Can a field of light hear a song breathe?',
+    question: 'Audio analysis and particles.',
     proofFrames: [
       {
         image: 'murmuration-proof-interface',
         label: 'The live interface',
         alt: 'The full murmuration window: a sparse violet and white constellation of particles on black, and along the bottom a bar reading Pink Floyd - Shine On You Crazy Dia..., 4:21 of 13:35, a waveform, then PARTICLE, CONSTELLATION, SENS 1.6X, FULL, 106 FPS and the key hints beside them.',
-        note: 'Mode, style, sensitivity, quality and frame rate along the bottom are live controls, not captions. B cycles the render mode, V the style, and the minus and equals keys scale how hard the music drives the field.',
+        note: 'The interface shows playback, style, sensitivity, quality and frame rate. B changes the render mode; V changes the style.',
         proof: true,
       },
     ],
@@ -223,19 +222,19 @@ const core: Project[] = [
         image: 'murmuration-frame-ribbon',
         label: 'Ribbon',
         alt: 'murmuration, ribbon style.',
-        note: 'Two styles and a lull, all from one session. Only the style and the music changed.',
+        note: 'Ribbon style stretches the particles into trails.',
       },
       {
         image: 'murmuration-frame-constellation',
         label: 'Constellation',
         alt: 'murmuration, constellation style.',
-        note: 'Two styles and a lull, all from one session. Only the style and the music changed.',
+        note: 'Constellation style draws the field as separate points.',
       },
       {
         image: 'murmuration-frame-lull',
         label: 'Quiet passage',
         alt: 'murmuration during a quiet passage.',
-        note: 'Two styles and a lull, all from one session. Only the style and the music changed.',
+        note: 'A quieter passage, with a smaller, sparser particle field.',
       },
     ],
     details: [
@@ -251,24 +250,23 @@ const core: Project[] = [
     kind: 'Voxel tower defense',
     image: 'blockhold-lead-battle',
     alt: 'Blockhold in a live battle: voxel towers defend a road against an incoming wave.',
-    summary:
-      'Voxel tower defense. Ten maps, 249 authored waves, and three boards that each break a rule the other nine keep.',
-    role: 'The voxel modeler, fixed-step sim, ten maps, authored waves and balance.',
+    summary: 'Voxel tower defense with ten maps, 249 authored waves and three special boards.',
+    role: 'The voxel modeler, fixed-step simulation, maps, waves and balance.',
     constraint:
       'A campaign with branching towers, multiple roads, heroes and endless mode must stay small enough to load while remaining deterministic and testable.',
     decision:
-      'Generate 3D models from colored boxes, synthesize sound in WebAudio, draw icons as SVG, and keep a fixed 60Hz accumulator behind the render loop.',
+      'Models use colored boxes, sounds are synthesized in Web Audio, and icons are drawn as SVG. A fixed 60Hz simulation runs independently of rendering.',
     evidence:
-      'Live and installable: ten maps, 249 authored waves, three heroes, endless mode and 154 tests.',
+      'Live and installable, with ten maps, 249 authored waves, three heroes and an endless mode.',
     href: 'https://aj8uppal.github.io/blockhold/',
     stack: 'JavaScript · WebAudio · SVG · fixed-step simulation',
-    question: 'How much game can code describe?',
+    question: 'Models, sound and simulation.',
     frames: [
       {
         image: 'blockhold-frame-greenhollow',
         label: 'Greenhollow',
-        alt: 'The first board entire: one road, thirteen plots, and the meadow you learn the trade on.',
-        note: 'The first board entire: one road, thirteen plots, and the meadow you learn the trade on.',
+        alt: 'Greenhollow, the first board, with one road and thirteen tower plots.',
+        note: 'Greenhollow, the first board, with one road and thirteen tower plots.',
       },
       {
         image: 'blockhold-frame-veiltide',
@@ -279,8 +277,8 @@ const core: Project[] = [
       {
         image: 'blockhold-frame-cinderwake',
         label: 'Cinderwake',
-        alt: 'Cinderwake Caldera: three roads through the glassfire, lava where a plot could have been.',
-        note: 'Cinderwake Caldera: three roads through the glassfire, lava where a plot could have been.',
+        alt: 'Cinderwake Caldera, with three roads through dark terrain and nearby lava.',
+        note: 'Cinderwake Caldera, with three roads through dark terrain and nearby lava.',
       },
       {
         image: 'blockhold-frame-tidereach',
@@ -295,7 +293,6 @@ const core: Project[] = [
         'Special boards',
         'Sunderfall has four roads at four heights; Tidereach reroutes when causeways close',
       ],
-      ['Review', '154 Vitest tests · six adversarial code rounds · three design rounds'],
     ],
   },
   {
@@ -307,15 +304,15 @@ const core: Project[] = [
     alt: 'Cubit: a 3 by 3 by 3 cube of colored tiles, opened to reveal its layers.',
     summary:
       '2048, cubed: slide and merge inside a 3×3×3 cube, across six directions instead of four.',
-    role: 'The complete single-file engine, renderer, input and synthesized sound.',
+    role: 'The engine, renderer, input controls and synthesized sound.',
     constraint:
-      'Six directions must feel obvious on a flat phone screen, including the hidden axis and the cost of losing sight of interior tiles.',
+      'The cube has six slide directions and interior tiles that can be hidden from view.',
     decision:
-      'Score swipes against screen-space projections of the lattice axes, make blocked tiles translucent, and reserve Space plus capped gyro tilt for peeking.',
-    evidence: 'Live as one self-contained 553 KB HTML file with 62 tests; saves locally.',
+      'Swipes are matched to the projected cube axes. Obscuring tiles turn translucent; Space spreads the layers to show the interior.',
+    evidence: 'A single HTML file with local saves, keyboard controls and touch input.',
     href: 'https://aj8uppal.github.io/cubit/',
     stack: 'Vanilla JS · three.js · Web Audio · node:test',
-    question: 'How do you make a third dimension legible?',
+    question: 'Six directions on a flat screen.',
     frames: [
       {
         image: 'cubit-inset-board',
@@ -337,41 +334,40 @@ const core: Project[] = [
     kind: 'Rendering / ambient',
     image: 'hidamari-spread-canopy',
     alt: 'Hidamari: an autumn canopy path rendered as layered depth plates.',
-    summary: 'Ambient app. Japanese for a sunny spot, the pool of light you stand in.',
+    summary: 'An interactive autumn forest scene with a sunlit path.',
     role: 'The offline bake, runtime reprojection and PWA delivery.',
     constraint:
-      'Photoreal light must run on hardware that cannot path-trace a frame in the browser.',
+      'The scene uses pre-rendered lighting so the browser can animate it without path tracing each frame.',
     decision:
-      'Bake lighting in Blender Cycles and reproject depth against pre-lit plates; reserve the runtime for compositing and parallax.',
-    evidence:
-      'Playable prototype reaches 116fps; audio is still being tuned before public release.',
+      'Lighting is baked in Blender Cycles. The browser composites the layers and reprojects their depth to add parallax.',
+    evidence: 'A playable prototype; audio is still being tuned before public release.',
     href: null,
     stack: 'Blender Cycles · depth reprojection · AVIF · PWA',
-    question: 'How can a browser hold onto a place that was never there?',
+    question: 'Lighting and parallax.',
     frames: [
       {
         image: 'hidamari-depth-0-sky',
-        label: 'Depth 0',
-        alt: 'Hidamari depth layer 0.',
-        note: 'Baked plate used by the runtime reprojection.',
+        label: 'Sky depth map',
+        alt: 'Grayscale depth map for Hidamari’s sky.',
+        note: 'Grayscale values describe depth in the sky layer.',
       },
       {
         image: 'hidamari-depth-1-trees',
-        label: 'Depth 1',
-        alt: 'Hidamari depth layer 1.',
-        note: 'Baked plate used by the runtime reprojection.',
+        label: 'Trees depth map',
+        alt: 'Grayscale depth map for Hidamari’s trees.',
+        note: 'Depth values let the tree layer shift with the view.',
       },
       {
         image: 'hidamari-depth-2-arch',
-        label: 'Depth 2',
-        alt: 'Hidamari depth layer 2.',
-        note: 'Baked plate used by the runtime reprojection.',
+        label: 'Arch depth map',
+        alt: 'Grayscale depth map for Hidamari’s arch.',
+        note: 'The arch is reprojected using this depth map.',
       },
       {
         image: 'hidamari-depth-3-canopy',
-        label: 'Depth 3',
-        alt: 'Hidamari depth layer 3.',
-        note: 'Baked plate used by the runtime reprojection.',
+        label: 'Canopy depth map',
+        alt: 'Grayscale depth map for Hidamari’s canopy.',
+        note: 'Depth data for the overhead canopy.',
       },
     ],
     details: [
@@ -387,16 +383,16 @@ const core: Project[] = [
     kind: 'Simulation / tower defense',
     image: 'elderwood-default',
     alt: 'Elderwood Vale greybox tower defense board with towers and a route.',
-    summary: 'Browser-native tower defense. Playable greybox, and an architecture argument.',
+    summary: 'A tower-defense prototype with a separate simulation core and browser renderer.',
     role: 'The simulation core, renderer, HUD and the boundary between them.',
     constraint:
       'The simulation must remain deterministic and testable without knowing about DOM, rendering, clocks or random globals.',
     decision:
-      'Enforce the boundary with TypeScript configuration and restricted ESLint paths, then interpolate fixed 1/30s snapshots for a separate three.js renderer.',
-    evidence: 'Playable greybox: placement, waves and enough economy to lose.',
+      'TypeScript and ESLint restrict imports into the simulation. A separate three.js renderer interpolates snapshots from its fixed 1/30s tick.',
+    evidence: 'A playable prototype with tower placement, enemy waves and a basic economy.',
     href: null,
     stack: 'TypeScript · three.js · React · fixed tick',
-    question: 'What can a game prove when its simulation ignores the browser?',
+    question: 'Simulation and rendering.',
     frames: [
       {
         image: 'elderwood-default',
@@ -413,8 +409,8 @@ const core: Project[] = [
       {
         image: 'elderwood-stress',
         label: 'Stress',
-        alt: 'Stress burst; the tick rate holds.',
-        note: 'Stress burst; the tick rate holds.',
+        alt: 'A stress-test scene with a burst of enemies.',
+        note: 'A stress-test scene with a burst of enemies.',
       },
     ],
     details: [
@@ -432,9 +428,9 @@ const core: Project[] = [
     alt: 'BeatLayer playing a 40-second synthetic guitar take: a blue waveform aligned to a 96 BPM grid above the active drum sequencer.',
     summary: 'Drop in a guitar take and add synthesized drums in its tempo.',
     role: 'Beat detection, browser synthesis and the playable instrument.',
-    constraint: 'The grid must follow the player’s take rather than forcing the take to a click.',
+    constraint: 'The recording can vary in tempo, so the drum grid needs to follow its timing.',
     decision:
-      'Find beats in the provided audio, synthesize every drum in Web Audio, and export a stem without uploads.',
+      'Beat detection aligns the grid to the recording. Web Audio synthesizes the drums, and stems can be exported without uploading the audio.',
     evidence: 'Live browser instrument with a straight-rock groove and local audio processing.',
     href: '/beatlayer/',
     stack: 'Vite · React · TypeScript · Web Audio',
@@ -449,16 +445,16 @@ const core: Project[] = [
     kind: 'Game / daily tests',
     image: 'portfolio-eyeshot-feature',
     alt: 'A close view of Eyeshot’s Angle practice: a 117° target and coral and dark arms on graph paper.',
-    summary: 'Five tests of your eye a day, scored against the same raw inputs.',
+    summary: 'Five daily visual tests, including midpoints, angles and circles.',
     role: 'The interaction design, scoring loop and server-rescored leaderboard.',
     constraint:
-      'A score should compare people fairly rather than reward the most creative interpretation of a prompt.',
+      'Everyone receives the same daily challenges, with the same scoring rules on the server and in the browser.',
     decision:
-      'Give everyone the same five tests and have the server rescore raw input with the same logic used in the browser.',
+      'A daily seed generates the challenges. The server recomputes scores from raw input using the same rules as the browser.',
     evidence: 'Live at eyeshot.app with a new set at midnight.',
     href: 'https://eyeshot.app/',
     stack: 'Fastify · SQLite · Canvas · Fly.io',
-    question: 'Can a quick visual test be fair?',
+    question: 'Daily challenges and shared scoring.',
     frames: [
       {
         image: 'portfolio-eyeshot-feature',
@@ -556,10 +552,7 @@ export const collection: (Built & { image: string; caseKey: string })[] = projec
       k: p.stack,
       accent: app?.accent ?? '#b5d8c2',
       alt: p.alt,
-      cap:
-        p.frames.find((f) => f.image === p.image)?.note ??
-        app?.cap ??
-        'A frame from the running project.',
+      cap: p.frames.find((f) => f.image === p.image)?.note ?? app?.cap ?? p.alt,
       image: p.image || '',
       caseKey: p.key,
       selected: homeProjectKeys.includes(p.key) ? true : undefined,

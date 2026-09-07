@@ -41,7 +41,7 @@ const scenes = [
 const cards = [
   {
     key: 'ember',
-    note: 'One world, even when nobody sees it the same way.',
+    note: 'A multiplayer voxel RPG.',
     role: 'Design · client · authoritative realm service',
     decision:
       'The browser renders. A separate realm service owns quests, loot and combat, so everyone inhabits the same world.',
@@ -50,43 +50,43 @@ const cards = [
   },
   {
     key: 'saltline',
-    note: 'An ocean you learn to read.',
+    note: 'Sailing with wind, cargo and other players.',
     role: 'Sailing model · renderer · multiplayer',
     decision:
-      'Point of sail determines thrust. The HUD exposes wind, heel and velocity toward the mark, making the physics something you can learn.',
+      'Point of sail determines thrust. The HUD shows relative wind, heel and velocity toward the mark.',
     evidence: 'Accounts, persistent cargo, up to 20 players per sea.',
     image: 'portfolio-saltline-moonlight',
   },
   {
     key: 'murmuration',
-    note: 'Light that knows when the music breathes.',
+    note: 'Music mapped to particles.',
     role: 'Audio analysis · WebGPU renderer',
     decision:
-      'A quiet passage thins, dims and slows the whole field. Key, tempo, transients and stereo placement shape the response.',
+      'Pitch, tempo, transients and stereo position shape the particles. Quiet passages thin and slow the field.',
     evidence: particleMeasurement.line,
     image: 'murmuration-lead-ribbon',
   },
   {
     key: 'blockhold',
-    note: 'Build a defense. Then change the rules.',
+    note: 'Tower defense across ten maps.',
     role: 'Voxel modeler · fixed-step simulation · balance',
     decision:
       'Ten maps share a fixed 60Hz simulation. Later boards change line of sight, move a firestorm or close the roads you planned around.',
-    evidence: '249 authored waves. Three heroes. 154 tests.',
+    evidence: '249 authored waves, three heroes and an endless mode.',
     image: 'blockhold-frame-tidereach',
   },
   {
     key: 'cubit',
-    note: 'One more dimension. A different kind of obvious.',
+    note: '2048 in three dimensions.',
     role: 'Engine · renderer · input · sound',
     decision:
-      'Match each swipe to the screen-space projection of the cube’s axes. Spread the layers to make the hidden board legible.',
-    evidence: 'One self-contained HTML file. Six directions. 62 tests.',
+      'Swipes follow the cube’s projected axes. Spreading its layers reveals the tiles inside.',
+    evidence: 'Six slide directions, local saves and a single HTML file.',
     image: 'cubit-lead-peek',
   },
   {
     key: 'eyeshot',
-    note: 'Trust your eye. Then test it.',
+    note: 'Five daily visual challenges.',
     role: 'Interaction design · scoring · server & leaderboard',
     decision:
       'Everyone gets the same five visual tests. The server rescores the raw input with the same logic as the browser, so the leaderboard compares the same thing.',
@@ -104,24 +104,19 @@ function card(item, index) {
 }
 
 const moreNotes = {
-  beatlayer:
-    'Give a guitar take a drummer. Audio analysis finds the pulse; synthesis makes the groove.',
-  boundary:
-    'Place the shot, call the run. A cricket simulation where the score follows what happens on the field.',
-  voidreach:
-    'A cockpit, a ship and 64 generated star systems. A galaxy built from procedural geometry.',
+  beatlayer: 'Add synthesized drums to a guitar recording, with beat tracking and audio export.',
+  boundary: 'A cricket game with batting, running, CPU fielders and keyboard or touch controls.',
+  voidreach: 'Fly through 64 generated star systems, with procedural ships and stations.',
   'ai-wrapped':
-    'A year of conversations, made legible. A local-first parser turns an export into a shareable portrait.',
-  roomtone:
-    'Turn a room’s colors into a chord. A camera, a little color science and an instrument you can play.',
+    'Turn a chat export into statistics and shareable cards. The data stays in the browser.',
+  roomtone: 'Scan a room’s colors and turn its palette into a five-note chord.',
   'bring-something-home':
-    'Cooperative bullet-hell expeditions. Immediate controls, shared combat and progress worth bringing home.',
-  slipstream:
-    'Draw a shape. See what the air does. An interactive fluid solver in a browser wind tunnel.',
+    'Cooperative bullet-hell expeditions with shared combat, personal loot and persistent upgrades.',
+  slipstream: 'Draw shapes and explore the flow around them in a 2D browser wind tunnel.',
 };
 
 function moreWork() {
-  return `<section class="wb-more" id="more-work" aria-labelledby="wb-more-title"><span id="playground" class="wb-anchor" aria-hidden="true"></span><header class="wb-more-heading"><div><p class="wb-kicker">More ways I build</p><h2 id="wb-more-title">Follow your curiosity.</h2><p>Instruments, simulations and useful little tools. ${secondaryProjectKeys.length} more places to explore.</p></div><div class="wb-gallery-controls" hidden><button type="button" data-gallery-prev aria-label="Previous projects" aria-controls="wb-more-track">←</button><button type="button" data-gallery-next aria-label="Next projects" aria-controls="wb-more-track">→</button></div></header><div class="wb-more-track" id="wb-more-track" tabindex="0" aria-label="More featured projects. Scroll horizontally to explore.">${secondaryProjectKeys
+  return `<section class="wb-more" id="more-work" aria-labelledby="wb-more-title"><span id="playground" class="wb-anchor" aria-hidden="true"></span><header class="wb-more-heading"><div><p class="wb-kicker">More projects</p><h2 id="wb-more-title">A few more projects.</h2><p>${secondaryProjectKeys.length} more games, tools and experiments.</p></div><div class="wb-gallery-controls" hidden><button type="button" data-gallery-prev aria-label="Previous projects" aria-controls="wb-more-track">←</button><button type="button" data-gallery-next aria-label="Next projects" aria-controls="wb-more-track">→</button></div></header><div class="wb-more-track" id="wb-more-track" tabindex="0" aria-label="More featured projects. Scroll horizontally to explore.">${secondaryProjectKeys
     .map((key) => {
       const p = project(key);
       return `<article class="wb-mini" data-secondary-project="${key}"><a class="wb-mini-image" href="/portfolio/work/${key}/" tabindex="-1" aria-hidden="true">${img(p.image, '', 'loading="lazy"')}<span aria-hidden="true">↗</span></a><p class="wb-mini-meta">${esc(p.kind)}<span>${p.local ? 'Prototype' : 'Live'}</span></p><h3>${caseLink(key, p.name)}</h3><p class="wb-mini-note">${esc(moreNotes[key])}</p></article>`;
@@ -132,11 +127,11 @@ function moreWork() {
 }
 
 function careerNotes() {
-  return `<section class="wb-career" aria-labelledby="wb-career-title"><div class="wb-shell"><header><p class="wb-kicker">Before Notable</p><h2 id="wb-career-title">A few chapters.</h2><p>My work has crossed healthcare, finance, education and physics. The thread is the same: understand the system, then make it work better.</p></header><ol class="wb-career-grid">${career.map((role) => `<li><p class="wb-career-years">${esc(role.years)}</p><h3>${esc(role.company)}</h3><p class="wb-career-role">${esc(role.title)}</p><p>${esc(role.note)}</p></li>`).join('')}</ol></div></section>`;
+  return `<section class="wb-career" aria-labelledby="wb-career-title"><div class="wb-shell"><header><p class="wb-kicker">Before Notable</p><h2 id="wb-career-title">Earlier work.</h2><p>Before Notable, I worked on financial software, teaching tools and physics research.</p></header><ol class="wb-career-grid">${career.map((role) => `<li><p class="wb-career-years">${esc(role.years)}</p><h3>${esc(role.company)}</h3><p class="wb-career-role">${esc(role.title)}</p><p>${esc(role.note)}</p></li>`).join('')}</ol></div></section>`;
 }
 
 function foldingIndex() {
-  return `<details class="wb-index"><summary>Explore<span class="wb-fold-mark" aria-hidden="true">⌄</span></summary><nav class="wb-fold-sheet" aria-label="Page index"><a href="#work"><small>01 / At work</small><strong>Systems people trust.</strong><span aria-hidden="true">↗</span></a><a href="#projects"><small>02 / Selected projects</small><strong>A few worlds of my own.</strong><span aria-hidden="true">↗</span></a><a href="#more-work"><small>03 / More to explore</small><strong>Follow your curiosity.</strong><span aria-hidden="true">↗</span></a><a href="#about"><small>04 / Meet AJ</small><strong>The person behind it.</strong><span aria-hidden="true">↗</span></a></nav></details>`;
+  return `<details class="wb-index"><summary>Explore<span class="wb-fold-mark" aria-hidden="true">⌄</span></summary><nav class="wb-fold-sheet" aria-label="Page index"><a href="#work"><small>01 / At work</small><strong>Healthcare software.</strong><span aria-hidden="true">↗</span></a><a href="#projects"><small>02 / Selected projects</small><strong>Games and experiments.</strong><span aria-hidden="true">↗</span></a><a href="#more-work"><small>03 / More to explore</small><strong>A few more projects.</strong><span aria-hidden="true">↗</span></a><a href="#about"><small>04 / Meet AJ</small><strong>About me.</strong><span aria-hidden="true">↗</span></a></nav></details>`;
 }
 
 export default function render() {
@@ -146,27 +141,27 @@ export default function render() {
   const body = `<main id="main">
   <section class="wb-cover" aria-labelledby="wb-name" data-scene="murmuration">
     <div class="wb-scene-wrap">${img(scenes[0].image, scenes[0].alt, 'class="wb-scene" fetchpriority="high" decoding="sync"')}</div><div class="wb-wash" aria-hidden="true"></div>
-    <header class="wb-nav wb-shell"><a class="wb-brand" href="#main" aria-label="AJ Uppal, home">AJ<span>Engineer & explorer</span></a><nav aria-label="Main navigation">${foldingIndex()}<a href="/portfolio/collection/">Collection</a><a href="#about">Meet AJ</a>${email('Contact')}</nav></header>
-    <div class="wb-hero wb-shell"><p class="wb-occupation">Software engineer at <strong>Notable Health</strong><span>Bay Area, California</span></p><h1 id="wb-name">AJ <em>Uppal.</em></h1><p class="wb-hero-line">Systems people trust.<br>Worlds worth getting lost in.</p><p class="wb-scope">I build voice AI infrastructure at Notable, and browser worlds off the clock.</p><div class="wb-hero-actions"><a class="wb-button" href="#work">Explore my work <span aria-hidden="true">↓</span></a>${out(contact.resume, 'Résumé', 'wb-text-link')}</div></div>
-    <p class="wb-scene-caption wb-shell"><span class="wb-caption-plate"><span data-scene-caption>${esc(scenes[0].caption)}</span><small>Captured in the running app</small></span></p>
-    <div class="wb-scene-selector wb-shell" hidden><p class="wb-caption">A change of scenery <span>Same person behind it.</span></p><div class="wb-scenes" role="group" aria-label="Choose the portfolio backdrop">${scenes.map((s, i) => `<button type="button" data-scene-key="${s.key}" data-scene-image="${asset(s.image)}" data-scene-alt="${esc(s.alt)}" data-scene-caption="${esc(s.caption)}" aria-pressed="${i === 0}">${img(s.image, '', 'loading="lazy"')}<span><small>0${i + 1}</small>${esc(s.title)}</span><b aria-hidden="true">${i === 0 ? '−' : '+'}</b></button>`).join('')}</div></div>
+    <header class="wb-nav wb-shell"><a class="wb-brand" href="#main" aria-label="AJ Uppal, home">AJ<span>Software engineer</span></a><nav aria-label="Main navigation">${foldingIndex()}<a href="/portfolio/collection/">Collection</a><a href="#about">Meet AJ</a>${email('Contact')}</nav></header>
+    <div class="wb-hero wb-shell"><p class="wb-occupation">Software engineer at <strong>Notable Health</strong><span>Bay Area, California</span></p><h1 id="wb-name">AJ <em>Uppal.</em></h1><p class="wb-hero-line">Games, instruments<br>and browser experiments.</p><div class="wb-hero-actions"><a class="wb-button" href="#work">Explore my work <span aria-hidden="true">↓</span></a>${out(contact.resume, 'Résumé', 'wb-text-link')}</div></div>
+    <p class="wb-scene-caption wb-shell"><span class="wb-caption-plate"><span data-scene-caption>${esc(scenes[0].caption)}</span><small>From the app</small></span></p>
+    <div class="wb-scene-selector wb-shell" hidden><p class="wb-caption">A change of scenery <span>Three of my projects.</span></p><div class="wb-scenes" role="group" aria-label="Choose the portfolio backdrop">${scenes.map((s, i) => `<button type="button" data-scene-key="${s.key}" data-scene-image="${asset(s.image)}" data-scene-alt="${esc(s.alt)}" data-scene-caption="${esc(s.caption)}" aria-pressed="${i === 0}">${img(s.image, '', 'loading="lazy"')}<span><small>0${i + 1}</small>${esc(s.title)}</span><b aria-hidden="true">${i === 0 ? '−' : '+'}</b></button>`).join('')}</div></div>
   </section>
 
-  <section id="work" class="wb-professional" aria-labelledby="wb-professional-title"><div class="wb-shell wb-professional-inner"><div class="wb-professional-heading"><p class="wb-kicker">At work / Notable Health</p><h2 id="wb-professional-title">A clear voice.<br><em>A dependable system.</em></h2><p>Software Engineer · August 2022–present</p>${caseLink('notable', 'The work at Notable')}</div><div class="wb-professional-story"><p class="wb-professional-intro">My team owns the voice and conversations platform behind around <strong>250,000 patient calls a month.</strong></p><p>I set technical direction for patient identity, routing, observability and reliability: the decisions that keep a conversation moving across healthcare systems, carriers and call centers.</p><p class="wb-professional-proof">I wrote the telephony integration specification that health systems build against. It has driven more than $1M in ARR.</p><div class="wb-system" aria-label="Areas of my technical direction"><span><b>01</b> Know the patient <small>Identity & verification</small></span><span><b>02</b> Find the right path <small>Conversation & carrier routing</small></span><span><b>03</b> Keep the call connected <small>Observability & recovery</small></span></div></div></div></section>
+  <section id="work" class="wb-professional" aria-labelledby="wb-professional-title"><div class="wb-shell wb-professional-inner"><div class="wb-professional-heading"><p class="wb-kicker">At work / Notable Health</p><h2 id="wb-professional-title">Voice and<br><em>conversations.</em></h2><p>Software Engineer · August 2022–present</p>${caseLink('notable', 'The work at Notable')}</div><div class="wb-professional-story"><p class="wb-professional-intro">I work on Notable’s voice and conversations platform, which handles around <strong>250,000 patient calls a month.</strong></p><p>My work includes caller verification, call routing, transfers and monitoring. I wrote the inbound SIP integration specification used by health systems to connect their phone systems to the platform.</p><div class="wb-system" aria-label="Areas of my work"><span><b>01</b> Caller verification <small>Patient lookup & SMS codes</small></span><span><b>02</b> Call routing <small>Carriers & transfers</small></span><span><b>03</b> Reliability <small>Monitoring & fallback routing</small></span></div></div></div></section>
 
   ${careerNotes()}
 
-  <section id="projects" class="wb-worlds wb-shell" aria-labelledby="wb-worlds-title"><span id="building" class="wb-anchor" aria-hidden="true"></span><header class="wb-section-heading"><div><p class="wb-kicker">Off the clock / Personal projects</p><h2 id="wb-worlds-title">A few worlds<br><em>of my own.</em></h2></div><p>I learn things by building them. These are a few of the worlds, instruments and games I’ve made along the way.<span>${homeProjectKeys.length} places to begin. The decisions behind each one.</span></p></header><div class="wb-projects">${cards
+  <section id="projects" class="wb-worlds wb-shell" aria-labelledby="wb-worlds-title"><span id="building" class="wb-anchor" aria-hidden="true"></span><header class="wb-section-heading"><div><p class="wb-kicker">Personal projects</p><h2 id="wb-worlds-title">Games and<br><em>experiments.</em></h2></div><p>Some of my browser projects. Open one to try it, or read about how it works.<span>${homeProjectKeys.length} selected projects</span></p></header><div class="wb-projects">${cards
     .filter((c) => homeProjectKeys.includes(c.key))
     .sort((a, b) => homeProjectKeys.indexOf(a.key) - homeProjectKeys.indexOf(b.key))
     .map(card)
     .join('')}</div>${moreWork()}</section>
 
-  <section id="about" class="wb-about"><div class="wb-shell wb-about-inner"><div><p class="wb-kicker">The person behind the systems</p><h2>Curiosity is<br><em>the common thread.</em></h2></div><div class="wb-about-copy"><p>I studied computer science and astrophysics because I couldn’t choose between them. In college I simulated CO₂ cooling for particle detectors. Now I simulate an ocean.</p><p>Away from the keyboard: heirloom tomatoes, bikes and Pink Floyd, roughly in that order. I’ve wanted to be an astronaut since I was four. Still would.</p><div class="wb-education"><p class="wb-kicker">Education</p><h3>${esc(education.subjects)}</h3><p>${esc(education.institution)}</p><small>${esc(education.note)}</small></div><dl class="wb-toolkit" id="skills">${toolkit.map(([label, value]) => `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl><div class="wb-about-links">${email('Say hello', 'wb-text-link')}${out(contact.resume, 'Résumé', 'wb-text-link')}${out(contact.github, 'GitHub', 'wb-text-link')}</div></div></div></section>
-  <footer class="wb-footer wb-shell" id="contact"><a href="#main" class="wb-signature">AJ Uppal.</a><span>Made with curiosity. Built to be explored.</span><a href="#main">Back to the surface ↑</a></footer>
+  <section id="about" class="wb-about"><div class="wb-shell wb-about-inner"><div><p class="wb-kicker">About me</p><h2>A little<br><em>about me.</em></h2></div><div class="wb-about-copy"><p>I studied computer science and astrophysics at UMass Amherst. My research there focused on simulations of CO₂ cooling for particle detectors.</p><p>Away from the keyboard, I grow heirloom tomatoes, ride bikes and listen to Pink Floyd. I’ve wanted to be an astronaut since I was four.</p><div class="wb-education"><p class="wb-kicker">Education</p><h3>${esc(education.subjects)}</h3><p>${esc(education.institution)}</p><small>${esc(education.note)}</small></div><dl class="wb-toolkit" id="skills">${toolkit.map(([label, value]) => `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl><div class="wb-about-links">${email('Say hello', 'wb-text-link')}${out(contact.resume, 'Résumé', 'wb-text-link')}${out(contact.github, 'GitHub', 'wb-text-link')}</div></div></div></section>
+  <footer class="wb-footer wb-shell" id="contact"><a href="#main" class="wb-signature">AJ Uppal.</a><span>Bay Area, California</span><a href="#main">Back to top ↑</a></footer>
   </main>`;
   return frame('worldbuilder', body, {
     scripts: ['worldbuilder.js'],
-    title: 'AJ Uppal — systems & worlds',
+    title: 'AJ Uppal — Software engineer',
   });
 }

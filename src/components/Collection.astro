@@ -17,12 +17,12 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
 <div class="bt" data-collection data-total={apps.length}>
   <section class="bt-top bt-shell" aria-labelledby="bt-title">
     <div class="bt-head">
-      <h1 id="bt-title">Built from<br /><em>curiosity.</em></h1>
+      <h1 id="bt-title">Games, tools<br /><em>and instruments.</em></h1>
       <div class="bt-head__side">
         <p class="bt-lead">{built.lead}</p>
         <p class="bt-back">
           <a href={`${home}#${portfolio ? 'projects' : 'building'}`}
-            >The bigger projects <span aria-hidden="true">↗</span></a
+            >Selected projects <span aria-hidden="true">↗</span></a
           ><a href={portfolio ? '/portfolio/work/notable/' : `${home}#work`}
             >My engineering work <span aria-hidden="true">↗</span></a
           >
@@ -31,8 +31,7 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
     </div>
     <div class="bt-intro-foot">
       <p>
-        <strong>{apps.length}</strong> projects <span aria-hidden="true">·</span> Start with a few. Follow
-        your curiosity.
+        <strong>{apps.length}</strong> projects
       </p>
     </div>
   </section>
@@ -73,7 +72,7 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
     <div class="bt-results">
       <p class="bt-count" role="status" aria-live="polite" aria-atomic="true">
         {apps.length} projects to explore
-      </p><span class="bt-results-note">A little of what I make. A little of how.</span>
+      </p>
     </div>
 
     <div class="bt-gallery" id="bt-gallery">
@@ -138,7 +137,7 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
                 <>
                   <summary>In this frame</summary>
                   <p>{app.cap}</p>
-                  <p class="sr">{app.alt}</p>
+                  {app.alt !== app.cap && <p class="sr">{app.alt}</p>}
                 </>
               </details>
             </div>
@@ -147,10 +146,9 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
       }
     </div>
     <div class="bt-empty" hidden>
-      <h2>No projects on this shelf.</h2><p>
-        Try another word or explore the whole collection.
-      </p><button type="button" data-reset
-        >Show all projects <span aria-hidden="true">↗</span></button
+      <h2>No matching projects.</h2><p>Try another search or browse all projects.</p><button
+        type="button"
+        data-reset>Show all projects <span aria-hidden="true">↗</span></button
       >
     </div>
     <div class="bt-more" hidden>
@@ -167,15 +165,12 @@ const S = '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 92vw';
   <p class="bt-caveat bt-shell">{built.caveat}</p>
   <section class="bt-foot bt-shell">
     <div>
-      <p class="bt-eyebrow">The thread through it all</p><h2>
-        I like making<br /><em>the hard parts work.</em>
+      <p class="bt-eyebrow">Get in touch</p><h2>
+        Have a project<br /><em>in mind?</em>
       </h2>
     </div>
     <div>
-      <p>
-        By day, I build healthcare software at Notable. These projects are where I follow a question
-        all the way to something you can use.
-      </p><p class="bt-foot__go">
+      <p>I’m a software engineer at Notable Health in the Bay Area.</p><p class="bt-foot__go">
         <a href={home}>Meet the engineer <span aria-hidden="true">↗</span></a><a
           href={`mailto:aj8uppal@gmail.com`}>Get in touch <span aria-hidden="true">↗</span></a
         >

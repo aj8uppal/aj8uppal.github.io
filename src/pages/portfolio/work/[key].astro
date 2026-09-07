@@ -114,7 +114,7 @@ const short = p.constraint === p.summary;
           <div class="pc-system-flow">
             <>
               <span>
-                Patient identity<small>Verification & trust</small>
+                Patient identity<small>Patient lookup & SMS codes</small>
               </span>
               <b aria-hidden="true">→</b>
               <span>
@@ -122,11 +122,11 @@ const short = p.constraint === p.summary;
               </span>
               <b aria-hidden="true">→</b>
               <span>
-                Continuity<small>Observability & fallback</small>
+                Reliability<small>Monitoring & fallback routing</small>
               </span>
             </>
           </div>
-          <p>Areas of my technical direction at Notable Health.</p>
+          <p>Parts of the platform I work on at Notable Health.</p>
         </section>
       )
     }
@@ -147,13 +147,13 @@ const short = p.constraint === p.summary;
           !short && (
             <div>
               <>
-                <h3>The constraint</h3>
+                <h3>Context</h3>
                 <p>{p.constraint}</p>
               </>
             </div>
           )
         }
-        <div><h3>{short ? 'The engineering' : 'The decision'}</h3><p>{p.decision}</p></div>
+        <div><h3>How it works</h3><p>{p.decision}</p></div>
         <div class="pc-evidence">
           <h3>{short ? 'In this photograph' : 'In the work'}</h3><p>{p.evidence}</p>
         </div>
@@ -180,7 +180,7 @@ const short = p.constraint === p.summary;
             <header>
               <>
                 <p class="ref-eyebrow">A closer look</p>
-                <h2 id="pc-photographs-title">A few moments inside.</h2>
+                <h2 id="pc-photographs-title">More screenshots.</h2>
               </>
             </header>
             <div class="pc-frame-grid">
@@ -224,9 +224,9 @@ const short = p.constraint === p.summary;
         <details class="pc-proof">
           <>
             <summary>
-              Under the surface{' '}
+              More detail{' '}
               <>
-                <span>Instruments, interfaces and shared state</span>
+                <span>Controls and additional screenshots</span>
                 <b aria-hidden="true">+</b>
               </>
             </summary>
@@ -294,7 +294,7 @@ const short = p.constraint === p.summary;
       </div>
     </section>
     <footer class="pc-footer">
-      <a class="portfolio-brand" href="/">AJ Uppal.</a><p>Have something worth building?</p><a
+      <a class="portfolio-brand" href="/">AJ Uppal.</a><p>Have a project in mind?</p><a
         href={`mailto:${contact.email}`}>Let’s talk ↗</a
       >
     </footer>

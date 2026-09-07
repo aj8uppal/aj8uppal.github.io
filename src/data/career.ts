@@ -5,7 +5,7 @@ export const career = [
     years: '2021–2022',
     company: 'Harvest Fintech',
     title: 'Software Architect & Engineer',
-    note: 'As the startup’s first significant engineering hire, I shaped the backend and data model for a mobile financial product, working across Flask, React Native and PostgreSQL.',
+    note: 'I worked on the backend and data model for a mobile financial product, using Flask, React Native and PostgreSQL.',
   },
   {
     years: '2021–2022',
@@ -23,7 +23,7 @@ export const career = [
     years: '2019–2020',
     company: 'UMass Amherst',
     title: 'Research Assistant',
-    note: 'I simulated fluid dynamics for CO₂ cooling in particle physics detectors, connecting the two subjects I studied: computer science and astrophysics.',
+    note: 'I simulated fluid dynamics for CO₂ cooling in particle physics detectors.',
   },
 ];
 

@@ -72,13 +72,12 @@ export const apps: Built[] = [
     cap: 'A car preset in smoke view, running in the browser.',
     story: {
       role: 'The fluid solver, drawing tools, visualization and shareable shape format.',
-      constraint:
-        'A shape should become a useful experiment immediately, while a browser solves the flow around every edge.',
+      constraint: 'The flow needs to update as obstacles are drawn or changed.',
       decision:
-        'Run the two-dimensional velocity and pressure fields on the GPU, with a multigrid pressure solve and drawn obstacles represented inside the simulation.',
+        'The GPU updates two-dimensional velocity and pressure fields. Drawn shapes become obstacles in the simulation, which uses a multigrid pressure solve.',
       evidence:
         'The running browser experiment supports drawing, presets, flow visualization and shapes shared through a URL. Its drag readout models pressure only.',
-      question: 'What does the wind do with a shape you just drew?',
+      question: 'Drawing into the simulation.',
       details: [
         [
           'Simulation',
@@ -146,12 +145,12 @@ export const apps: Built[] = [
     story: {
       role: 'Flight, procedural worlds, browser rendering and the multiplayer service.',
       constraint:
-        'A large space game needs places worth visiting without shipping a large library of models and textures.',
+        'Ships, stations and star systems are generated without a large library of models and textures.',
       decision:
-        'Generate the visible geometry procedurally, with a standalone solo edition and a separate multiplayer service for persistent progression.',
+        'Visible geometry is generated procedurally. A standalone solo edition and a separate multiplayer service share this approach.',
       evidence:
         'The solo edition is playable here in a browser, with 64 generated star systems to explore.',
-      question: 'How much of a galaxy can a browser make for itself?',
+      question: 'Procedural ships and star systems.',
       details: [
         ['Worldbuilding', 'Procedural geometry produces the visible ships, stations and worlds.'],
         [
@@ -171,21 +170,21 @@ export const apps: Built[] = [
     local: true,
     href: '/portfolio/work/driftfall/',
     cta: 'Inside the build',
-    what: 'Follow a lost signal through a shared frontier. Survive the run, then decide what to bring back.',
-    how: 'A Node server owns movement, combat and progression. The browser predicts flight and smooths snapshots; a six-chapter journey gives the persistent universe a direction.',
+    what: 'A multiplayer space RPG with a six-chapter campaign and persistent pilot progression.',
+    how: 'A Node server handles movement, combat and progression. The browser predicts flight and smooths incoming snapshots.',
     k: 'Three.js · JavaScript · Node.js · WebSocket',
     accent: '#99dacb',
     alt: 'Driftfall in Haven Reach: AJ’s ship raises a spherical barrier during a Frontier run, with a blue planet above the asteroid field.',
-    cap: 'A real Frontier encounter in the local build. The barrier, enemy attack and flight state are running together.',
+    cap: 'A Frontier encounter in the local build, with the ship’s barrier active during combat.',
     story: {
       role: 'Flight and combat design, browser rendering, the authoritative server and progression.',
       constraint:
-        'Spaceflight must feel immediate while the server remains the authority for hits, inventory, rewards and a persistent pilot.',
+        'The browser needs to respond to flight controls while the server resolves hits, inventory and rewards.',
       decision:
-        'Predict flight in the browser and reconcile it with server snapshots. Keep combat and reward decisions on the server, with an explicit extraction choice at each run break.',
+        'The browser predicts flight and reconciles it with server snapshots. Combat and rewards are resolved on the server; extraction banks the rewards from a run.',
       evidence:
-        'The local build passed 239 unit tests and its production build. A separate 64-pilot, 15-second local load smoke completed without disconnects; it is not a production capacity measurement.',
-      question: 'A frontier you can return to.',
+        'Playable locally, with flight, combat, extraction and persistent pilot progression. The multiplayer service has not been publicly hosted.',
+      question: 'Flight, combat and persistent progress.',
       frames: [
         {
           image: 'portfolio-driftfall-flight',
@@ -234,12 +233,12 @@ export const apps: Built[] = [
     story: {
       role: 'Game design, the simulation, Three.js rendering and the batting and running controls.',
       constraint:
-        'A well-timed stroke creates an opportunity. Scoring still has to follow what actually happens on the field.',
+        'Scoring depends on where the ball goes and whether both batters reach their creases.',
       decision:
-        'Keep the ball, CPU fielders and both runners in one fixed-step simulation. Award runs when both batters reach their creases, and judge a run-out when the wicket is broken.',
+        'The ball, CPU fielders and both runners share a fixed-step simulation. Runs are awarded when both batters reach their creases; run-outs are checked when a wicket is broken.',
       evidence:
-        'The static 3.1 release builds successfully and passes 72 simulation tests. It supports a guided first run, daily challenges, a club tour and offline play.',
-      question: 'Place the shot. Earn the run.',
+        'The public 3.1 release includes a guided first run, daily challenges, a club tour and offline play.',
+      question: 'From a shot to a score.',
       frames: [
         {
           image: 'portfolio-boundary-running',
@@ -249,9 +248,9 @@ export const apps: Built[] = [
         },
         {
           image: 'portfolio-boundary-phone',
-          label: 'The same innings, in your hand',
+          label: 'Phone controls',
           alt: 'Boundary’s running view on a 390-pixel phone, with both batters on the pitch and Call another and Turn back controls.',
-          note: 'Real gameplay in a phone-sized browser, using the on-screen controls.',
+          note: 'The running view in a phone-sized browser, using the on-screen controls.',
         },
       ],
       details: [
@@ -279,7 +278,7 @@ export const apps: Built[] = [
     reachLabel: 'Live',
     href: '/bring-something-home/',
     cta: 'Enter the wilds',
-    what: 'Go out together. Read the storm of projectiles. Bring back something that can outlast this life.',
+    what: 'Cooperative bullet-hell expeditions with shared combat, personal loot and persistent upgrades.',
     how: 'The browser predicts movement while one realm decides every hit, reward and death. SQLite transactions preserve the boundary between carried loot and what you bank.',
     k: 'Three.js · TypeScript · WebSocket · SQLite',
     accent: '#cbb7ee',
@@ -290,10 +289,10 @@ export const apps: Built[] = [
       constraint:
         'Dodging must feel immediate while one server decides every hit, reward and death.',
       decision:
-        'Predict movement in the browser, reconcile against the realm, and commit inventory and death atomically. Shared expeditions give each player personal loot and a reason to make it home.',
+        'The browser predicts movement and reconciles it with the realm server. Inventory and death are saved atomically, and each player receives personal loot.',
       evidence:
-        'Public version 1.4.1 passed the game owner’s production build, 94 unit tests and 29 native browser scenarios. A fresh public traveler appears in the lead image; the late-game photographs use a prepared character.',
-      question: 'Fast combat. Lasting consequences.',
+        'Public version 1.4.1 supports cooperative expeditions. The lead image uses a fresh character; the late-game photographs use a prepared level-20 character.',
+      question: 'Shared combat and persistent progress.',
       frames: [
         {
           image: 'built-bring-something-home',
@@ -329,7 +328,7 @@ export const apps: Built[] = [
         ],
         [
           'Expeditions',
-          'Readable attack patterns, personal loot and a carried-versus-banked progression boundary give cooperative runs their stakes.',
+          'Expeditions award personal loot. Carried gold, banked gold and permanent shards are tracked separately.',
         ],
       ],
     },
@@ -343,21 +342,21 @@ export const apps: Built[] = [
     reachLabel: 'Live',
     href: 'https://sixty-seconds.fly.dev/',
     cta: 'Draw with whoever is there',
-    what: 'One shared canvas. Sixty seconds together. A replay to keep.',
+    what: 'Draw on a shared canvas for sixty seconds, then save a replay.',
     how: 'A Python standard-library WebSocket server records the round as events. The browser rebuilds the drawing, replay and share card from one transcript.',
     k: 'Python stdlib · WebSocket · Canvas · Fly.io',
     accent: '#ff7e8c',
-    alt: 'The Sixty Seconds canvas mid-round: hills, a sun and two birds drawn in violet and green by two people, with both cursors labelled.',
+    alt: 'The Sixty Seconds canvas mid-round: hills, a sun and two birds drawn in violet and green by two scripted browser sessions, with both cursors labeled.',
     cap: 'Two browsers, one round — the capture script joins twice and draws',
     story: {
       role: 'The real-time server, shared drawing surface, replay and share card.',
       constraint:
         'Strangers need to see the same strokes as they arrive, then keep a faithful record after the round ends.',
       decision:
-        'Record each round as events. The live drawing, replay and share card all read from that one transcript.',
+        'Each round is recorded as events. The live drawing, replay and share card all use that transcript.',
       evidence:
         'A deployed Python WebSocket service connects the browsers. The capture is produced by joining a round from two independent browser contexts.',
-      question: 'What can two strangers make in one minute?',
+      question: 'A round, recorded as events.',
       details: [
         [
           'One history',
@@ -377,20 +376,19 @@ export const apps: Built[] = [
     href: '/tab-graveyard/',
     cta: 'See your headstone',
     what: 'Close the tabs you never read. Keep a searchable graveyard and a headstone to share.',
-    how: 'Writes every tab to storage before closing it. Search, restore and a ten-minute batch undo make the destructive-looking action reversible.',
+    how: 'Saves tabs before closing them. Search the archive, restore an individual tab, or undo a batch within ten minutes.',
     k: 'Chrome MV3 · Canvas · two permissions',
     accent: '#c8b98f',
     alt: 'The Tab Graveyard landing page: a headstone card reading “here lie 61, tabs buried this week”, beside a slider and the epitaph it earns.',
     cap: 'The card the extension draws, running on the page — drag the slider',
     story: {
       role: 'The browser extension, recovery flow, searchable archive and share card.',
-      constraint:
-        'Closing a crowded browser should feel relieving without losing the pages someone meant to keep.',
+      constraint: 'Closed tabs need to remain searchable and recoverable.',
       decision:
-        'Persist each tab before closing it, with searchable restoration and a ten-minute undo for an entire batch.',
+        'Each tab is saved before it closes. The archive supports search, individual restoration and a ten-minute undo for a batch.',
       evidence:
         'The landing page runs the real headstone generator. The extension is distributed as an unpacked Chrome MV3 installation.',
-      question: 'Can closing a tab feel like keeping something?',
+      question: 'Saving tabs before closing them.',
       details: [
         [
           'Order of operations',
@@ -411,20 +409,19 @@ export const apps: Built[] = [
     href: '/run-or-not/',
     cta: 'Ask about right now',
     what: 'Should you run outside right now? One verdict, with the conditions that decided it.',
-    how: 'Combines weather, air quality, pollen and daylight against adjustable thresholds. When now is a no, it finds a better hour.',
+    how: 'Combines weather, air quality, pollen and daylight against adjustable thresholds. It can also find an upcoming hour that meets those thresholds.',
     k: 'Open-Meteo · vanilla JS · PWA',
     accent: '#3ddc84',
     alt: 'Run or Not showing GO in green, with live wind, air-quality and daylight conditions underneath.',
     cap: 'Sydney, live conditions at the moment of capture',
     story: {
       role: 'The conditions pipeline, threshold model, forecast search and offline-capable interface.',
-      constraint:
-        'A useful answer has to reconcile weather, air quality, pollen and daylight without making someone interpret a dashboard.',
+      constraint: 'Weather, air quality, pollen and daylight all contribute to the recommendation.',
       decision:
-        'Evaluate adjustable thresholds into one verdict, expose the conditions behind it, and search ahead for a better hour when now does not work.',
+        'Adjustable thresholds produce the recommendation. The app shows the contributing conditions and searches the forecast for an hour that meets the settings.',
       evidence:
         'The browser app uses live Open-Meteo conditions and lets the reader inspect or adjust the thresholds that change its answer.',
-      question: 'Can a forecast help you make one small decision?',
+      question: 'From forecast to recommendation.',
     },
   },
   {
@@ -436,21 +433,21 @@ export const apps: Built[] = [
     reachLabel: 'Live',
     href: '/sleep-debt-ledger/',
     cta: 'Open the ledger',
-    what: 'Log a night. See your sleep balance and the date it clears.',
+    what: 'Log your sleep and see a rolling fourteen-day balance with a projected recovery date.',
     how: 'A rolling fourteen-day ledger distinguishes missing entries from lost sleep. Projections move the window forward instead of accumulating debt forever.',
     k: 'localStorage · no build step · PWA',
     accent: '#f2c14e',
     alt: 'The Sleep Debt Ledger: a balance of minus sixteen hours twenty-eight minutes, a projected date for clearing it, and twelve nightly bars.',
-    cap: 'Twelve nights logged, and the date the balance clears',
+    cap: 'Twelve sample nights and an estimated date for the balance to clear.',
     story: {
       role: 'The rolling ledger, projection model, logging interaction and local persistence.',
       constraint:
         'Missing a log is different from missing sleep, and old entries should leave the accounting window.',
       decision:
-        'Keep a fourteen-day rolling ledger with explicit missing entries, then move that same window forward to calculate the projection.',
+        'The ledger uses a fourteen-day window and marks missing entries. Moving that window forward produces an estimated recovery date.',
       evidence:
         'The captured demo uses twelve prepared nights. Entries stay in local browser storage, with no account or server required.',
-      question: 'What changes when a balance remembers to let go?',
+      question: 'A rolling sleep log.',
       details: [
         ['Missing data', 'An unlogged night is not silently counted as a sleepless night.'],
         ['Projection', 'Older entries expire as the fourteen-day window advances.'],
@@ -477,10 +474,10 @@ export const apps: Built[] = [
       constraint:
         'Personal chat exports vary in format and contain data that should not need to leave the reader’s device.',
       decision:
-        'Read JSON and JSONL exports into memory and render the entire experience in a dependency-free HTML document.',
+        'JSON and JSONL exports are parsed in memory. The statistics and cards are rendered in a single HTML document.',
       evidence:
         'The public demo and its built-in sample work without an account or backend. Uploaded conversation history stays in the tab.',
-      question: 'What can a year of questions tell you?',
+      question: 'Parsing chat exports locally.',
       frames: [
         {
           image: 'portfolio-ai-wrapped-card',
@@ -508,10 +505,9 @@ export const apps: Built[] = [
     cap: 'The actual poster canvas, given AJ’s Saltline sunrise capture. The demo’s twelve songs are a fixed set.',
     story: {
       role: 'The image-to-music flow, catalogue validation, crop tools and poster renderer.',
-      constraint:
-        'An evocative music suggestion still needs to resolve to a song someone can actually find.',
+      constraint: 'Suggested tracks need to match entries in a music catalog.',
       decision:
-        'Validate the full app’s AI suggestions against Apple’s catalogue. Keep the browser demo immediately usable with twelve fixed songs and a photo-responsive poster.',
+        'The full app checks AI suggestions against Apple’s catalog. The browser demo uses twelve fixed songs; its crop, palette and poster respond to the photo.',
       evidence:
         'The hosted demo lets someone crop a photo, extract its palette and make a poster. Its fixed song list is separate from the full AI-backed app.',
       question: 'If a photograph had a soundtrack, what would it be?',
@@ -520,7 +516,7 @@ export const apps: Built[] = [
           image: 'portfolio-playlist-interface',
           label: 'From picture to poster',
           alt: 'Playlist From a Photo running in the browser, with the Saltline sunrise poster, save controls and track list.',
-          note: 'A second creation becomes the input: Saltline’s sunrise, in the working browser demo.',
+          note: 'The demo uses a Saltline sunrise capture to make a playlist poster.',
         },
       ],
     },
@@ -545,10 +541,10 @@ export const apps: Built[] = [
       constraint:
         'Tasks, habits and people should remain available without a connection, and everyday mistakes should be easy to reverse.',
       decision:
-        'Keep the records in IndexedDB, serve the app offline with a service worker, and make changes reversible across its sections.',
+        'IndexedDB stores the records, a service worker serves the app offline, and an undo system reverses changes across its sections.',
       evidence:
         'The running Today view uses the app’s sample data. The local-first application does not require a cloud account.',
-      question: 'Can a personal tool stay useful when the network leaves?',
+      question: 'Offline storage and undo.',
     },
   },
   {
@@ -560,7 +556,7 @@ export const apps: Built[] = [
     reachLabel: 'Live',
     href: '/roomtone/',
     cta: 'Hear a room',
-    what: 'Sweep a room into five colours, then hear those colours bloom into a chord.',
+    what: 'Scan a room’s colors and turn its palette into a five-note chord.',
     how: 'Persistence-weighted clustering in OKLab keeps fleeting colours from dominating. The palette becomes five distinct notes, played through browser synthesis and generated reverb.',
     k: 'JavaScript · OKLab · Web Audio',
     accent: '#d9b991',
@@ -571,7 +567,7 @@ export const apps: Built[] = [
       constraint:
         'A camera sees changing light and fleeting objects. A room’s palette should settle before it becomes music.',
       decision:
-        'Cluster in OKLab and weight colours by persistence, then map the five stable colours to distinct notes with synthesized sound and generated reverb.',
+        'Colors are clustered in OKLab and weighted by persistence. Five stable colors map to distinct notes, played with synthesized sound and generated reverb.',
       evidence:
         'The demo uses a procedurally drawn bedroom, so the complete colour-to-chord flow can be explored without granting camera access.',
       question: 'What would this room sound like?',
@@ -608,7 +604,7 @@ export const apps: Built[] = [
       constraint:
         'A small edit to a large file should visibly change its creature without rereading every byte.',
       decision:
-        'Track incremental histograms and a polynomial hash. Entropy, repeated bytes and header signatures then shape the specimen’s anatomy.',
+        'Incremental histograms and a polynomial hash track changes to the file. Entropy, repeated bytes and header signatures shape the creature’s anatomy.',
       evidence:
         'The captured specimen comes from the bundled synthetic atlas.zip sample. A reader can mutate bytes and see the anatomy respond.',
       question: 'What kind of creature lives inside a file?',
@@ -635,7 +631,7 @@ export const apps: Built[] = [
     reachLabel: 'Live',
     href: '/shipworthy/',
     cta: 'Find your next build',
-    what: 'A daily idea bench: find a small app worth making, then turn it into a build brief.',
+    what: 'Daily app ideas with audience filters and build briefs.',
     how: 'Scheduled AI drops are validated before publication. Date-seeded local remixes keep the bench useful when a generation run is missed.',
     k: 'JavaScript · Claude API · GitHub Actions',
     accent: '#aeb9f0',
@@ -644,12 +640,12 @@ export const apps: Built[] = [
     story: {
       role: 'The idea bench, generation job, validation, archive and fallback system.',
       constraint:
-        'A daily generative app should still have something useful to show when an API request is missed or produces unusable results.',
+        'The app needs a fallback when the daily generation request fails or returns invalid ideas.',
       decision:
-        'Validate each scheduled drop before publication, archive previous ideas to avoid repeats, and fall back to date-seeded local remixes.',
+        'The scheduled job validates ideas before publishing them and includes the archive in its next request. Date-seeded local remixes provide a fallback.',
       evidence:
         'The live single-file app reads its daily drop and can produce local remixes when that drop is unavailable.',
-      question: 'Can an idea generator have a quieter day instead of a broken one?',
+      question: 'Daily ideas and fallback generation.',
       details: [
         ['Publication', 'A scheduled GitHub Actions job validates and writes the daily ideas.'],
         [
@@ -663,8 +659,8 @@ export const apps: Built[] = [
 
 export const selectedApps = apps.filter((app) => app.featured || app.selected);
 export const built = {
-  statement: 'Built from curiosity.',
-  lead: 'Instruments, useful little tools and places to get lost. Each began with a question I wanted to answer in code.',
+  statement: 'Games, tools and instruments.',
+  lead: 'Browser games, instruments, simulations and tools, with notes on how I built them.',
   caveat:
     'Every frame is captured in the running app. Camera and microphone experiments include a demo you can try immediately.',
   facts: [

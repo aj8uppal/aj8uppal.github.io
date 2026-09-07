@@ -25,7 +25,6 @@ async function pixelContrast(page, key, width) {
   await page.evaluate(() => window.scrollTo(0, 0));
   const targets = await page.evaluate(() =>
     [
-      ['.wb-scope', 4.5],
       ['.wb-hero-line', 3],
       ['.wb-hero h1', 3],
       ['.wb-hero h1 em', 3],
@@ -63,7 +62,7 @@ async function pixelContrast(page, key, width) {
   await page.evaluate(() =>
     document
       .querySelectorAll(
-        '.wb-scope, .wb-hero-line, .wb-hero h1, .wb-hero h1 em, .wb-occupation, .wb-occupation span, .wb-brand, .wb-brand span, .wb-nav > nav > a, .wb-index summary, .wb-fold-mark, .wb-scene-caption, .wb-scene-caption *',
+        '.wb-hero-line, .wb-hero h1, .wb-hero h1 em, .wb-occupation, .wb-occupation span, .wb-brand, .wb-brand span, .wb-nav > nav > a, .wb-index summary, .wb-fold-mark, .wb-scene-caption, .wb-scene-caption *',
       )
       .forEach((el) => {
         el.dataset.qaColor = el.style.color;
@@ -77,7 +76,7 @@ async function pixelContrast(page, key, width) {
   await page.evaluate(() =>
     document
       .querySelectorAll(
-        '.wb-scope, .wb-hero-line, .wb-hero h1, .wb-hero h1 em, .wb-occupation, .wb-occupation span, .wb-brand, .wb-brand span, .wb-nav > nav > a, .wb-index summary, .wb-fold-mark, .wb-scene-caption, .wb-scene-caption *',
+        '.wb-hero-line, .wb-hero h1, .wb-hero h1 em, .wb-occupation, .wb-occupation span, .wb-brand, .wb-brand span, .wb-nav > nav > a, .wb-index summary, .wb-fold-mark, .wb-scene-caption, .wb-scene-caption *',
       )
       .forEach((el) => {
         el.style.color = el.dataset.qaColor || '';
