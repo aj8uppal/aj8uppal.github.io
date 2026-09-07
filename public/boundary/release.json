@@ -1,0 +1,32 @@
+{
+  "version": "5.0.1",
+  "source_commit": "dcebdae11af98fc632f48a42d8643763bf1adf1a",
+  "match_api_origin": "https://boundary-cricket.aj8uppal.chatgpt.site",
+  "assets": {
+    "THIRD_PARTY_LICENSES.txt": "529e17c8c89ec2e7f484349ceaedc2d8fb0413150dbc47478bb4c2120b8528f6",
+    "_headers": "b011364177b1255bcc781c2a4e304cad4cb9cfa2b09940badc1477b767c16aab",
+    "apple-touch-icon.png": "3aa77474a95048dcf181147dc2b205defa25a246653c67d985cdd90e4dde1ea6",
+    "assets/barlow-condensed-latin-500-normal-BgYH2mbd.woff2": "460f141ec8f6c9a1516bfd2bd9fe71656246d7a9d04a0955faf53158d8970c4c",
+    "assets/barlow-condensed-latin-500-normal-HIEiP5Ov.woff": "a5c197a36d650b8bd6b153976aeb31f1ddd9e75f75e4165a6f3eb1e25f50ada6",
+    "assets/barlow-condensed-latin-600-normal-BFJEwTuo.woff": "02e9d2ca2e9af5d8dbdfd30c4a5aa59632205901e9045140b559a44d361d8a46",
+    "assets/barlow-condensed-latin-600-normal-DepVgxBB.woff2": "215a93c696f442034a46fbb382958f753fda60e30490683aeea6b235fcbb2b66",
+    "assets/dm-sans-latin-400-normal-BwCSEQnW.woff": "38702875fe179437d200e7ba6f7fab4d497ffe48117ef332029b2081751186ad",
+    "assets/dm-sans-latin-400-normal-CW0RaeGs.woff2": "4ab51eb2cd7305d177187908d6397474d4520663f6c6e572feb0a64f4fa80006",
+    "assets/dm-sans-latin-500-normal-B9HHJjqV.woff2": "19bf1984956517c35c2bd35b6cdedac12a21d6fcd3596c614ecdfb88b648909d",
+    "assets/dm-sans-latin-500-normal-Dr3UlScf.woff": "7deb957e430b780ee3272d801af4f9f2211b1330ec40a312a8f25309eacb4034",
+    "assets/dm-sans-latin-600-normal-Aqo67rzb.woff2": "6bb2b2645ba5eeaecf56322c543fa3a75b87b927977b9c03b1dabc4205089120",
+    "assets/dm-sans-latin-600-normal-BmdmIIQ2.woff": "e7351257e49400eff05aca30a2007289194a900860d30c30770d8b8732897564",
+    "assets/dm-sans-latin-700-normal-CUSSCpQX.woff": "af422a448ac00679a8dbb13532db3616829c5a35b58d3eeea5903ce17ad2e36a",
+    "assets/dm-sans-latin-700-normal-DvUfVpUG.woff2": "35c5efa0e5daa52ee5c6500f5be354bf751fb65c4e49e1d6806c6eb5883e8fe9",
+    "assets/index-DcR2uzOo.js": "e9f535c3fbef272e01268c58c6c141cf8a279030aa11a74cf88c31447e4ffefd",
+    "assets/index-seqeFhgw.css": "74f0ece500ef680011d6bca1a8a3e22994e749ab344a3cf7e7acc636e8e9a783",
+    "assets/scene-CjlBLdxs.js": "d56981d76a3bec7bd34116e191bbdb42ca8b9b132e8594eeda117ac934c6fedb",
+    "assets/three-DaB0coTg.js": "be72992b903f517668edf994a24e45e54ba796b65ddb81e6df5b42fa1c62dc51",
+    "favicon.svg": "9b18d0b70e9f15faa6d2ad2b0c8a0c0d241d345d986c2edd98068e6ccae68c4d",
+    "icon-192.png": "01afbdc230acbcab8b3f7f1850eacfaa3bdc82f187ef1156f1582fe1bffb5f3d",
+    "icon-512.png": "dfd2b7a6e52b2bec24f57643d726f6bf9af492cc48e2970662bd6cbde711530e",
+    "index.html": "23a7abb6b14471ec3ddd0e88751a87341b002a4704c240d061f66ec6b9a711d9",
+    "manifest.webmanifest": "0a0aa844a4d6218b1e5a51ba1e46992ca40d71f892e773b4da34367b0c309ecd",
+    "sw.js": "99690d0146e5f947619fa7a947068eb50a3698957cec30bf365c8bac2c71b887"
+  }
+}
