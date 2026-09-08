@@ -1,11 +1,25 @@
 import { projects } from '../src/data/portfolio.ts';
 import { verifyMotion } from './portfolio-motion-checks.mjs';
+import { verifyTrailers } from './portfolio-trailer-checks.mjs';
+
+async function openScreenshots(page) {
+  const album = page.locator('[data-trailer-screenshots]');
+  if (await album.count()) {
+    await album.locator('summary').first().click();
+    await page.evaluate(
+      () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
+    );
+  }
+}
 
 export async function verifyInteractions(browser, base, note, out) {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  const go = (path) => page.goto(new URL(path, base).href, { waitUntil: 'networkidle' });
+  const go = async (path) => {
+    await page.goto(new URL(path, base).href, { waitUntil: 'networkidle' });
+    await openScreenshots(page);
+  };
   const ready = (gallery, index) =>
     gallery.evaluate(async (el, expected) => {
       const deadline = performance.now() + 10000;
@@ -78,6 +92,7 @@ export async function verifyInteractions(browser, base, note, out) {
     'homepage: AJ Uppal has no trailing period',
   );
   await verifyMotion(browser, base, note, out);
+  await verifyTrailers(browser, base, note, out);
 
   // Fast requests must leave the most recently requested photograph selected.
   await page.locator('[data-scene-key="saltline"]').evaluate((el) => el.click());
@@ -169,6 +184,7 @@ export async function verifyInteractions(browser, base, note, out) {
     waitUntil: 'networkidle',
   });
   const failedGallery = failure.locator('[data-gallery]');
+  await openScreenshots(failure);
   await failedGallery.locator('[data-gallery-next]').click();
   await failure.waitForFunction(() =>
     document.querySelector('[data-gallery-status]')?.textContent.includes('could not load'),
@@ -230,6 +246,7 @@ export async function verifyInteractions(browser, base, note, out) {
   await touch.goto(new URL('/portfolio/work/murmuration/', base).href, {
     waitUntil: 'networkidle',
   });
+  await openScreenshots(touch);
   const stage = touch.locator('[data-gallery-stage]');
   await stage.scrollIntoViewIfNeeded();
   const r = await stage.boundingBox();
@@ -265,6 +282,7 @@ export async function verifyInteractions(browser, base, note, out) {
   const reduced = await browser.newPage({ reducedMotion: 'reduce' });
   await reduced.goto(new URL('/portfolio/work/saltline/', base).href, { waitUntil: 'networkidle' });
   const reducedGallery = reduced.locator('[data-gallery]');
+  await openScreenshots(reduced);
   await reducedGallery.locator('[data-gallery-next]').click();
   await ready(reducedGallery, 1);
   note(
@@ -275,6 +293,8 @@ export async function verifyInteractions(browser, base, note, out) {
 
   const noJS = await browser.newPage({ javaScriptEnabled: false });
   await noJS.goto(new URL('/portfolio/work/murmuration/', base).href, { waitUntil: 'networkidle' });
+  // Native disclosure needs no script-driven gallery measurements to settle.
+  await noJS.locator('[data-trailer-screenshots] > summary').click();
   note(
     (await noJS.locator('[data-gallery-frame]:visible').count()) === number &&
       (await noJS.locator('[data-gallery-tools]:visible').count()) === 0,

@@ -1,0 +1,68 @@
+---
+import { getImage } from 'astro:assets';
+import { asset } from '../lib/images';
+import trailers from '../data/portfolio-trailers.json';
+
+interface Props {
+  projectKey: string;
+}
+const trailer = trailers.find((item) => item.key === Astro.props.projectKey)!;
+const poster = await getImage({
+  src: asset(trailer.poster.replace(/\.webp$/, '')),
+  width: 1600,
+  format: 'webp',
+});
+const duration = `${Math.floor(trailer.duration / 60)}:${String(Math.floor(trailer.duration % 60)).padStart(2, '0')}`;
+---
+
+<section class="pc-trailer" data-trailer aria-label={`${trailer.title} trailer`}>
+  <div class="pc-trailer-stage">
+    <video
+      controls
+      playsinline
+      preload="none"
+      width={trailer.width}
+      height={trailer.height}
+      poster={poster.src}
+      src={trailer.src}
+      aria-label={`${trailer.title} trailer`}
+    >
+      <track kind="captions" src={trailer.captions} srclang="en" label="On-screen text" />
+      <a href={trailer.src}>Watch the {trailer.title} trailer</a>
+    </video>
+    <button class="pc-trailer-play" type="button" data-trailer-play hidden>
+      <span class="pc-trailer-play-icon" aria-hidden="true">▶</span>
+      <span data-trailer-play-label>Play trailer</span>
+      <span class="pc-trailer-time">{duration}</span>
+    </button>
+  </div>
+  <div class="pc-trailer-meta">
+    <span>Trailer <span aria-hidden="true">/</span> {duration}</span>
+    <a href={trailer.src} download>Download <span aria-hidden="true">↓</span></a>
+    <details class="pc-trailer-credits" id="trailer-credit">
+      <summary>Music credits <span aria-hidden="true">+</span></summary>
+      <div>
+        <p>
+          <a href={trailer.music.url}>{trailer.music.title}</a> by {trailer.music.artist}.
+          {
+            trailer.crowd && (
+              <Fragment>
+                {' '}
+                Crowd recordings by <a href={trailer.crowd.url}>{trailer.crowd.artist}</a>.
+              </Fragment>
+            )
+          }
+          {' '}<a href={trailer.licenseUrl}>CC BY 4.0</a>. Excerpts edited and mixed for this
+          trailer.
+        </p>
+      </div>
+    </details>
+  </div>
+  <p class="pc-trailer-error" data-trailer-error role="status" hidden>
+    The trailer couldn’t load. Try again, or <a href={trailer.src}>open the video directly</a>.
+  </p>
+</section>
+
+<script>
+  import '../portfolio/trailer';
+</script>

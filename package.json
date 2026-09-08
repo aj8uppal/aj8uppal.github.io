@@ -29,7 +29,8 @@
     "verify:legacy": "node scripts/verify-legacy.mjs",
     "verify:portfolio:lab": "node scripts/verify-portfolio.mjs --lab",
     "portfolio:motion:capture": "node scripts/capture-portfolio-motion.mjs",
-    "portfolio:motion:prepare": "node scripts/prepare-portfolio-motion.mjs"
+    "portfolio:motion:prepare": "node scripts/prepare-portfolio-motion.mjs",
+    "portfolio:trailers:prepare": "node scripts/prepare-portfolio-trailers.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

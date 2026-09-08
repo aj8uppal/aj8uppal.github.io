@@ -1,0 +1,216 @@
+[
+  {
+    "key": "saltline",
+    "title": "saltline",
+    "duration": 63.4,
+    "src": "/media/trailers/v4/saltline.mp4",
+    "captions": "/media/trailers/v4/saltline.vtt",
+    "poster": "trailer-v4-saltline.webp",
+    "width": 1920,
+    "height": 1080,
+    "profile": "1080p-x264-slow-crf18-gop60-aac-copy-v1",
+    "sourceSha256": "46dd7d9fdde1e39fa5bb52db3d52d1e75fe2612b22b421e406cabc8534804d0c",
+    "sha256": "7243f887d80f70f02bbe5dbc4ffbfe7f02bd73fe7741edd156dfec3702a18bff",
+    "bytes": 77626385,
+    "music": {
+      "title": "Goodbye To Spring",
+      "artist": "Josh Woodward",
+      "url": "https://www.joshwoodward.com/song/GoodbyeToSpring"
+    },
+    "crowd": null,
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  {
+    "key": "murmuration",
+    "title": "murmuration",
+    "duration": 63,
+    "src": "/media/trailers/v4/murmuration.mp4",
+    "captions": "/media/trailers/v4/murmuration.vtt",
+    "poster": "trailer-v4-murmuration.webp",
+    "width": 1920,
+    "height": 1080,
+    "profile": "1080p-x264-slow-crf24-gop60-aac-copy-v1",
+    "sourceSha256": "d6bb4b69cdf9457a385c58c14e9710c7ee7a46b5bcacaf6f23e7829efc56fb49",
+    "sha256": "25bccf1c249815b14277e90cc9d4972794ea3e9e9fb0d88e54ce6932c6776692",
+    "bytes": 98216407,
+    "music": {
+      "title": "Filaments",
+      "artist": "Scott Buckley",
+      "url": "https://www.scottbuckley.com.au/library/filaments/"
+    },
+    "crowd": null,
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  {
+    "key": "ember",
+    "title": "Ember Wilds",
+    "duration": 54.6,
+    "src": "/media/trailers/v4/ember.mp4",
+    "captions": "/media/trailers/v4/ember.vtt",
+    "poster": "trailer-v4-ember.webp",
+    "width": 1920,
+    "height": 1080,
+    "profile": "1080p-x264-slow-crf18-gop60-aac-copy-v1",
+    "sourceSha256": "4e32b64f134af66784bc5a79eeaa243fe8e6417a88b65fe8ec98eac2c93c5163",
+    "sha256": "d537662b1ee22a90341691781e88fd80ab997379fb5a2770582b6d6c6ba7b722",
+    "bytes": 35390996,
+    "music": {
+      "title": "Adventure",
+      "artist": "Alexander Nakarada",
+      "url": "https://creatorchords.com/music/adventure/"
+    },
+    "crowd": null,
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  {
+    "key": "blockhold",
+    "title": "Blockhold",
+    "duration": 64.1,
+    "src": "/media/trailers/v4/blockhold.mp4",
+    "captions": "/media/trailers/v4/blockhold.vtt",
+    "poster": "trailer-v4-blockhold.webp",
+    "width": 1920,
+    "height": 1080,
+    "profile": "1080p-x264-slow-crf18-gop60-aac-copy-v1",
+    "sourceSha256": "4d02005ef911c9fa57fda72b0563ebb9b38b33a66c66cf85639fe1b56fcbe3ec",
+    "sha256": "472e363e48765e71c29cc3c7ff88e8f750faf6d08d16fe1b6007efd1020833ae",
+    "bytes": 14180446,
+    "music": {
+      "title": "Prepare for War",
+      "artist": "Alexander Nakarada",
+      "url": "https://creatorchords.com/music/prepare-for-war/"
+    },
+    "crowd": null,
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  {
+    "key": "cubit",
+    "title": "cubit",
+    "duration": 44,
+    "src": "/media/trailers/v4/cubit.mp4",
+    "captions": "/media/trailers/v4/cubit.vtt",
+    "poster": "trailer-v4-cubit.webp",
+    "width": 1920,
+    "height": 1080,
+    "profile": "1080p-x264-slow-crf18-gop60-aac-copy-v1",
+    "sourceSha256": "28e03c3ad2ccfddedc4bcceb8a347ee57d787642231d34dca71d21dfe27b7550",
+    "sha256": "d6af1c2a130a9a041c3a1037f5db854846518ea68206071c020fd2fa753858bb",
+    "bytes": 7179407,
+    "music": {
+      "title": "Funky Boxstep",
+      "artist": "Kevin MacLeod",
+      "url": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2100011"
+    },
+    "crowd": null,
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  {
+    "key": "eyeshot",
+    "title": "Eyeshot",
+    "duration": 40.9,
+    "src": "/media/trailers/v4/eyeshot.mp4",
+    "captions": "/media/trailers/v4/eyeshot.vtt",
+    "poster": "trailer-v4-eyeshot.webp",
+    "width": 1920,
+    "height": 1080,
+    "profile": "1080p-x264-slow-crf18-gop60-aac-copy-v1",
+    "sourceSha256": "ce73b6857556f24f3ef3eec0d06c47c851bd97693b41004e829d26efff372940",
+    "sha256": "f755394f35ee92a9fa13a89a203bd794bc7f7a8ebf898b09e917c1eb64f84242",
+    "bytes": 2832594,
+    "music": {
+      "title": "Jazz Brunch",
+      "artist": "Kevin MacLeod",
+      "url": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1700074"
+    },
+    "crowd": null,
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  {
+    "key": "boundary",
+    "title": "Boundary",
+    "duration": 39.3,
+    "src": "/media/trailers/v4/boundary.mp4",
+    "captions": "/media/trailers/v4/boundary.vtt",
+    "poster": "trailer-v4-boundary.webp",
+    "width": 1920,
+    "height": 1080,
+    "profile": "1080p-x264-slow-crf18-gop60-aac-copy-v1",
+    "sourceSha256": "141568cbdbd4f95de5bab9da1ef9626a81e1db5eb1ee19ff4d0a96eee8a3eaff",
+    "sha256": "d53391e9acb5fd4450e5f9d963d5909ce1eb7c91c49f7becc412a07e46c17341",
+    "bytes": 30601180,
+    "music": {
+      "title": "I Will Not Let You Let Me Down",
+      "artist": "Josh Woodward",
+      "url": "https://www.joshwoodward.com/song/IWillNotLetYouLetMeDown"
+    },
+    "crowd": {
+      "title": "Free Crowd Cheering Sounds",
+      "artist": "Gregor Quendel",
+      "url": "https://opengameart.org/content/free-crowd-cheering-sounds"
+    },
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  {
+    "key": "voidreach",
+    "title": "Voidreach",
+    "duration": 45,
+    "src": "/media/trailers/v4/voidreach.mp4",
+    "captions": "/media/trailers/v4/voidreach.vtt",
+    "poster": "trailer-v4-voidreach.webp",
+    "width": 1920,
+    "height": 1080,
+    "profile": "1080p-x264-slow-crf18-gop60-aac-copy-v1",
+    "sourceSha256": "ed51d2130ae0c05be1b8a95608eba775d1bfecb70bc7b33d5a0bc57f220ff406",
+    "sha256": "41ad7850553ccdd8d250809eb7df5d64f9dc316e24dcd546851ac60952e6e161",
+    "bytes": 24105083,
+    "music": {
+      "title": "Escape Velocity",
+      "artist": "Scott Buckley",
+      "url": "https://www.scottbuckley.com.au/library/escape-velocity/"
+    },
+    "crowd": null,
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  {
+    "key": "bring-something-home",
+    "title": "Bring Something Home",
+    "duration": 35.3,
+    "src": "/media/trailers/v4/bring-something-home.mp4",
+    "captions": "/media/trailers/v4/bring-something-home.vtt",
+    "poster": "trailer-v4-bring-something-home.webp",
+    "width": 1920,
+    "height": 1080,
+    "profile": "1080p-x264-slow-crf18-gop60-aac-copy-v1",
+    "sourceSha256": "8f117a6e72b265e63f87c89770c2d2935b0ac5fb45714a84cd4db5ee46a465ab",
+    "sha256": "c5a85a179838e32f881367f1f2162dfdbae50226737fd01a9c7849aa7fce6b35",
+    "bytes": 18264175,
+    "music": {
+      "title": "The Road Home (2023)",
+      "artist": "Alexander Nakarada",
+      "url": "https://creatorchords.com/music/the-road-home-2023/"
+    },
+    "crowd": null,
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  {
+    "key": "voidborne",
+    "title": "Voidborne",
+    "duration": 29.4,
+    "src": "/media/trailers/v4/voidborne.mp4",
+    "captions": "/media/trailers/v4/voidborne.vtt",
+    "poster": "trailer-v4-voidborne.webp",
+    "width": 1920,
+    "height": 1080,
+    "profile": "1080p-x264-slow-crf18-gop60-aac-copy-v1",
+    "sourceSha256": "b06a0b61d8115868aaa873ebfb3795a3dcade064f4e8538712c350c3b67a1c24",
+    "sha256": "dc5795ef7de442bb1a570e817077c7771b711f925aa740d63111c5a5bd1cdd0f",
+    "bytes": 10972604,
+    "music": {
+      "title": "District Four",
+      "artist": "Kevin MacLeod",
+      "url": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1600039"
+    },
+    "crowd": null,
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  }
+]

@@ -58,6 +58,139 @@
   color: var(--ref-muted);
   font: 11px/1.5 var(--ref-mono);
 }
+.pc-trailer-stage {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--ref-line);
+  border-radius: 7px;
+  background: #08181f;
+  aspect-ratio: 16 / 9;
+}
+.pc-trailer video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.pc-trailer video:focus-visible {
+  outline: 2px solid var(--ref-accent);
+  outline-offset: -4px;
+}
+.pc-trailer-play {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  border: 0;
+  background: linear-gradient(transparent 35%, #03101680);
+  color: #fff8e8;
+  font: 14px/1.5 var(--ref-mono);
+  text-shadow: 0 1px 8px #000;
+}
+.pc-trailer-play-icon {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  padding-left: 3px;
+  border: 1px solid #c0d2c7;
+  border-radius: 50%;
+  background: #0a202ddd;
+  transition:
+    background 160ms,
+    color 160ms;
+}
+.pc-trailer-play:hover .pc-trailer-play-icon,
+.pc-trailer-play:focus-visible .pc-trailer-play-icon {
+  background: #e6eadb;
+  color: #132a32;
+}
+.pc-trailer-time {
+  padding: 3px 7px;
+  border-radius: 3px;
+  background: #0a202ddd;
+  font-size: 11px;
+}
+.pc-trailer-play [data-trailer-play-label] {
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: #0a202ddd;
+}
+.pc-trailer-meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--ref-muted);
+}
+.pc-trailer-meta > span {
+  margin-right: auto;
+}
+.pc-trailer-meta > a,
+.pc-trailer-meta summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 8px;
+  color: var(--ref-ink);
+  cursor: pointer;
+}
+.pc-trailer-credits[open] summary span {
+  transform: rotate(45deg);
+}
+.pc-trailer-credits[open] {
+  flex-basis: 100%;
+}
+.pc-trailer-credits p {
+  max-width: 75ch;
+  padding-bottom: 16px;
+}
+.pc-trailer-credits a,
+.pc-trailer-error a {
+  color: var(--ref-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+.pc-trailer-error {
+  margin-top: 12px;
+  font-size: 14px;
+}
+.pc-screenshots {
+  margin-top: 12px;
+  border-block: 1px solid var(--ref-line);
+}
+.pc-screenshots > summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 52px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 13px;
+}
+.pc-screenshots > summary span {
+  font-size: 20px;
+}
+.pc-screenshots[open] > summary span {
+  transform: rotate(45deg);
+}
+.pc-screenshots .pc-gallery {
+  padding-block: 8px 24px;
+}
+.pc-trailer [hidden] {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pc-trailer-play-icon {
+    transition: none;
+  }
+}
 .pc-lead > a {
   display: block;
   position: relative;

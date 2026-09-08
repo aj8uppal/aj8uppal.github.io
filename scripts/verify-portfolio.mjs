@@ -704,6 +704,7 @@ try {
   }
 
   await page.goto(new URL('/portfolio/work/saltline/', BASE).href, { waitUntil: 'networkidle' });
+  await page.locator('[data-trailer-screenshots] > summary').click();
   const photo = page.locator('[data-photo]').first();
   await photo.focus();
   await page.keyboard.press('Enter');

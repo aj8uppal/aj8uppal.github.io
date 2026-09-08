@@ -2,6 +2,8 @@
 import { Picture } from 'astro:assets';
 import Portfolio from '../../../layouts/Portfolio.astro';
 import ProjectGallery from '../../../components/ProjectGallery.astro';
+import ProjectTrailer from '../../../components/ProjectTrailer.astro';
+import trailers from '../../../data/portfolio-trailers.json';
 import { projects, type Project } from '../../../data/portfolio';
 import { asset } from '../../../lib/images';
 import { contact } from '../../../data/content';
@@ -19,6 +21,7 @@ const related = projects
   .sort((a, b) => Number(b.kind === p.kind) - Number(a.kind === p.kind))
   .slice(0, 3);
 const short = p.constraint === p.summary;
+const hasTrailer = trailers.some((trailer) => trailer.key === p.key);
 ---
 
 <Portfolio title={`${p.name} · AJ Uppal`} description={p.summary} navigation>
@@ -69,7 +72,17 @@ const short = p.constraint === p.summary;
     </header>
 
     {
-      p.image ? (
+      hasTrailer ? (
+        <>
+          <ProjectTrailer projectKey={p.key} />
+          <details class="pc-screenshots" data-trailer-screenshots>
+            <summary>
+              Screenshots <span aria-hidden="true">+</span>
+            </summary>
+            <ProjectGallery project={p} />
+          </details>
+        </>
+      ) : p.image ? (
         <ProjectGallery project={p} />
       ) : (
         <section class="pc-system" aria-label="Professional scope and impact">

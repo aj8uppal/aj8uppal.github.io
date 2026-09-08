@@ -163,6 +163,16 @@ directions and should run against a lab build when those routes are needed.
 See `docs/portfolio-local-demo.md` for review commands, fixed ports, route
 availability, and frozen game snapshots.
 
+## Project-page trailers
+
+`src/data/portfolio-trailers.json` maps ten reviewed films to web derivatives,
+first-frame posters, caption tracks and music credits. The capture masters stay
+outside Git; `npm run portfolio:trailers:prepare` reproduces the public files
+without remixing their audio. See `docs/portfolio-trailers.md` for the archive,
+encoding settings and size limits. `npm run verify` exercises these players,
+including no eager media requests, retry, no-JS and touch playback. Project-page
+screenshots now sit in a native disclosure; open it before driving the gallery.
+
 ## Maintaining this file
 
 Keep this file for knowledge useful to almost every future agent session in this project.
