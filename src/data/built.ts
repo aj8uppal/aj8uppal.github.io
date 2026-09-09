@@ -55,6 +55,47 @@ export interface Built {
 
 export const apps: Built[] = [
   {
+    key: 'afterhours',
+    selected: true,
+    categories: ['games', 'sound'],
+    name: 'Afterhours',
+    kind: 'Party game',
+    reach: 'open',
+    reachLabel: 'Live',
+    href: 'https://afterhours-aj8uppal.fly.dev/',
+    cta: 'Host a game',
+    what: 'Your friends write the punchlines. The room picks the winner.',
+    how: 'One shared screen, three to eight phones, and optional voiced hosts. The server keeps answers anonymous until the reveal and remembers prompts across rematches.',
+    k: 'React · TypeScript · Socket.IO · ElevenLabs · Fly.io',
+    accent: '#deef65',
+    alt: 'Afterhours showing three submitted punchlines, the winning answer and a live scoreboard on the host screen.',
+    cap: 'A live room with three browser players and scripted sample answers, after a real vote.',
+    story: {
+      role: 'The multiplayer game engine, host and phone interfaces, original prompt library, and voice narration.',
+      constraint:
+        'Everyone must see the same round while answers, authors, votes, and reconnecting seats stay consistent.',
+      decision:
+        'The server owns timers, phase transitions, scoring, and filtered player views. Phase IDs reject stale actions; room sessions recover seats after a refresh.',
+      evidence:
+        '900 authored prompts across three packs. Simulated 50 complete games per pack without a prompt repeat, then verified host and phone play over the public service.',
+      question: 'A group chat with a scoreboard.',
+      details: [
+        [
+          'Replayability',
+          'Each pack has 300 prompts. Room history prevents authored repeats for 50 six-prompt games; player names and a group topic personalize the setups.',
+        ],
+        [
+          'Voice hosts',
+          'Alistair, Pierre, and Baz have separate voices and rotating banter. The game host chooses one for the match; narration is optional and credentials stay on the server.',
+        ],
+        [
+          'Hosting',
+          'A single Fly machine serves the interface and WebSocket game engine. Rooms live in memory and survive browser reconnects, but end when the server restarts.',
+        ],
+      ],
+    },
+  },
+  {
     key: 'slipstream',
     selected: true,
     categories: ['systems', 'experiments'],

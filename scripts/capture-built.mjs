@@ -23,6 +23,7 @@ import { createStaticShots } from './capture-experiments.mjs';
 import { createGameShots } from './capture-games.mjs';
 import { captureBeatlayer } from './capture-audio.mjs';
 import { captureBringHome } from './capture-bring-home.mjs';
+import { captureAfterhours } from './capture-afterhours.mjs';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -41,6 +42,7 @@ const W = 1440,
   ASSET_W = 1500;
 
 const shots = {
+  afterhours: captureAfterhours,
   'bring-something-home': captureBringHome,
   ...createStaticShots({ base: L }),
   ...createGameShots({ base: L }),

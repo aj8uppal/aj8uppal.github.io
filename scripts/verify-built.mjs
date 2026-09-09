@@ -62,7 +62,7 @@ try {
     `${apps.length} projects`,
   );
   note(new Set(apps.map((app) => app.key)).size === apps.length, 'project keys are unique');
-  note(apps.length === 25, 'the collection retains 25 personal projects');
+  note(apps.length === 26, 'the collection retains 26 personal projects');
   note(selected.length === 10, 'ten projects form the opening selection');
   note(same(selected, homeProjectKeys), 'the collection opens with the primary homepage tier');
   note((await page.locator('h1').count()) === 1, 'the collection has one main heading');
