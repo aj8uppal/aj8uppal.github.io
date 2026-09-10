@@ -1,0 +1,5 @@
+# Voidreach
+User-agent: *
+Allow: /
+Disallow: /health
+Disallow: /ws
