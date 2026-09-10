@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05060e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="A daily gravity puzzle. One comet, three stars, one wormhole — slingshot your way home.">
+<title>Orbital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☄️</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="satProbe"></div>
+<div id="sabProbe"></div>
+
+<canvas id="stage"></canvas>
+
+<div class="hud hud--top">
+  <div>
+    <div class="wordmark">Orbital</div>
+    <div class="subline" id="subline"></div>
+  </div>
+  <div class="tools">
+    <button class="icon-btn" id="modeBtn" title="Endless mode" aria-label="Endless mode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+        <path d="M18.2 7.8a4.2 4.2 0 0 0-6 0L12 12l-.2.2a4.2 4.2 0 1 1 0-6L12 12l.2-.2a4.2 4.2 0 1 0 6 6 4.2 4.2 0 0 0 0-6z"/>
+      </svg>
+    </button>
+    <button class="icon-btn" id="helpBtn" title="How to play" aria-label="How to play">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.3 2.4c-.6.2-.9.8-.9 1.4v.5"/><circle cx="12" cy="17" r=".7" fill="currentColor"/>
+      </svg>
+    </button>
+    <button class="icon-btn" id="soundBtn" title="Sound" aria-label="Toggle sound">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 9.5h3l4-3.2v11.4l-4-3.2H5z"/><path d="M15.6 9.2a4 4 0 0 1 0 5.6"/><path d="M18 6.8a7.4 7.4 0 0 1 0 10.4"/>
+      </svg>
+    </button>
+    <button class="icon-btn" id="statsBtn" title="Stats" aria-label="Stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M5 19V11"/><path d="M12 19V5"/><path d="M19 19v-6"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<div class="hud hud--bottom">
+  <div class="status">
+    <span class="attempts" id="attemptTxt">Ready</span>
+    <span class="divider"></span>
+    <span class="pips" id="pips">
+      <span class="pip"><svg viewBox="-16 -16 32 32"><path class="fill" d="M13 0Q1.6 1.6 0 13Q-1.6 1.6 -13 0Q-1.6 -1.6 0 -13Q1.6 -1.6 13 0Z"/></svg></span>
+      <span class="pip"><svg viewBox="-16 -16 32 32"><path class="fill" d="M13 0Q1.6 1.6 0 13Q-1.6 1.6 -13 0Q-1.6 -1.6 0 -13Q1.6 -1.6 13 0Z"/></svg></span>
+      <span class="pip"><svg viewBox="-16 -16 32 32"><path class="fill" d="M13 0Q1.6 1.6 0 13Q-1.6 1.6 -13 0Q-1.6 -1.6 0 -13Q1.6 -1.6 13 0Z"/></svg></span>
+    </span>
+  </div>
+  <div class="hint" id="hint">Drag anywhere to aim · release to launch</div>
+</div>
+
+<div class="scrim" id="scrim">
+
+  <!-- ============ win ============ -->
+  <div class="sheet" id="winSheet" style="display:none">
+    <h2 id="winTitle">Captured</h2>
+    <div class="big" id="winName">Orbital #1</div>
+    <p class="sub" id="winSub"></p>
+
+    <div class="result-stars" id="winStars">
+      <span class="pip"><svg viewBox="-16 -16 32 32"><path class="fill" d="M13 0Q1.6 1.6 0 13Q-1.6 1.6 -13 0Q-1.6 -1.6 0 -13Q1.6 -1.6 13 0Z"/></svg></span>
+      <span class="pip"><svg viewBox="-16 -16 32 32"><path class="fill" d="M13 0Q1.6 1.6 0 13Q-1.6 1.6 -13 0Q-1.6 -1.6 0 -13Q1.6 -1.6 13 0Z"/></svg></span>
+      <span class="pip"><svg viewBox="-16 -16 32 32"><path class="fill" d="M13 0Q1.6 1.6 0 13Q-1.6 1.6 -13 0Q-1.6 -1.6 0 -13Q1.6 -1.6 13 0Z"/></svg></span>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><div class="v" id="winAttempts">1</div><div class="k">Attempts</div></div>
+      <div class="metric"><div class="v" id="winTime">0.0s</div><div class="k">Flight</div></div>
+      <div class="metric"><div class="v" id="winStreak">1</div><div class="k">Streak</div></div>
+    </div>
+
+    <div class="spark" id="winSpark">▁▂▄▆█▇▄▂▁</div>
+    <div class="spark-label">Velocity signature</div>
+
+    <div class="btn-row">
+      <button class="btn btn--primary" id="shareBtn">Share result</button>
+      <button class="btn btn--ghost" id="endlessBtn">Endless mode</button>
+      <button class="btn btn--ghost" id="replayBtn">Replay this orbital</button>
+    </div>
+
+    <div class="footnote" id="winFoot"></div>
+    <div class="footnote" style="border:0;padding-top:8px;margin-top:2px">Next orbital in <b id="countdown">--:--:--</b></div>
+  </div>
+
+  <!-- ============ how to ============ -->
+  <div class="sheet" id="howSheet" style="display:none">
+    <h2>A daily gravity puzzle</h2>
+    <div class="big">Orbital</div>
+    <p class="sub">One comet. One shot at a time.</p>
+
+    <div class="rules">
+      <div class="rule">
+        <div class="glyph">☄️</div>
+        <p><b>Drag anywhere</b> to set your heading and power. The dotted line only shows the first second of flight — the rest is yours to read.</p>
+      </div>
+      <div class="rule">
+        <div class="glyph">🪐</div>
+        <p>Planets <b>bend your path</b>. Skim them for a slingshot; touch them and you burn up.</p>
+      </div>
+      <div class="rule">
+        <div class="glyph">⭐</div>
+        <p>Sweep up all <b>three stars</b> on the way. They're optional — and they're the whole flex.</p>
+      </div>
+      <div class="rule">
+        <div class="glyph">🕳️</div>
+        <p>Fall into the <b>wormhole</b> to finish. Every puzzle is built around a real solution, so a perfect run always exists.</p>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn--primary" id="howClose">Launch</button>
+    </div>
+    <div class="footnote">New orbital every day at midnight</div>
+  </div>
+
+  <!-- ============ stats ============ -->
+  <div class="sheet" id="statsSheet" style="display:none">
+    <h2>Flight log</h2>
+    <div class="big">Statistics</div>
+    <div class="stat-grid">
+      <div><div class="v" id="stPlayed">0</div><div class="k">Solved</div></div>
+      <div><div class="v" id="stStreak">0</div><div class="k">Streak</div></div>
+      <div><div class="v" id="stMax">0</div><div class="k">Best</div></div>
+      <div><div class="v" id="stPerfect">0</div><div class="k">Perfect</div></div>
+    </div>
+    <div class="history" id="history"></div>
+    <div class="btn-row">
+      <button class="btn btn--ghost" id="statsClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="engine.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

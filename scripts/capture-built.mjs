@@ -51,6 +51,21 @@ const shots = {
     await page.locator('#ideas .idea').first().waitFor();
     await page.waitForTimeout(600);
   },
+  /* Fly the generator's own solution and stop partway: the trail is the picture.
+     Synthetic aim, real launch — it goes through the same integrator a drag does. */
+  async orbital(page) {
+    await page.goto(`${L}/orbital/`, { waitUntil: 'networkidle' });
+    await page.locator('#howClose').click();
+    await page.waitForFunction(() => window.__orbital?.state.phase === 'aim');
+    const flight = await page.evaluate(() => {
+      window.__orbital.perfect();
+      return window.__orbital.state.level.solution.time;
+    });
+    await page.waitForFunction((t) => window.__orbital.state.flightT > t, flight * 0.45, {
+      timeout: 15000,
+    });
+  },
+
   /* The memo, at the equity curve — the picture the whole thing is arguing for. */
   async papertrader(page) {
     await page.goto(`${L}/papertrader/`, { waitUntil: 'networkidle' });

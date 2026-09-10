@@ -733,6 +733,43 @@ export const apps: Built[] = [
       ],
     },
   },
+  {
+    key: 'orbital',
+    selected: true,
+    categories: ['games', 'systems'],
+    name: 'Orbital',
+    kind: 'Daily puzzle',
+    reach: 'open',
+    reachLabel: 'Live',
+    href: '/orbital/',
+    cta: 'Take today’s shot',
+    what: 'A daily gravity puzzle: one comet, three stars, one wormhole.',
+    how: 'Every level is grown from a trajectory the generator has already flown, so a three-star solution is proved to exist before the day ships.',
+    k: 'Canvas 2D · Velocity Verlet · WebAudio',
+    accent: '#8ed6e4',
+    alt: 'Orbital mid-flight: a comet’s glowing trail curves away from its launch pad past two planets, with collected stars marked in the status bar and a wormhole ahead.',
+    cap: 'A real flight on the day’s puzzle, caught between the second and third star.',
+    story: {
+      role: 'The physics, the level generator, rendering and the synthesized audio.',
+      constraint:
+        'Everyone gets the same puzzle each day, and nobody plays it before it ships. An unsolvable one would reach every player at once.',
+      decision:
+        'Levels are grown from a flight rather than placed. The generator searches launch angles until an arc survives and curves, drops the wormhole on that arc, re-simulates with the wormhole’s own pull, places the three stars on that verified path, then proves the same shot collects all three.',
+      evidence:
+        'Across 200 generated days the search failed zero times and every stated solution re-verified at three stars, in under a millisecond per level.',
+      question: 'Proving a daily puzzle is solvable.',
+      details: [
+        [
+          'Determinism',
+          'One velocity Verlet integrator runs the generator, the aim preview and the live flight, so the preview cannot promise a path the game will not fly.',
+        ],
+        [
+          'Difficulty',
+          'Roughly 3-4% of the aim and power space reaches the wormhole, and 0.5-1.5% of it takes all three stars.',
+        ],
+      ],
+    },
+  },
 ];
 
 export const selectedApps = apps.filter((app) => app.featured || app.selected);
