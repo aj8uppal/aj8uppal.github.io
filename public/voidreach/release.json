@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "release": "ec7a1886d3777e55d549bdf63b612b4202e54bf7b22bac0876463a58651f4490",
+  "origin": "https://voidreach-online.fly.dev",
+  "client": {
+    "path": "index.html",
+    "bytes": 3473,
+    "sha256": "1aae8ffadeea4f41a81fe839fd73e77215440074467716c423fb8e40dd4ccafb"
+  },
+  "files": [
+    {
+      "path": "favicon.svg",
+      "bytes": 271,
+      "sha256": "70c37b2e9020ff40137f5712c35c65ced972404ceb2f4c336ca5fb9610c6d8c1"
+    },
+    {
+      "path": "icons/icon-192.png",
+      "bytes": 21859,
+      "sha256": "84572cda45eacc232d3115b476bd0e247062f895d53f6faa64f7c4b79fe5b662"
+    },
+    {
+      "path": "icons/icon-512.png",
+      "bytes": 72879,
+      "sha256": "1fbb65e1f9fe97016c84f523ac142431be602e0f99e4e58f8e17675a1547c6c0"
+    },
+    {
+      "path": "icons/icon.svg",
+      "bytes": 1519,
+      "sha256": "1791c3c8cb29981e37461abe8f28d64ed1708d3ca348ca0f5d31bf126e29280e"
+    },
+    {
+      "path": "icons/og.png",
+      "bytes": 1310260,
+      "sha256": "fabf48bc4489066ebd7ee16016839de01f27de592596e28816facbd31a335ded"
+    },
+    {
+      "path": "index.html",
+      "bytes": 1965389,
+      "sha256": "c314e6ced7f1beae4f812719481b1abe469db4cbb33858ec84f7a5552d3143e2"
+    },
+    {
+      "path": "licenses/inter-OFL.txt",
+      "bytes": 4377,
+      "sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57"
+    },
+    {
+      "path": "licenses/source-serif-4-OFL.txt",
+      "bytes": 4400,
+      "sha256": "5f94c3fd3a23131a417ab5a0c8452de57e70c3cfb9f604d88241f7065ebf9fd9"
+    },
+    {
+      "path": "manifest.webmanifest",
+      "bytes": 998,
+      "sha256": "7576e3dd3173b931e25d87d6965f776c27407fce0303ce281c1784d09fa10684"
+    },
+    {
+      "path": "robots.txt",
+      "bytes": 67,
+      "sha256": "7217311fa3018f1d49c631df3b278e4b8d2e14c015e8ba5244a8a3203130f7ac"
+    }
+  ]
+}

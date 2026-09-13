@@ -6,6 +6,13 @@ This file is the project's committed home for project-intrinsic agent knowledge:
 
 ## `public/` is a URL contract, not an attic
 
+Voidreach's `/voidreach/` release comes from the healthy `voidreach-online` Fly
+image, via `scripts/sync-voidreach.mjs`. Every Pages build downloads and checks
+that artifact; the deploy workflow also checks for direct Fly releases every
+15 minutes. Never hand-edit its bundled HTML. The checked-in copy is a local
+preview snapshot; run the sync script to refresh it. Release checks and retry
+commands are in `docs/voidreach-release.md`.
+
 Every file under `public/` is served at its literal path, unhashed and unbundled.
 That is the only thing keeping the pre-2026 demo URLs (`/grinchjump.html`, `/deviation.html`, `/demos/AutoTyper/index.html`, ...) alive after the Astro rebuild.
 Moving or renaming anything in there breaks a link that has worked for a decade.
