@@ -189,7 +189,7 @@ export const apps: Built[] = [
       decision:
         'The simulation uses only exactly specified arithmetic and snapshots its whole state every frame, so a wrong input prediction is repaired by replaying up to nine frames. Juggle hits apply a small lift; only an ender turns accumulated damage into knockback.',
       evidence:
-        '58 automated tests cover determinism, trades, grabs, counters and frame advantage. Two browsers matched every compared frame checksum over a direct connection and over the relay, and simulated links hold full speed up to about 230 ms of ping with 8% packet loss.',
+        '60 automated tests cover determinism, trades, grabs, counters, frame advantage and desync detection. Two browsers matched every compared frame checksum over a direct connection and over the relay, and simulated links hold full speed up to about 230 ms of ping with 8% packet loss.',
       question: 'Frame-exact fights between two browsers.',
       details: [
         [
