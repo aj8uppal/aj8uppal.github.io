@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#04060f" />
+<meta name="color-scheme" content="dark" />
+<title>HYPERGRID — Twin-Stick Vector Shooter</title>
+<meta name="description" content="HYPERGRID is a browser twin-stick vector shooter: a warping neon grid, HDR bloom, procedural audio, five solo modes and online co-op with a friend." />
+
+<meta property="og:title" content="HYPERGRID" />
+<meta property="og:description" content="A twin-stick vector shooter for the browser." />
+<meta property="og:type" content="website" />
+
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2304060f'/%3E%3Cpath d='M32 8 56 32 32 56 8 32Z' fill='none' stroke='%237df9ff' stroke-width='4'/%3E%3Cpath d='M32 20 44 32 32 44 20 32Z' fill='none' stroke='%234dff9b' stroke-width='3'/%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<canvas id="game" aria-label="Game viewport" role="img"></canvas>
+
+<!-- ============================ In-game HUD ============================ -->
+<div id="hud" aria-hidden="true">
+  <div class="hud-top">
+    <div class="hud-left">
+      <div class="hud-block">
+        <div class="hud-label">SCORE</div>
+        <div id="hud-score" class="hud-score">0</div>
+      </div>
+      <div class="hud-block mult-block">
+        <div id="hud-mult" class="hud-mult">x1</div>
+        <div class="mult-track"><div id="hud-mult-bar"></div></div>
+      </div>
+    </div>
+
+    <div class="hud-center">
+      <div id="hud-mode" class="hud-mode">EVOLVED</div>
+      <div id="hud-timer-wrap" class="hud-block hidden">
+        <div class="hud-label">TIME</div>
+        <div id="hud-timer" class="hud-timer">3:00.00</div>
+      </div>
+      <div id="hud-wave-wrap" class="hud-block hidden">
+        <div class="hud-label">WAVE</div>
+        <div id="hud-wave" class="hud-timer">1</div>
+      </div>
+    </div>
+
+    <div class="hud-right">
+      <div class="hud-block right">
+        <div class="hud-label">BEST</div>
+        <div id="hud-best" class="hud-best">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hud-bottom">
+    <div class="hud-block">
+      <div class="hud-label">LIVES</div>
+      <div id="hud-lives" class="icon-row"></div>
+    </div>
+    <div class="hud-block" id="hud-bomb-hint">
+      <div class="hud-label">BOMBS <span class="key">SPACE</span></div>
+      <div id="hud-bombs" class="icon-row"></div>
+    </div>
+    <div id="hud-net" class="hud-net hidden"></div>
+    <div id="hud-fps" class="hud-fps hidden"></div>
+  </div>
+</div>
+
+<div id="net-banner" class="net-banner hidden" role="status" aria-live="polite"></div>
+
+<!-- ============================== Overlay ============================== -->
+<div id="overlay" role="dialog" aria-modal="true"></div>
+
+<button id="fullscreen-btn" title="Toggle fullscreen (F)" aria-label="Toggle fullscreen">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6" />
+  </svg>
+</button>
+
+<div id="audio-hint">CLICK OR PRESS ANY KEY TO ENABLE SOUND</div>
+
+<div id="loading"><div class="spinner"></div><span>LOADING</span></div>
+
+<div id="fatal">
+  <h1>SOMETHING WENT WRONG</h1>
+  <p></p>
+</div>
+
+<script type="module" src="src/main.js"></script>
+<script>
+  // Offline support: register only when served over http(s).
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>

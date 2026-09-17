@@ -152,6 +152,13 @@ The page reads `daily.json` at load and shows the set as today's drop; without i
 The job needs the `ANTHROPIC_API_KEY` repository secret and exits clean without it.
 A commit made with the workflow token does not trigger the deploy, so the job dispatches `deploy.yml` itself when the drop changed.
 
+## `public/hypergrid/` is a copy, and its relay is on Fly
+
+HYPERGRID's source lives in `~/personal/geometry-wars-claude`; `public/hypergrid/` is copied from it by that project's `scripts/sync-portfolio.sh`, so edit the source and re-sync rather than patching the copy.
+Online play connects to the `hypergrid-online` Fly app (`wss://hypergrid-online.fly.dev/ws`), which accepts only the `https://aj8uppal.github.io` origin plus localhost; serving the game anywhere else needs that allowlist changed.
+The relay keeps rooms in memory, so it must stay a single machine (`fly deploy --ha=false`).
+Both players need the same build: the page's service worker is network-first for that reason, and peers refuse a protocol-version mismatch.
+
 ## Portfolio directions share their depth
 
 The Worldbuilder portfolio is the site root `/`; `/portfolio/` redirects there.
