@@ -152,6 +152,13 @@ The page reads `daily.json` at load and shows the set as today's drop; without i
 The job needs the `ANTHROPIC_API_KEY` repository secret and exits clean without it.
 A commit made with the workflow token does not trigger the deploy, so the job dispatches `deploy.yml` itself when the drop changed.
 
+## `public/rift-clash/` is a build, and its lobby is on Fly
+
+Rift Clash's source lives in `~/personal/web-brawhalla`; `public/rift-clash/` is its `npm run build:pages` output plus `licenses/`, so change the source and re-copy rather than patching the bundle.
+Online play connects to the `rift-clash` Fly app (`wss://rift-clash.fly.dev/signal`), which accepts `https://aj8uppal.github.io`, its own origin and localhost, and relays match packets when players can't connect directly.
+It keeps rooms in memory, so it stays one always-on machine (`fly deploy --ha=false`; autostop once stopped it mid-match).
+The lobby only pairs players whose build hash matches `release.json`, so redeploy Fly and re-copy the Pages build together. `docs/rift-clash-release.md` has the steps.
+
 ## `public/hypergrid/` is a copy, and its relay is on Fly
 
 HYPERGRID's source lives in `~/personal/geometry-wars-claude`; `public/hypergrid/` is copied from it by that project's `scripts/sync-portfolio.sh`, so edit the source and re-sync rather than patching the copy.

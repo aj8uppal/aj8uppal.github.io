@@ -3,8 +3,9 @@
 `https://aj8uppal.github.io/rift-clash/` is a static build of Rift Clash. Local
 play, training and CPU matches need nothing else. Online play connects to the
 lobby server at `wss://rift-clash.fly.dev/signal` (Fly app `rift-clash`, one
-machine in `iad` that stops when idle). Players connect peer to peer over WebRTC
-when they can, and relay match packets through that server when they can't.
+always-on machine in `iad`; autostop is off because it stopped a live relay match). Players connect peer to peer over WebRTC
+when they can, and relay match packets through that server when they can't. A directly connected match keeps running if the lobby server
+goes away; a relayed one ends with a message.
 
 The game source lives outside this repo. Build and deploy both halves from the
 same checkout:

@@ -1,6 +1,6 @@
 {
   "name": "Rift Clash",
-  "build": "7b5c6b53739e",
+  "build": "b597225a78b9",
   "lobby": "wss://rift-clash.fly.dev/signal",
   "note": "Static client for GitHub Pages. Online play needs the Fly app rift-clash running the same build; see docs/rift-clash-release.md."
 }
