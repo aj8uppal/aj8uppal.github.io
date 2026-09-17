@@ -53,6 +53,8 @@ function boot() {
   const music = new MusicEngine(audio);
   const game = new Game(audio, music, input, camera);
   const ui = new UI(game, audio, music, input);
+  // Touch-first devices get different hints, controls and camera framing.
+  const coarse = matchMedia('(pointer: coarse)');
 
   game.onGameOver = (entry) => {
     ui.lastResult = entry;
@@ -103,6 +105,7 @@ function boot() {
     canvas.height = ph;
     const q = QUALITY[save.settings.quality] || QUALITY.high;
     post.resize(pw, ph, q.bloomMips);
+    game.setCssViewport(w, h);
     game.resize(pw, ph, true);
   }
 
@@ -133,6 +136,10 @@ function boot() {
     music.start('menu');
     document.getElementById('audio-hint')?.classList.add('hidden');
   };
+  if (coarse.matches) {
+    const hint = document.getElementById('audio-hint');
+    if (hint) hint.textContent = 'TAP ANYWHERE TO ENABLE SOUND';
+  }
   for (const ev of ['pointerdown', 'keydown', 'touchstart']) {
     window.addEventListener(ev, unlock, { once: false, passive: true });
   }
@@ -178,7 +185,61 @@ function boot() {
     if (!document.fullscreenElement) el.requestFullscreen?.().catch(() => {});
     else document.exitFullscreen?.().catch(() => {});
   }
-  document.getElementById('fullscreen-btn')?.addEventListener('click', toggleFullscreen);
+  const fullscreenBtn = document.getElementById('fullscreen-btn');
+  fullscreenBtn?.addEventListener('click', toggleFullscreen);
+  // iPhone Safari has no element fullscreen; don't offer a button that can't work.
+  if (!document.fullscreenEnabled && fullscreenBtn) fullscreenBtn.hidden = true;
+
+  // ---------------------------------------------------------------- touch
+
+  const portrait = matchMedia('(orientation: portrait)');
+  const body = document.body;
+  const setClass = (name, on) => { if (body.classList.contains(name) !== on) body.classList.toggle(name, on); };
+
+  // On-screen buttons feed the same actions as Space and Escape. pointerdown
+  // rather than click: a thumb mid-fight should not wait for touchend.
+  const press = (id, action) => {
+    document.getElementById(id)?.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      input.tap(action);
+    });
+  };
+  press('touch-bomb', 'bomb');
+  press('touch-menu', 'pause');
+  document.getElementById('rotate-dismiss')?.addEventListener('click', () => body.classList.add('portrait-ok'));
+  // iOS Safari ignores user-scalable=no; stop pinch gestures zooming the page.
+  document.addEventListener('gesturestart', (e) => e.preventDefault());
+
+  // Starting a run from a tap is a user gesture, which is the only moment a
+  // phone browser lets a page go fullscreen and hold landscape (Android).
+  ui.onPlay = () => {
+    if (!coarse.matches || !document.fullscreenEnabled || document.fullscreenElement) return;
+    document.documentElement.requestFullscreen({ navigationUI: 'hide' })
+      .then(() => screen.orientation?.lock?.('landscape'))
+      .catch(() => {});
+  };
+
+  function syncTouchState() {
+    const touch = input.scheme === 'touch' || (coarse.matches && performance.now() - input.touchSeenAt < 6e4);
+    const inRun = game.state === STATE.PLAYING || game.state === STATE.DYING || game.state === STATE.PAUSED;
+    setClass('touch-device', coarse.matches || input.touchSeenAt > 0);
+    setClass('in-game', inRun);
+    setClass('touch-play', touch && inRun && !ui.current);
+
+    // One stick when this player only flies or only shoots.
+    const ship = game.localShip();
+    if (!game.mode.canShoot) input.touchMode = 'move';
+    else if (ship.localMove && !ship.localGun) input.touchMode = 'move';
+    else if (ship.localGun && !ship.localMove) input.touchMode = 'aim';
+    else input.touchMode = 'split';
+
+    // A solo run turned to portrait pauses behind the rotate prompt.
+    if (portrait.matches && body.classList.contains('touch-device') && !body.classList.contains('portrait-ok')
+        && !game.online && game.state === STATE.PLAYING && !ui.current) {
+      game.pause();
+      ui.show('pause');
+    }
+  }
 
   // ------------------------------------------------------------------ loop
 
@@ -215,6 +276,7 @@ function boot() {
     const aimFrom = game.localShip();
     input.update(camera, aimFrom.x, aimFrom.y);
     ui.update(dt);
+    syncTouchState();
     // Online the run continues behind a menu; the ship must not act on it.
     if (ui.current && game.online) input.neutralize();
     game.update(dt);
@@ -226,7 +288,7 @@ function boot() {
     post.beginScene();
     renderer.begin(viewMat, camera.worldPerPixel);
     game.draw(renderer);
-    if (input.scheme === 'touch') drawTouchSticks(renderer);
+    if (body.classList.contains('touch-play')) drawTouchSticks(renderer);
     renderer.flush();
 
     post.flash = game.flash;
@@ -241,16 +303,36 @@ function boot() {
 
   function drawTouchSticks(r) {
     const accent = game.localShip().style.accent;
-    for (const stick of [input.leftStick, input.rightStick]) {
-      if (!stick.active) continue;
-      const o = camera.screenToWorld(stick.ox, stick.oy);
-      const p = camera.screenToWorld(stick.x, stick.y);
-      const rr = input.stickRadius * camera.worldPerPixel;
-      r.circle(o.x, o.y, rr, 2.0, accent, 0.35, 28, 3.2);
-      const dx = p.x - o.x, dy = p.y - o.y;
-      const d = Math.hypot(dx, dy);
-      const k = d > rr ? rr / d : 1;
-      r.dot(o.x + dx * k, o.y + dy * k, rr * 0.34, accent, 0.8, 2.6);
+    const ring = [0.86, 0.96, 1];
+    const R = input.stickRadius * camera.worldPerPixel;
+    const mode = input.touchMode;
+    const zones = [];
+    if (mode !== 'aim') zones.push({ stick: input.leftStick, label: 'MOVE', fx: mode === 'move' ? 0.5 : 0.18 });
+    if (mode !== 'move') zones.push({ stick: input.rightStick, label: 'AIM + FIRE', fx: mode === 'aim' ? 0.5 : 0.82 });
+    const teach = game.runTime < 6 ? 1 - Math.max(0, game.runTime - 4) / 2 : 0;
+    for (const { stick, label, fx } of zones) {
+      if (stick.active) {
+        const o = camera.screenToWorld(stick.ox, stick.oy);
+        const p = camera.screenToWorld(stick.x, stick.y);
+        r.circle(o.x, o.y, R, 1.6, ring, 0.28, 32, 3.0);
+        const dx = p.x - o.x, dy = p.y - o.y;
+        const d = Math.hypot(dx, dy);
+        const k = d > R ? R / d : 1;
+        const kx = o.x + dx * k, ky = o.y + dy * k;
+        if (d > R * 0.1) r.seg(o.x, o.y, kx, ky, 1.4, accent, 0.25, 2.6);
+        r.circle(kx, ky, R * 0.3, 2.0, accent, 0.55, 20, 3.0);
+      } else {
+        const px = canvas.width * fx;
+        const py = canvas.height * 0.76;
+        const o = camera.screenToWorld(px, py);
+        r.circle(o.x, o.y, R, 1.3, ring, 0.1 + teach * 0.2, 32, 3.0);
+        if (teach > 0) {
+          const px = label.length > 5 ? 9.5 : 12;
+          r.text(label, o.x, o.y, px * camera.worldPerPixel * (canvas.height / innerHeight), ring, {
+            align: 0, baseline: 0, intensity: teach * 0.7, width: 0.1, tracking: 0.8,
+          });
+        }
+      }
     }
   }
 

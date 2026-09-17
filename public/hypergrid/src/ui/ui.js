@@ -72,7 +72,10 @@ export class UI {
       bombHint: document.getElementById('hud-bomb-hint'),
       net: document.getElementById('hud-net'),
       banner: document.getElementById('net-banner'),
+      touchBomb: document.getElementById('touch-bomb'),
+      touchBombCount: document.getElementById('touch-bomb-count'),
     };
+    this._touchBombs = -1;
     this._netHudKey = '';
   }
 
@@ -107,6 +110,13 @@ export class UI {
     }
     this.el.bombs.innerHTML = renderIcons(g.bombs, 'bomb');
     this.el.bombHint.classList.toggle('dim', g.bombs <= 0);
+    if (this.el.touchBomb && this._touchBombs !== g.bombs) {
+      this._touchBombs = g.bombs;
+      this.el.touchBombCount.textContent = String(g.bombs);
+      this.el.touchBomb.classList.toggle('empty', g.bombs <= 0);
+      // Modes that never grant bombs don't need the button at all.
+      this.el.touchBomb.classList.toggle('hidden', g.mode.bombs === 0 && g.bombs === 0);
+    }
 
     this.el.best.textContent = commafy(Math.max(save.highScore(g.mode.id), g.score));
     this.el.modeName.textContent = g.mode.name;
@@ -176,7 +186,9 @@ export class UI {
           { label: 'HOW TO PLAY', action: () => this.show('help') },
           { label: 'SETTINGS', action: () => this.show('settings') },
         ],
-        footer: 'ARROWS / WASD · ENTER TO SELECT · GAMEPAD SUPPORTED',
+        footer: matchMedia('(pointer: coarse)').matches
+          ? 'TAP TO SELECT · TWO THUMBSTICKS IN GAME · BEST IN LANDSCAPE'
+          : 'ARROWS / WASD · ENTER TO SELECT · GAMEPAD SUPPORTED',
       },
 
       modes: {
@@ -504,7 +516,10 @@ export class UI {
       el.appendChild(d);
     }
 
-    el.addEventListener('mouseenter', () => {
+    // Real mice only: a touch "hover" that restyles the row makes iOS Safari
+    // swallow the tap that should have activated it.
+    el.addEventListener('pointerenter', (ev) => {
+      if (ev.pointerType !== 'mouse') return;
       if (this.focus !== i) {
         this.focus = i;
         this.applyFocus(false);
@@ -684,6 +699,7 @@ export class UI {
 
   startGame(modeId) {
     this.hide();
+    if (this.onPlay) this.onPlay();
     this.game.start(modeId);
   }
 
@@ -720,6 +736,7 @@ export class UI {
     session.onStart = () => {
       if (this.session !== session) return;
       this.hide();
+      if (this.onPlay) this.onPlay();
       this.game.start(session.mode, session);
     };
     session.onLobby = () => {
@@ -1018,10 +1035,11 @@ const HELP_HTML = `
   <section>
     <h3>CONTROLS</h3>
     <dl>
-      <dt>MOVE</dt><dd>WASD · Left stick · Left half of touchscreen</dd>
-      <dt>AIM &amp; FIRE</dt><dd>Mouse · Arrow keys · IJKL · Right stick · Right half of touchscreen</dd>
-      <dt>BOMB</dt><dd>Space · Shift · Right-click · A/B/LB/LT</dd>
-      <dt>PAUSE</dt><dd>Esc · P · Start</dd>
+      <dt>MOVE</dt><dd>WASD · Left stick · Thumb on the left half of the screen</dd>
+      <dt>AIM &amp; FIRE</dt><dd>Mouse · Arrow keys · IJKL · Right stick · Thumb on the right half</dd>
+      <dt>BOMB</dt><dd>Space · Shift · Right-click · A/B/LB/LT · The bomb button</dd>
+      <dt>PAUSE</dt><dd>Esc · P · Start · The pause button</dd>
+      <dt>TOUCH</dt><dd>A stick appears wherever your thumb lands. If you only fly or only shoot (Co-Pilot, Pacifism) the whole screen is that stick.</dd>
     </dl>
   </section>
   <section>

@@ -163,7 +163,7 @@ The lobby only pairs players whose build hash matches `release.json`, so redeplo
 
 HYPERGRID's source lives in `~/personal/geometry-wars-claude`; `public/hypergrid/` is copied from it by that project's `scripts/sync-portfolio.sh`, so edit the source and re-sync rather than patching the copy.
 Online play connects to the `hypergrid-online` Fly app (`wss://hypergrid-online.fly.dev/ws`), which accepts only the `https://aj8uppal.github.io` origin plus localhost; serving the game anywhere else needs that allowlist changed.
-The relay keeps rooms in memory, so it must stay a single machine (`fly deploy --ha=false`).
+The relay keeps rooms in memory, so it must stay a single machine (`fly deploy --ha=false`); its `/built/` capture plays a real co-op round through that production relay, so the capture fails if the relay is down.
 Both players need the same build: the page's service worker is network-first for that reason, and peers refuse a protocol-version mismatch.
 
 ## Portfolio directions share their depth

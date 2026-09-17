@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
 <meta name="theme-color" content="#04060f" />
 <meta name="color-scheme" content="dark" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="HYPERGRID" />
 <title>HYPERGRID — Twin-Stick Vector Shooter</title>
 <meta name="description" content="HYPERGRID is a browser twin-stick vector shooter: a warping neon grid, HDR bloom, procedural audio, five solo modes and online co-op with a friend." />
 
@@ -15,9 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2304060f'/%3E%3Cpath d='M32 8 56 32 32 56 8 32Z' fill='none' stroke='%237df9ff' stroke-width='4'/%3E%3Cpath d='M32 20 44 32 32 44 20 32Z' fill='none' stroke='%234dff9b' stroke-width='3'/%3E%3C/svg%3E" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;600;700&display=swap" />
+<link rel="preload" href="assets/fonts/orbitron-variable.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -82,6 +84,26 @@
     <path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6" />
   </svg>
 </button>
+
+<!-- ========================== Touch controls ========================== -->
+<div id="touch-ui">
+  <button id="touch-menu" class="touch-btn" aria-label="Menu">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+      <rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" />
+    </svg>
+  </button>
+  <button id="touch-bomb" class="touch-btn" aria-label="Bomb">
+    <span class="bomb-glyph" aria-hidden="true"></span>
+    <span class="count" id="touch-bomb-count">3</span>
+  </button>
+</div>
+
+<div id="rotate-hint" role="dialog" aria-label="Rotate your phone">
+  <div class="rotate-phone" aria-hidden="true"></div>
+  <p>TURN YOUR PHONE SIDEWAYS</p>
+  <span>The arena is wide — landscape shows far more of it.</span>
+  <button id="rotate-dismiss">PLAY IN PORTRAIT</button>
+</div>
 
 <div id="audio-hint">CLICK OR PRESS ANY KEY TO ENABLE SOUND</div>
 

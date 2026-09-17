@@ -208,6 +208,46 @@ export const apps: Built[] = [
     },
   },
   {
+    key: 'hypergrid',
+    categories: ['games', 'systems'],
+    name: 'Hypergrid',
+    kind: 'Arcade shooter',
+    reach: 'open',
+    reachLabel: 'Live',
+    href: '/hypergrid/',
+    cta: 'Play with a friend',
+    what: 'Clear a neon arena that ripples under every explosion. Online, share it with a friend, or share one ship: one of you flies, the other shoots.',
+    how: 'Nothing you do waits on the network. Whoever flies a ship moves it and judges its own collisions, whoever shoots decides the hits, and the host runs the enemies, score and lives.',
+    k: 'WebGL 2 · Web Audio · Node ws · Fly.io',
+    accent: '#7ff0b0',
+    alt: 'Hypergrid in online co-op: ships tagged AJ and FRIEND fire into snakes and diamond swarms on a glowing blue grid, with a shared 84,237 score at x9 and both players listed at 25 ms.',
+    cap: 'An online co-op round between two browsers through the live relay, reached through the menus and played with scripted keyboard input.',
+    story: {
+      role: 'Game design, the WebGL renderer and synthesized audio, the online netcode and the relay service.',
+      constraint:
+        'Two players on different networks share one fast arena, and neither should feel the connection in the ship they control.',
+      decision:
+        'The host runs the enemies, score and lives. Each player flies their own ship and decides their own hits, so nothing they do waits on the network.',
+      evidence:
+        'The guest draws the host’s world from 30 Hz snapshots, slightly in the past and interpolated. Two browsers played scripted rounds on the live site through the relay. The host’s view of the guest’s ship stayed within about a third of a ship’s length of where the guest had it, and score, deaths, respawns, bombs and game over matched on both screens. With 110–150 ms of simulated round-trip lag the gap averaged about two thirds of a ship’s length.',
+      question: 'Sharing one ship over the internet.',
+      details: [
+        [
+          'Rendering',
+          'Ships, enemies, particles, the spring-mass grid and on-screen text are all glowing line segments in a single instanced batch, bloomed in HDR. It held 60 fps with 260 enemies and 20,000 particles on an M3 Max.',
+        ],
+        [
+          'Pickups',
+          'A shard that comes near a ship locks on and homes at a speed that includes the ship’s own, so it cannot orbit or be outrun. Flying through clusters of 80 collected every one.',
+        ],
+        [
+          'Phones',
+          'Fitting the whole arena to a phone made a ship about five pixels across, so small screens zoom in and follow it. Thumbsticks form wherever a thumb lands; a player who only flies or only shoots gets the whole screen as that stick.',
+        ],
+      ],
+    },
+  },
+  {
     key: 'voidreach',
     categories: ['systems', 'games'],
     featured: true,

@@ -121,6 +121,8 @@ export class Game {
     this.shockDur = 0.6;
 
     this.intensity = 0;
+    this.cssWidth = 1280;
+    this.cssHeight = 720;
     this.showTitle = false;
     this.settings = save.settings;
     this.reducedFlash = false;
@@ -195,6 +197,25 @@ export class Game {
       const sp = (this.quality || QUALITY.high).gridSpacing;
       this.grid.build(a.minX - sp, a.minY - sp, a.maxX + sp, a.maxY + sp, sp);
     }
+  }
+
+  /** The canvas size in CSS pixels, which is what a thumb and an eye measure. */
+  setCssViewport(width, height) {
+    this.cssWidth = Math.max(1, width);
+    this.cssHeight = Math.max(1, height);
+  }
+
+  /**
+   * How far to zoom in during play. Fitting the whole arena on a phone makes a
+   * ship about five pixels across, so small screens zoom until a ship is
+   * comfortably visible and the camera follows it instead. Desktop and tablet
+   * screens already clear the bar and keep the classic whole-arena view.
+   */
+  playZoom() {
+    const SHIP_RADIUS_CSS = 8;
+    const worldPerCss = (this.camera.baseHalfH * 2) / this.cssHeight;
+    const shipCss = PLAYER.radius / worldPerCss;
+    return clamp(SHIP_RADIUS_CSS / shipCss, 1, 2.2);
   }
 
   // ------------------------------------------------------------------ flow
@@ -536,6 +557,7 @@ export class Game {
     this.updateEffects(dt);
     this.camera.targetX = Math.sin(this.time * 0.13) * this.arena.halfW * 0.035;
     this.camera.targetY = Math.cos(this.time * 0.11) * this.arena.halfH * 0.035;
+    this.camera.targetZoom = 1;
     this.camera.update(dt);
     this.camera.build();
     this.music.setIntensity(0);
@@ -577,18 +599,37 @@ export class Game {
     }
 
     if (this.state !== STATE.MENU) {
-      // Frame the ships: with two, the camera eases toward their midpoint.
-      let sx = 0, sy = 0, n = 0;
-      for (const p of this.players) {
-        if (!p.alive) continue;
-        sx += p.x; sy += p.y; n++;
+      const cam = this.camera;
+      const zoom = this.playZoom();
+      cam.targetZoom = zoom;
+      if (zoom > 1.01) {
+        // Follow this player's own ship (or whoever is still alive), leading a
+        // little along its velocity, and stop at the walls rather than
+        // showing empty space past them.
+        const own = this.localShip();
+        const ship = own.alive ? own : this.players.find((p) => p.alive);
+        if (ship) {
+          const viewHalfH = cam.baseHalfH / zoom;
+          const viewHalfW = viewHalfH * cam.aspect;
+          const limX = Math.max(0, this.arena.halfW + 36 - viewHalfW);
+          const limY = Math.max(0, this.arena.halfH + 36 - viewHalfH);
+          cam.targetX = clamp(ship.x + ship.vx * 0.12, -limX, limX);
+          cam.targetY = clamp(ship.y + ship.vy * 0.12, -limY, limY);
+        }
+      } else {
+        // Frame the ships: with two, the camera eases toward their midpoint.
+        let sx = 0, sy = 0, n = 0;
+        for (const p of this.players) {
+          if (!p.alive) continue;
+          sx += p.x; sy += p.y; n++;
+        }
+        if (n > 0) {
+          cam.targetX = clamp((sx / n) * 0.07, -this.arena.halfW * 0.09, this.arena.halfW * 0.09);
+          cam.targetY = clamp((sy / n) * 0.07, -this.arena.halfH * 0.09, this.arena.halfH * 0.09);
+        }
       }
-      if (n > 0) {
-        this.camera.targetX = clamp((sx / n) * 0.07, -this.arena.halfW * 0.09, this.arena.halfW * 0.09);
-        this.camera.targetY = clamp((sy / n) * 0.07, -this.arena.halfH * 0.09, this.arena.halfH * 0.09);
-      }
-      this.camera.update(dt);
-      this.camera.build();
+      cam.update(dt);
+      cam.build();
     }
 
     if (this.announceTime > 0) this.announceTime -= dt;

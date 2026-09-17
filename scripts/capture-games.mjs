@@ -135,5 +135,106 @@ export function createGameShots({ base = 'http://127.0.0.1:8099' } = {}) {
       }
       throw new Error('rift-clash: no combo landed for the capture');
     },
+    /* An online co-op round: two browsers reach the lobby through the menus,
+       the second joins by typing the room code, and both play over the live
+       relay. Each ship is flown with keyboard input chosen from the game's
+       state every step - WASD toward a slowly moving spot, arrows toward the
+       nearest enemy - and the shot waits for a busy, two-ship frame. */
+    async hypergrid(page, ctx, browser) {
+      const url = `${base}/hypergrid/?server=wss://hypergrid-online.fly.dev/ws`;
+      const other = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+      const guest = await other.newPage();
+      const tap = async (pg, key, after = 180) => {
+        await pg.keyboard.press(key);
+        await pg.waitForTimeout(after);
+      };
+      const callsign = async (pg, name) => {
+        await tap(pg, 'ArrowUp'); // the menu opens on Host Co-Pilot; Callsign is above it
+        await pg.keyboard.press('ControlOrMeta+A');
+        await pg.keyboard.type(name);
+        await tap(pg, 'ArrowDown');
+      };
+      for (const pg of [page, guest]) {
+        await pg.goto(url, { waitUntil: 'networkidle' });
+        await pg.waitForFunction(() => window.__hypergrid?.ui?.current === 'title');
+        await tap(pg, 'ArrowDown'); // Multiplayer
+        await tap(pg, 'Enter', 300);
+      }
+      await callsign(page, 'AJ');
+      await tap(page, 'ArrowDown'); // Host Co-Op
+      await tap(page, 'Enter');
+      await page.waitForFunction(() => window.__hypergrid.ui.session?.code?.length === 4, null, {
+        timeout: 15000,
+      });
+      const code = await page.evaluate(() => window.__hypergrid.ui.session.code);
+      await callsign(guest, 'FRIEND');
+      await tap(guest, 'ArrowDown');
+      await tap(guest, 'ArrowDown'); // Join a friend
+      await tap(guest, 'Enter', 300);
+      await guest.keyboard.type(code);
+      await tap(guest, 'Enter');
+      await page.waitForFunction(() => window.__hypergrid.ui.session?.peerPresent, null, {
+        timeout: 15000,
+      });
+      await tap(page, 'ArrowDown');
+      await tap(page, 'ArrowDown'); // Start
+      await tap(page, 'Enter', 600);
+      await guest.waitForFunction(() => window.__hypergrid.game.state === 'playing', null, {
+        timeout: 15000,
+      });
+
+      const held = [new Set(), new Set()];
+      const fly = async (pg, seat, tx, ty) => {
+        const s = await pg.evaluate((i) => {
+          const g = window.__hypergrid.game;
+          const p = g.players[i];
+          let near = null;
+          let nd = Infinity;
+          for (const e of g.enemies.items.slice(0, g.enemies.count)) {
+            const d = Math.hypot(e.x - p.x, e.y - p.y);
+            if (!e.spawning && d < nd) [near, nd] = [e, d];
+          }
+          return { x: p.x, y: p.y, alive: p.alive, ex: near?.x, ey: near?.y, nd };
+        }, seat);
+        const want = new Set();
+        if (s.alive) {
+          if (tx - s.x > 50) want.add('KeyD');
+          if (tx - s.x < -50) want.add('KeyA');
+          if (ty - s.y > 50) want.add('KeyW');
+          if (ty - s.y < -50) want.add('KeyS');
+          if (s.nd < 900) {
+            const ax = (s.ex - s.x) / s.nd;
+            const ay = (s.ey - s.y) / s.nd;
+            if (ax > 0.38) want.add('ArrowRight');
+            if (ax < -0.38) want.add('ArrowLeft');
+            if (ay > 0.38) want.add('ArrowUp');
+            if (ay < -0.38) want.add('ArrowDown');
+          }
+        }
+        for (const k of held[seat]) if (!want.has(k)) await pg.keyboard.up(k);
+        for (const k of want) if (!held[seat].has(k)) await pg.keyboard.down(k);
+        held[seat] = want;
+      };
+      const busy = () =>
+        page.evaluate(() => {
+          const g = window.__hypergrid.game;
+          return (
+            g.runTime > 22 &&
+            g.enemies.count >= 14 &&
+            g.geoms.count >= 10 &&
+            g.players.every((p) => p.alive && p.invuln <= 0)
+          );
+        });
+      const started = Date.now();
+      for (let step = 0; Date.now() - started < 90000; step++) {
+        const t = step * 0.05;
+        await fly(page, 0, -230 + Math.cos(t) * 140, Math.sin(t * 1.3) * 110);
+        await fly(guest, 1, 230 + Math.cos(t + 2) * 140, Math.sin(t * 1.1 + 1) * 110);
+        if (step % 4 === 0 && (await busy())) return () => other.close();
+        await page.waitForTimeout(40);
+      }
+      await other.close();
+      throw new Error('hypergrid: the round never reached a busy two-ship frame');
+    },
   };
 }

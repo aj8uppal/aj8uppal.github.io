@@ -5,7 +5,9 @@
  *   - Keyboard: WASD/ZQSD move, arrows or IJKL aim (classic twin-stick)
  *   - Mouse: aim at cursor, hold to fire
  *   - Gamepad: dual analogue sticks + triggers, with rumble
- *   - Touch: two virtual sticks, left half moves, right half aims and fires
+ *   - Touch: floating thumbsticks, left half moves, right half aims and fires.
+ *     When this player only flies or only shoots (Co-Pilot, Pacifism) the
+ *     whole screen becomes that one stick.
  *
  * The active scheme is whichever was touched most recently, so switching from
  * pad to mouse mid-run just works.
@@ -62,7 +64,12 @@ export class Input {
     this.touches = new Map();
     this.leftStick = { id: null, ox: 0, oy: 0, x: 0, y: 0, active: false };
     this.rightStick = { id: null, ox: 0, oy: 0, x: 0, y: 0, active: false };
-    this.stickRadius = 72;
+    // Stick travel is chosen in CSS pixels (thumb-sized on any screen density)
+    // and converted to canvas pixels, which is the space touches arrive in.
+    this.stickRadiusCss = 60;
+    this.stickRadius = 60;
+    this.touchMode = 'split';   // split | move | aim
+    this.touchSeenAt = -1e9;
 
     this._bind();
   }
@@ -105,12 +112,18 @@ export class Input {
       this.pressBuffer.clear();
       this.mouseDown = false;
       this.touches.clear();
-      this.leftStick.active = false;
-      this.rightStick.active = false;
+      for (const stick of [this.leftStick, this.rightStick]) { stick.active = false; stick.id = null; }
     });
 
     const c = this.canvas;
+    window.addEventListener('touchstart', () => {
+      this.touchSeenAt = performance.now();
+      this.scheme = 'touch';
+    }, { capture: true, passive: true });
+    const syntheticMouse = () => performance.now() - this.touchSeenAt < 1000;
+
     c.addEventListener('mousemove', (e) => {
+      if (syntheticMouse()) return;
       const r = c.getBoundingClientRect();
       this.mouseX = (e.clientX - r.left) * (c.width / r.width);
       this.mouseY = (e.clientY - r.top) * (c.height / r.height);
@@ -120,6 +133,7 @@ export class Input {
     });
     c.addEventListener('mouseleave', () => { this.mouseInside = false; });
     c.addEventListener('mousedown', (e) => {
+      if (syntheticMouse()) return;
       if (e.button === 0) { this.mouseDown = true; this.scheme = 'mouse'; }
       if (e.button === 2) { this.actions.add('bomb'); this.pressBuffer.add('bomb'); }
       this.actions.add('any');
@@ -131,15 +145,24 @@ export class Input {
     });
     c.addEventListener('contextmenu', (e) => e.preventDefault());
 
-    // ---- touch: split-screen virtual sticks
+    // ---- touch: floating thumbsticks
+    const toCanvas = (t) => {
+      const r = c.getBoundingClientRect();
+      return [(t.clientX - r.left) * (c.width / r.width), (t.clientY - r.top) * (c.height / r.height)];
+    };
     const onTouchStart = (e) => {
       this.scheme = 'touch';
+      const r = c.getBoundingClientRect();
+      this.stickRadiusCss = clamp(Math.min(r.width, r.height) * 0.15, 46, 80);
+      this.stickRadius = this.stickRadiusCss * (c.width / r.width);
       for (const t of e.changedTouches) {
-        const r = c.getBoundingClientRect();
-        const x = (t.clientX - r.left) * (c.width / r.width);
-        const y = (t.clientY - r.top) * (c.height / r.height);
-        const left = x < c.width * 0.5;
-        const stick = left ? this.leftStick : this.rightStick;
+        const [x, y] = toCanvas(t);
+        let stick = null;
+        if (this.touchMode === 'move') stick = this.leftStick;
+        else if (this.touchMode === 'aim') stick = this.rightStick;
+        else stick = x < c.width * 0.5 ? this.leftStick : this.rightStick;
+        // A second finger on a side that already has a stick is ignored rather
+        // than yanking the stick to a new origin mid-manoeuvre.
         if (stick.id === null) {
           stick.id = t.identifier;
           stick.ox = x; stick.oy = y; stick.x = x; stick.y = y;
@@ -152,13 +175,21 @@ export class Input {
       e.preventDefault();
     };
     const onTouchMove = (e) => {
-      const r = c.getBoundingClientRect();
+      const R = this.stickRadius;
       for (const t of e.changedTouches) {
-        const x = (t.clientX - r.left) * (c.width / r.width);
-        const y = (t.clientY - r.top) * (c.height / r.height);
+        const [x, y] = toCanvas(t);
         this.touches.set(t.identifier, { x, y });
         for (const stick of [this.leftStick, this.rightStick]) {
-          if (stick.id === t.identifier) { stick.x = x; stick.y = y; }
+          if (stick.id !== t.identifier) continue;
+          stick.x = x; stick.y = y;
+          // The base follows a thumb that runs past the rim, so reversing
+          // direction responds immediately instead of first crossing back.
+          const dx = x - stick.ox, dy = y - stick.oy;
+          const d = Math.hypot(dx, dy);
+          if (d > R) {
+            stick.ox = x - (dx / d) * R;
+            stick.oy = y - (dy / d) * R;
+          }
         }
       }
       e.preventDefault();
@@ -280,19 +311,26 @@ export class Input {
 
     // --- touch sticks
     if (this.scheme === 'touch') {
+      const R = this.stickRadius;
       const L = this.leftStick;
       if (L.active) {
         const dx = L.x - L.ox, dy = L.y - L.oy;
         const m = len(dx, dy);
-        const s = Math.min(1, m / this.stickRadius);
-        if (m > 6) { mx = (dx / m) * s; my = (-dy / m) * s; }
-        else { mx = 0; my = 0; }
+        const dead = R * 0.12;
+        if (m > dead) {
+          // Rescale past the deadzone so small, deliberate nudges still move.
+          const s = Math.min(1, (m - dead) / (R - dead));
+          mx = (dx / m) * s;
+          my = (-dy / m) * s;
+        } else {
+          mx = 0; my = 0;
+        }
       }
-      const R = this.rightStick;
-      if (R.active) {
-        const dx = R.x - R.ox, dy = R.y - R.oy;
+      const A = this.rightStick;
+      if (A.active) {
+        const dx = A.x - A.ox, dy = A.y - A.oy;
         const m = len(dx, dy);
-        if (m > 8) { ax = dx / m; ay = -dy / m; aimActive = true; fire = true; }
+        if (m > R * 0.18) { ax = dx / m; ay = -dy / m; aimActive = true; fire = true; }
         else { fire = true; aimActive = this.aimActive; ax = this.aimX; ay = this.aimY; }
       }
     }
@@ -320,6 +358,11 @@ export class Input {
   _padAction(name, down) {
     if (down) this.padActions.add(name);
     else this.padActions.delete(name);
+  }
+
+  /** A one-frame press from an on-screen button. */
+  tap(action) {
+    this.pressBuffer.add(action);
   }
 
   down(action) { return this.actions.has(action) || this.padActions.has(action); }
@@ -350,7 +393,13 @@ export class Input {
   rumble(strong = 0.5, weak = 0.3, duration = 120) {
     if (!this.vibration) return;
     const pad = this.pollGamepad();
-    if (!pad) return;
+    if (!pad) {
+      // Phones: only the big moments, kept short. (Android; iOS ignores it.)
+      if (this.scheme === 'touch' && strong >= 0.6 && navigator.vibrate) {
+        navigator.vibrate(Math.round(Math.min(duration, 90) * strong));
+      }
+      return;
+    }
     const act = pad.vibrationActuator;
     if (act && act.playEffect) {
       act.playEffect('dual-rumble', {

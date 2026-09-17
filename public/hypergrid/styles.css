@@ -4,6 +4,56 @@
    sharp so it reads as an overlay on a CRT rather than a web page.
    ========================================================================= */
 
+/* Orbitron and Rajdhani, self-hosted (SIL OFL 1.1; see assets/licenses). */
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('assets/fonts/orbitron-variable.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('assets/fonts/orbitron-variable.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('assets/fonts/orbitron-variable.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('assets/fonts/rajdhani-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('assets/fonts/rajdhani-600.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('assets/fonts/rajdhani-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   --cyan: #7df9ff;
   --cyan-dim: #3fb6c4;
@@ -35,8 +85,13 @@ html, body {
   font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
   overscroll-behavior: none;
-  touch-action: none;
+  /* Not "none": that would also stop menus scrolling under a finger, since
+     touch-action is narrowed by every ancestor. The canvas opts out itself. */
+  touch-action: pan-x pan-y;
 }
 
 #game {
@@ -47,6 +102,7 @@ html, body {
   display: block;
   background: #000;
   cursor: crosshair;
+  touch-action: none;
 }
 body.menu-open #game { cursor: default; }
 
@@ -273,6 +329,134 @@ body.menu-open #game { cursor: default; }
   animation: hintPulse 1.8s ease-in-out infinite;
 }
 
+/* ============================ Touch controls =========================== */
+
+#touch-ui { display: none; }
+body.touch-play #touch-ui { display: block; }
+
+.touch-btn {
+  position: fixed;
+  z-index: 12;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(223, 246, 255, 0.28);
+  background: rgba(4, 6, 15, 0.45);
+  color: rgba(223, 246, 255, 0.85);
+  padding: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.touch-btn:active { background: rgba(125, 249, 255, 0.2); border-color: var(--cyan); }
+
+#touch-menu {
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  width: 44px;
+  height: 44px;
+}
+
+/* Up the right edge, clear of where a resting thumb starts the aim stick. */
+#touch-bomb {
+  right: max(14px, env(safe-area-inset-right));
+  top: 36%;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  border-color: rgba(255, 171, 46, 0.55);
+  box-shadow: 0 0 18px rgba(255, 171, 46, 0.18);
+}
+#touch-bomb .bomb-glyph {
+  width: 24px;
+  height: 24px;
+  background: var(--amber);
+  clip-path: polygon(50% 0, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0 50%, 15% 15%);
+  filter: drop-shadow(0 0 6px rgba(255, 171, 46, 0.9));
+}
+#touch-bomb .count {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border-radius: 11px;
+  background: var(--ink);
+  border: 1px solid rgba(255, 171, 46, 0.6);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  color: #fff;
+}
+#touch-bomb.empty { opacity: 0.35; }
+#touch-bomb.hidden { display: none; }
+
+/* During touch play the thumbs own the bottom of the screen: lives move to the
+   top centre, bombs live on their button, and keyboard hints go away. */
+body.touch-play #fullscreen-btn { display: none; }
+body.touch-play .hud-right { display: none; }
+body.touch-play #hud-bomb-hint { display: none; }
+body.touch-play .hud-bottom {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+body.touch-play .hud-bottom .hud-label { display: none; }
+body.touch-play .hud-fps { order: 3; }
+
+#rotate-hint {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  padding: 32px 24px;
+  text-align: center;
+  background: var(--ink);
+}
+#rotate-hint p {
+  margin: 8px 0 0;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #fff;
+  text-shadow: var(--glow);
+}
+#rotate-hint span { font-size: 14px; color: rgba(223, 246, 255, 0.6); max-width: 30ch; }
+#rotate-hint button {
+  margin-top: 10px;
+  padding: 10px 16px;
+  background: none;
+  border: 1px solid rgba(223, 246, 255, 0.25);
+  color: rgba(223, 246, 255, 0.7);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  touch-action: manipulation;
+}
+.rotate-phone {
+  width: 44px;
+  height: 76px;
+  border: 2px solid var(--cyan);
+  border-radius: 8px;
+  box-shadow: var(--glow);
+  animation: rotatePhone 2.4s ease-in-out infinite;
+}
+@keyframes rotatePhone {
+  0%, 25% { transform: rotate(0deg); }
+  55%, 100% { transform: rotate(-90deg); }
+}
+@media (orientation: portrait) {
+  body.touch-device.in-game:not(.portrait-ok) #rotate-hint { display: grid; }
+}
+
 /* ============================ Overlay ================================== */
 
 #overlay {
@@ -307,6 +491,9 @@ body.menu-open #game { cursor: default; }
     inset 0 0 70px rgba(63, 123, 255, 0.05);
   scrollbar-width: thin;
   scrollbar-color: rgba(125, 249, 255, 0.35) transparent;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   animation: panelIn 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 @keyframes panelIn {
@@ -531,6 +718,8 @@ body.menu-open #game { cursor: default; }
   padding: 7px 10px;
   outline: none;
   border-radius: 0;
+  -webkit-user-select: text;
+  user-select: text;
   transition: border-color 130ms ease, box-shadow 130ms ease;
 }
 .text-field::placeholder { color: rgba(223, 246, 255, 0.28); }
@@ -861,6 +1050,9 @@ body:not(.menu-open) #audio-hint { display: none; }
 
 /* ============================ Responsive =============================== */
 
+/* Buttons in menus respond to the first tap on touch screens. */
+.item, .arrow { touch-action: manipulation; }
+
 @media (max-width: 860px) {
   .help-grid { grid-template-columns: 1fr; }
   .result-grid { grid-template-columns: repeat(2, 1fr); }
@@ -885,6 +1077,15 @@ body:not(.menu-open) #audio-hint { display: none; }
 }
 
 @media (max-height: 560px) {
+  /* Short landscape phones: the lobby's actions must fit without scrolling. */
+  .lobby-screen h2 { display: none; }
+  .lobby { gap: 10px; }
+  .room b { font-size: 34px; }
+  .seat { padding: 8px 12px; }
+  .seat-name { font-size: 13px; }
+  .lobby-mode { font-size: 12px; }
+  .lobby-screen .item .detail { display: none; }
+  .lobby-screen .custom { margin-bottom: 10px; }
   .logo h1 { font-size: clamp(30px, 7vw, 52px); }
   .logo { margin-bottom: 14px; }
   .panel { padding: 20px 24px 16px; }

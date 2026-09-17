@@ -7,13 +7,17 @@
  * protocol version is exactly the bug this avoids.
  */
 
-const CACHE = 'hypergrid-v2';
+const CACHE = 'hypergrid-v3';
 const SHELL = [
   './',
   './index.html',
   './styles.css',
   './manifest.webmanifest',
   './assets/icon.svg',
+  './assets/fonts/orbitron-variable.woff2',
+  './assets/fonts/rajdhani-400.woff2',
+  './assets/fonts/rajdhani-600.woff2',
+  './assets/fonts/rajdhani-700.woff2',
   './src/main.js',
   './src/core/math.js',
   './src/render/gl.js',
