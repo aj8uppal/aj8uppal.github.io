@@ -168,6 +168,46 @@ export const apps: Built[] = [
     cap: 'A synthetic guitar recording analysed at 96 BPM, playing with a straight-rock groove.',
   },
   {
+    key: 'rift-clash',
+    categories: ['games', 'systems'],
+    name: 'Rift Clash',
+    kind: 'Fighting game',
+    reach: 'open',
+    reachLabel: 'Live',
+    href: '/rift-clash/',
+    cta: 'Challenge a friend',
+    what: 'Launch them, juggle them, then cash the damage in and knock them off the stage.',
+    how: 'A platform fighter with Mortal Kombat-style combos. Online play uses rollback: each browser predicts the other’s input and replays the last few frames when a guess was wrong, instead of waiting.',
+    k: 'JavaScript · Canvas 2D · WebRTC · Rollback netcode · Node ws · Fly.io',
+    accent: '#b9a6ff',
+    alt: 'Rift Clash mid-combo: Kael launches Tusk above a floating stage while the hit counter, combo damage and damage scaling read out beside the player cards.',
+    cap: 'A local versus match against the game’s CPU, reached through the menus with scripted keyboard input.',
+    story: {
+      role: 'Game design, the deterministic simulation and combo system, rollback netcode, procedural animation and the lobby service.',
+      constraint:
+        'Two browsers on different networks must agree on every frame of a fast fighting game without making either player wait.',
+      decision:
+        'The simulation uses only exactly specified arithmetic and snapshots its whole state every frame, so a wrong input prediction is repaired by replaying up to nine frames. Juggle hits apply a small lift; only an ender turns accumulated damage into knockback.',
+      evidence:
+        '58 automated tests cover determinism, trades, grabs, counters and frame advantage. Two browsers matched every compared frame checksum over a direct connection and over the relay, and simulated links hold full speed up to about 230 ms of ping with 8% packet loss.',
+      question: 'Frame-exact fights between two browsers.',
+      details: [
+        [
+          'Combat',
+          'Each move’s frame advantage is measured by simulation. No grounded move is minus on hit, nothing is better than +1 on block, and simultaneous hits trade instead of favouring player one.',
+        ],
+        [
+          'Netcode',
+          'Players connect directly over WebRTC when their networks allow it and relay through the lobby server when they do not. A hash of the simulation code keeps mismatched builds out of the same room.',
+        ],
+        [
+          'Animation',
+          'Attacks are animated from their frame data: a limb winds up during startup and reaches the hitbox on the active frames, so the animation shows exactly where a move hits.',
+        ],
+      ],
+    },
+  },
+  {
     key: 'voidreach',
     categories: ['systems', 'games'],
     featured: true,
