@@ -151,7 +151,9 @@ async function boot(canvas: HTMLCanvasElement) {
   let frames = 0;
   let fpsT = start;
   let slow = 0;
-  let prev = new THREE.Vector3();
+  const prev = new THREE.Vector3();
+  const smoothVel = new THREE.Vector3();
+  const base = { pos: new THREE.Vector3(), quat: new THREE.Quaternion() };
   let firstFrame = true;
   let lastKey = '';
   let time = 0;
@@ -190,9 +192,13 @@ async function boot(canvas: HTMLCanvasElement) {
       const s = director.stations[info.index]!;
       director.at(info.travel > 0 ? s.start : Math.min(scrollY(), s.end), 0, target);
     }
-    cam.position.lerp(target.pos, k);
-    cam.quaternion.slerp(target.quat, k);
-    // A breath of parallax from the pointer.
+    // The smoothed pose lives apart from the camera. Parallax is applied on top
+    // each frame and never fed back into the smoothing: fed back, its resting
+    // size scales with 1/dt, so any frame-time wobble shook the whole view.
+    base.pos.lerp(target.pos, k);
+    base.quat.slerp(target.quat, k);
+    cam.position.copy(base.pos);
+    cam.quaternion.copy(base.quat);
     if (!reduce.matches) {
       cam.rotateY(-pointer.x * 0.012);
       cam.rotateX(pointer.y * 0.008);
@@ -209,9 +215,13 @@ async function boot(canvas: HTMLCanvasElement) {
     cam.projectionMatrix.elements[9] = -shift.y;
     cam.projectionMatrixInverse.copy(cam.projectionMatrix).invert();
 
-    const vel = tmp.copy(cam.position).sub(prev).divideScalar(Math.max(dt, 1e-3));
-    prev = cam.position.clone();
-    if (firstFrame) vel.set(0, 0, 0);
+    // Velocity from the smoothed pose, filtered: a raw finite difference
+    // carries every frame-time hiccup into the warp streaks and FOV.
+    const raw = tmp.copy(base.pos).sub(prev).divideScalar(Math.max(dt, 1e-3));
+    prev.copy(base.pos);
+    if (firstFrame) raw.set(0, 0, 0);
+    smoothVel.lerp(raw, firstFrame ? 1 : 1 - Math.exp(-dt * 12));
+    const vel = tmp.copy(smoothVel);
     const speed = vel.length();
     sys.fx.velocity.copy(reduce.matches ? vel.set(0, 0, 0) : vel);
     sys.fx.speed = reduce.matches ? 0 : speed;
