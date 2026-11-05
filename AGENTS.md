@@ -166,6 +166,15 @@ Online play connects to the `hypergrid-online` Fly app (`wss://hypergrid-online.
 The relay keeps rooms in memory, so it must stay a single machine (`fly deploy --ha=false`); its `/built/` capture plays a real co-op round through that production relay, so the capture fails if the relay is down.
 Both players need the same build: the page's service worker is network-first for that reason, and peers refuse a protocol-version mismatch.
 
+## `public/seventide/` is a build, and it has no server
+
+Seventide (the globe version) lives in `~/seventide-3d`; `public/seventide/` is its static build, made with
+`SITE_DIR=<this checkout> npm run pages:sync` there (`build:pages`: `VITE_OFFLINE_ONLY=1`, base `/seventide/`), so
+change the source and re-sync rather than patching the bundle. That build plays Solo and Pass & play only: Online and
+Ranked are shown greyed out, and nothing calls a server. Its service worker is registered at `/seventide/sw.js` with
+scope `/seventide/` and caches only that folder, under cache names starting `seventide-globe-`; keep it that way, a
+worker scoped to `/` would capture the whole site.
+
 ## Portfolio directions share their depth
 
 The Worldbuilder portfolio is the site root `/`; `/portfolio/` redirects there.

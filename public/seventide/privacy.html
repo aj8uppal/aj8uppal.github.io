@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#1d5f63" />
+<meta name="robots" content="index" />
+<title>Privacy policy - Seventide</title>
+<meta name="description" content="What Seventide stores for solo play, private rooms and optional ranked accounts. No ads or tracking." />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png" />
+<style>
+:root{--ink:#28352f;--ink-2:#626a61;--paper:#f7f3e8;--paper-2:#efe9da;--line:#ddd7c8;--action:#24564f;--sea:#1d5f63;--brass:#c4902a;
+--serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;--sans:system-ui,-apple-system,'Segoe UI',sans-serif}
+@media (prefers-color-scheme:dark){:root{--ink:#ece6d6;--ink-2:#b4b9ae;--paper:#14292b;--paper-2:#1b3335;--line:#2f4a4c;--action:#8fd0c4;--brass:#e8b948}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 var(--sans);padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+header{background:var(--sea);color:#f7f3e8;padding:calc(18px + env(safe-area-inset-top)) 16px 18px}
+header .in,main{max-width:46rem;margin:0 auto}
+header a{color:#f7f3e8;text-decoration:none;display:inline-flex;align-items:center;gap:10px;font:600 1.4rem/1 var(--serif)}
+header img{width:34px;height:34px;border-radius:8px}
+main{padding:28px 16px 56px}
+h1{font:600 2rem/1.15 var(--serif);margin:.2em 0 .1em}
+h2{font:600 1.3rem/1.25 var(--serif);margin:1.8em 0 .4em;padding-top:.6em;border-top:1px solid var(--line)}
+p,li{margin:.5em 0}
+ul{padding-left:1.25em}
+a{color:var(--action);text-underline-offset:2px}
+.meta{color:var(--ink-2);font-size:.92rem}
+.card{background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:4px 18px 10px;margin:18px 0}
+.todo{background:#fff3c4;color:#4a3a05;padding:0 .3em;border-radius:4px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+td,th{border-bottom:1px solid var(--line);padding:8px 8px 8px 0;text-align:left;vertical-align:top}
+footer{max-width:46rem;margin:0 auto;padding:0 16px 40px;color:var(--ink-2);font-size:.9rem}
+</style>
+</head>
+<body>
+<header><div class="in"><a href="./"><img src="icons/icon-192.png" alt="" width="34" height="34" />Seventide</a></div></header>
+<main>
+<h1>Privacy policy</h1>
+<p class="meta">Seventide (the website and the iOS app, bundle id com.ajuppal.seventide). Last updated October 25, 2026.</p>
+
+<div class="card">
+<h2 style="border:0;margin-top:.6em">In short</h2>
+<ul>
+<li>Solo and private rooms require no account. Optional ranked play uses Sign in with Apple to keep a recoverable rating. There are no ads or tracking tools.</li>
+<li>Playing against bots or passing one device around works entirely on your device. Nothing is sent anywhere.</li>
+<li>Online rooms keep a room code, the names players type, and the match itself on our server, and delete it after a few days of inactivity.</li>
+<li>We do not sell data or share it for advertising, and we do not use it to track you across other apps or websites.</li>
+</ul>
+</div>
+
+<h2>What stays on your device</h2>
+<p>The game saves in your browser's or app's local storage so you can resume: your in-progress local match, the name you last typed, display preferences (view mode, bot pace, and similar), whether you have seen the introduction, and, for online rooms you joined, a secret seat token that lets you return to your seat. It also keeps a small buffer of gameplay events (such as rolls and builds) for debugging. In the released game this buffer is never uploaded; it only exists on your device. You can remove all of it by clearing the site's data in your browser, or by deleting the app.</p>
+
+<h2>What online play stores on our server</h2>
+<p>Only when you create or join an online room, the server (hosted on Fly.io, in a SQLite database) stores:</p>
+<table>
+<tr><th>Data</th><th>Why</th></tr>
+<tr><td>The room code and its status</td><td>So players can find and rejoin the room.</td></tr>
+<tr><td>The names players type (any name; no real name is required)</td><td>To show who is who at the table.</td></tr>
+<tr><td>A one-way hash of each seat token (the token itself is not stored)</td><td>To recognise a returning player without accounts.</td></tr>
+<tr><td>The match's moves and current state</td><td>To run the game and resume it after a restart.</td></tr>
+</table>
+<p>Your display name, seat credential and game actions are linked together within that room so the game can recognise your seat and resume your match. No real name is required; choose a nickname. This information is used for gameplay, not advertising or tracking across apps.</p>
+<p>Rooms are deleted automatically after inactivity: lobbies that never start after 1 day, matches that nobody plays for 3 days, and finished matches 7 days after they end.</p>
+
+<h2>Optional ranked accounts</h2>
+<p>When ranked play is enabled, Sign in with Apple supplies a verified, app-specific identifier. We do not request your Apple name or email. We store a one-way identity binding, an internal account reference, a generated public sailor name, your rating, game totals, ranked match moves/results, and any reports or blocks you submit. This information is linked to your ranked account for gameplay, recovery, moderation and abuse prevention, not advertising.</p>
+<p>The app stores its ranked refresh credential in the iOS Keychain on that device; short-lived access credentials stay in memory. The website uses an HttpOnly authentication cookie and a temporary sign-in cookie. The server stores credential hashes and encrypts the Apple refresh credentials needed for verification and revocation. Rated match state lives in PostgreSQL; ordinary invite rooms continue to use their separate room storage.</p>
+<p>Ranked match records, detailed rating events and reports are retained for up to 90 days. An active account's aggregate rating, games and wins remain until the account is deleted. Choose Ranked → Account &amp; privacy → Delete account to remove the profile, sign-ins and identity bindings and request revocation of Apple access. If Apple is unavailable, encrypted revocation work is retried. An unfinished match continues with its original account reference; a one-way identity hold prevents opening another account while it remains active. That hold is removed after the activity ends. Remaining match-linked records expire within 90 days. Our Fly Managed Postgres database keeps encrypted backups on a ten-day recovery window. Temporary encrypted recovery copies are deleted after verification and are never retained longer than 30 days.</p>
+<p>Deleting the app alone does not delete a ranked account or necessarily remove its Keychain sign-in. Use the in-app account deletion control. Signing out clears this app's saved ranked refresh credential; signing out all devices revokes the account's server sessions.</p>
+
+<h2>Server logs and network data</h2>
+<p>When you connect, your IP address is visible to the server and to Fly.io's network proxy, as for any website. For invite rooms, the game server uses it in memory to limit room requests. Ranked stores a keyed one-way digest for shared rate limits, removed within one day; it does not store the raw IP address in its database or application logs. The server's own log lines contain room codes and error messages. Fly.io may keep standard infrastructure request logs under its own policies. The game itself contains no third-party scripts, fonts, trackers or advertising, and uses Apple’s authentication service only when you choose ranked sign-in. The Share button creates a public result link containing the players’ display names, final scores, mode, island and points target, and opens your device’s share sheet. Anyone with that link can read the summary; our server renders its preview when the link is opened or previewed. It contains no private hands, account credentials, game seed or rating history. Shared links are not stored as database records, but recipients and messaging services may keep copies.</p>
+
+<h2>Children</h2>
+<p>Solo and private rooms require no account. Seventide does not ask for a real name or email address, has no chat, and shows no ads or purchases. Ranked requires a recoverable Apple sign-in and uses a generated public sailor name. Online play stores the display name and game information described above. A display name is visible to others in the same room; use a nickname rather than personal details.</p>
+
+<h2>Your choices</h2>
+<ul>
+<li>Play solo or pass-and-play and no data leaves your device.</li>
+<li>Clear the site's data to remove browser-local saves. In the app, sign out of ranked to clear its Keychain credential; deleting the app removes its ordinary local saves.</li>
+<li>To ask about, or have us delete, an online room, contact us with the room code (below). Rooms also expire on their own as described above.</li>
+</ul>
+
+<h2>Changes and contact</h2>
+<p>If this policy changes we will update the date at the top. Questions: <a href="mailto:aj8uppal@gmail.com">aj8uppal@gmail.com</a>. See also the <a href="support.html">support page</a>.</p>
+</main>
+<footer><a href="./">Play Seventide</a> &middot; <a href="privacy.html">Privacy policy</a> &middot; <a href="support.html">Support</a></footer>
+</body>
+</html>
