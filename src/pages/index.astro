@@ -1,13 +1,511 @@
 ---
-import Portfolio from '../layouts/Portfolio.astro';
-import Markup from '../components/PortfolioMarkup.astro';
-import render from '../portfolio/worldbuilder.mjs';
-import '../portfolio/worldbuilder.css';
+/**
+ * The homepage: a flight through a system of worlds. The WebGL scene behind
+ * the page is decoration with a job; every word, link and capture below is
+ * ordinary HTML that reads without it. See src/orbit/main.ts.
+ */
+import { Picture, getImage } from 'astro:assets';
+import Orbit from '../layouts/Orbit.astro';
+import { worlds, belt } from '../orbit/worlds';
+import { apps } from '../data/built';
+import { collection } from '../data/portfolio';
+import { contact, about } from '../data/content';
+import { career, education } from '../data/career';
+import { asset } from '../lib/images';
+
+const posters = await Promise.all(
+  worlds.map((w) => getImage({ src: asset(w.poster), width: 1280, format: 'webp' })),
+);
+// The scene's own render, for browsers that cannot run it.
+const backdrop = await getImage({ src: asset('orbit-backdrop'), width: 1600, format: 'webp' });
+const beltItems = belt.map((b) => {
+  const app = collection.find((a) => a.key === b.key)!;
+  return { ...b, app };
+});
+const pad = (n: number) => String(n).padStart(2, '0');
+const caseHref = (key: string) => `/portfolio/work/${key}/`;
+const external = (href: string) => href.startsWith('http');
+const stations = [
+  { id: 'top', shot: 'hero', label: 'Singularity' },
+  { id: 'worlds', shot: 'system', label: 'The system' },
+  ...worlds.map((w) => ({ id: w.key, shot: 'world:' + w.key, label: w.name })),
+  { id: 'belt', shot: 'belt', label: 'The belt' },
+  { id: 'earth', shot: 'earth', label: 'Earth' },
+  { id: 'origin', shot: 'origin', label: 'Origin' },
+  { id: 'contact', shot: 'contact', label: 'Contact' },
+];
 ---
 
-<Portfolio home direction="worldbuilder">
-  <Markup html={render()} />
-</Portfolio>
+<Orbit bodyClass="home">
+  <script is:inline slot="head">
+    document.documentElement.classList.add('js');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches)
+      document.documentElement.classList.add('reduce');
+    // If the scene's module never arrives, lift the loader onto the static page.
+    window.__orbitFailsafe = setTimeout(function () {
+      const d = document.documentElement;
+      if (!d.classList.contains('ready')) d.classList.add('ready', 'no-gl');
+    }, 6000);
+  </script>
+  <canvas id="orbit-canvas" aria-hidden="true"></canvas>
+  <div class="backdrop" aria-hidden="true" style={`background-image:url(${backdrop.src})`}></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="loader" aria-hidden="true">
+    <div class="loader__inner">
+      <span class="loader__mark">AJ / UPPAL</span>
+      <span class="loader__line"><span></span></span>
+      <span class="loader__status">Raymarching the sky <b data-progress>00</b></span>
+    </div>
+  </div>
+
+  <header class="nav">
+    <a class="nav__brand" href="#top" aria-label="AJ Uppal, back to the top">
+      <span class="nav__glyph" aria-hidden="true"></span>
+      <span>AJ Uppal</span>
+    </a>
+    <nav class="nav__links" aria-label="Main">
+      <a href="#worlds">Worlds</a>
+      <a href="#belt">More builds</a>
+      <a href="#earth">Day job</a>
+      <a href="#origin">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="nav__sound" type="button" data-sound aria-pressed="false">
+      <span class="nav__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span data-sound-label>Sound off</span>
+    </button>
+  </header>
+
+  <nav class="rail" aria-label="Chapters">
+    <ol>
+      {
+        stations.map((s, i) => (
+          <li>
+            <a href={`#${s.id}`} data-rail={s.shot}>
+              <span class="rail__n">{pad(i)}</span>
+              <span class="rail__label">{s.label}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+
+  <div class="hud" aria-hidden="true">
+    <div class="hud__left">
+      <span class="hud__k">Sector</span>
+      <span data-hud="sector">00 · Singularity</span>
+    </div>
+    <div class="hud__right">
+      <span><span class="hud__k">Pos</span> <span data-hud="pos">0.0 0.0 0.0</span></span>
+      <span><span class="hud__k">V</span> <span data-hud="vel">0.000c</span></span>
+      <span><span class="hud__k">Live</span> <span data-hud="fps">60</span> fps</span>
+    </div>
+  </div>
+
+  <div class="labels" aria-hidden="true">
+    {
+      worlds.map((w, i) => (
+        <a
+          class="label"
+          data-label={w.key}
+          href={`#${w.key}`}
+          tabindex="-1"
+          style={`--c:${w.accent}`}
+        >
+          <span class="label__dot" />
+          <span class="label__n">{pad(i + 1)}</span>
+          <span class="label__name">{w.name}</span>
+        </a>
+      ))
+    }
+  </div>
+
+  <main id="main" tabindex="-1">
+    <section id="top" class="hero" data-shot="hero" aria-labelledby="hero-title">
+      <div class="hero__stage">
+        <p class="hero__kicker" data-reveal="0">
+          <span>Software engineer</span><span class="dot" aria-hidden="true"></span><span
+            >Bay Area, California</span
+          >
+        </p>
+        <h1 id="hero-title" class="hero__title" data-split>
+          <span>AJ</span>
+          <span>Uppal</span>
+        </h1>
+        <div class="hero__foot">
+          <p class="hero__lead" data-reveal="0.15">
+            I build voice AI for healthcare at Notable, and <em>worlds that run in a browser tab</em
+            > the rest of the time.
+          </p>
+          <a class="hero__cta" href="#worlds" data-reveal="0.3" data-cursor="Fly">
+            <span class="hero__cta-ring" aria-hidden="true"></span>
+            Enter the system
+          </a>
+        </div>
+        <p class="hero__tele" aria-hidden="true">
+          <span>Schwarzschild metric</span><span>Disk 2.6–12 r<sub>s</sub></span><span
+            >Rendered live on your GPU</span
+          >
+        </p>
+      </div>
+    </section>
+
+    <section
+      id="worlds"
+      class="system"
+      data-shot="system"
+      aria-labelledby="system-title"
+      tabindex="-1"
+    >
+      <div class="system__stage">
+        <p class="eyebrow" data-reveal>The system</p>
+        <h2 id="system-title" class="system__title" data-split>Eight worlds, all in orbit.</h2>
+        <p class="system__lead" data-reveal="0.1">
+          <em>Every one of them runs in a browser tab.</em> Sailing physics, a shared voxel realm, rollback
+          netcode, a sky full of particles. Scroll to fly out to each, or pick one.
+        </p>
+        <ol class="system__list" data-reveal="0.2">
+          {
+            worlds.map((w, i) => (
+              <li style={`--c:${w.accent}`}>
+                <a href={`#${w.key}`}>
+                  <span class="system__n">{pad(i + 1)}</span>
+                  <span class="system__name">{w.name}</span>
+                  <span class="system__kind">{w.kind}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    {
+      worlds.map((w, i) => (
+        <section
+          id={w.key}
+          class="world"
+          data-shot={`world:${w.key}`}
+          data-side={i % 2 === 0 ? 'left' : 'right'}
+          style={`--c:${w.accent}`}
+          aria-labelledby={`${w.key}-title`}
+          tabindex="-1"
+        >
+          <div class="world__stage">
+            <div class="world__copy">
+              <p class="world__index" data-reveal>
+                <span class="world__num">World {pad(i + 1)}</span>
+                <span class="world__of">/ {pad(worlds.length)}</span>
+                <span class="world__kind">{w.kind}</span>
+              </p>
+              <h2
+                id={`${w.key}-title`}
+                class="world__name"
+                data-split
+                style={`--len:${Math.max(...w.name.split(' ').map((x) => x.length))}`}
+              >
+                {w.name}
+              </h2>
+              <p class="world__headline" data-reveal="0.05">
+                {w.headline}
+              </p>
+              <p class="world__body" data-reveal="0.12">
+                {w.body}
+              </p>
+              <dl class="world__facts" data-reveal="0.2">
+                {w.facts.map((f) => (
+                  <div>
+                    <dt>{f.value}</dt>
+                    <dd>{f.label}</dd>
+                  </div>
+                ))}
+              </dl>
+              {w.note && (
+                <p class="world__note" data-reveal="0.25">
+                  {w.note}
+                </p>
+              )}
+              <div class="world__actions" data-reveal="0.3">
+                <a
+                  class="btn btn--primary"
+                  href={w.play.href}
+                  target={external(w.play.href) ? '_blank' : undefined}
+                  rel={external(w.play.href) ? 'noopener' : undefined}
+                  data-cursor="Play"
+                >
+                  {w.play.label}
+                  <span aria-hidden="true">↗</span>
+                </a>
+                <a class="btn btn--ghost" href={caseHref(w.key)}>
+                  How it’s built <span aria-hidden="true">→</span>
+                </a>
+              </div>
+              <p class="world__stack" data-reveal="0.35">
+                {w.stack}
+              </p>
+            </div>
+            <figure class="media world__media" data-tilt="7" data-reveal="0.2">
+              <a
+                class="media__frame"
+                href={w.play.href}
+                target={external(w.play.href) ? '_blank' : undefined}
+                rel={external(w.play.href) ? 'noopener' : undefined}
+                data-cursor="Play"
+                aria-label={`${w.play.label}: ${w.name}`}
+              >
+                {w.video ? (
+                  <video
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    poster={posters[i]!.src}
+                    data-src={w.video}
+                    width="1280"
+                    height="720"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <Picture
+                    src={asset(w.poster)}
+                    alt=""
+                    widths={[640, 960, 1280]}
+                    sizes="(max-width: 760px) 92vw, 34vw"
+                    formats={['avif', 'webp']}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+                <span class="media__glare" aria-hidden="true" />
+              </a>
+              <figcaption>
+                <span class="media__live" aria-hidden="true" />
+                {w.video ? 'Captured in the running game' : 'A capture from the running game'}
+                <span class="sr-only">: {w.posterAlt}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+      ))
+    }
+
+    <section id="belt" class="belt" data-shot="belt" aria-labelledby="belt-title" tabindex="-1">
+      <div class="belt__stage">
+        <header class="belt__head">
+          <p class="eyebrow" data-reveal>The belt</p>
+          <h2 id="belt-title" data-split>Smaller worlds, still in orbit.</h2>
+          <p data-reveal="0.1">
+            Instruments, daily puzzles, tools and experiments. <span class="belt__hint"
+              >Scroll or drag to turn the ring.</span
+            >
+          </p>
+        </header>
+        <div class="belt__viewport">
+          <ul class="belt__ring">
+            {
+              beltItems.map(({ app, image }) => (
+                <li class="belt__card" style={`--c:${app.accent}`}>
+                  <a
+                    href={app.href}
+                    target={external(app.href) ? '_blank' : undefined}
+                    rel={external(app.href) ? 'noopener' : undefined}
+                    data-cursor="Open"
+                  >
+                    <span class="belt__img">
+                      <Picture
+                        src={asset(image)}
+                        alt={app.alt}
+                        widths={[400, 640]}
+                        sizes="(max-width: 720px) 80vw, 340px"
+                        formats={['avif', 'webp']}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                    <span class="belt__meta">
+                      <span class="belt__kind">{app.kind}</span>
+                      <span class="belt__name">{app.name}</span>
+                      <span class="belt__what">{app.what}</span>
+                      <span class="belt__cta">
+                        {app.cta} <span aria-hidden="true">{external(app.href) ? '↗' : '→'}</span>
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <a class="btn btn--ghost belt__all" href="/built/">
+          Every build, all {apps.length} of them <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="earth" class="earth" data-shot="earth" aria-labelledby="earth-title" tabindex="-1">
+      <div class="earth__stage">
+        <div class="earth__copy">
+          <p class="eyebrow" data-reveal>Back on Earth · Notable Health · Aug 2022–now</p>
+          <h2 id="earth-title" data-split>By day, voice AI for healthcare.</h2>
+          <p class="earth__lead" data-reveal="0.1">
+            Notable is a healthcare AI company. On its voice and conversations platform I work on
+            caller verification, call routing, transfers and monitoring, and I wrote the inbound SIP
+            integration specification: TLS, SRTP, caller ID, DTMF and DID routing.
+          </p>
+          <dl class="stats" data-reveal="0.18">
+            <div>
+              <dt><span data-count>~250,000</span></dt>
+              <dd>patient calls a month on our team’s platform</dd>
+            </div>
+            <div>
+              <dt><span data-count>100+</span></dt>
+              <dd>enterprise customers served by Notable</dd>
+            </div>
+            <div>
+              <dt><span data-count>$240k</span></dt>
+              <dd>ARR on inbound SIP today</dd>
+            </div>
+            <div>
+              <dt><span data-count>90%+</span></dt>
+              <dd>flow success in the flow builder, whose AI testing I lead</dd>
+            </div>
+          </dl>
+          <p class="earth__more" data-reveal="0.25">
+            Caller verification runs across 5+ health systems. Configurable transfers and
+            multilingual conversations cut new-customer launches from weeks to days.
+          </p>
+          <div class="world__actions" data-reveal="0.3">
+            <a class="btn btn--ghost" href={caseHref('notable')}>
+              The work in detail <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <p class="world__stack" data-reveal="0.35">
+            Python · TypeScript · Node.js · React · PostgreSQL · BigQuery · SIP · GCP · Kubernetes ·
+            Terraform
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="origin"
+      class="origin"
+      data-shot="origin"
+      aria-labelledby="origin-title"
+      tabindex="-1"
+    >
+      <div class="origin__stage">
+        <div class="origin__copy">
+          <p class="eyebrow" data-reveal>Origin</p>
+          <h2 id="origin-title" data-split>Wanted to be an astronaut since I was four.</h2>
+          <p class="origin__still" data-reveal="0.1"><em>Still would.</em></p>
+          <p class="origin__lead" data-reveal="0.15">
+            {about.prose[0]}
+            {' '}
+            {about.sim[0]}<a href="#saltline">{about.sim[1]}</a>{about.sim[2]}
+          </p>
+          <ol class="timeline" data-reveal="0.22">
+            <li>
+              <span class="timeline__when">2022–now</span>
+              <span class="timeline__what">Software Engineer, <b>Notable Health</b></span>
+            </li>
+            {
+              career.map((c) => (
+                <li>
+                  <span class="timeline__when">{c.years}</span>
+                  <span class="timeline__what">
+                    {c.title}, <b>{c.company}</b>
+                  </span>
+                </li>
+              ))
+            }
+            <li>
+              <span class="timeline__when">2022</span>
+              <span class="timeline__what">
+                B.S. {education.subjects}, <b>UMass Amherst</b>
+                <span class="timeline__note">{education.note}</span>
+              </span>
+            </li>
+          </ol>
+          <ul class="notes" data-reveal="0.3">
+            {
+              about.notes
+                .filter((n) => n.k !== 'Long held')
+                .map((n) => (
+                  <li>
+                    <span class="notes__k">{n.k}</span>
+                    <span class="notes__v">{n.v}</span>
+                    {n.reply && (
+                      <a
+                        class="notes__reply"
+                        href={`mailto:${contact.email}?subject=${encodeURIComponent(n.reply.subject)}`}
+                      >
+                        {n.reply.label} <span aria-hidden="true">↗</span>
+                      </a>
+                    )}
+                  </li>
+                ))
+            }
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="contact"
+      class="contact"
+      data-shot="contact"
+      aria-labelledby="contact-title"
+      tabindex="-1"
+    >
+      <div class="contact__stage">
+        <p class="eyebrow" data-reveal>Open a channel</p>
+        <h2 id="contact-title" class="contact__title" data-split>Say hello.</h2>
+        <a
+          class="contact__email"
+          href={`mailto:${contact.email}`}
+          data-reveal="0.1"
+          data-cursor="Write"
+        >
+          {contact.email}
+        </a>
+        <ul class="contact__links" data-reveal="0.2">
+          <li>
+            <a href={contact.github} target="_blank" rel="noopener"
+              >GitHub <span aria-hidden="true">↗</span></a
+            >
+          </li>
+          <li>
+            <a href={contact.linkedin} target="_blank" rel="noopener"
+              >LinkedIn <span aria-hidden="true">↗</span></a
+            >
+          </li>
+          <li>
+            <a href={contact.resume} target="_blank" rel="noopener"
+              >Résumé, {contact.resumeYear} (PDF) <span aria-hidden="true">↗</span></a
+            >
+          </li>
+          <li><a href="/built/">Every build <span aria-hidden="true">→</span></a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>
+      Rendered live in your browser: a Schwarzschild black hole raymarched on the GPU, eight
+      hand-made worlds and NASA’s Earth. The planet surfaces are generated illustrations; every
+      screenshot and clip is captured from the running app.
+    </p>
+    <p class="foot__meta">
+      <span>© {new Date().getFullYear()} AJ Uppal</span>
+      <a href="/previous/">The previous site</a>
+    </p>
+  </footer>
+</Orbit>
+
 <script>
-  import '../portfolio/worldbuilder.js';
+  import '../orbit/main';
 </script>

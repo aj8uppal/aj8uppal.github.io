@@ -1,2 +1,2 @@
-/** The production Worldbuilder gate. Review alternatives use verify:portfolio:lab. */
-import './verify-portfolio.mjs';
+/** The production homepage gate. The retired Worldbuilder gate is verify:portfolio. */
+import './verify-orbit.mjs';

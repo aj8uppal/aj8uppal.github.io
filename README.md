@@ -1,7 +1,7 @@
 # aj8uppal.github.io
 
-My personal site.
-Astro and TypeScript, built static, six React islands.
+My personal site: a flight through a system of worlds.
+Astro and TypeScript, built static. The homepage runs one WebGL 2 scene (three.js) behind ordinary HTML.
 
 ## Running it
 
@@ -10,21 +10,23 @@ npm install
 npm run dev        # http://127.0.0.1:4321/
 ```
 
-| Command           | What it does                                                               |
-| ----------------- | -------------------------------------------------------------------------- |
-| `npm run dev`     | Dev server with HMR at `http://127.0.0.1:4321/`                            |
-| `npm run build`   | `astro check` then a static build into `dist/`                             |
-| `npm run preview` | Serve the built `dist/` exactly as it will be served in production         |
-| `npm run images`  | Re-derive the cropped intermediates in `src/assets/` from the raw captures |
-| `npm run lint`    | ESLint plus a Prettier check                                               |
-| `npm run format`  | Prettier write                                                             |
-| `npm run verify`  | Drive the running site in headless Chromium (see below)                    |
+| Command                  | What it does                                                               |
+| ------------------------ | -------------------------------------------------------------------------- |
+| `npm run dev`            | Dev server with HMR at `http://127.0.0.1:4321/`                            |
+| `npm run build`          | `astro check` then a static build into `dist/`                             |
+| `npm run preview`        | Serve the built `dist/` exactly as it will be served in production         |
+| `npm run images`         | Re-derive the cropped intermediates in `src/assets/` from the raw captures |
+| `npm run lint`           | ESLint plus a Prettier check                                               |
+| `npm run format`         | Prettier write                                                             |
+| `npm run verify`         | Drive the running site in installed Chrome, GPU on (see below)             |
+| `npm run orbit:textures` | Re-derive the scene's textures from the raw art in `data/orbit-art/`       |
+| `npm run orbit:stills`   | Re-photograph the share card and the no-WebGL backdrop from the scene      |
 
 `npm run verify` expects a server already running and defaults to the dev server:
 
 ```sh
 npm run verify                                   # against http://127.0.0.1:4321/
-npm run verify -- http://127.0.0.1:4322/ ./shots # against a preview build, shots elsewhere
+npm run verify -- http://127.0.0.1:4322/         # against a preview build
 ```
 
 ## Legacy demo URLs
@@ -63,15 +65,16 @@ Committing to one look also means the type contrast, the rule weights and the sc
 ## Accessibility
 
 Not decorative, and checked rather than assumed.
-`npm run verify` drives three headless contexts and fails the run if any of it regresses:
+`npm run verify` (`scripts/verify-orbit.mjs`) fails the run if any of this regresses:
 
-- 1440 and 390, asserting no horizontal overflow, the spine collapsing cleanly, and the layout landing where it should.
-- A third context launched with `reducedMotion: 'reduce'`, asserting that transitions are clamped, that nothing is left mid-reveal, and that the spring-driven tab indicator **jumps** instead of travelling.
-  Reduced motion is a separate code path, not a shorter duration: the indicator's spring is stepped by `requestAnimationFrame` normally and skipped entirely when the query matches.
+- 1440 and 390: no script errors, no horizontal overflow at any station, one `h1`, every station labelled by its heading, the skip link first in tab order.
+- Every world's play link and case study, every belt card and contact link resolving.
+- Preview clips stay detached until their world is on screen, then play; the camera follows the scroll and the HUD names the station.
+- A `reducedMotion: 'reduce'` context: native scroll, no autoplay, the belt laid flat, and the camera **cutting** to each station instead of flying.
+  Reduced motion is a separate code path, not a shorter duration.
+- A no-JavaScript context: every heading visible, no loader left over the page, and a real frame of the scene standing in for it.
 
-It also sweeps every text node on the page for WCAG AA contrast against the palette, resolving each element's real background rather than the nearest ancestor that declares one - the selected tab is ink on an acid pill painted by an absolutely positioned sibling, and an ancestor walk reports that as ink on ink.
-
-Verified by hand alongside that: full keyboard traversal in DOM order with a visible cyan focus ring, the skip link first, the tablist answering arrow keys plus Home and End with focus following selection, and the hero canvas taking focus so the flow field can be steered with the arrow keys.
+The scene is decoration with a job, never a container for content: every word, number and link is HTML in reading order, and the canvas is `aria-hidden`.
 
 ## Deploying
 
@@ -83,27 +86,17 @@ Nothing publishes until someone runs it deliberately from the Actions tab.
 
 ## A note on the résumé
 
-The Contact section draws a résumé download button and the button is disabled.
-
-The only PDF on file is from 2024 and it carries a home street address and a personal phone number.
-That is fine on an application and not fine on a public page, so there is nothing safe to point the button at yet.
-The affordance is built and marked pending; it turns on when a sanitized replacement exists.
-
-`attachments/resume2024.pdf` is still present in `public/` and therefore still reachable at its original URL by anyone who knows it.
-Nothing on the site links to it.
-Removing it entirely is a separate decision from unlinking it.
+Contact links `attachments/resume2026.pdf`, the first version safe to serve: the home street address is off it.
+The 2024 file it replaced is gone from the repository.
 
 ## Layout notes
 
-Six sections, each opening on one line of display type and then handing off to something you can move.
-The rule the page is held to is that prose earns its place by being short: a section that needs three paragraphs to explain a demo should be showing the demo instead.
+The homepage is fourteen stations: the black hole, the system, eight worlds, the belt of smaller builds, Earth for the day job, an Earthrise for the origin story, and the hole again to say hello.
+Each station's sticky stage holds the camera while you read; the scroll between stations is the flight.
 
-The two flagship cards open two-up, frame beside title, rather than with a full-bleed band across the top.
-A band cost roughly 250px a card, and cropping saltline's dawn frame down to one would have eaten the corner its status panel lives in - and that panel is the evidence, not decoration.
-`npm run verify` fails the run if the page grows past an 11,000px budget at 1440, because length is the thing that quietly comes back.
+The hero is a Schwarzschild black hole raymarched in a fragment shader at reduced resolution: photon paths bend by `a = -1.5 h² r / |r|⁵`, the disk is Doppler-beamed and gravitationally redshifted, and rays that never come close take the weak-field deflection analytically.
+Keplerian shear winds any disk texture into hairlines over time, so two layers on staggered clocks cross-fade.
+Quality steps down a tier whenever the frame rate stays under 42 fps for two seconds; the canvas pauses with the tab.
 
-The hero is a live RK2-integrated flow field on a canvas, spring-driven from the pointer, touch, scroll velocity and the arrow keys.
-It caps device pixel ratio, pauses when scrolled offscreen or when the tab is hidden, and under reduced motion draws exactly one still frame and stops.
-
-Three of the Playground demos run inline as React islands rather than as screenshots.
-GrinchJump is the real 2015 three.js build in an iframe, and it boots on a press rather than on sight: it grabs the arrow keys and runs a render loop for as long as it is open.
+Planet surfaces are generated illustrations (prompts in `src/orbit/textures/manifest.json`), Earth is NASA Blue Marble and Black Marble, and Blockhold, Hypergrid, murmuration and Boundary are built in code: a voxel planet, a cube-mapped neon grid, particle ribbons on a beat, and a cricket ball whose seam is kept toward you.
+Every screenshot and clip beside them is captured from the running app.

@@ -1,0 +1,128 @@
+[
+  {
+    "file": "sky.webp",
+    "from": "sky-panorama.png",
+    "bytes": 82386,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A full 360-degree equirectangular panorama of deep space (2:1 aspect ratio, as wide as possible, e.g. 3072x1536 or the closest supported wide size). The Milky Way runs as a luminous band straight across the horizontal middle of the image, with dense star clouds, dark dust lanes, warm golden core glow near the centre of the band, and faint magenta, teal and amber emission nebulae scattered along it. Thousands of pin-sharp stars of varied brightness and subtle colour (blue-white, warm yellow) everywhere else, on near-black deep blue space. The left and right edges must continue seamlessly into each other. Photographic astro-photography realism, very high dynamic range, no text, no planets, no spacecraft, no foreground, no borders or vignette."
+    }
+  },
+  {
+    "file": "saltline.webp",
+    "from": "planet-saltline.png",
+    "bytes": 145642,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A flat equirectangular texture map (2:1 aspect ratio) of the surface of an ocean planet, for wrapping onto a 3D sphere in a game engine. Almost entirely deep ocean in rich sapphire and teal blues with lighter turquoise shallows, scattered small tropical archipelagos and a few larger islands with sandy beaches and green hills, subtle ocean current patterns, a hint of white sea ice only at the very top and bottom rows. No clouds, no shading, no lighting, no sphere, no space background, no text, no grid, no borders. Viewed straight down, evenly lit, like a satellite albedo map. The left and right edges must tile seamlessly."
+    }
+  },
+  {
+    "file": "clouds.webp",
+    "from": "planet-clouds.png",
+    "bytes": 318234,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A flat equirectangular cloud cover texture map (2:1 aspect ratio) for a planet, for wrapping onto a 3D sphere. Pure white clouds on a TRUE PURE BLACK background: swirling cyclones, long wispy trade-wind streaks and scattered cumulus patches, about 40 percent coverage, more cloud bands near the equator and mid-latitudes. Viewed straight down, no lighting, no sphere, no text, no borders. The left and right edges must tile seamlessly."
+    }
+  },
+  {
+    "file": "ember.webp",
+    "from": "planet-ember.png",
+    "bytes": 504994,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A flat equirectangular texture map (2:1 aspect ratio) of a stylised voxel fantasy world, for wrapping onto a 3D sphere. The surface is built from visible square blocky voxel tiles like a low-poly blocky game world seen from orbit, divided into seven distinct regions: lush green meadows split by blue rivers, a dusty orange plain with blocky trees, pale bleached flats with white ruins, a dark near-black marsh, a red-lit ash waste with glowing orange ember cracks and lava rivers, grey stone mountain terraces, and a black-violet plateau. Glowing ember-orange lines of lava thread between some regions. Viewed straight down, evenly lit, no sphere, no space, no text, no borders. The left and right edges must tile seamlessly."
+    }
+  },
+  {
+    "file": "ice.webp",
+    "from": "planet-ice.png",
+    "bytes": 499904,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A flat equirectangular texture map (2:1 aspect ratio) of an icy frontier moon, for wrapping onto a 3D sphere. Pale cyan, white and deep steel-blue ice sheets crossed by long glowing turquoise fracture lines and ridges, frozen seas, a few dark impact craters with bright ejecta rays, subtle frost banding along latitudes. Viewed straight down, evenly lit like an albedo map, no sphere, no lighting, no space background, no text, no borders. The left and right edges must tile seamlessly."
+    }
+  },
+  {
+    "file": "rift.webp",
+    "from": "planet-rift.png",
+    "bytes": 593592,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A flat equirectangular texture map (2:1 aspect ratio) of a shattered alien world, for wrapping onto a 3D sphere. Dark obsidian and deep indigo-violet rock plates broken by a network of jagged canyons that glow hot magenta and electric lavender from within, crystalline amethyst formations, a few dark plateaus. Viewed straight down, evenly lit, no sphere, no space background, no text, no borders. The left and right edges must tile seamlessly."
+    }
+  },
+  {
+    "file": "moon.webp",
+    "from": "moon-rock.png",
+    "bytes": 497132,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A flat equirectangular texture map (2:1 aspect ratio) of a grey airless moon surface, for wrapping onto a 3D sphere. Neutral grey regolith with many overlapping impact craters of every size, a few dark basalt maria, bright ray craters. Viewed straight down, evenly lit, no shading, no sphere, no space, no text, no borders. The left and right edges must tile seamlessly."
+    }
+  },
+  {
+    "file": "nebula-violet.webp",
+    "from": "nebula-violet.png",
+    "bytes": 63326,
+    "provenance": {
+      "source": "NASA Visible Earth (public domain), via the three-globe example assets",
+      "url": "https://cdn.jsdelivr.net/gh/vasturiano/three-globe@master/example/img/nebula-violet.png"
+    }
+  },
+  {
+    "file": "nebula-amber.webp",
+    "from": "nebula-amber.png",
+    "bytes": 35392,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A deep-space emission nebula photographed by a space telescope, wide 3:2 landscape. Billowing clouds of warm amber, gold and rose-red gas with bright glowing ionised edges and dark dust pillars, a few blue-white stars with soft diffraction spikes. The nebula sits in the middle and fades completely to TRUE PURE BLACK around all four edges so it can be composited additively over a star field. No text, no planets, no spacecraft. Photorealistic, JWST-style, extremely high detail."
+    }
+  },
+  {
+    "file": "nebula-blue.webp",
+    "from": "nebula-blue.png",
+    "bytes": 40514,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A deep-space reflection nebula photographed by a space telescope, wide 3:2 landscape. Delicate wispy veils and filaments of electric blue, cyan and silvery white gas, like smoke in starlight, with a cluster of bright young blue stars inside it. The nebula sits in the middle and fades completely to TRUE PURE BLACK around all four edges so it can be composited additively. No text, no planets, no spacecraft. Photorealistic, extremely high detail."
+    }
+  },
+  {
+    "file": "earth-day.webp",
+    "from": "nasa/earth-blue-marble.jpg",
+    "bytes": 732252,
+    "provenance": {
+      "source": "NASA Visible Earth (public domain), via the three-globe example assets",
+      "url": "https://cdn.jsdelivr.net/gh/vasturiano/three-globe@master/example/img/earth-blue-marble.jpg"
+    }
+  },
+  {
+    "file": "earth-day-lo.webp",
+    "from": "nasa/earth-blue-marble.jpg",
+    "bytes": 236084,
+    "provenance": {
+      "source": "NASA Visible Earth (public domain), via the three-globe example assets",
+      "url": "https://cdn.jsdelivr.net/gh/vasturiano/three-globe@master/example/img/earth-blue-marble.jpg"
+    }
+  },
+  {
+    "file": "earth-night.webp",
+    "from": "nasa/earth-night.jpg",
+    "bytes": 72226,
+    "provenance": {
+      "source": "NASA Visible Earth (public domain), via the three-globe example assets",
+      "url": "https://cdn.jsdelivr.net/gh/vasturiano/three-globe@master/example/img/earth-night.jpg"
+    }
+  },
+  {
+    "file": "earth-water.webp",
+    "from": "nasa/earth-water.png",
+    "bytes": 44016,
+    "provenance": {
+      "source": "NASA Visible Earth (public domain), via the three-globe example assets",
+      "url": "https://cdn.jsdelivr.net/gh/vasturiano/three-globe@master/example/img/earth-water.png"
+    }
+  }
+]

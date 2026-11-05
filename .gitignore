@@ -7,3 +7,7 @@ dist/
 .env.production
 .vscode/
 .idea/
+
+# Raw generated art and NASA source maps for the homepage scene.
+# scripts/prepare-orbit-textures.mjs derives the committed textures from these.
+data/orbit-art/

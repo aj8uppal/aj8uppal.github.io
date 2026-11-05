@@ -19,7 +19,7 @@ function reviewRoutes() {
     hooks: {
       'astro:config:setup': ({ command, injectRoute }) => {
         if (command !== 'dev' && mode !== 'lab' && mode !== 'palettes') return;
-        for (const name of ['editorial', 'studio', 'field-notes', 'observatory'])
+        for (const name of ['worldbuilder', 'editorial', 'studio', 'field-notes', 'observatory'])
           injectRoute({
             pattern: `/portfolio/${name}/`,
             entrypoint: new URL(`./src/review/portfolio/${name}.astro`, import.meta.url),

@@ -1,6 +1,7 @@
 ---
-import Base from '../layouts/Base.astro';
-import { legacy, buoy } from '../data/legacy';
+import Orbit from '../layouts/Orbit.astro';
+import '../orbit/case.css';
+import { legacy } from '../data/legacy';
 import { site } from '../data/content';
 
 /* Grouped rather than listed flat, because the states are the whole point: a
@@ -24,38 +25,71 @@ const groups = [
     note: 'These older pages are still at their original addresses, but no longer run.',
   },
 ].map((g) => ({ ...g, rows: legacy.filter((l) => l.state === g.state) }));
+
+/* The old playground section is gone from the homepage; the collection is
+   where every build now lives, so that is where the page sends a reader. */
+const buoy = { path: '/built/', name: 'every build' } as const;
 ---
 
-<Base
+<Orbit
   title={`Not found · ${site.title}`}
-  description="That page is not here. Browse the playground or find an older project."
-  elsewhere
+  description="That page is not here. Browse every build or find an older project."
+  index={false}
+  bodyClass="case lost"
 >
-  <section class="sec sec--ink buoy">
-    <div class="shell">
-      <p class="eyebrow buoy__label">404 &middot; page not found</p>
+  <div class="case-sky" aria-hidden="true" style="--c:#ffb46a">
+    <i class="case-sky__far"></i>
+    <i class="case-sky__near"></i>
+    <i class="case-sky__glow"></i>
+  </div>
 
-      {
-        /* Filled from location.pathname, and hidden until it is. Without
-          JavaScript the page cannot know which address was asked for, and
-          printing a guess would be worse than printing nothing. */
-      }
-      <p class="buoy__path" data-buoy-path hidden></p>
+  <header class="nav case-nav">
+    <a class="nav__brand" href="/">
+      <span class="nav__glyph" aria-hidden="true"></span>
+      <span>AJ Uppal</span>
+    </a>
+    <nav class="nav__links" aria-label="Main">
+      <a href="/#worlds">Worlds</a>
+      <a href="/#belt">More builds</a>
+      <a href="/#earth">Day job</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
 
-      {
-        /* The static line is the one that is true whatever was typed. The
-          script replaces it with the specific one. */
-      }
-      <p class="buoy__say" data-buoy-say>
-        That page isn’t here. Try the playground, or browse older projects below.
-      </p>
+  <main id="main" class="case-main buoy">
+    <section class="buoy__hero">
+      <div class="buoy__hole" aria-hidden="true"><i></i><b></b></div>
+      <div class="buoy__inner">
+        <p class="eyebrow buoy__label">404 &middot; page not found</p>
+        <h1 class="buoy__title">Lost in<br />the void<span>.</span></h1>
 
-      <p class="buoy__go">
-        <a class="btn btn--sand" href={buoy.path} data-buoy-go>Go to {buoy.name}</a>
-      </p>
+        {
+          /* Filled from location.pathname, and hidden until it is. Without
+            JavaScript the page cannot know which address was asked for, and
+            printing a guess would be worse than printing nothing. */
+        }
+        <p class="buoy__path" data-buoy-path hidden></p>
 
-      <details class="notes buoy__notes">
-        <summary>Browse older project addresses</summary>
+        {
+          /* The static line is the one that is true whatever was typed. The
+            script replaces it with the specific one. */
+        }
+        <p class="buoy__say" data-buoy-say>
+          That page isn’t here. Try every build, or browse older projects below.
+        </p>
+
+        <p class="buoy__go">
+          <a class="btn btn--primary" href={buoy.path} data-buoy-go
+            >Go to {buoy.name} <span aria-hidden="true">→</span></a
+          >
+          <a class="btn btn--ghost" href="/">Back to the system</a>
+        </p>
+      </div>
+    </section>
+
+    <div class="case-wrap">
+      <details class="buoy__notes">
+        <summary>Browse older project addresses <b aria-hidden="true">+</b></summary>
         <div class="buoy__list">
           <p class="buoy__how">
             Some older projects still work; others depend on services that have gone away. They’re
@@ -93,8 +127,8 @@ const groups = [
         </div>
       </details>
     </div>
-  </section>
-</Base>
+  </main>
+</Orbit>
 
 <script>
   /**
@@ -202,7 +236,7 @@ const groups = [
         say.textContent = `You may be looking for ${name}, at ${path}. The page still loads, but ${why}.`;
       }
     } else {
-      say.textContent = 'I couldn’t match that address to an older project. Try the playground.';
+      say.textContent = 'I couldn’t match that address to an older project. Try every build.';
     }
   }
 </script>

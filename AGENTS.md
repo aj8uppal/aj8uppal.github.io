@@ -75,11 +75,13 @@ on both resting and hovered cards.
 
 ## Verification
 
-`npm run verify` is the production Worldbuilder gate. Its wrapper is
-`scripts/verify.mjs`, which runs `scripts/verify-portfolio.mjs` against the
-root page; `npm run verify:portfolio:lab` adds the review directions and their
-cases. Run the matching build and keep Astro preview bound to
-`--host 127.0.0.1`; the suite dials that literal address.
+`npm run verify` is the production homepage gate: `scripts/verify.mjs` runs
+`scripts/verify-orbit.mjs` against a running server (default
+`http://127.0.0.1:4321/`, or pass a URL). It needs a real GPU, so it drives
+installed Chrome (`CAPTURE_CHANNEL` overrides). `scripts/verify-portfolio.mjs`
+(`npm run verify:portfolio`, `:lab`) was written for the retired Worldbuilder
+home and the old project-page markup; treat its failures there as stale, not
+as regressions. Keep Astro preview bound to `--host 127.0.0.1`.
 
 `npm run verify:legacy` is a separate gate for the archived `/previous/` page
 and runs `scripts/verify-legacy.mjs`. Do not use its measurements as the
@@ -104,7 +106,11 @@ Its classes are prefixed `dlab`, because the playground cards already own `.lab`
 
 ## Page length is a standing budget
 
-The production and lab homepage limits are `HOME_HEIGHT` in
+The Orbit homepage is scroll-driven, so its length is a deliberate budget of
+stations: each section's height in `src/orbit/orbit.css` (e.g. `.world` at
+240vh) is hold time for the camera, not content. Adding a station costs a
+screen or two of scroll; adding copy inside one must still fit its sticky
+100svh stage at 1440×820. The retired Worldbuilder limits are `HOME_HEIGHT` in
 `scripts/verify-portfolio.mjs`. The archived `/previous/` limits are
 `HEIGHT_BUDGET` and `MOBILE_BUDGET` in `scripts/verify-legacy.mjs`; the
 constants beside those checks explain their measured content. Keep each page's
@@ -166,16 +172,36 @@ Online play connects to the `hypergrid-online` Fly app (`wss://hypergrid-online.
 The relay keeps rooms in memory, so it must stay a single machine (`fly deploy --ha=false`); its `/built/` capture plays a real co-op round through that production relay, so the capture fails if the relay is down.
 Both players need the same build: the page's service worker is network-first for that reason, and peers refuse a protocol-version mismatch.
 
+## The homepage is a WebGL flight, and its content is plain HTML
+
+`/` is the Orbit homepage: `src/pages/index.astro` for the words and links,
+`src/orbit/` for everything that moves. `src/orbit/worlds.ts` curates the eight
+worlds and the belt; its copy is a shorter telling of `built.ts`/`portfolio.ts`
+and must not state a number those records do not, caveats included. Each
+`[data-shot]` section is a camera station; `src/orbit/gl/director.ts` holds on
+it while its sticky stage is pinned and flies between stations in the gap.
+
+The black hole (`gl/blackhole.ts`) is a background pass, so the scene cannot
+occlude against it: `scene.ts` hides any body behind its lensing zone, and any
+other planet behind the world in focus. Reduced motion cuts between stations
+instead of flying and never autoplays; without WebGL 2 or JavaScript the page
+shows `src/assets/orbit-backdrop.webp`, a real frame from the scene. Re-shoot it
+and `orbit-social.webp` with `scripts/capture-orbit-stills.mjs` after changing
+the hero. Scene textures come from raw art in the ignored `data/orbit-art/`
+through `scripts/prepare-orbit-textures.mjs`; provenance (generation prompts,
+NASA sources) is in `src/orbit/textures/manifest.json`. Planet surfaces are
+illustrations and the footer says so; every capture on the page is real.
+
 ## Portfolio directions share their depth
 
-The Worldbuilder portfolio is the site root `/`; `/portfolio/` redirects there.
-The four alternatives, `/directions/`, and `/alternate/` are injected only in
-dev mode or `build:lab`/`palettes` output. `/previous/` preserves the archived
+The previous Worldbuilder home, the four alternatives, `/directions/`, and
+`/alternate/` are injected only in dev mode or `build:lab`/`palettes` output
+(Worldbuilder at `/portfolio/worldbuilder/`); `/portfolio/` redirects to `/`.
+`/previous/` preserves the archived
 portfolio with its noindex treatment. `/built/` is the shared project
 collection. Project pages and app records come from `src/data/portfolio.ts`,
 with app records derived from `built.ts`; curate those records instead of
-deleting public demo files. `homeProjectKeys` and `secondaryProjectKeys` own
-the two homepage tiers; the hero’s backdrop order is a separate choice.
+deleting public demo files.
 
 `npm run portfolio:images` reproduces reviewed photographs from the external raw
 archive; its recipes and provenance manifests are separate from the live
