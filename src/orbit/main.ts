@@ -114,6 +114,7 @@ async function boot(canvas: HTMLCanvasElement) {
   root.classList.remove('no-gl');
   const director: Director = createDirector(sys, document.body, pointer);
   const target = createPose();
+  if (import.meta.env.DEV) Object.assign(window, { __orbit: { sys, director } });
   const cam = sys.camera;
 
   // Wait for the sky (the hero needs it) but never more than a moment.

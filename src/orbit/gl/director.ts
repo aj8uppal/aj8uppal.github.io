@@ -115,10 +115,10 @@ export function createDirector(sys: System, root: HTMLElement, pointer: THREE.Ve
       out.belt = 1;
       const az = 0.5 + t * 0.35 + time * 0.004;
       const el = 0.62 - t * 0.06;
-      const d = narrow ? 470 : 430;
+      const d = narrow ? 640 : 430;
       C.set(Math.sin(az) * Math.cos(el) * d, Math.sin(el) * d, Math.cos(az) * Math.cos(el) * d);
       look(out, C, T.set(0, 0, 0));
-      out.shift.set(narrow ? 0 : 0.38, narrow ? 0.24 : 0.02);
+      out.shift.set(narrow ? 0 : 0.38, narrow ? 0.5 : 0.02);
       return;
     }
     if (key.startsWith('world:')) {
@@ -132,8 +132,11 @@ export function createDirector(sys: System, root: HTMLElement, pointer: THREE.Ve
       const az = s.az + (t - 0.5) * s.swing;
       const el = s.el + (t - 0.5) * 0.08;
       out.fov = narrow ? 48 : 34;
-      const size = narrow ? s.size * 0.62 : s.size;
-      const d = distanceFor(w.planet.radius * (w.planet.rings ? 1.35 : 1), size, out.fov);
+      // Portrait screens are width-bound: keep the world within ~70% of the width.
+      const aspect = window.innerWidth / window.innerHeight;
+      const size = narrow ? Math.min(s.size * 0.62, 0.7 * aspect) : s.size;
+      const extent = w.planet.rings ? 1.35 : w.planet.kind === 'voxel' ? 1.25 : 1;
+      const d = distanceFor(w.planet.radius * extent, size, out.fov);
       C.copy(P)
         .addScaledVector(o, Math.cos(el) * Math.cos(az) * d)
         .addScaledVector(tg, Math.cos(el) * Math.sin(az) * d)
@@ -167,10 +170,10 @@ export function createDirector(sys: System, root: HTMLElement, pointer: THREE.Ve
         .applyAxisAngle(UP, az)
         .setY(0.18 - t * 0.08)
         .normalize();
-      const d = distanceFor(6, narrow ? 0.48 : 0.78, out.fov);
+      const d = distanceFor(6, narrow ? 0.36 : 0.78, out.fov);
       C.copy(EARTH).addScaledVector(o, d);
       look(out, C, EARTH, -0.04);
-      out.shift.set(narrow ? 0 : 0.42, narrow ? 0.38 : 0.0);
+      out.shift.set(narrow ? 0 : 0.42, narrow ? 0.5 : 0.0);
       return;
     }
     if (key === 'origin') {

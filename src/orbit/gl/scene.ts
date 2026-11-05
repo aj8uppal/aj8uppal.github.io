@@ -109,7 +109,7 @@ export interface System {
   };
   setTier(t: Tier): void;
   compile(): void;
-  resize(): void;
+  resize(force?: boolean): void;
   frame(time: number, dt: number): void;
   bodyPosition(key: string, out: THREE.Vector3): THREE.Vector3;
   dispose(): void;
@@ -491,9 +491,16 @@ export function createSystem(canvas: HTMLCanvasElement, initial: Tier): System {
     focus: '',
   };
 
-  const resize = () => {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+  // Size to the canvas, which CSS pins to the large viewport: a phone's URL bar
+  // sliding in and out changes innerHeight but must not reallocate the scene.
+  let lastW = 0;
+  let lastH = 0;
+  const resize = (force = false) => {
+    const w = canvas.clientWidth || window.innerWidth;
+    const h = canvas.clientHeight || window.innerHeight;
+    if (!force && w === lastW && h === lastH) return;
+    lastW = w;
+    lastH = h;
     renderer.setPixelRatio(tier.dpr);
     renderer.setSize(w, h, false);
     composer.setSize(w, h);
@@ -502,7 +509,7 @@ export function createSystem(canvas: HTMLCanvasElement, initial: Tier): System {
     bh.resize(w * tier.dpr, h * tier.dpr, tier.bhScale);
     stars.u.uRes.value.set(w * tier.dpr, h * tier.dpr);
   };
-  resize();
+  resize(true);
 
   const tmp = new THREE.Vector3();
   const focusDir = new THREE.Vector3();
@@ -533,7 +540,7 @@ export function createSystem(canvas: HTMLCanvasElement, initial: Tier): System {
       tier = t;
       bh.material.uniforms.uSteps!.value = t.steps;
       if (rebuild) buildComposer();
-      resize();
+      resize(true);
     },
     resize,
     bodyPosition,

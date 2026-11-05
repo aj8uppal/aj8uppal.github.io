@@ -71,6 +71,7 @@ uniform float uTime;
 uniform float uExposure;
 uniform float uCloudGain;
 uniform float uDetail;
+uniform float uLoaded;
 float dh(vec3 p) { p = fract(p * 0.3183 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
 float dn(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f);
   return mix(mix(mix(dh(i), dh(i + vec3(1,0,0)), f.x), mix(dh(i + vec3(0,1,0)), dh(i + vec3(1,1,0)), f.x), f.y),
@@ -83,7 +84,8 @@ void main() {
   vec3 L = uLightMode > 0.5 ? normalize(uLightDir) : normalize(uLightPos - vWorld);
   vec3 V = normalize(cameraPosition - vWorld);
   float ndl = dot(N, L);
-  vec3 c = texture2D(uMap, vUv).rgb;
+  // Until the map arrives, a dim body in the world's own colour, not a black hole.
+  vec3 c = mix(uAtmo * 0.12 + 0.02, texture2D(uMap, vUv).rgb, uLoaded);
   vec3 s = toSrgb(c);
 
   // Near the poles an equirect map pinches; ease toward a blurred tone there.
@@ -267,6 +269,7 @@ export function createPlanet(o: PlanetOptions): Body & { surface: THREE.Mesh } {
     uExposure: { value: 1 },
     uCloudGain: { value: o.cloudGain ?? 0.75 },
     uDetail: { value: o.detail ?? 0 },
+    uLoaded: { value: 0 },
     ...lightUniforms(o.light),
   };
   const surface = new THREE.Mesh(
@@ -333,6 +336,10 @@ export function createPlanet(o: PlanetOptions): Body & { surface: THREE.Mesh } {
     axis.add(ring);
   }
 
+  let loaded = false;
+  void (uniforms.uMap.value as THREE.Texture & { ready?: Promise<void> }).ready?.then(() => {
+    loaded = true;
+  });
   const center = new THREE.Vector3();
   return {
     key: o.key,
@@ -342,6 +349,8 @@ export function createPlanet(o: PlanetOptions): Body & { surface: THREE.Mesh } {
     update(time, dt) {
       surface.rotation.y += (o.spin ?? 0.05) * dt;
       uniforms.uTime.value = time;
+      if (loaded && uniforms.uLoaded.value < 1)
+        uniforms.uLoaded.value = Math.min(1, uniforms.uLoaded.value + Math.max(dt, 0.016) * 1.5);
       uniforms.uCloudShift.value = (time * 0.0016) % 1;
       group.getWorldPosition(center);
       shellU.uCenter.value.copy(center);

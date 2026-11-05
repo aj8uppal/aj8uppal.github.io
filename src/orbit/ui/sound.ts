@@ -1,21 +1,47 @@
 /**
- * Optional sound, off until asked for. Everything is synthesized here: a low
- * drone with a slowly breathing filter, a wash of filtered noise, sparse
- * pentatonic chimes through a generated reverb, and a soft whoosh each time
- * the camera leaves for a new station. No audio files.
+ * Optional sound, off until asked for, and synthesized here: no audio files.
+ *
+ * Everything is consonant by construction. A slow I–vi–IV–V progression in
+ * D with added ninths is voiced on sine and soft triangle partials, each note
+ * breathing on its own slow swell, through a warm reverb whose impulse is
+ * low-passed noise (a white-noise tail hisses). Over it, now and then, a
+ * music-box note drawn only from the chord that is sounding; arriving at a new
+ * station plays three of them, rising. No noise beds, no detuned saws, no
+ * hover sounds.
  */
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
-let verb: ConvolverNode | null = null;
+let padBus: GainNode | null = null;
+let bellBus: GainNode | null = null;
 let on = false;
-let chimeTimer = 0;
+let chordTimer = 0;
+let bellTimer = 0;
+let chordIndex = 0;
+let lastChime = 0;
+
+const midi = (m: number) => 440 * Math.pow(2, (m - 69) / 12);
+/** D(add9) · Bm(add9) · Gmaj9 · Asus2(6): open voicings, no clashing seconds below the top. */
+const CHORDS = [
+  [50, 57, 62, 66, 69, 76],
+  [47, 54, 62, 66, 69, 73],
+  [43, 50, 59, 62, 66, 69],
+  [45, 52, 59, 64, 69, 71],
+];
+const CHORD_SECONDS = 15;
 
 function impulse(c: AudioContext, seconds: number) {
   const len = Math.floor(c.sampleRate * seconds);
   const buf = c.createBuffer(2, len, c.sampleRate);
   for (let ch = 0; ch < 2; ch++) {
     const d = buf.getChannelData(ch);
-    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2);
+    let lp = 0;
+    for (let i = 0; i < len; i++) {
+      // One-pole low-pass on the noise, with the cutoff closing as the tail decays.
+      const t = i / len;
+      const k = 0.35 - 0.3 * t;
+      lp += k * (Math.random() * 2 - 1 - lp);
+      d[i] = lp * Math.pow(1 - t, 2.6) * 2.2;
+    }
   }
   return buf;
 }
@@ -25,160 +51,178 @@ function build() {
   ctx = c;
   master = c.createGain();
   master.gain.value = 0;
+  const tone = c.createBiquadFilter();
+  tone.type = 'lowpass';
+  tone.frequency.value = 4200;
+  tone.Q.value = 0.4;
   const comp = c.createDynamicsCompressor();
-  master.connect(comp).connect(c.destination);
-  verb = c.createConvolver();
-  verb.buffer = impulse(c, 5);
+  comp.threshold.value = -20;
+  comp.ratio.value = 2.5;
+  comp.attack.value = 0.05;
+  comp.release.value = 0.6;
+  master.connect(tone).connect(comp).connect(c.destination);
+
+  const verb = c.createConvolver();
+  verb.buffer = impulse(c, 6);
+  const pre = c.createDelay(0.2);
+  pre.delayTime.value = 0.045;
   const wet = c.createGain();
-  wet.gain.value = 0.55;
-  verb.connect(wet).connect(master);
+  wet.gain.value = 0.62;
+  pre.connect(verb).connect(wet).connect(master);
 
-  // Drone: fifths around A1, through a breathing low-pass.
-  const lp = c.createBiquadFilter();
-  lp.type = 'lowpass';
-  lp.frequency.value = 340;
-  lp.Q.value = 0.7;
-  const drone = c.createGain();
-  drone.gain.value = 0.22;
-  lp.connect(drone).connect(master);
-  drone.connect(verb);
-  for (const [f, type, g] of [
-    [55, 'sine', 0.55],
-    [82.4, 'sawtooth', 0.08],
-    [110.3, 'sawtooth', 0.06],
-    [164.8, 'triangle', 0.08],
-  ] as const) {
-    const o = c.createOscillator();
-    o.type = type;
-    o.frequency.value = f;
-    o.detune.value = (Math.random() - 0.5) * 8;
-    const og = c.createGain();
-    og.gain.value = g;
-    o.connect(og).connect(lp);
-    o.start();
-  }
-  const lfo = c.createOscillator();
-  lfo.frequency.value = 0.045;
-  const lfoG = c.createGain();
-  lfoG.gain.value = 170;
-  lfo.connect(lfoG).connect(lp.frequency);
-  lfo.start();
-
-  // Space wind: pink-ish noise through a slow band-pass sweep.
-  const noise = c.createBufferSource();
-  const nb = c.createBuffer(1, c.sampleRate * 4, c.sampleRate);
-  const nd = nb.getChannelData(0);
-  let b = 0;
-  for (let i = 0; i < nd.length; i++) {
-    b = 0.985 * b + 0.015 * (Math.random() * 2 - 1);
-    nd[i] = b * 6;
-  }
-  noise.buffer = nb;
-  noise.loop = true;
-  const bp = c.createBiquadFilter();
-  bp.type = 'bandpass';
-  bp.frequency.value = 600;
-  bp.Q.value = 0.6;
-  const ng = c.createGain();
-  ng.gain.value = 0.05;
-  noise.connect(bp).connect(ng).connect(master);
-  ng.connect(verb);
-  noise.start();
-  const lfo2 = c.createOscillator();
-  lfo2.frequency.value = 0.03;
-  const lfo2G = c.createGain();
-  lfo2G.gain.value = 380;
-  lfo2.connect(lfo2G).connect(bp.frequency);
-  lfo2.start();
+  padBus = c.createGain();
+  padBus.gain.value = 0.95;
+  padBus.connect(master);
+  padBus.connect(pre);
+  bellBus = c.createGain();
+  bellBus.gain.value = 0.55;
+  bellBus.connect(master);
+  const bellSend = c.createGain();
+  bellSend.gain.value = 1.4;
+  bellBus.connect(bellSend).connect(pre);
 }
 
-function chime() {
-  if (!ctx || !verb || !master || !on) return;
-  const scale = [440, 493.9, 587.3, 659.3, 784, 880, 987.8, 1174.7];
-  const f = scale[Math.floor(Math.random() * scale.length)]!;
-  const t = ctx.currentTime;
-  const o = ctx.createOscillator();
-  o.type = 'sine';
-  o.frequency.value = f;
+/** One chord: every note swells in, breathes, and releases into the next. */
+function playChord(notes: number[]) {
+  if (!ctx || !padBus) return;
+  const c = ctx;
+  const t = c.currentTime + 0.05;
+  const attack = 5;
+  const hold = CHORD_SECONDS - 1;
+  const release = 7;
+  notes.forEach((m, i) => {
+    const f = midi(m);
+    const voice = c.createGain();
+    const level = 0.06 / Math.sqrt(1 + i * 0.9);
+    voice.gain.setValueAtTime(0, t);
+    voice.gain.linearRampToValueAtTime(level, t + attack + i * 0.35);
+    voice.gain.setValueAtTime(level, t + hold);
+    voice.gain.linearRampToValueAtTime(0, t + hold + release);
+    const lp = c.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 2300 + i * 260;
+    lp.Q.value = 0.3;
+    voice.connect(lp).connect(padBus!);
+
+    // Each note breathes at its own slow rate.
+    const swell = c.createGain();
+    swell.gain.value = 0.75;
+    const lfo = c.createOscillator();
+    lfo.frequency.value = 0.05 + Math.random() * 0.07;
+    const depth = c.createGain();
+    depth.gain.value = 0.25;
+    lfo.connect(depth).connect(swell.gain);
+    swell.connect(voice);
+
+    const a = c.createOscillator();
+    a.type = 'sine';
+    a.frequency.value = f;
+    const b = c.createOscillator();
+    b.type = 'triangle';
+    b.frequency.value = f * 2;
+    b.detune.value = 3;
+    const bg = c.createGain();
+    bg.gain.value = 0.07;
+    a.connect(swell);
+    b.connect(bg).connect(swell);
+    const end = t + hold + release + 0.2;
+    for (const o of [a, b, lfo]) {
+      o.start(t);
+      o.stop(end);
+    }
+  });
+}
+
+function nextChord() {
+  if (!on) return;
+  playChord(CHORDS[chordIndex % CHORDS.length]!);
+  chordIndex++;
+  chordTimer = window.setTimeout(nextChord, CHORD_SECONDS * 1000);
+}
+
+/** A soft music-box note: a sine and its octave, quick attack, long decay. */
+function bell(m: number, when = 0, gain = 0.05) {
+  if (!ctx || !bellBus) return;
+  const t = ctx.currentTime + when;
+  const f = midi(m);
   const g = ctx.createGain();
   g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(0.035, t + 0.02);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 3.5);
-  o.connect(g);
-  g.connect(verb);
-  g.connect(master);
-  o.start(t);
-  o.stop(t + 3.6);
-  chimeTimer = window.setTimeout(chime, 2200 + Math.random() * 5200);
+  g.gain.linearRampToValueAtTime(gain, t + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 3.8);
+  g.connect(bellBus);
+  const a = ctx.createOscillator();
+  a.type = 'sine';
+  a.frequency.value = f;
+  const b = ctx.createOscillator();
+  b.type = 'sine';
+  b.frequency.value = f * 2;
+  const bg = ctx.createGain();
+  bg.gain.value = 0.18;
+  a.connect(g);
+  b.connect(bg).connect(g);
+  for (const o of [a, b]) {
+    o.start(t);
+    o.stop(t + 4);
+  }
 }
 
-export function whoosh(strength = 1) {
-  if (!ctx || !master || !on) return;
-  const t = ctx.currentTime;
-  const src = ctx.createBufferSource();
-  const len = ctx.sampleRate * 1.6;
-  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
-  const d = buf.getChannelData(0);
-  for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-  src.buffer = buf;
-  const f = ctx.createBiquadFilter();
-  f.type = 'bandpass';
-  f.Q.value = 1.4;
-  f.frequency.setValueAtTime(220, t);
-  f.frequency.exponentialRampToValueAtTime(2400, t + 0.7);
-  f.frequency.exponentialRampToValueAtTime(300, t + 1.5);
-  const g = ctx.createGain();
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(0.06 * strength, t + 0.5);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 1.55);
-  src.connect(f).connect(g).connect(master);
-  if (verb) g.connect(verb);
-  src.start(t);
+const current = () => CHORDS[(chordIndex + CHORDS.length - 1) % CHORDS.length]!;
+
+function sparkle() {
+  if (!on) return;
+  const notes = current().slice(-3);
+  bell(notes[Math.floor(Math.random() * notes.length)]! + 12, 0, 0.03);
+  bellTimer = window.setTimeout(sparkle, 4000 + Math.random() * 6000);
 }
 
-export function blip() {
-  if (!ctx || !master || !on) return;
-  const t = ctx.currentTime;
-  const o = ctx.createOscillator();
-  o.type = 'sine';
-  o.frequency.setValueAtTime(1320, t);
-  o.frequency.exponentialRampToValueAtTime(1980, t + 0.06);
-  const g = ctx.createGain();
-  g.gain.setValueAtTime(0.0001, t);
-  g.gain.exponentialRampToValueAtTime(0.018, t + 0.008);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
-  o.connect(g).connect(master);
-  if (verb) g.connect(verb);
-  o.start(t);
-  o.stop(t + 0.16);
+function arrive() {
+  if (!on || !ctx) return;
+  const now = performance.now();
+  if (now - lastChime < 1800) return;
+  lastChime = now;
+  const notes = current();
+  [notes[2]!, notes[3]!, notes[4]!].forEach((m, i) => bell(m + 12, i * 0.13, 0.045 - i * 0.008));
 }
 
 export function initSound() {
   const btn = document.querySelector<HTMLButtonElement>('[data-sound]');
   if (!btn) return;
+  const label = btn.querySelector('[data-sound-label]');
   const set = (value: boolean) => {
     on = value;
     btn.setAttribute('aria-pressed', String(on));
-    btn.querySelector('[data-sound-label]')!.textContent = on ? 'Sound on' : 'Sound off';
+    if (label) label.textContent = on ? 'Sound on' : 'Sound off';
+    clearTimeout(chordTimer);
+    clearTimeout(bellTimer);
     if (on) {
       if (!ctx) build();
-      ctx!.resume();
-      master!.gain.cancelScheduledValues(ctx!.currentTime);
-      master!.gain.setTargetAtTime(0.9, ctx!.currentTime, 0.8);
-      clearTimeout(chimeTimer);
-      chimeTimer = window.setTimeout(chime, 1200);
+      void ctx!.resume();
+      const t = ctx!.currentTime;
+      master!.gain.cancelScheduledValues(t);
+      master!.gain.setValueAtTime(master!.gain.value, t);
+      master!.gain.linearRampToValueAtTime(1.1, t + 3);
+      nextChord();
+      bellTimer = window.setTimeout(sparkle, 6000);
     } else if (ctx && master) {
-      master.gain.setTargetAtTime(0, ctx.currentTime, 0.3);
-      clearTimeout(chimeTimer);
+      const t = ctx.currentTime;
+      master.gain.cancelScheduledValues(t);
+      master.gain.setValueAtTime(master.gain.value, t);
+      master.gain.linearRampToValueAtTime(0, t + 1.2);
+      const c = ctx;
+      window.setTimeout(() => {
+        if (!on) void c.suspend();
+      }, 1400);
     }
   };
   btn.addEventListener('click', () => set(!on));
-  let lastBlip = 0;
-  document.addEventListener('pointerover', (e) => {
-    const el = (e.target as HTMLElement).closest('a, button');
-    if (!el || performance.now() - lastBlip < 70) return;
-    lastBlip = performance.now();
-    blip();
+  document.addEventListener('orbit:station', (e) => {
+    const key = (e as CustomEvent<string>).detail ?? '';
+    if (key.startsWith('world:') || key === 'earth' || key === 'origin' || key === 'contact')
+      arrive();
   });
-  document.addEventListener('orbit:station', () => whoosh());
+  document.addEventListener('visibilitychange', () => {
+    if (!ctx) return;
+    if (document.hidden) void ctx.suspend();
+    else if (on) void ctx.resume();
+  });
 }

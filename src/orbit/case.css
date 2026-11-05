@@ -194,7 +194,7 @@
 .case-title {
   --len: 8;
   margin: 0;
-  font: 740 clamp(52px, min(11vw, calc(96vw / var(--len))), 188px) / 0.86 var(--f-display);
+  font: 700 clamp(56px, min(13vw, calc(124vw / var(--len))), 220px) / 0.86 var(--f-display);
   letter-spacing: -0.055em;
   text-wrap: balance;
   text-shadow: 0 10px 60px rgb(0 0 0 / 0.45);
@@ -754,7 +754,7 @@
 }
 .pc-system-stat strong {
   display: block;
-  font: 720 clamp(56px, 10vw, 156px) / 0.9 var(--f-display);
+  font: 680 clamp(60px, 11.5vw, 180px) / 0.9 var(--f-display);
   letter-spacing: -0.055em;
   background: linear-gradient(180deg, #fff 20%, color-mix(in srgb, var(--accent) 60%, #fff));
   -webkit-background-clip: text;
@@ -857,7 +857,7 @@
 }
 .case-build h2 {
   margin: 0;
-  font: 680 clamp(36px, 5vw, 84px) / 0.96 var(--f-display);
+  font: 660 clamp(38px, 5.6vw, 94px) / 0.96 var(--f-display);
   letter-spacing: -0.045em;
   text-wrap: balance;
 }
@@ -1034,7 +1034,7 @@
 }
 .case-next h2 {
   margin: 0;
-  font: 680 clamp(32px, 4vw, 64px) / 1 var(--f-display);
+  font: 660 clamp(34px, 4.6vw, 72px) / 1 var(--f-display);
   letter-spacing: -0.045em;
 }
 .case-next > div {
@@ -1266,7 +1266,7 @@
     padding-bottom: 48px;
   }
   .case-title {
-    font-size: min(18vw, calc(92vw / var(--len)));
+    font-size: min(20vw, calc(118vw / var(--len)));
   }
   .case-summary {
     font-size: 24px;
@@ -1361,7 +1361,7 @@
 }
 .buoy__title {
   margin: 0;
-  font: 740 clamp(56px, 10vw, 170px) / 0.86 var(--f-display);
+  font: 700 clamp(60px, 11.5vw, 196px) / 0.86 var(--f-display);
   letter-spacing: -0.055em;
 }
 .buoy__title span {

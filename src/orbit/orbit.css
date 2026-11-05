@@ -1,7 +1,7 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Orbit: the redesigned site's one stylesheet.
-   One dark look. Type: Unbounded (display), Manrope (text), Instrument Serif
-   (voice), JetBrains Mono (instruments). --accent follows the camera.
+   One dark look. Type: Geist (display and text), Instrument Serif (voice),
+   Geist Mono (instruments). --accent follows the camera.
    ───────────────────────────────────────────────────────────────────────── */
 
 @property --accent {
@@ -19,9 +19,9 @@
   --line-2: rgb(255 255 255 / 0.2);
   --panel: rgb(10 11 20 / 0.7);
   --accent: #ffb46a;
-  --f-display: 'Unbounded Variable', 'Unbounded', system-ui, sans-serif;
-  --f-text: 'Manrope Variable', 'Manrope', system-ui, sans-serif;
-  --f-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+  --f-display: 'Geist Variable', 'Geist', system-ui, sans-serif;
+  --f-text: 'Geist Variable', 'Geist', system-ui, sans-serif;
+  --f-mono: 'Geist Mono Variable', 'Geist Mono', ui-monospace, monospace;
   --f-serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
   --gutter: clamp(20px, 4.2vw, 72px);
   --nav-h: 72px;
@@ -61,7 +61,7 @@ body {
   font-family: var(--f-text);
   font-size: 17px;
   line-height: 1.6;
-  font-weight: 450;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -147,6 +147,7 @@ em {
   inset: 0;
   width: 100%;
   height: 100vh;
+  height: 100lvh;
   z-index: 0;
   display: block;
   opacity: 0;
@@ -443,8 +444,7 @@ em {
     transform 0.4s var(--ease-out);
 }
 .rail:hover .rail__label,
-.rail a:focus-visible .rail__label,
-.rail a[aria-current] .rail__label {
+.rail a:focus-visible .rail__label {
   opacity: 1;
   transform: none;
 }
@@ -702,7 +702,7 @@ main > section {
 .hero__title {
   grid-row: 3;
   margin: 0;
-  font: 760 clamp(64px, 15.2vw, 268px) / 0.8 var(--f-display);
+  font: 720 clamp(56px, min(17.5vw, 36vh), 320px) / 0.8 var(--f-display);
   letter-spacing: -0.055em;
   text-transform: uppercase;
   margin-left: -0.05em;
@@ -825,7 +825,7 @@ main > section {
 }
 .system__title {
   margin: 0;
-  font: 680 clamp(40px, 5vw, 86px) / 0.95 var(--f-display);
+  font: 660 clamp(42px, 5.6vw, 96px) / 0.95 var(--f-display);
   letter-spacing: -0.045em;
 }
 .system__lead {
@@ -928,7 +928,7 @@ main > section {
 .world__name {
   --len: 8;
   margin: 0;
-  font: 720 clamp(40px, min(6.4vw, calc(50vw / var(--len))), 116px) / 0.92 var(--f-display);
+  font: 680 clamp(44px, min(7.6vw, calc(70vw / var(--len))), 136px) / 0.92 var(--f-display);
   letter-spacing: -0.05em;
   text-wrap: balance;
 }
@@ -966,7 +966,7 @@ main > section {
   box-shadow: 0 0 10px var(--c);
 }
 .world__facts dt {
-  font: 620 clamp(22px, 2.1vw, 34px) / 1 var(--f-display);
+  font: 600 clamp(24px, 2.3vw, 38px) / 1 var(--f-display);
   letter-spacing: -0.03em;
 }
 .world__facts dd {
@@ -1105,7 +1105,7 @@ main > section {
 }
 .belt__head h2 {
   margin: 0;
-  font: 680 clamp(34px, 4.2vw, 68px) / 0.98 var(--f-display);
+  font: 660 clamp(36px, 4.8vw, 78px) / 0.98 var(--f-display);
   letter-spacing: -0.045em;
 }
 .belt__head p:last-child {
@@ -1210,7 +1210,7 @@ main > section {
   color: var(--c);
 }
 .belt__name {
-  font: 640 19px/1.15 var(--f-display);
+  font: 620 20px/1.15 var(--f-display);
   letter-spacing: -0.02em;
 }
 .belt__what {
@@ -1260,7 +1260,7 @@ main > section {
 .earth h2,
 .origin h2 {
   margin: 0;
-  font: 680 clamp(34px, 4vw, 70px) / 0.98 var(--f-display);
+  font: 660 clamp(36px, 4.5vw, 78px) / 0.98 var(--f-display);
   letter-spacing: -0.045em;
   text-wrap: balance;
 }
@@ -1282,7 +1282,7 @@ main > section {
   padding-top: 14px;
 }
 .stats dt {
-  font: 640 clamp(30px, 3.4vw, 56px) / 1 var(--f-display);
+  font: 620 clamp(32px, 3.8vw, 62px) / 1 var(--f-display);
   letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
   background: linear-gradient(180deg, #fff, color-mix(in srgb, var(--accent) 50%, #fff));
@@ -1439,12 +1439,12 @@ main > section {
 }
 .contact__title {
   margin: 0;
-  font: 740 clamp(56px, 9vw, 170px) / 0.86 var(--f-display);
+  font: 700 clamp(60px, 10.5vw, 196px) / 0.86 var(--f-display);
   letter-spacing: -0.06em;
 }
 .contact__email {
   margin-top: 26px;
-  font: 500 clamp(20px, 2.6vw, 42px) / 1.1 var(--f-display);
+  font: 500 clamp(22px, 2.9vw, 46px) / 1.1 var(--f-display);
   letter-spacing: -0.03em;
   text-decoration: none;
   background: linear-gradient(currentColor, currentColor) 0 100% / 0% 1px no-repeat;
@@ -1564,7 +1564,21 @@ main > section {
   .world__stack {
     display: none;
   }
-  .origin__copy .notes li:nth-child(n + 3) {
+  .origin__copy .notes {
+    display: none;
+  }
+  .origin__copy {
+    grid-template-columns: 1fr;
+  }
+  .origin__lead {
+    font-size: 15px;
+  }
+  .timeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+    border-left: 0;
+  }
+  .timeline__note {
     display: none;
   }
 }
@@ -1580,7 +1594,7 @@ main > section {
   }
   .nav__links,
   .rail,
-  .hud__right,
+  .hud,
   .hero__tele {
     display: none;
   }
@@ -1596,10 +1610,10 @@ main > section {
     gap: 22px;
   }
   .hero__title {
-    font-size: clamp(56px, 21vw, 120px);
+    font-size: clamp(60px, 24vw, 150px);
   }
   .world__name {
-    font-size: min(15vw, calc(84vw / var(--len)));
+    font-size: min(17vw, calc(112vw / var(--len)));
   }
 
   /* Stages flow on phones: the scene holds while the copy scrolls over it. */
@@ -1662,6 +1676,7 @@ main > section {
   }
   .belt__stage {
     display: block;
+    justify-items: normal;
     padding: 46svh 0 10svh;
   }
   .belt__head {
@@ -1700,15 +1715,99 @@ main > section {
   }
 }
 
+/* ── Phones held sideways ──────────────────────────────────────────────
+   Too short for a pinned 100svh stage: the copy flows beside the held planet
+   instead, and the capture sits inline under it. */
+
+@media (min-width: 760px) and (max-height: 520px) {
+  :root {
+    --nav-h: 56px;
+  }
+  .hud,
+  .rail,
+  .hero__tele {
+    display: none;
+  }
+  .nav__links {
+    gap: 16px;
+  }
+  .system,
+  .world,
+  .earth,
+  .origin,
+  .contact {
+    height: auto;
+  }
+  .system > .system__stage,
+  .world > .world__stage,
+  .earth > .earth__stage,
+  .origin > .origin__stage,
+  .contact > .contact__stage {
+    position: relative;
+    height: auto;
+    min-height: 100svh;
+    padding-top: calc(var(--nav-h) + 24px);
+    padding-bottom: 18svh;
+  }
+  .world__copy,
+  .earth__copy {
+    grid-column: 1 / span 6;
+  }
+  .world[data-side='right'] .world__copy,
+  .origin__copy {
+    grid-column: 7 / span 6;
+  }
+  .world__name {
+    font-size: clamp(36px, min(6vw, calc(56vw / var(--len))), 72px);
+  }
+  .world__headline {
+    font-size: 22px;
+  }
+  .world__body {
+    font-size: 14.5px;
+  }
+  .world__media,
+  .world[data-side='right'] .world__media {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    margin-top: 22px;
+    --tilt-base: 0deg;
+  }
+  .world__stage {
+    align-items: start;
+  }
+  .world__stage > .world__media {
+    grid-column: 1 / span 6;
+  }
+  .world[data-side='right'] .world__stage > .world__media {
+    grid-column: 7 / span 6;
+    grid-row: 2;
+  }
+  .origin__copy {
+    display: block;
+  }
+  .notes {
+    display: none;
+  }
+  .contact__stage {
+    padding-left: 46vw;
+  }
+}
+
 /* The belt lies flat on phones and under reduced motion. */
 @media (max-width: 719px) {
+  /* Chrome honours justify-items in block layout too, so the desktop
+     centring would shrink-wrap the strip to its full content width. */
   .belt__viewport {
     display: block;
+    justify-items: normal;
     perspective: none;
     margin-top: 28px;
   }
   .belt__ring {
-    width: auto;
+    width: 100%;
+    justify-self: stretch;
     height: auto;
     display: flex;
     gap: 14px;
@@ -1779,4 +1878,12 @@ html:not(.js) .nav__sound,
 html:not(.js) .hero__tele,
 .no-gl .hero__tele {
   display: none;
+}
+
+/* Where copy flows under the nav rather than pinning below it, back the nav. */
+@media (max-width: 759px), (min-width: 760px) and (max-height: 520px) {
+  .nav::before {
+    inset: 0 0 -28px;
+    background: linear-gradient(rgb(2 2 7 / 0.94) 62%, rgb(2 2 7 / 0));
+  }
 }

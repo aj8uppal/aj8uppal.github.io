@@ -141,11 +141,16 @@ console.log('desktop 1440×900');
   await ctx.close();
 }
 
-/* ── Phone ─────────────────────────────────────────────────────────────── */
-console.log('phone 390×844');
-{
+/* ── Phones: upright, small, large and sideways ─────────────────────────── */
+for (const [w, h] of [
+  [390, 844],
+  [375, 667],
+  [430, 932],
+  [844, 390],
+]) {
+  console.log(`phone ${w}×${h}`);
   const { ctx, page, errors } = await open({
-    viewport: { width: 390, height: 844 },
+    viewport: { width: w, height: h },
     dpr: 2,
     mobile: true,
   });
@@ -154,12 +159,20 @@ console.log('phone 390×844');
   });
   for (const id of ['top', 'worlds', 'saltline', 'belt', 'earth', 'origin', 'contact']) {
     await scrollTo(page, id, 0.3);
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(250);
     const o = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
     ok(o <= 0, `no horizontal overflow at #${id}`, `${o}px`);
   }
+  // The belt strip must start at its first card, not centred on its middle.
+  const first = await page.evaluate(() => {
+    const r = document.querySelector('.belt__ring');
+    return getComputedStyle(r).display === 'flex'
+      ? Math.round(r.firstElementChild.getBoundingClientRect().left)
+      : 0;
+  });
+  ok(first >= 0, 'belt strip starts at its first card', `${first}px`);
   ok(errors.length === 0, 'no script errors', errors.slice(0, 3).join(' | '));
   await ctx.close();
 }
