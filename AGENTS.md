@@ -175,6 +175,14 @@ Ranked are shown greyed out, and nothing calls a server. Its service worker is r
 scope `/seventide/` and caches only that folder, under cache names starting `seventide-globe-`; keep it that way, a
 worker scoped to `/` would capture the whole site.
 
+## `public/emberdeep/` is a build, and it has no server
+
+Emberdeep (the 3D action roguelike) lives in `~/roguelike-game`; `public/emberdeep/` is its static build, made with
+`SITE_DIR=<this checkout> npm run pages:sync` there (`build:pages` sets the Vite base to `/emberdeep/`), so change the
+source and re-sync rather than patching the bundle. All progress is local: one `localStorage` key,
+`emberdeep.meta.v1`, plus `emberdeep.volumes` and `emberdeep.quality`. It registers no service worker and calls no
+server; the Daily Rite seed comes from the UTC date.
+
 ## Portfolio directions share their depth
 
 The Worldbuilder portfolio is the site root `/`; `/portfolio/` redirects there.
