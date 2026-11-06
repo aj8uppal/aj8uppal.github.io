@@ -219,6 +219,14 @@ Ranked are shown greyed out, and nothing calls a server. Its service worker is r
 scope `/seventide/` and caches only that folder, under cache names starting `seventide-globe-`; keep it that way, a
 worker scoped to `/` would capture the whole site.
 
+## `public/emberdeep/` is a build, and it has no server
+
+Emberdeep (the 3D action roguelike) lives in `~/roguelike-game`; `public/emberdeep/` is its static build, made with
+`SITE_DIR=<this checkout> npm run pages:sync` there (`build:pages` sets the Vite base to `/emberdeep/`), so change the
+source and re-sync rather than patching the bundle. All progress is local: one `localStorage` key,
+`emberdeep.meta.v1`, plus `emberdeep.volumes` and `emberdeep.quality`. It registers no service worker and calls no
+server; the Daily Rite seed comes from the UTC date.
+
 ## The /v2/ game builds are copies of other projects
 
 `public/lanternwake/`, `public/lantern-roads/`, `public/harvest-crown/` and
@@ -237,7 +245,7 @@ which is keyboard, mouse and gamepad only.
 
 ## The deployed site has a 1 GB ceiling
 
-GitHub Pages limits a published site to 1 GB, and `dist/` was 764 MB once the games
+GitHub Pages limits a published site to 1 GB, and `dist/` was about 785 MB once the games
 above were added, with `public/media/trailers/` the largest part. Measure
 `du -sh dist` before adding a game. Saltline (`~/saltline-opus`) is 268 MB even
 with its AAC fallbacks removed, so /v2/ links to its Fly app
