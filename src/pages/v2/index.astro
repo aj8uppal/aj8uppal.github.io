@@ -42,8 +42,9 @@ const stations = [
   { id: 'contact', shot: 'contact', label: 'Contact' },
 ];
 const onPhone = worlds.filter(phone).length;
-// Phones get the 640px encodes of the same clips (public/media/previews/640/).
-const smallClip = (src: string) => src.replace('/media/previews/', '/media/previews/640/');
+// Phones get 960px encodes of the same clips (public/media/previews/960/): a
+// clip card is ~1050 device pixels wide on a 3x phone, where 640 read as blur.
+const smallClip = (src: string) => src.replace('/media/previews/', '/media/previews/960/');
 const first = worlds[0]!;
 // Long names fit on two lines: size them by half the name, not just its
 // longest word, or a three-word title pushes Play off a laptop screen.

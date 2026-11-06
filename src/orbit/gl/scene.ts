@@ -31,26 +31,57 @@ export const BELT = { inner: 158, outer: 186 };
 
 export interface Tier {
   name: 'high' | 'mid' | 'low';
+  /** Render resolution, in device pixels per CSS pixel. */
   dpr: number;
+  /** The ray march's share of that resolution (the sky itself is always full). */
   bhScale: number;
   steps: number;
   msaa: number;
   quality: number;
+  /** The rung to fall back to when frames run long. */
+  next?: Tier;
 }
 
 export function pickTier(): Tier {
   const mobile =
     matchMedia('(pointer: coarse)').matches || Math.min(screen.width, screen.height) < 600;
   const dpr = window.devicePixelRatio || 1;
-  if (mobile)
-    return {
-      name: 'low',
+  const low: Tier = { name: 'low', dpr: 1, bhScale: 0.5, steps: 110, msaa: 0, quality: 0.4 };
+  // Phones are 3x screens. At the old 1.5x with a 0.45 march the background
+  // was a fifth of native resolution and read as blur. A phone now starts at
+  // its own resolution (march at 1.5 px per CSS pixel, the sky's stars at full
+  // resolution) and steps down a rung at a time if frames run long. Measured
+  // on an M5 Max at 393x852: 0.85 ms a frame at 3x, 0.59 at 2x.
+  if (mobile) {
+    const mid: Tier = {
+      name: 'mid',
       dpr: Math.min(dpr, 1.5),
-      bhScale: 0.45,
+      bhScale: 0.6,
       steps: 120,
       msaa: 0,
       quality: 0.4,
+      next: low,
     };
+    const two: Tier = {
+      name: 'high',
+      dpr: Math.min(dpr, 2),
+      bhScale: 0.6,
+      steps: 130,
+      msaa: 0,
+      quality: 0.4,
+      next: mid,
+    };
+    if (dpr <= 2) return two;
+    return {
+      name: 'high',
+      dpr: Math.min(dpr, 3),
+      bhScale: 0.5,
+      steps: 140,
+      msaa: 0,
+      quality: 0.4,
+      next: two,
+    };
+  }
   // The hole is the headline: full resolution on a 1x screen, where a
   // reduced pass showed as a beaded photon ring.
   return {
@@ -60,22 +91,20 @@ export function pickTier(): Tier {
     steps: 240,
     msaa: 4,
     quality: 1,
-  };
-}
-
-export function downgrade(t: Tier): Tier | null {
-  if (t.name === 'high')
-    return {
+    next: {
       name: 'mid',
-      dpr: Math.min(t.dpr, 1.25),
+      dpr: Math.min(dpr, 1.25),
       bhScale: 0.5,
       steps: 170,
       msaa: 0,
       quality: 0.7,
-    };
-  if (t.name === 'mid')
-    return { name: 'low', dpr: 1, bhScale: 0.4, steps: 110, msaa: 0, quality: 0.4 };
-  return null;
+      next: low,
+    },
+  };
+}
+
+export function downgrade(t: Tier): Tier | null {
+  return t.next ?? null;
 }
 
 /** World-space body record the camera director can aim at. */
@@ -143,6 +172,7 @@ function makeStars(count: number) {
     uRes: { value: new THREE.Vector2(1, 1) },
     uStretch: { value: 0.11 },
     uGain: { value: 1 },
+    uPx: { value: 1 },
   };
   const mat = new THREE.ShaderMaterial({
     uniforms: u,
@@ -157,8 +187,12 @@ function makeStars(count: number) {
       uniform float uBox;
       uniform vec2 uRes;
       uniform float uStretch;
+      uniform float uPx;
       varying float vA;
       varying float vAcross;
+      varying float vAlong;
+      varying float vHalf;
+      varying float vW;
       varying vec3 vColor;
       void main() {
         vec3 rel = mod(aPos - uCam + uBox * 0.5, uBox) - uBox * 0.5;
@@ -175,8 +209,12 @@ function makeStars(count: number) {
         vec2 dn = len > 0.001 ? d / len : vec2(1.0, 0.0);
         vec2 nn = vec2(-dn.y, dn.x);
         float dist = length(rel);
-        float w = (0.6 + aSeed * 0.9) * clamp(30.0 / dist, 0.5, 1.6);
+        // Never thinner than ~1.6 px across, or the streak shimmers as it moves.
+        float w = max((0.6 + aSeed * 0.9) * clamp(30.0 / dist, 0.5, 1.6), 0.8) * uPx;
         vec2 p = s0 + d * position.x + nn * position.y * w + dn * (position.x - 0.5) * w * 2.0;
+        vAlong = (position.x - 0.5) * (len + 2.0 * w);
+        vHalf = len * 0.5;
+        vW = w;
         gl_Position = vec4(p / (uRes * 0.5) * c0.w, c0.z, c0.w);
         float fade = smoothstep(uBox * 0.5, uBox * 0.32, dist) * smoothstep(2.0, 8.0, dist);
         vA = fade * (1.0 - behind) * (0.12 + pow(aSeed, 3.0) * 0.6) * (1.0 + min(len, 300.0) * 0.012) / (1.0 + len * 0.0035);
@@ -187,10 +225,15 @@ function makeStars(count: number) {
       precision highp float;
       varying float vA;
       varying float vAcross;
+      varying float vAlong;
+      varying float vHalf;
+      varying float vW;
       varying vec3 vColor;
       uniform float uGain;
       void main() {
-        float a = (1.0 - vAcross * vAcross) * vA * uGain;
+        // A capsule: a round point at rest, a streak with round ends in flight.
+        float e = max(abs(vAlong) - vHalf, 0.0) / vW;
+        float a = max(1.0 - e * e - vAcross * vAcross, 0.0) * vA * uGain;
         gl_FragColor = vec4(vColor * a * 2.0, a);
       }`,
   });
@@ -322,20 +365,8 @@ export function createSystem(canvas: HTMLCanvasElement, initial: Tier): System {
   const sky = texture('sky', { mips: false });
   const bh = createBlackHole(sky);
 
-  // The lensed sky, drawn behind everything from the half-res pass.
-  const back = new THREE.Mesh(
-    new THREE.PlaneGeometry(2, 2),
-    new THREE.ShaderMaterial({
-      uniforms: { uTex: { value: bh.target.texture } },
-      depthTest: false,
-      depthWrite: false,
-      vertexShader: /* glsl */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0.99999, 1.0); }`,
-      fragmentShader: /* glsl */ `precision highp float; uniform sampler2D uTex; varying vec2 vUv; void main() { gl_FragColor = vec4(texture2D(uTex, vUv).rgb, 1.0); }`,
-    }),
-  );
-  back.frustumCulled = false;
-  back.renderOrder = -1000;
-  scene.add(back);
+  // The lensed sky, drawn behind everything at full resolution.
+  scene.add(bh.back);
 
   const diskLight: Light = {
     mode: 0,
@@ -506,6 +537,10 @@ export function createSystem(canvas: HTMLCanvasElement, initial: Tier): System {
     camera.updateProjectionMatrix();
     bh.resize(w * tier.dpr, h * tier.dpr, tier.bhScale);
     stars.u.uRes.value.set(w * tier.dpr, h * tier.dpr);
+    // Stars hold one size in CSS pixels on any screen.
+    const px = THREE.MathUtils.clamp(tier.dpr * 0.6, 1, 1.9);
+    bh.back.material.uniforms.uStarPx!.value = px;
+    stars.u.uPx.value = px;
   };
   resize(true);
 
@@ -611,7 +646,7 @@ export function createSystem(canvas: HTMLCanvasElement, initial: Tier): System {
       renderer.toneMappingExposure = fx.exposure;
 
       camera.updateMatrixWorld();
-      bh.render(renderer, camera);
+      bh.render(renderer, camera, lastH * tier.dpr);
       composer.render(dt);
     },
     dispose() {

@@ -246,9 +246,10 @@ async function boot(canvas: HTMLCanvasElement) {
     if (now - fpsT > 500) {
       const fps = (frames * 1000) / (now - fpsT);
       root.dataset.fps = fps.toFixed(0);
-      // Adaptive quality: step down once if we are clearly struggling.
-      if (now - start > 4000) {
-        slow = fps < 42 ? slow + 1 : 0;
+      // Adaptive quality: step down a rung after two seconds of dropped
+      // frames (a 60 Hz screen that cannot hold 50 is visibly stuttering).
+      if (now - start > 4000 && !document.hidden) {
+        slow = fps < 50 ? slow + 1 : 0;
         if (slow >= 4) {
           const next = downgrade(tier);
           if (next) {

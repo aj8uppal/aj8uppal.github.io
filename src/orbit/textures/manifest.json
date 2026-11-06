@@ -101,7 +101,7 @@
   {
     "file": "nebula-violet.webp",
     "from": "nebula-violet.png",
-    "bytes": 63326,
+    "bytes": 117346,
     "provenance": {
       "source": "NASA Visible Earth (public domain), via the three-globe example assets",
       "url": "https://cdn.jsdelivr.net/gh/vasturiano/three-globe@master/example/img/nebula-violet.png"
@@ -110,7 +110,7 @@
   {
     "file": "nebula-amber.webp",
     "from": "nebula-amber.png",
-    "bytes": 35392,
+    "bytes": 63846,
     "provenance": {
       "generator": "Codex built-in image_gen",
       "prompt": "A deep-space emission nebula photographed by a space telescope, wide 3:2 landscape. Billowing clouds of warm amber, gold and rose-red gas with bright glowing ionised edges and dark dust pillars, a few blue-white stars with soft diffraction spikes. The nebula sits in the middle and fades completely to TRUE PURE BLACK around all four edges so it can be composited additively over a star field. No text, no planets, no spacecraft. Photorealistic, JWST-style, extremely high detail."
@@ -119,7 +119,7 @@
   {
     "file": "nebula-blue.webp",
     "from": "nebula-blue.png",
-    "bytes": 40514,
+    "bytes": 75540,
     "provenance": {
       "generator": "Codex built-in image_gen",
       "prompt": "A deep-space reflection nebula photographed by a space telescope, wide 3:2 landscape. Delicate wispy veils and filaments of electric blue, cyan and silvery white gas, like smoke in starlight, with a cluster of bright young blue stars inside it. The nebula sits in the middle and fades completely to TRUE PURE BLACK around all four edges so it can be composited additively. No text, no planets, no spacecraft. Photorealistic, extremely high detail."

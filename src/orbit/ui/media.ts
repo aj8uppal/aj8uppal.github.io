@@ -3,7 +3,7 @@
  * it is, and never under reduced motion or Save-Data. The still under each
  * clip is an ordinary lazy <img>, so nothing is fetched for cards far below
  * and a page without JavaScript still shows every capture. Phones get the
- * 640px encodes in public/media/previews/640/. A clip scrolled away before it
+ * 960px encodes in public/media/previews/960/. A clip scrolled away before it
  * finished downloading is detached again, so a fast scroll does not leave a
  * dozen downloads running. Cards with [data-tilt] lean toward the pointer and
  * carry a glare that follows it.

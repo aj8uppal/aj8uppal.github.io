@@ -1,7 +1,16 @@
 /**
  * The sky: a Schwarzschild black hole at the origin, its accretion disk, and a
- * lensed panorama behind it, drawn as one full-screen pass at reduced
- * resolution and composited behind the rest of the scene.
+ * lensed panorama behind it.
+ *
+ * It is drawn in two passes. The ray march runs at reduced resolution and
+ * writes two images: the light it picked up (disk and photon-sphere glow, plus
+ * how much sky still shows through) and the bend, how far each ray's escape
+ * direction is from where it started. The sky itself is drawn at full
+ * resolution behind the rest of the scene: each pixel takes its own exact
+ * camera ray, adds the interpolated bend and looks up the stars there. The lens
+ * map is smooth almost everywhere, so a quarter-size march loses nothing a
+ * visitor can see, and the stars stay one screen pixel wide on a 3x phone
+ * instead of being magnified out of a small buffer.
  *
  * Units are Schwarzschild radii (r_s = 1). Photon paths are integrated with the
  * usual trick for a point mass: in flat coordinates a light ray around a
@@ -28,29 +37,8 @@ void main() {
   gl_Position = vec4(position.xy, 0.0, 1.0);
 }`;
 
-const fragment = /* glsl */ `
-precision highp float;
-varying vec2 vUv;
-uniform mat4 uProjInv;
-uniform mat4 uCamWorld;
-uniform vec3 uCamPos;
-uniform float uTime;
-uniform float uDiskTime;
-uniform sampler2D uSky;
-uniform mat3 uSkyRot;
-uniform float uSkyGain;
-uniform float uStarGain;
-uniform float uDisk;
-uniform int uSteps;
-uniform float uPixel;
-uniform vec3 uSunDir;
-uniform float uSun;
-
+const common = /* glsl */ `
 #define PI 3.14159265359
-const float R_IN = ${DISK_IN.toFixed(2)};
-const float R_OUT = ${DISK_OUT.toFixed(2)};
-const float R_MARCH = 42.0;
-
 float hash13(vec3 p3) {
   p3 = fract(p3 * 0.1031);
   p3 += dot(p3, p3.zyx + 31.32);
@@ -75,43 +63,102 @@ float fbm3(vec3 p) {
   for (int i = 0; i < 4; i++) { s += a * noise3(p); p = p * 2.03 + 11.7; a *= 0.5; }
   return s;
 }
+`;
 
-vec3 starLayer(vec3 d, float scale, float density, float gain, float fp) {
-  vec3 p = d * scale;
-  vec3 c = floor(p);
-  vec3 col = vec3(0.0);
-  // Check the cell and its neighbours on the dominant axes so stars near a
-  // cell wall are not clipped.
-  for (int k = 0; k < 2; k++) {
-    vec3 cell = c + (k == 0 ? vec3(0.0) : step(0.5, fract(p)) * 2.0 - 1.0);
-    vec3 h = hash33(cell);
-    if (h.x > density) continue;
-    vec3 sp = cell + hash33(cell + 7.1);
-    // Distance from the ray to the star on the unit sphere, in cell units.
-    vec3 sd = normalize(sp);
-    float ang = length(sd - d) * scale; // chord: acos loses precision near 1
-    float px = fp * scale;
-    float b = pow(h.y, 9.0) * 7.0 + 0.06;
-    float tw = 0.75 + 0.25 * sin(uTime * (1.0 + h.z * 3.0) + h.y * 40.0);
-    float g = exp(-ang * ang / (px * px * 1.1)) * b * tw;
-    vec3 tint = mix(vec3(0.62, 0.75, 1.0), vec3(1.0, 0.82, 0.62), h.z);
-    col += tint * g * gain;
-  }
-  return col;
+/**
+ * Stars sit on a cube-map grid: each face is an n x n grid of cells, and a cell
+ * holds at most one star, kept a quarter-cell clear of its walls, so one cell
+ * lookup draws it whole. Each layer fades out where its cells would be only a
+ * few pixels wide, so a low-resolution screen gets fewer, cleaner stars rather
+ * than a field of aliasing.
+ */
+const skyChunk = /* glsl */ `
+uniform sampler2D uSky;
+uniform mat3 uSkyRot;
+uniform float uSkyGain;
+uniform float uStarGain;
+uniform float uTime;
+uniform vec3 uSunDir;
+uniform float uSun;
+// Device pixels per star-size unit, so a star keeps one size in CSS pixels
+// from a 1x monitor to a 3x phone instead of shrinking to a speck.
+uniform float uStarPx;
+
+vec3 starGrid(vec3 d, float n, float density, float gain, float fp, float sharp, float peak) {
+  vec3 a = abs(d);
+  vec2 uv;
+  float face;
+  float m;
+  if (a.x >= a.y && a.x >= a.z) { uv = d.zy / a.x; face = d.x > 0.0 ? 1.0 : 2.0; m = a.x; }
+  else if (a.y >= a.z) { uv = d.xz / a.y; face = d.y > 0.0 ? 3.0 : 4.0; m = a.y; }
+  else { uv = d.xy / a.z; face = d.z > 0.0 ? 5.0 : 6.0; m = a.z; }
+  vec2 g = (uv * 0.5 + 0.5) * n;
+  vec2 cell = floor(g);
+  vec3 key = vec3(cell, face * 1013.0 + n);
+  vec3 h = hash33(key);
+  // A pixel's footprint in cells: a face unit spans between m and m^2 radians.
+  float pxc = fp * n * 0.5 / (m * sqrt(m)) * uStarPx;
+  float fade = smoothstep(0.42, 0.16, pxc);
+  if (h.x > density || fade <= 0.0) return vec3(0.0);
+  vec2 sp = cell + 0.25 + hash33(key + 7.1).xy * 0.5;
+  vec2 dc = g - sp;
+  vec2 o = dc / max(pxc, 1e-5);
+  // Fade out before the cell wall, so a big star is never cut square.
+  float win = smoothstep(0.25, 0.14, max(abs(dc.x), abs(dc.y)));
+  float b = pow(h.y, sharp) * peak + 0.14;
+  float tw = 0.75 + 0.25 * sin(uTime * (1.0 + h.z * 3.0) + h.y * 40.0);
+  vec3 tint = mix(vec3(0.62, 0.75, 1.0), vec3(1.0, 0.82, 0.62), h.z);
+  return tint * exp(-dot(o, o) / 1.1) * b * tw * gain * fade * win;
+}
+
+vec3 skyBand(vec3 d) {
+  vec3 sd = uSkyRot * d;
+  vec2 uv = vec2(atan(sd.z, sd.x) / (2.0 * PI) + 0.5, asin(clamp(sd.y, -1.0, 1.0)) / PI + 0.5);
+  return texture2D(uSky, uv).rgb;
 }
 
 vec3 sky(vec3 d, float fp) {
-  vec3 sd = uSkyRot * d;
-  vec2 uv = vec2(atan(sd.z, sd.x) / (2.0 * PI) + 0.5, asin(clamp(sd.y, -1.0, 1.0)) / PI + 0.5);
-  vec3 col = texture2D(uSky, uv).rgb;
-  col *= uSkyGain; // sRGB texture: the sampler already returns linear values
-  col += starLayer(d, 110.0, 0.05, uStarGain, fp);
-  col += starLayer(d, 280.0, 0.022, uStarGain * 0.7, fp);
+  vec3 band = skyBand(d);
+  vec3 col = band * uSkyGain; // sRGB texture: the sampler already returns linear values
+  col += starGrid(d, 220.0, 0.06, uStarGain, fp, 6.0, 7.0);
+  col += starGrid(d, 560.0, 0.05, uStarGain * 0.8, fp, 7.0, 4.0);
+  // The Milky Way is made of stars: a fine, faint grain where the band is
+  // bright, which only resolves on a sharp screen.
+  float lum = dot(band, vec3(0.3, 0.55, 0.15));
+  float dense = smoothstep(0.015, 0.16, lum);
+  col += starGrid(d, 1100.0, 0.08 + dense * 0.5, uStarGain * (0.25 + dense * 0.35), fp, 14.0, 1.2);
   if (uSun > 0.0) {
     float s = max(dot(d, uSunDir), 0.0);
     col += vec3(1.0, 0.93, 0.82) * (pow(s, 4000.0) * 60.0 + pow(s, 90.0) * 0.5 + pow(s, 12.0) * 0.06) * uSun;
   }
   return col;
+}
+`;
+
+const fragment = /* glsl */ `
+precision highp float;
+varying vec2 vUv;
+layout(location = 0) out vec4 oLight;
+layout(location = 1) out vec4 oBend;
+uniform mat4 uProjInv;
+uniform mat4 uCamWorld;
+uniform vec3 uCamPos;
+uniform float uDiskTime;
+uniform float uDisk;
+uniform int uSteps;
+uniform vec2 uTexel;
+
+const float R_IN = ${DISK_IN.toFixed(2)};
+const float R_OUT = ${DISK_OUT.toFixed(2)};
+const float R_MARCH = 42.0;
+${common}
+uniform sampler2D uSky;
+uniform mat3 uSkyRot;
+uniform float uSkyGain;
+vec3 skyBand(vec3 d) {
+  vec3 sd = uSkyRot * d;
+  vec2 uv = vec2(atan(sd.z, sd.x) / (2.0 * PI) + 0.5, asin(clamp(sd.y, -1.0, 1.0)) / PI + 0.5);
+  return texture2D(uSky, uv).rgb * uSkyGain;
 }
 
 vec3 blackbody(float t) {
@@ -162,12 +209,15 @@ vec4 disk(vec3 p, vec3 dir) {
   return vec4(col * uDisk, alpha);
 }
 
-void main() {
-  vec2 ndc = vUv * 2.0 - 1.0;
+vec3 ray(vec2 ndc) {
   vec4 v = uProjInv * vec4(ndc, 1.0, 1.0);
-  vec3 rd = normalize((uCamWorld * vec4(v.xyz / v.w, 0.0)).xyz);
-  vec3 ro = uCamPos;
+  return normalize((uCamWorld * vec4(v.xyz / v.w, 0.0)).xyz);
+}
 
+// One photon path: the light it picks up (rgb), how much sky shows through
+// (a), and the bend from rd to where it leaves for the sky.
+vec4 trace(vec3 ro, vec3 rd, int steps, out vec3 bend, out bool lost) {
+  lost = false;
   vec3 col = vec3(0.0);
   float trans = 1.0;
 
@@ -190,9 +240,8 @@ void main() {
       col += dc.rgb * dc.a;
       trans *= 1.0 - dc.a;
     }
-    float fpw = sqrt(max(length(dFdx(d)) * length(dFdy(d)), 1e-12));
-    gl_FragColor = vec4(col + sky(d, clamp(fpw, uPixel * 0.3, uPixel * 2.0)) * trans, 1.0);
-    return;
+    bend = d - rd;
+    return vec4(col, trans);
   }
 
   // The bending a straight path at impact b gets outside the march sphere:
@@ -209,12 +258,12 @@ void main() {
   float glow = 0.0;
   bool escaped = false;
   for (int i = 0; i < 400; i++) {
-    if (i >= uSteps) break;
+    if (i >= steps) break;
     float r2 = dot(p, p);
     float r = sqrt(r2);
     if (r < 1.0) { trans = 0.0; break; }
     if (r > R_MARCH + 1.0 && dot(p, vel) > 0.0) { escaped = true; break; }
-    float dt = clamp(0.07 * (r - 0.85) * r * 0.55, 0.018, 2.2);
+    float dt = clamp(0.07 * (r - 0.85) * r * 0.55, 0.018, 3.6);
     vec3 acc = -1.5 * h2 * p / (r2 * r2 * r);
     vec3 prev = p;
     vel += acc * dt;
@@ -235,52 +284,128 @@ void main() {
     vec3 perp = p - outDir * dot(p, outDir);
     if (dot(perp, perp) > 1e-6) outDir = normalize(outDir - normalize(perp) * halfOut);
   }
-  // Size stars by the lens map's own footprint, so a magnified star brightens
-  // instead of smearing into a dash.
-  float fp = sqrt(max(length(dFdx(outDir)) * length(dFdy(outDir)), 1e-12));
-  fp = clamp(fp, uPixel * 0.3, uPixel * 2.0);
-  if (escaped || trans > 0.0) {
-    float r = length(p);
-    if (r >= 1.0) col += trans * sky(outDir, fp);
-  }
+  // Still circling when the step budget ran out: no reliable direction.
+  lost = !escaped && trans >= 0.01 && length(p) >= 1.0;
+  float skyT = (escaped || trans > 0.0) && length(p) >= 1.0 ? trans : 0.0;
   // The photon-sphere glow belongs to light that got away; the shadow stays black.
   if (escaped) col += vec3(1.0, 0.62, 0.3) * glow * 0.05 * uDisk;
+  // The shadow has no sky behind it; a zero bend keeps its edge texels tame.
+  bend = skyT > 0.0 ? outDir - rd : vec3(0.0);
+  return vec4(col, skyT);
+}
+
+void main() {
+  vec2 ndc = vUv * 2.0 - 1.0;
+  vec3 ro = uCamPos;
+  vec3 rd = ray(ndc);
+  vec3 bend;
+  bool lost;
+  vec4 light = trace(ro, rd, uSteps, bend, lost);
+  // At the shadow's rim the whole sky is squeezed into a few pixels: next-door
+  // rays leave for opposite sides of it, so a bend interpolated between them
+  // draws a sawtooth. Rays near the critical b = 3*sqrt(3)/2 ~ 2.6 r_s look up
+  // the sky here instead (its glow: no star survives being squeezed this
+  // hard), from five samples spread across the pixel along the one direction
+  // b changes, and hand the composite nothing to add.
+  float b = length(cross(ro, rd));
+  if (b > 2.2 && b < 3.4) {
+    float pa = length(ray(ndc + vec2(uTexel.x, 0.0)) - rd);
+    // One march pixel in impact parameter. The chaos is a few pixels wide:
+    // two inside the rim, five outside, where the sky still wraps round.
+    float db = length(ro) * pa;
+    float x = (b - 2.598) / db;
+    if (lost || (x > -2.5 && x < 5.0)) {
+      vec3 e = ro - rd * dot(ro, rd);
+      e = e / max(length(e), 1e-6);
+      vec3 sum = light.rgb + light.a * skyBand(normalize(rd + bend));
+      vec3 tb;
+      bool tl;
+      for (int k = 0; k < 4; k++) {
+        vec3 r = normalize(rd + e * ((float(k) - 1.5) / 3.0 * 1.3 * pa));
+        // The full budget: the ring's glow is light that got away, and a
+        // sample cut short would dim it.
+        vec4 l = trace(ro, r, uSteps, tb, tl);
+        sum += l.rgb + l.a * skyBand(normalize(r + tb));
+      }
+      light = vec4(sum / 5.0, 0.0);
+    }
+  }
+  oLight = light;
+  oBend = vec4(bend, 0.0);
+}`;
+
+/**
+ * The full-resolution sky, drawn behind the scene: this pixel's own camera ray,
+ * bent by the interpolated lens map, then stars and the band looked up there.
+ * Stars are sized by the lens map's own footprint, so a magnified star grows
+ * instead of smearing into a dash.
+ */
+const composite = /* glsl */ `
+precision highp float;
+varying vec2 vUv;
+uniform sampler2D uLight;
+uniform sampler2D uBend;
+uniform mat4 uProjInv;
+uniform mat4 uCamWorld;
+uniform float uPixel;
+${common}
+${skyChunk}
+void main() {
+  vec2 ndc = vUv * 2.0 - 1.0;
+  vec4 v = uProjInv * vec4(ndc, 1.0, 1.0);
+  vec3 rd = normalize((uCamWorld * vec4(v.xyz / v.w, 0.0)).xyz);
+  vec4 light = texture2D(uLight, vUv);
+  vec3 d = normalize(rd + texture2D(uBend, vUv).xyz);
+  float fp = sqrt(max(length(dFdx(d)) * length(dFdy(d)), 1e-14));
+  fp = clamp(fp, uPixel * 0.6, uPixel * 3.0);
+  vec3 col = light.rgb;
+  if (light.a > 0.002) col += light.a * sky(d, fp);
   gl_FragColor = vec4(col, 1.0);
 }`;
 
 export interface BlackHole {
   target: THREE.WebGLRenderTarget;
   material: THREE.ShaderMaterial;
-  render(renderer: THREE.WebGLRenderer, camera: THREE.PerspectiveCamera): void;
+  /** The full-resolution sky, to draw first in the main scene. */
+  back: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
+  render(renderer: THREE.WebGLRenderer, camera: THREE.PerspectiveCamera, height: number): void;
   resize(w: number, h: number, scale: number): void;
   dispose(): void;
 }
 
 export function createBlackHole(sky: THREE.Texture): BlackHole {
+  const proj = { value: new THREE.Matrix4() };
+  const world = { value: new THREE.Matrix4() };
+  const time = { value: 0 };
+  const skyUniforms = {
+    uTime: time,
+    uSky: { value: sky },
+    uSkyRot: {
+      value: new THREE.Matrix3().setFromMatrix4(
+        new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(1.05, 0.4, 0.55)),
+      ),
+    },
+    uSkyGain: { value: 0.8 },
+    uStarGain: { value: 0.9 },
+    uStarPx: { value: 1 },
+  };
   const material = new THREE.ShaderMaterial({
+    glslVersion: THREE.GLSL3,
     vertexShader: vertex,
     fragmentShader: fragment,
     depthTest: false,
     depthWrite: false,
     uniforms: {
-      uProjInv: { value: new THREE.Matrix4() },
-      uCamWorld: { value: new THREE.Matrix4() },
+      uProjInv: proj,
+      uCamWorld: world,
       uCamPos: { value: new THREE.Vector3() },
-      uTime: { value: 0 },
       uDiskTime: { value: 0 },
-      uSky: { value: sky },
-      uSkyRot: {
-        value: new THREE.Matrix3().setFromMatrix4(
-          new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(1.05, 0.4, 0.55)),
-        ),
-      },
-      uSkyGain: { value: 0.8 },
-      uStarGain: { value: 0.9 },
       uDisk: { value: 1.0 },
       uSteps: { value: 220 },
-      uPixel: { value: 0.001 },
+      uTexel: { value: new THREE.Vector2(1, 1) },
       uSunDir: { value: new THREE.Vector3(1, 0, 0) },
       uSun: { value: 0 },
+      ...skyUniforms,
     },
   });
   const scene = new THREE.Scene();
@@ -288,34 +413,63 @@ export function createBlackHole(sky: THREE.Texture): BlackHole {
   quad.frustumCulled = false;
   scene.add(quad);
   const ortho = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  // Light (rgb) with sky transmittance (a), and the bend (xyz). Half floats
+  // hold a bend of a few hundredths to 1e-5 rad, far under a pixel.
   const target = new THREE.WebGLRenderTarget(2, 2, {
+    count: 2,
     type: THREE.HalfFloatType,
     depthBuffer: false,
     minFilter: THREE.LinearFilter,
     magFilter: THREE.LinearFilter,
   });
 
+  const back = new THREE.Mesh(
+    new THREE.PlaneGeometry(2, 2),
+    new THREE.ShaderMaterial({
+      vertexShader: /* glsl */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0.99999, 1.0); }`,
+      fragmentShader: composite,
+      depthTest: false,
+      depthWrite: false,
+      uniforms: {
+        uLight: { value: target.textures[0] },
+        uBend: { value: target.textures[1] },
+        uProjInv: proj,
+        uCamWorld: world,
+        uPixel: { value: 0.001 },
+        ...skyUniforms,
+        uSunDir: material.uniforms.uSunDir!,
+        uSun: material.uniforms.uSun!,
+      },
+    }),
+  );
+  back.frustumCulled = false;
+  back.renderOrder = -1000;
+
   return {
     target,
     material,
-    render(renderer, camera) {
+    back,
+    render(renderer, camera, height) {
       const u = material.uniforms;
-      u.uProjInv!.value.copy(camera.projectionMatrixInverse);
-      u.uCamWorld!.value.copy(camera.matrixWorld);
+      proj.value.copy(camera.projectionMatrixInverse);
+      world.value.copy(camera.matrixWorld);
       u.uCamPos!.value.copy(camera.position);
-      u.uPixel!.value =
-        (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2)) / Math.max(1, target.height);
+      back.material.uniforms.uPixel!.value =
+        (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2)) / Math.max(1, height);
       renderer.setRenderTarget(target);
       renderer.render(scene, ortho);
       renderer.setRenderTarget(null);
     },
     resize(w, h, scale) {
       target.setSize(Math.max(2, Math.round(w * scale)), Math.max(2, Math.round(h * scale)));
+      material.uniforms.uTexel!.value.set(2 / target.width, 2 / target.height);
     },
     dispose() {
       target.dispose();
       material.dispose();
       quad.geometry.dispose();
+      back.material.dispose();
+      back.geometry.dispose();
     },
   };
 }

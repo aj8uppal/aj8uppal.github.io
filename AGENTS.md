@@ -203,8 +203,9 @@ illustrations and the footer says so; every clip and still is real footage,
 silent 1280×720 H.264 in `public/media/previews/<slug>.mp4` with its first
 decoded frame as `src/assets/preview-<slug>.webp`. The newer clips end on a 0.5 s
 crossfade into their own opening, so the loop does not jump; re-extract the
-poster after any re-encode. Phones get the 640px encodes in
-`public/media/previews/640/`, and the homepage attaches a clip only while it is
+poster after any re-encode. Phones get the 960px encodes in
+`public/media/previews/960/` (x264 CRF 25 capped at 1.3 Mbps, from the 1280
+masters; the older 640px set stays for its URLs), and the homepage attaches a clip only while it is
 on screen and detaches one scrolled past before it finished downloading. Planet
 maps start on their `-512.webp` stand-ins and the full map is fetched as the
 camera closes in, then swapped in one per frame while the camera is settled
