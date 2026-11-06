@@ -1,6 +1,6 @@
 /**
- * The homepage gate. Drives the running site (dev or preview) in a real
- * browser and fails on anything a visitor would notice:
+ * The /v2/ gate. Drives the running site (dev or preview) in a real browser
+ * and fails on anything a visitor would notice:
  *
  *   - script errors, a scene that never becomes ready, horizontal overflow
  *     at 1440 and 390
@@ -19,10 +19,11 @@ import { chromium } from 'playwright';
 import { worlds, belt } from '../src/orbit/worlds.ts';
 import { projects } from '../src/data/portfolio.ts';
 
-const BASE = (process.argv.find((a) => /^https?:/.test(a)) ?? 'http://127.0.0.1:4321/').replace(
+const ROOT = (process.argv.find((a) => /^https?:/.test(a)) ?? 'http://127.0.0.1:4321/').replace(
   /\/?$/,
   '/',
 );
+const BASE = new URL('v2/', ROOT).href;
 const failures = [];
 const ok = (cond, name, detail = '') => {
   if (cond) console.log(`  ok   ${name}`);
@@ -53,7 +54,10 @@ async function open(opts = {}) {
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
   page.on('request', (r) => r.url().endsWith('.mp4') && media.push(r.url()));
-  await page.goto(BASE, { waitUntil: opts.js === false ? 'load' : 'networkidle', timeout: 90000 });
+  await page.goto(new URL(opts.path ?? '', BASE).href, {
+    waitUntil: opts.js === false ? 'load' : 'networkidle',
+    timeout: 90000,
+  });
   return { ctx, page, errors, media };
 }
 
@@ -107,15 +111,19 @@ console.log('desktop 1440×900');
   );
   const internal = [...new Set(links.filter((h) => h && h.startsWith('/')))];
   for (const href of internal) {
-    let r = await page.request.get(new URL(href, BASE).href);
+    let r = await page.request.get(new URL(href, ROOT).href);
     // The dev server does not map a public/ directory to its index.html; Pages does.
     if (r.status() === 404 && href.endsWith('/'))
-      r = await page.request.get(new URL(href + 'index.html', BASE).href);
+      r = await page.request.get(new URL(href + 'index.html', ROOT).href);
     ok(r.status() < 400, `link resolves: ${href}`, String(r.status()));
   }
   ok(
-    worlds.every((w) => links.includes(`/portfolio/work/${w.key}/`)),
-    'every world links to its case study',
+    worlds.every((w) => links.includes(`/v2/work/${w.key}/`)),
+    'every world links to its own page',
+  );
+  ok(
+    worlds.every((w) => links.includes(w.play.href)),
+    'every world has its play link',
   );
   ok(
     (await page.locator('.belt__card').count()) === belt.length,
@@ -131,10 +139,10 @@ console.log('desktop 1440×900');
       const v = document.querySelector('#saltline video');
       return !!v && !!v.getAttribute('src') && !v.paused;
     })(),
-    fps: Number(document.querySelector('[data-hud="fps"]')?.textContent),
+    fps: Number(document.documentElement.dataset.fps),
   }));
   ok(after.station === 'world-saltline', 'camera follows scroll to saltline', after.station);
-  ok(/saltline/.test(after.sector ?? ''), 'HUD names the station', after.sector);
+  ok(/saltline/i.test(after.sector ?? ''), 'HUD names the station', after.sector);
   ok(after.playing, 'saltline preview plays once on screen');
   ok(after.fps >= 20, 'renders at a usable frame rate', String(after.fps));
   ok(errors.length === 0, 'no script errors', errors.slice(0, 3).join(' | '));
@@ -215,23 +223,31 @@ console.log('no JavaScript');
         );
       })
       .map((h) => h.textContent.trim()),
-    loader: getComputedStyle(document.querySelector('.loader')).display,
     backdrop: getComputedStyle(document.querySelector('.backdrop')).backgroundImage,
   }));
   ok(n.hidden.length === 0, 'every heading is visible', n.hidden.join(', '));
-  ok(n.loader === 'none', 'no loader is left covering the page');
   ok(/url\(/.test(n.backdrop), 'the captured backdrop stands in for the scene');
   await ctx.close();
 }
 
-/* ── Project pages ─────────────────────────────────────────────────────── */
-console.log('project pages');
+/* ── World pages, and the classic site beside them ────────────────────── */
+console.log('world pages');
 {
-  const ctx = await browser.newContext();
-  for (const p of projects) {
-    const r = await ctx.request.get(new URL(`/portfolio/work/${p.key}/`, BASE).href);
+  const { ctx, page, errors } = await open({ path: `work/${worlds[0].key}/` });
+  ok(
+    (await page.locator('.case-nav__play').getAttribute('href')) === worlds[0].play.href,
+    'the world page keeps Play in the nav',
+  );
+  ok(errors.length === 0, 'no script errors on a world page', errors.slice(0, 3).join(' | '));
+  for (const w of worlds) {
+    const r = await ctx.request.get(new URL(`work/${w.key}/`, BASE).href);
     const html = r.status() < 400 ? await r.text() : '';
-    ok(r.status() < 400 && /<h1[\s>]/.test(html), `/portfolio/work/${p.key}/`, String(r.status()));
+    ok(r.status() < 400 && /<h1[\s>]/.test(html), `/v2/work/${w.key}/`, String(r.status()));
+  }
+  for (const path of ['', 'built/', ...projects.map((p) => `portfolio/work/${p.key}/`)]) {
+    const r = await ctx.request.get(new URL(path, ROOT).href);
+    const html = r.status() < 400 ? await r.text() : '';
+    ok(r.status() < 400 && /<h1[\s>]/.test(html), `/${path}`, String(r.status()));
   }
   await ctx.close();
 }

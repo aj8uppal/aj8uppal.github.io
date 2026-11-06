@@ -15,6 +15,9 @@ if (dialog) {
   let opener: HTMLAnchorElement | undefined;
   let overflow = '';
   let active = false;
+  // An open lightbox holds one history entry, so a phone's back gesture
+  // closes it instead of leaving the page.
+  let entry = false;
   const restore = () => {
     if (!active || dialog.open) return;
     active = false;
@@ -26,7 +29,17 @@ if (dialog) {
   const dismiss = () => {
     dialog.close();
     restore();
+    if (entry) {
+      entry = false;
+      history.back();
+    }
   };
+  window.addEventListener('popstate', () => {
+    if (!entry) return;
+    entry = false;
+    dialog.close();
+    restore();
+  });
 
   const show = async (index: number) => {
     selected = (index + photographs.length) % photographs.length;
@@ -69,6 +82,10 @@ if (dialog) {
       opener = link;
       overflow = document.documentElement.style.overflow;
       active = true;
+      if (!entry) {
+        history.pushState(history.state, '');
+        entry = true;
+      }
       dialog.showModal();
       close.focus();
       document.documentElement.style.overflow = 'hidden';

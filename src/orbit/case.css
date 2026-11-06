@@ -8,6 +8,7 @@
   --wrap: min(1240px, calc(100% - var(--gutter) * 2));
 }
 .case-main [hidden],
+.case-foot [hidden],
 .pc-lightbox [hidden] {
   display: none !important;
 }
@@ -310,19 +311,41 @@
 
 /* ── Reveal ────────────────────────────────────────────────────────────── */
 
-.js:not(.reduce) [data-rise] {
+/* Below the hero, blocks rise as they arrive. The hero itself enters in CSS
+   from the first paint, so the title and Play never wait on a script. */
+.js:not(.reduce) .case-wrap [data-rise] {
   opacity: 0;
   transform: translateY(28px);
-  filter: blur(6px);
   transition:
     opacity 1s var(--ease-out) var(--rise-delay, 0ms),
-    transform 1.1s var(--ease-out) var(--rise-delay, 0ms),
-    filter 1s var(--ease-out) var(--rise-delay, 0ms);
+    transform 1.1s var(--ease-out) var(--rise-delay, 0ms);
 }
-.js:not(.reduce) [data-rise].is-in {
+.js:not(.reduce) .case-wrap [data-rise].is-in {
   opacity: 1;
   transform: none;
-  filter: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .case-hero [data-rise] {
+    animation: case-enter 0.9s var(--ease-out) both;
+  }
+  .case-hero [data-rise]:nth-child(3) {
+    animation-delay: 0.08s;
+  }
+  .case-hero [data-rise]:nth-child(4) {
+    animation-delay: 0.16s;
+  }
+  .case-hero [data-rise]:nth-child(5) {
+    animation-delay: 0.24s;
+  }
+  .case-hero [data-rise]:nth-child(6) {
+    animation-delay: 0.32s;
+  }
+}
+@keyframes case-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 }
 
 /* ── Body ──────────────────────────────────────────────────────────────── */
@@ -1114,6 +1137,7 @@
 /* Footer */
 .case-foot {
   position: relative;
+  z-index: 10;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1546,4 +1570,238 @@ a.buoy__p:hover {
   .buoy__hole i {
     animation: none;
   }
+}
+
+/* ── /v2/ world pages ──────────────────────────────────────────────────── */
+
+.case-nav__play {
+  margin-left: 18px;
+  padding: 10px 16px;
+  font-size: 14px;
+}
+.case-platforms {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.case-platforms li {
+  padding: 6px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: rgb(5 6 12 / 0.45);
+  font: 500 11px/1.2 var(--f-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.case-clip {
+  margin: 0;
+}
+.case-clip video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 18px;
+  background: #07070d;
+  outline: 1px solid var(--line-2);
+  outline-offset: -1px;
+  box-shadow:
+    0 60px 120px -40px rgb(0 0 0 / 0.9),
+    0 0 100px -30px var(--c);
+}
+.case-clip figcaption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font: 500 11px/1.5 var(--f-mono);
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+}
+.case-clip .media__live {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff5a5a;
+  box-shadow: 0 0 8px #ff5a5a;
+}
+.case-controls {
+  margin: 18px 0 0;
+  display: grid;
+  gap: 10px;
+}
+.case-controls div {
+  display: grid;
+  grid-template-columns: 9.5em 1fr;
+  gap: 12px;
+}
+.case-controls dt {
+  font: 500 11px/1.7 var(--f-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c);
+}
+.case-controls dd {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+.case-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+  margin: clamp(32px, 4vw, 56px) 0;
+}
+.case-facts div {
+  padding-top: 14px;
+  border-top: 1px solid var(--line-2);
+  position: relative;
+}
+.case-facts div::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 30px;
+  height: 1px;
+  background: var(--c);
+  box-shadow: 0 0 10px var(--c);
+}
+.case-facts dt {
+  font: 600 clamp(28px, 3vw, 44px) / 1 var(--f-display);
+  letter-spacing: -0.03em;
+}
+.case-facts dd {
+  margin: 10px 0 0;
+  font: 500 11px/1.5 var(--f-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.case-stackrow {
+  margin-top: 0;
+  border-top: 0;
+}
+.case-stackrow a {
+  color: var(--ink);
+  text-decoration-color: color-mix(in srgb, var(--c) 60%, transparent);
+  text-underline-offset: 4px;
+}
+.case-stills {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 28px);
+  margin: clamp(40px, 6vw, 88px) 0;
+}
+.case-stills figure {
+  margin: 0;
+}
+.case-stills a {
+  display: block;
+  border-radius: 14px;
+  overflow: hidden;
+  outline: 1px solid var(--line-2);
+  outline-offset: -1px;
+}
+.case-stills img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  transition: transform 0.8s var(--ease-out);
+}
+.case-stills a:hover img {
+  transform: scale(1.03);
+}
+.case-stills figcaption {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.case-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: clamp(40px, 6vw, 88px) 0 clamp(56px, 8vw, 112px);
+}
+.case-pager a {
+  display: grid;
+  gap: 6px;
+  padding: 24px 26px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--c) 14%, transparent),
+    transparent 60%
+  );
+  text-decoration: none;
+  transition:
+    border-color 0.4s,
+    transform 0.6s var(--ease-out);
+}
+.case-pager a:last-child {
+  text-align: right;
+}
+.case-pager a:hover,
+.case-pager a:focus-visible {
+  border-color: color-mix(in srgb, var(--c) 60%, transparent);
+  transform: translateY(-3px);
+}
+.case-pager small {
+  font: 500 11px/1 var(--f-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c);
+}
+.case-pager strong {
+  font: 650 clamp(24px, 2.6vw, 36px) / 1.05 var(--f-display);
+  letter-spacing: -0.03em;
+}
+.case-pager span {
+  color: var(--ink-3);
+  font-size: 14px;
+}
+@media (max-width: 759px) {
+  .case-nav__play {
+    margin-left: auto;
+  }
+  .case-stills,
+  .case-pager {
+    grid-template-columns: 1fr;
+  }
+  .case-pager a:last-child {
+    text-align: left;
+  }
+  .case-controls div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+
+/* Desktop-only games say so before the tap on a touch screen. */
+.case-desk {
+  display: none;
+}
+@media (pointer: coarse) {
+  .case-desk {
+    display: block;
+    margin: 16px 0 0;
+    padding-left: 12px;
+    border-left: 2px solid var(--accent);
+    max-width: 44ch;
+    font: 500 14px/1.45 var(--f-text);
+    color: var(--ink-2);
+  }
+}
+
+.case-tested {
+  margin: 14px 0 0;
+  font: 500 12px/1.5 var(--f-mono);
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
 }

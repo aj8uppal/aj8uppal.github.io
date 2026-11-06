@@ -1,7 +1,8 @@
 # aj8uppal.github.io
 
-My personal site: a flight through a system of worlds.
-Astro and TypeScript, built static. The homepage runs one WebGL 2 scene (three.js) behind ordinary HTML.
+My personal site.
+Astro and TypeScript, built static.
+`/v2/` is an alternative homepage: a flight through a system of twelve playable game worlds, one WebGL 2 scene (three.js) behind ordinary HTML, with a page per world under `/v2/work/`.
 
 ## Running it
 
@@ -80,9 +81,8 @@ The scene is decoration with a job, never a container for content: every word, n
 
 `.github/workflows/deploy.yml` builds and publishes to GitHub Pages.
 
-**It is `workflow_dispatch` only.**
-There is no `push` trigger.
-Nothing publishes until someone runs it deliberately from the Actions tab.
+It publishes on every push to `master`, and can also be run by hand from the Actions tab.
+The published site has to stay under GitHub Pages' 1 GB limit; see AGENTS.md before adding a game build to `public/`.
 
 ## A note on the résumé
 

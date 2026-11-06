@@ -1,0 +1,557 @@
+{
+  "assets": {
+    "terrain.plaza-0": "assets/zones/reach.canal-inn/terrain/plaza-0.{lighting}.png",
+    "terrain.plaza-1": "assets/zones/reach.canal-inn/terrain/plaza-1.{lighting}.png",
+    "terrain.plaza-2": "assets/zones/reach.canal-inn/terrain/plaza-2.{lighting}.png",
+    "terrain.plaza-3": "assets/zones/reach.canal-inn/terrain/plaza-3.{lighting}.png",
+    "terrain.plaza-4": "assets/zones/reach.canal-inn/terrain/plaza-4.{lighting}.png",
+    "terrain.plaza-5": "assets/zones/reach.canal-inn/terrain/plaza-5.{lighting}.png",
+    "terrain.east-bank-0": "assets/zones/reach.canal-inn/terrain/east-bank-0.{lighting}.png",
+    "terrain.east-bank-1": "assets/zones/reach.canal-inn/terrain/east-bank-1.{lighting}.png",
+    "terrain.east-bank-2": "assets/zones/reach.canal-inn/terrain/east-bank-2.{lighting}.png",
+    "terrain.landing-east": "assets/zones/reach.canal-inn/terrain/landing-east.{lighting}.png",
+    "terrain.back-street": "assets/zones/reach.canal-inn/terrain/back-street.{lighting}.png",
+    "terrain.back-mid": "assets/zones/reach.canal-inn/terrain/back-mid.{lighting}.png",
+    "terrain.under-townhouse": "assets/zones/reach.canal-inn/terrain/under-townhouse.{lighting}.png",
+    "terrain.inn-gap": "assets/zones/reach.canal-inn/terrain/inn-gap.{lighting}.png",
+    "terrain.back-west": "assets/zones/reach.canal-inn/terrain/back-west.{lighting}.png",
+    "terrain.west-quay": "assets/zones/reach.canal-inn/terrain/west-quay.{lighting}.png",
+    "terrain.east-houses": "assets/zones/reach.canal-inn/terrain/east-houses.{lighting}.png",
+    "terrain.south-west": "assets/zones/reach.canal-inn/terrain/south-west.{lighting}.png",
+    "terrain.south-east": "assets/zones/reach.canal-inn/terrain/south-east.{lighting}.png",
+    "terrain.south-front": "assets/zones/reach.canal-inn/terrain/south-front.{lighting}.png",
+    "terrain.east-garden2": "assets/zones/reach.canal-inn/terrain/east-garden2.{lighting}.png",
+    "terrain.mill-footing": "assets/zones/reach.canal-inn/terrain/mill-footing.{lighting}.png",
+    "terrain.chimney-bank": "assets/zones/reach.canal-inn/terrain/chimney-bank.{lighting}.png",
+    "terrain.far-quay": "assets/zones/reach.canal-inn/terrain/far-quay.{lighting}.png",
+    "terrain.far-gardens": "assets/zones/reach.canal-inn/terrain/far-gardens.{lighting}.png",
+    "terrain.far-north": "assets/zones/reach.canal-inn/terrain/far-north.{lighting}.png",
+    "terrain.stairs-east": "assets/zones/reach.canal-inn/terrain/stairs-east.{lighting}.png"
+  },
+  "sprites": [
+    {
+      "id": "terrain.plaza-0",
+      "asset": "terrain.plaza-0",
+      "u": 10.6,
+      "v": 0.2,
+      "z": 2,
+      "pivot": {
+        "x": 86,
+        "y": 0
+      },
+      "box": {
+        "u0": 10.6,
+        "u1": 14.4,
+        "v0": 0.2,
+        "v1": 5.6,
+        "z0": -0.6,
+        "z1": 2
+      },
+      "floorOf": "plaza"
+    },
+    {
+      "id": "terrain.plaza-1",
+      "asset": "terrain.plaza-1",
+      "u": 4.8,
+      "v": 0.2,
+      "z": 2,
+      "pivot": {
+        "x": 113,
+        "y": 0
+      },
+      "box": {
+        "u0": 4.8,
+        "u1": 10.6,
+        "v0": 0.2,
+        "v1": 7.25,
+        "z0": -0.6,
+        "z1": 2
+      },
+      "floorOf": "plaza"
+    },
+    {
+      "id": "terrain.plaza-2",
+      "asset": "terrain.plaza-2",
+      "u": 7.23,
+      "v": 6.4,
+      "z": 2,
+      "pivot": {
+        "x": 25,
+        "y": 0
+      },
+      "box": {
+        "u0": 7.23,
+        "u1": 11.95,
+        "v0": 6.4,
+        "v1": 8,
+        "z0": -0.6,
+        "z1": 2
+      },
+      "floorOf": "plaza"
+    },
+    {
+      "id": "terrain.plaza-3",
+      "asset": "terrain.plaza-3",
+      "u": 6,
+      "v": -2.6,
+      "z": 2,
+      "pivot": {
+        "x": 45,
+        "y": 0
+      },
+      "box": {
+        "u0": 6,
+        "u1": 9.8,
+        "v0": -2.6,
+        "v1": 0.2,
+        "z0": -0.6,
+        "z1": 2
+      },
+      "floorOf": "plaza"
+    },
+    {
+      "id": "terrain.plaza-4",
+      "asset": "terrain.plaza-4",
+      "u": -1,
+      "v": -2,
+      "z": 2,
+      "pivot": {
+        "x": 40,
+        "y": 0
+      },
+      "box": {
+        "u0": -1,
+        "u1": 6,
+        "v0": -2,
+        "v1": 0.5,
+        "z0": -0.6,
+        "z1": 2
+      },
+      "floorOf": "plaza"
+    },
+    {
+      "id": "terrain.plaza-5",
+      "asset": "terrain.plaza-5",
+      "u": 10.6,
+      "v": 5.6,
+      "z": 2,
+      "pivot": {
+        "x": 12,
+        "y": -1
+      },
+      "box": {
+        "u0": 10.6,
+        "u1": 15.4,
+        "v0": 5.6,
+        "v1": 6.4,
+        "z0": -0.6,
+        "z1": 2
+      },
+      "floorOf": "plaza"
+    },
+    {
+      "id": "terrain.east-bank-0",
+      "asset": "terrain.east-bank-0",
+      "u": 23,
+      "v": -2,
+      "z": 2,
+      "pivot": {
+        "x": 160,
+        "y": 0
+      },
+      "box": {
+        "u0": 23,
+        "u1": 28.8,
+        "v0": -2,
+        "v1": 8,
+        "z0": -0.6,
+        "z1": 2
+      },
+      "floorOf": "east-bank"
+    },
+    {
+      "id": "terrain.east-bank-1",
+      "asset": "terrain.east-bank-1",
+      "u": 28.8,
+      "v": -2,
+      "z": 2,
+      "pivot": {
+        "x": 104,
+        "y": 0
+      },
+      "box": {
+        "u0": 28.8,
+        "u1": 30.5,
+        "v0": -2,
+        "v1": 4.5,
+        "z0": -0.6,
+        "z1": 2
+      },
+      "floorOf": "east-bank"
+    },
+    {
+      "id": "terrain.east-bank-2",
+      "asset": "terrain.east-bank-2",
+      "u": 28.8,
+      "v": 6.5,
+      "z": 2,
+      "pivot": {
+        "x": 24,
+        "y": 0
+      },
+      "box": {
+        "u0": 28.8,
+        "u1": 30.5,
+        "v0": 6.5,
+        "v1": 8,
+        "z0": -0.6,
+        "z1": 2
+      },
+      "floorOf": "east-bank"
+    },
+    {
+      "id": "terrain.landing-east",
+      "asset": "terrain.landing-east",
+      "u": 31.2,
+      "v": 3.5,
+      "z": 0.5,
+      "pivot": {
+        "x": 64,
+        "y": 0
+      },
+      "box": {
+        "u0": 31.2,
+        "u1": 32.8,
+        "v0": 3.5,
+        "v1": 7.5,
+        "z0": -0.6,
+        "z1": 0.5
+      },
+      "floorOf": "landing-east"
+    },
+    {
+      "id": "terrain.back-street",
+      "asset": "terrain.back-street",
+      "u": -16,
+      "v": -10,
+      "z": 2,
+      "pivot": {
+        "x": 118,
+        "y": 0
+      },
+      "box": {
+        "u0": -16,
+        "u1": 14.4,
+        "v0": -10,
+        "v1": -2.6,
+        "z0": -0.6,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.back-mid",
+      "asset": "terrain.back-mid",
+      "u": -1,
+      "v": -2.6,
+      "z": 2,
+      "pivot": {
+        "x": 9,
+        "y": 0
+      },
+      "box": {
+        "u0": -1,
+        "u1": 6,
+        "v0": -2.6,
+        "v1": -2,
+        "z0": -0.6,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.under-townhouse",
+      "asset": "terrain.under-townhouse",
+      "u": 9.8,
+      "v": -2.6,
+      "z": 2,
+      "pivot": {
+        "x": 44,
+        "y": -1
+      },
+      "box": {
+        "u0": 9.8,
+        "u1": 14.4,
+        "v0": -2.6,
+        "v1": 0.2,
+        "z0": -0.6,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.inn-gap",
+      "asset": "terrain.inn-gap",
+      "u": 6,
+      "v": 0.2,
+      "z": 2,
+      "pivot": {
+        "x": 4,
+        "y": -1
+      },
+      "box": {
+        "u0": 6,
+        "u1": 6.5,
+        "v0": 0.2,
+        "v1": 0.5,
+        "z0": -0.6,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.back-west",
+      "asset": "terrain.back-west",
+      "u": -16,
+      "v": -2.6,
+      "z": 2,
+      "pivot": {
+        "x": 10,
+        "y": 0
+      },
+      "box": {
+        "u0": -16,
+        "u1": -1,
+        "v0": -2.6,
+        "v1": -2,
+        "z0": -0.6,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.west-quay",
+      "asset": "terrain.west-quay",
+      "u": -16,
+      "v": -2,
+      "z": 2,
+      "pivot": {
+        "x": 288,
+        "y": 0
+      },
+      "box": {
+        "u0": -16,
+        "u1": -6,
+        "v0": -2,
+        "v1": 16,
+        "z0": -0.6,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.east-houses",
+      "asset": "terrain.east-houses",
+      "u": 23,
+      "v": -10,
+      "z": 2,
+      "pivot": {
+        "x": 128,
+        "y": 0
+      },
+      "box": {
+        "u0": 23,
+        "u1": 30.5,
+        "v0": -10,
+        "v1": -2,
+        "z0": -0.6,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.south-west",
+      "asset": "terrain.south-west",
+      "u": -16,
+      "v": 20,
+      "z": 1.2,
+      "pivot": {
+        "x": 192,
+        "y": -1
+      },
+      "box": {
+        "u0": -16,
+        "u1": 1.5,
+        "v0": 20,
+        "v1": 32,
+        "z0": -0.6,
+        "z1": 1.2
+      }
+    },
+    {
+      "id": "terrain.south-east",
+      "asset": "terrain.south-east",
+      "u": 18,
+      "v": 23,
+      "z": 1.2,
+      "pivot": {
+        "x": 144,
+        "y": -1
+      },
+      "box": {
+        "u0": 18,
+        "u1": 36,
+        "v0": 23,
+        "v1": 32,
+        "z0": -0.6,
+        "z1": 1.2
+      }
+    },
+    {
+      "id": "terrain.south-front",
+      "asset": "terrain.south-front",
+      "u": 9,
+      "v": 31,
+      "z": 1.2,
+      "pivot": {
+        "x": 112,
+        "y": -1
+      },
+      "box": {
+        "u0": 9,
+        "u1": 22,
+        "v0": 31,
+        "v1": 38,
+        "z0": -0.6,
+        "z1": 1.2
+      }
+    },
+    {
+      "id": "terrain.east-garden2",
+      "asset": "terrain.east-garden2",
+      "u": 28,
+      "v": 8,
+      "z": 2,
+      "pivot": {
+        "x": 64,
+        "y": 0
+      },
+      "box": {
+        "u0": 28,
+        "u1": 30.5,
+        "v0": 8,
+        "v1": 12,
+        "z0": -0.6,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.mill-footing",
+      "asset": "terrain.mill-footing",
+      "u": 26.2,
+      "v": 14.2,
+      "z": 0.4,
+      "pivot": {
+        "x": 51,
+        "y": -1
+      },
+      "box": {
+        "u0": 26.2,
+        "u1": 29.4,
+        "v0": 14.2,
+        "v1": 17.4,
+        "z0": -0.6,
+        "z1": 0.4
+      }
+    },
+    {
+      "id": "terrain.chimney-bank",
+      "asset": "terrain.chimney-bank",
+      "u": -1,
+      "v": 17.5,
+      "z": 1.2,
+      "pivot": {
+        "x": 97,
+        "y": -1
+      },
+      "box": {
+        "u0": -1,
+        "u1": 5.6,
+        "v0": 17.5,
+        "v1": 23.6,
+        "z0": -0.6,
+        "z1": 1.2
+      }
+    },
+    {
+      "id": "terrain.far-quay",
+      "asset": "terrain.far-quay",
+      "u": 35,
+      "v": -16,
+      "z": 2,
+      "pivot": {
+        "x": 544,
+        "y": 0
+      },
+      "box": {
+        "u0": 35,
+        "u1": 37.8,
+        "v0": -16,
+        "v1": 18,
+        "z0": -0.6,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-gardens",
+      "asset": "terrain.far-gardens",
+      "u": 37.8,
+      "v": -16,
+      "z": 2,
+      "pivot": {
+        "x": 544,
+        "y": 0
+      },
+      "box": {
+        "u0": 37.8,
+        "u1": 48,
+        "v0": -16,
+        "v1": 18,
+        "z0": -0.6,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-north",
+      "asset": "terrain.far-north",
+      "u": 30.5,
+      "v": -20,
+      "z": 2,
+      "pivot": {
+        "x": 64,
+        "y": 0
+      },
+      "box": {
+        "u0": 30.5,
+        "u1": 48,
+        "v0": -20,
+        "v1": -16,
+        "z0": -0.6,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.stairs-east",
+      "asset": "terrain.stairs-east",
+      "u": 28.8,
+      "v": 4.5,
+      "z": 1.5840000000000003,
+      "pivot": {
+        "x": 32,
+        "y": -1
+      },
+      "box": {
+        "u0": 28.8,
+        "u1": 31.2,
+        "v0": 4.5,
+        "v1": 6.5,
+        "z0": -0.6,
+        "z1": 1.5840000000000003
+      },
+      "floorOf": "stairs-east"
+    }
+  ]
+}

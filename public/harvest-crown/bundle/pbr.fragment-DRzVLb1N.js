@@ -1,0 +1,1 @@
+export{I as pbrPixelShaderWGSL}from"./babylon-BwITB9hk.js";

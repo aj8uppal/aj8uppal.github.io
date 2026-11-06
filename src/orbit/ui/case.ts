@@ -7,6 +7,41 @@
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const items = [...document.querySelectorAll<HTMLElement>('[data-rise]')];
 
+// Captures loop on their own once they are on screen, keeping the player's
+// controls so they can always be paused. Readers who asked for stillness or
+// for less data keep the poster and press play themselves, which is also what
+// a page without JavaScript shows.
+const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+  ?.saveData;
+const clips = [...document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]')];
+if (!reduce && !saveData && 'IntersectionObserver' in window) {
+  const watch = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting) {
+          if (v.dataset.held) continue;
+          v.preload = 'auto';
+          void v.play().catch(() => {});
+        } else if (!v.paused) {
+          v.pause();
+          v.dataset.auto = '1';
+        }
+      }
+    },
+    { threshold: 0.35 },
+  );
+  for (const v of clips) {
+    // A pause by hand sticks; a pause from scrolling away does not.
+    v.addEventListener('pause', () => {
+      if (v.dataset.auto) delete v.dataset.auto;
+      else v.dataset.held = '1';
+    });
+    v.addEventListener('play', () => delete v.dataset.held);
+    watch.observe(v);
+  }
+}
+
 if (reduce || !('IntersectionObserver' in window)) {
   items.forEach((el) => el.classList.add('is-in'));
 } else {

@@ -1,21 +1,13 @@
 ---
-/**
- * A project page in the Orbit design: a full-bleed hero from the project's own
- * capture, then the trailer or the screenshots, then how it was built. The
- * copy is the project record from src/data/portfolio.ts, unchanged; only the
- * presentation lives here and in src/orbit/case.css.
- */
 import { Picture } from 'astro:assets';
-import Orbit from '../../../layouts/Orbit.astro';
+import Portfolio from '../../../layouts/Portfolio.astro';
 import ProjectGallery from '../../../components/ProjectGallery.astro';
 import ProjectTrailer from '../../../components/ProjectTrailer.astro';
 import trailers from '../../../data/portfolio-trailers.json';
 import { projects, type Project } from '../../../data/portfolio';
-import { apps } from '../../../data/built';
-import { worlds } from '../../../orbit/worlds';
 import { asset } from '../../../lib/images';
 import { contact } from '../../../data/content';
-import '../../../orbit/case.css';
+import '../../../portfolio/case.css';
 
 export function getStaticPaths() {
   return projects.map((project) => ({ params: { key: project.key }, props: { project } }));
@@ -30,129 +22,30 @@ const related = projects
   .slice(0, 3);
 const short = p.constraint === p.summary;
 const hasTrailer = trailers.some((trailer) => trailer.key === p.key);
-
-/* One accent per project: the homepage world's, else the collection card's. */
-const fallbackAccent: Record<string, string> = {
-  cubit: '#8fd0ff',
-  hidamari: '#f2b36b',
-  elderwood: '#a9d47a',
-  notable: '#7fb8ff',
-};
-const accentOf = (key: string) =>
-  worlds.find((w) => w.key === key)?.accent ??
-  apps.find((a) => a.key === key)?.accent ??
-  fallbackAccent[key] ??
-  '#ffb46a';
-const accent = accentOf(p.key);
-const world = worlds.findIndex((w) => w.key === p.key);
-const back =
-  p.key === 'notable'
-    ? { href: '/#earth', label: 'Back to Earth' }
-    : world >= 0
-      ? { href: `/#${p.key}`, label: 'Back to the system' }
-      : { href: '/#belt', label: 'Back to the belt' };
-const kicker =
-  p.key === 'notable' ? 'Professional work / Notable Health' : `Personal project / ${p.kind}`;
-const status = p.local
-  ? 'Playable prototype · available for a walkthrough'
-  : p.status === 'wip'
-    ? 'Work in progress'
-    : p.key === 'notable'
-      ? 'August 2022–present'
-      : 'Live in a browser';
-const external = (href: string | null) => !!href && href.startsWith('http');
 ---
 
-<Orbit
-  title={`${p.name} · AJ Uppal`}
-  description={p.summary}
-  image={p.image ?? undefined}
-  imageAlt={p.image ? p.alt : undefined}
-  bodyClass="case"
->
-  <script is:inline slot="head">
-    document.documentElement.classList.add('js');
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches)
-      document.documentElement.classList.add('reduce');
-  </script>
-
-  <div class="case-sky" aria-hidden="true" style={`--c:${accent}`}>
-    <i class="case-sky__far"></i>
-    <i class="case-sky__near"></i>
-    <i class="case-sky__glow"></i>
-  </div>
-
-  <header class="nav case-nav">
-    <a class="nav__brand" href="/">
-      <span class="nav__glyph" aria-hidden="true"></span>
-      <span>AJ Uppal</span>
-    </a>
-    <nav class="nav__links" aria-label="Main">
-      <a href="/#worlds">Worlds</a>
-      <a href="/#belt">More builds</a>
-      <a href="/#earth">Day job</a>
-      <a href="/#contact">Contact</a>
-    </nav>
-  </header>
-
-  <main id="main" class="case-main" data-project={p.key} style={`--accent:${accent};--c:${accent}`}>
-    <section
-      class:list={[
-        'case-hero',
-        { 'case-hero--plain': !p.image, 'case-hero--echo': p.image && !hasTrailer },
-      ]}
-      aria-labelledby="case-title"
-    >
-      {
-        p.image && (
-          <div class="case-hero__media" data-parallax>
-            <Picture
-              src={asset(p.image)}
-              alt=""
-              widths={[960, 1440, 1920, 2400]}
-              sizes="100vw"
-              formats={['avif']}
-              fallbackFormat="webp"
-              loading="eager"
-              fetchpriority="high"
-            />
-          </div>
-        )
-      }
-      {
-        !p.image && (
-          <div class="case-orbit" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-            <b />
-          </div>
-        )
-      }
-      <div class="case-hero__scrim" aria-hidden="true"></div>
-      <div class="case-hero__inner">
-        <a class="case-back" href={back.href} data-portfolio-back>
-          <span aria-hidden="true">←</span>
-          {back.label}
-        </a>
-        <p class="eyebrow" data-rise>{kicker}</p>
-        <h1
-          id="case-title"
-          class="case-title"
-          data-rise
-          style={`--len:${Math.max(...p.name.split(' ').map((w) => w.length))}`}
-        >
-          {p.name}<span>.</span>
-        </h1>
-        <p class="case-summary" data-rise>{p.summary}</p>
-        <div class="case-actions" data-rise>
+<Portfolio title={`${p.name} · AJ Uppal`} description={p.summary} navigation>
+  <main id="main" class="pc-shell" data-project={p.key}>
+    <a class="pc-back" href="/#projects" data-portfolio-back>← Back to selected work</a>
+    <header class="pc-head">
+      <div>
+        <p class="ref-eyebrow">
+          {
+            p.key === 'notable'
+              ? 'Professional work / Notable Health'
+              : `Personal project / ${p.kind}`
+          }
+        </p><h1>{p.name}<span>.</span></h1>
+      </div>
+      <div class="pc-intro">
+        <p>{p.summary}</p><div class="pc-actions">
           {
             (p.href || p.local) && (
               <a
-                class="btn btn--primary"
+                class="pc-button"
                 href={p.href || `mailto:${contact.email}?subject=${encodeURIComponent(p.name)}`}
-                target={external(p.href) ? '_blank' : undefined}
-                rel={external(p.href) ? 'noopener' : undefined}
+                target={p.href?.startsWith('http') ? '_blank' : undefined}
+                rel={p.href?.startsWith('http') ? 'noopener' : undefined}
               >
                 {p.local
                   ? 'Ask about this build'
@@ -163,54 +56,44 @@ const external = (href: string | null) => !!href && href.startsWith('http');
               </a>
             )
           }
-          <span class="case-status">
-            <i aria-hidden="true"></i>
-            {status}
-          </span>
+          <span class="pc-status"
+            >{
+              p.local
+                ? 'Playable prototype · available for a walkthrough'
+                : p.status === 'wip'
+                  ? 'Work in progress'
+                  : p.key === 'notable'
+                    ? 'August 2022–present'
+                    : 'Live in a browser'
+            }</span
+          >
         </div>
       </div>
-      {
-        p.image && (
-          <p class="case-hero__cap" aria-hidden="true">
-            {p.alt}
-          </p>
-        )
-      }
-    </section>
+    </header>
 
-    <div class="case-wrap">
-      {
-        hasTrailer ? (
-          <div class="case-media" data-rise>
-            <ProjectTrailer projectKey={p.key} />
-            <details class="pc-screenshots" data-trailer-screenshots>
-              <summary>
-                Screenshots <span aria-hidden="true">+</span>
-              </summary>
-              <ProjectGallery project={p} />
-            </details>
-          </div>
-        ) : p.image ? (
-          <div class="case-media" data-rise>
+    {
+      hasTrailer ? (
+        <>
+          <ProjectTrailer projectKey={p.key} />
+          <details class="pc-screenshots" data-trailer-screenshots>
+            <summary>
+              Screenshots <span aria-hidden="true">+</span>
+            </summary>
             <ProjectGallery project={p} />
-          </div>
-        ) : (
-          <section
-            class="pc-system case-mission"
-            aria-label="Professional scope and impact"
-            data-rise
-          >
-            <div class="case-mission__bar" aria-hidden="true">
-              <span>Mission control</span>
-              <span>
-                <i /> Live
-              </span>
-            </div>
-            <div class="pc-system-stat">
+          </details>
+        </>
+      ) : p.image ? (
+        <ProjectGallery project={p} />
+      ) : (
+        <section class="pc-system" aria-label="Professional scope and impact">
+          <div class="pc-system-stat">
+            <>
               <strong>~250,000</strong>
               <p>patient calls a month on our team’s voice and conversations platform</p>
-            </div>
-            <div class="pc-system-flow">
+            </>
+          </div>
+          <div class="pc-system-flow">
+            <>
               <span>
                 Patient identity<small>Patient lookup & SMS codes</small>
               </span>
@@ -222,74 +105,65 @@ const external = (href: string | null) => !!href && href.startsWith('http');
               <span>
                 Reliability<small>Monitoring & fallback routing</small>
               </span>
-            </div>
-            <p class="case-mission__note">Parts of the platform I work on at Notable Health.</p>
-          </section>
-        )
-      }
+            </>
+          </div>
+          <p>Parts of the platform I work on at Notable Health.</p>
+        </section>
+      )
+    }
 
-      <div class="pc-ownership case-own" data-rise>
-        <div>
-          <p class="eyebrow">My work</p>
-          <p>{p.role}</p>
-        </div>
-        <div>
-          <p class="eyebrow">Working with</p>
-          <p class="case-stack">
-            {p.stack.split(' · ').map((s) => <span>{s}</span>)}
-          </p>
-        </div>
+    <div class="pc-ownership">
+      <div><p class="ref-eyebrow">My work</p><p>{p.role}</p></div><div>
+        <p class="ref-eyebrow">Working with</p><p>{p.stack}</p>
       </div>
-
-      <section class="pc-engineering case-build" aria-labelledby="pc-question">
-        <header data-rise>
-          <p class="eyebrow">Inside the build</p>
-          <h2 id="pc-question">{short ? 'How it works.' : p.question}</h2>
-        </header>
-        <div class="pc-decisions case-cols">
-          {
-            !short && (
-              <div data-rise>
-                <span class="case-n" aria-hidden="true">
-                  01
-                </span>
+    </div>
+    <section class="pc-engineering" aria-labelledby="pc-question">
+      <div>
+        <p class="ref-eyebrow">Inside the build</p><h2 id="pc-question">
+          {short ? 'How it works.' : p.question}
+        </h2>
+      </div>
+      <div class="pc-decisions">
+        {
+          !short && (
+            <div>
+              <>
                 <h3>Context</h3>
                 <p>{p.constraint}</p>
-              </div>
-            )
-          }
-          <div data-rise>
-            <span class="case-n" aria-hidden="true">{short ? '01' : '02'}</span>
-            <h3>How it works</h3>
-            <p>{p.decision}</p>
-          </div>
-          <div class="pc-evidence" data-rise>
-            <span class="case-n" aria-hidden="true">{short ? '02' : '03'}</span>
-            <h3>{short ? 'In this photograph' : 'In the work'}</h3>
-            <p>{p.evidence}</p>
-          </div>
+              </>
+            </div>
+          )
+        }
+        <div><h3>How it works</h3><p>{p.decision}</p></div>
+        <div class="pc-evidence">
+          <h3>{short ? 'In this photograph' : 'In the work'}</h3><p>{p.evidence}</p>
         </div>
-      </section>
+      </div>
+    </section>
 
-      {
-        p.details && p.details.length > 0 && (
-          <dl class="pc-details case-details">
-            {p.details.map(([label, value]) => (
-              <div data-rise>
-                <dt>{label}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
-          </dl>
-        )
-      }
+    {
+      p.details && p.details.length > 0 && (
+        <dl class="pc-details">
+          {p.details.map(([label, value]) => (
+            <div>
+              <dt>{label}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
 
-      {
-        p.proofFrames && p.proofFrames.length > 0 && (
-          <details class="pc-proof case-proof">
+    {
+      p.proofFrames && p.proofFrames.length > 0 && (
+        <details class="pc-proof">
+          <>
             <summary>
-              More detail <span>Controls and additional screenshots</span>
-              <b aria-hidden="true">+</b>
+              More detail{' '}
+              <>
+                <span>Controls and additional screenshots</span>
+                <b aria-hidden="true">+</b>
+              </>
             </summary>
             <div>
               {p.proofFrames.map((f) => (
@@ -317,69 +191,53 @@ const external = (href: string | null) => !!href && href.startsWith('http');
                 </figure>
               ))}
             </div>
-          </details>
-        )
-      }
+          </>
+        </details>
+      )
+    }
 
-      <section class="pc-next case-next" aria-labelledby="pc-next-title">
-        <header data-rise>
-          <h2 id="pc-next-title">Keep exploring.</h2>
-          <a class="btn btn--ghost" href="/portfolio/collection/">
-            The whole collection <span aria-hidden="true">→</span>
-          </a>
-        </header>
-        <div>
-          {
-            related.map((item) => (
-              <a
-                href={`/portfolio/work/${item.key}/`}
-                style={`--c:${accentOf(item.key)}`}
-                data-rise
-              >
-                <span class="case-next__img">
-                  <Picture
-                    src={asset(item.image!)}
-                    alt={item.alt}
-                    widths={[400, 640, 960]}
-                    sizes="(min-width: 720px) 30vw, 90vw"
-                    formats={['avif']}
-                    fallbackFormat="webp"
-                    loading="lazy"
-                  />
-                </span>
-                <span class="case-next__meta">
-                  <small>{item.kind}</small>
-                  <strong>{item.name}</strong>
-                  <b aria-hidden="true">↗</b>
-                </span>
-              </a>
-            ))
-          }
-        </div>
-      </section>
-    </div>
-
-    <footer class="pc-footer case-foot">
-      <a class="nav__brand" href="/">
-        <span class="nav__glyph" aria-hidden="true"></span>
-        <span>AJ Uppal</span>
-      </a>
-      <p>Have a project in mind?</p>
-      <div class="case-foot__act">
-        <a class="btn btn--primary" href={`mailto:${contact.email}`}
-          >Let’s talk <span aria-hidden="true">↗</span></a
+    <section class="pc-next" aria-labelledby="pc-next-title">
+      <header>
+        <h2 id="pc-next-title">Keep exploring.</h2><a href="/portfolio/collection/"
+          >The whole collection →</a
         >
-        <button
-          type="button"
-          class="btn btn--ghost portfolio-copy"
-          data-copy-email={contact.email}
-          hidden>Copy email</button
-        >
-        <span class="sr" data-copy-status role="status"></span>
+      </header><div>
+        {
+          related.map((item) => (
+            <a href={`/portfolio/work/${item.key}/`}>
+              <>
+                <Picture
+                  src={asset(item.image!)}
+                  alt={item.alt}
+                  widths={[400, 640, 960]}
+                  sizes="(min-width: 720px) 30vw, 90vw"
+                  formats={['avif']}
+                  fallbackFormat="webp"
+                  loading="lazy"
+                />
+                <span>
+                  <>
+                    <strong>{item.name}</strong>
+                    <b aria-hidden="true">↗</b>
+                  </>
+                </span>
+                <small>{item.kind}</small>
+              </>
+            </a>
+          ))
+        }
       </div>
+    </section>
+    <footer class="pc-footer">
+      <a class="portfolio-brand" href="/">AJ Uppal</a><p>Have a project in mind?</p><a
+        href={`mailto:${contact.email}`}>Let’s talk ↗</a
+      >
+      <button type="button" class="portfolio-copy" data-copy-email={contact.email} hidden
+        >Copy email</button
+      >
+      <span class="sr" data-copy-status role="status"></span>
     </footer>
   </main>
-
   <dialog class="pc-lightbox" aria-label="Enlarged project photograph">
     <div class="pc-photo-toolbar">
       <div data-photo-controls>
@@ -397,11 +255,7 @@ const external = (href: string | null) => !!href && href.startsWith('http');
       >Open original image ↗</a
     >
   </dialog>
-</Orbit>
-
+</Portfolio>
 <script>
-  import '../../../portfolio/gallery';
-  import '../../../portfolio/contact';
   import '../../../portfolio/lightbox';
-  import '../../../orbit/ui/case';
 </script>

@@ -75,13 +75,13 @@ on both resting and hovered cards.
 
 ## Verification
 
-`npm run verify` is the production homepage gate: `scripts/verify.mjs` runs
-`scripts/verify-orbit.mjs` against a running server (default
-`http://127.0.0.1:4321/`, or pass a URL). It needs a real GPU, so it drives
-installed Chrome (`CAPTURE_CHANNEL` overrides). `scripts/verify-portfolio.mjs`
-(`npm run verify:portfolio`, `:lab`) was written for the retired Worldbuilder
-home and the old project-page markup; treat its failures there as stale, not
-as regressions. Keep Astro preview bound to `--host 127.0.0.1`.
+`npm run verify` runs both production gates against a running server (default
+`http://127.0.0.1:4321/`, or pass a URL): `scripts/verify-portfolio.mjs` for
+the Worldbuilder root page (`npm run verify:portfolio:lab` adds the review
+directions), then `scripts/verify-orbit.mjs` for `/v2/`, its world pages, and
+every play link on them. The Orbit gate needs a real GPU, so it drives
+installed Chrome (`CAPTURE_CHANNEL` overrides). Run the matching build and keep
+Astro preview bound to `--host 127.0.0.1`; the suites dial that literal address.
 
 `npm run verify:legacy` is a separate gate for the archived `/previous/` page
 and runs `scripts/verify-legacy.mjs`. Do not use its measurements as the
@@ -106,12 +106,11 @@ Its classes are prefixed `dlab`, because the playground cards already own `.lab`
 
 ## Page length is a standing budget
 
-The Orbit homepage is scroll-driven, so its length is a deliberate budget of
-stations: each section's height in `src/orbit/orbit.css` (e.g. `.world` at
-240vh) is hold time for the camera, not content. Adding a station costs a
-screen or two of scroll; adding copy inside one must still fit its sticky
-100svh stage at 1440×820. The retired Worldbuilder limits are `HOME_HEIGHT` in
-`scripts/verify-portfolio.mjs`. The archived `/previous/` limits are
+The root page's limits are `HOME_HEIGHT` in `scripts/verify-portfolio.mjs`.
+`/v2/` is scroll-driven, so its length is a budget of camera stations: each
+section's height in `src/orbit/orbit.css` (`.world` at 200vh) is hold time,
+not content. With twelve worlds every extra vh is twelve; copy inside a
+station must still fit its sticky 100svh stage at 1440×820. The archived `/previous/` limits are
 `HEIGHT_BUDGET` and `MOBILE_BUDGET` in `scripts/verify-legacy.mjs`; the
 constants beside those checks explain their measured content. Keep each page's
 authority separate when changing copy or vertical rhythm.
@@ -172,25 +171,44 @@ Online play connects to the `hypergrid-online` Fly app (`wss://hypergrid-online.
 The relay keeps rooms in memory, so it must stay a single machine (`fly deploy --ha=false`); its `/built/` capture plays a real co-op round through that production relay, so the capture fails if the relay is down.
 Both players need the same build: the page's service worker is network-first for that reason, and peers refuse a protocol-version mismatch.
 
-## The homepage is a WebGL flight, and its content is plain HTML
+## `/v2/` is a WebGL flight, and its content is plain HTML
 
-`/` is the Orbit homepage: `src/pages/index.astro` for the words and links,
-`src/orbit/` for everything that moves. `src/orbit/worlds.ts` curates the eight
-worlds and the belt; its copy is a shorter telling of `built.ts`/`portfolio.ts`
-and must not state a number those records do not, caveats included. Each
+`/v2/` is the alternative site: `src/pages/v2/index.astro` for the words and
+links, `src/pages/v2/work/[key].astro` for each world's page, `src/orbit/` for
+everything that moves. It shares `public/`, `/built/` and the 404 with the root
+site and must not restyle them. `src/orbit/worlds.ts` curates the twelve worlds
+and the belt; `src/orbit/cases.ts` carries each world page's longer copy.
+Numbers for Eyeshot, Blockhold, Voidreach and Cubit must be ones
+`built.ts`/`portfolio.ts` state; numbers for the other eight come from their
+games' own source and docs, with a path:line for each kept in the ignored
+`data/v2-captures/<slug>/facts.json` written when the footage was captured. Each
 `[data-shot]` section is a camera station; `src/orbit/gl/director.ts` holds on
 it while its sticky stage is pinned and flies between stations in the gap.
+The smoothed camera pose lives apart from `camera`; pointer parallax is applied
+on top each frame and must never be fed back into the smoothing, or its size
+scales with 1/dt and every frame-time wobble shakes the view.
 
 The black hole (`gl/blackhole.ts`) is a background pass, so the scene cannot
 occlude against it: `scene.ts` hides any body behind its lensing zone, and any
-other planet behind the world in focus. Reduced motion cuts between stations
-instead of flying and never autoplays; without WebGL 2 or JavaScript the page
-shows `src/assets/orbit-backdrop.webp`, a real frame from the scene. Re-shoot it
-and `orbit-social.webp` with `scripts/capture-orbit-stills.mjs` after changing
-the hero. Scene textures come from raw art in the ignored `data/orbit-art/`
-through `scripts/prepare-orbit-textures.mjs`; provenance (generation prompts,
-NASA sources) is in `src/orbit/textures/manifest.json`. Planet surfaces are
-illustrations and the footer says so; every capture on the page is real.
+other planet behind the world in focus. Built worlds (hex globe, Cubit's cube,
+Eyeshot's paper planet) are in `gl/bodies.ts`; Blockhold's voxels and the belt
+in `gl/specials.ts`. Reduced motion cuts between stations instead of flying and
+never autoplays; without WebGL 2 or JavaScript the page shows
+`src/assets/orbit-backdrop.webp`, a real frame from the scene. Re-shoot it and
+`orbit-social.webp` with `scripts/capture-orbit-stills.mjs` after changing the
+hero. Scene textures come from raw art in the ignored `data/orbit-art/` through
+`scripts/prepare-orbit-textures.mjs`; provenance (generation prompts, NASA
+sources) is in `src/orbit/textures/manifest.json`. Planet surfaces are
+illustrations and the footer says so; every clip and still is real footage,
+silent 1280×720 H.264 in `public/media/previews/<slug>.mp4` with its first
+decoded frame as `src/assets/preview-<slug>.webp`. The newer clips end on a 0.5 s
+crossfade into their own opening, so the loop does not jump; re-extract the
+poster after any re-encode. Phones get the 640px encodes in
+`public/media/previews/640/`, and the homepage attaches a clip only while it is
+on screen and detaches one scrolled past before it finished downloading. Planet
+maps start on their `-512.webp` stand-ins and the full map is fetched as the
+camera closes in, then swapped in one per frame while the camera is settled
+(`gl/textures.ts`), so no texture upload lands mid-flight.
 
 ## `public/seventide/` is a build, and it has no server
 
@@ -201,11 +219,38 @@ Ranked are shown greyed out, and nothing calls a server. Its service worker is r
 scope `/seventide/` and caches only that folder, under cache names starting `seventide-globe-`; keep it that way, a
 worker scoped to `/` would capture the whole site.
 
+## The /v2/ game builds are copies of other projects
+
+`public/lanternwake/`, `public/lantern-roads/`, `public/harvest-crown/` and
+`public/lumen-hollow/` are static builds of other projects with a sub-path
+base, touch fixes or a desktop-only notice (Emberdeep has its own section
+above). Rebuild at the source and re-copy; never patch the bundle. Lanternwake
+(`~/lanternwake`, `npm run build:pages`, solo only: shared voyages need the Fly
+server's origin list), Lantern Roads (`~/8bit-mmo`, `npm run build:pages`, its
+server runs in a Web Worker) and Harvest Crown (`~/harvest-crown-web`,
+`HC_BASE=/harvest-crown/ npx vite build`) come from unpushed local branches
+named `pages/aj8uppal`. `~/cozygame` (Lumen Hollow) is not a Git repository;
+its three changes are `data/v2-captures/lumen-hollow/source-changes.patch`.
+Touch controls written for an earlier Emberdeep snapshot are in
+`data/v2-captures/emberdeep/emberdeep-pages.patch`, not in the published build,
+which is keyboard, mouse and gamepad only.
+
+## The deployed site has a 1 GB ceiling
+
+GitHub Pages limits a published site to 1 GB, and `dist/` was 764 MB once the games
+above were added, with `public/media/trailers/` the largest part. Measure
+`du -sh dist` before adding a game. Saltline (`~/saltline-opus`) is 268 MB even
+with its AAC fallbacks removed, so /v2/ links to its Fly app
+(`saltline-opus-ajuppal.fly.dev`) instead. A Pages-ready build with base
+`/saltline/` is kept in the ignored `data/pages-builds/saltline/`, from local
+branch `pages/aj8uppal` in that repo; it would fit only as its own Pages project
+repository, which gets a separate 1 GB.
+
 ## Portfolio directions share their depth
 
-The previous Worldbuilder home, the four alternatives, `/directions/`, and
-`/alternate/` are injected only in dev mode or `build:lab`/`palettes` output
-(Worldbuilder at `/portfolio/worldbuilder/`); `/portfolio/` redirects to `/`.
+The Worldbuilder portfolio is the site root `/`; `/portfolio/` redirects there.
+The four alternatives, `/directions/`, and `/alternate/` are injected only in
+dev mode or `build:lab`/`palettes` output.
 `/previous/` preserves the archived
 portfolio with its noindex treatment. `/built/` is the shared project
 collection. Project pages and app records come from `src/data/portfolio.ts`,

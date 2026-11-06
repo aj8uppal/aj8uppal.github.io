@@ -1,4 +1,6 @@
 public/
+data/v2-captures/
+data/pages-builds/
 dist/
 node_modules/
 .astro/

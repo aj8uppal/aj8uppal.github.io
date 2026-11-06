@@ -1,7 +1,12 @@
 /**
- * Headings split into masked characters and rise into place; copy fades up
- * out of a blur. Both start from their resting state in the HTML, so a page
- * without JavaScript (or with reduced motion) simply shows everything.
+ * Headings split into masked characters and rise into place; copy fades up.
+ * Both start from their resting state in the HTML, so a page without
+ * JavaScript (or with reduced motion) simply shows everything. Each plays once:
+ * copy that vanished again on the way back up read as flicker, and a blur
+ * filter on every block cost frames mid-flight.
+ *
+ * The hero is not here: it enters in CSS from the first paint (orbit.css),
+ * because this module can arrive after the visitor has started reading it.
  */
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -21,68 +26,37 @@ export function initReveals(reduce: boolean) {
       linesClass: 'split-line',
       wordsClass: 'split-word',
     });
-    const hero = el.closest('.hero');
     const tween = gsap.from(split.chars, {
       yPercent: 118,
       rotate: 7,
       opacity: 0,
-      duration: hero ? 1.6 : 1.15,
+      duration: 1.15,
       ease: 'expo.out',
-      stagger: hero ? 0.045 : 0.018,
+      stagger: 0.018,
       paused: true,
     });
-    if (hero) {
-      // The hero waits for the loader to lift.
-      const go = () => setTimeout(() => tween.play(), 650);
-      if (document.documentElement.classList.contains('ready')) go();
-      else
-        new MutationObserver((_, o) => {
-          if (document.documentElement.classList.contains('ready')) {
-            o.disconnect();
-            go();
-          }
-        }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-      return;
-    }
     ScrollTrigger.create({
       trigger: triggerFor(el),
-      start: 'top 55%',
+      start: 'top 65%',
+      once: true,
       onEnter: () => tween.play(),
-      onLeaveBack: () => tween.reverse(),
     });
   });
 
   document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
-    const delay = Number(el.dataset.reveal || 0);
-    const hero = el.closest('.hero');
     const tween = gsap.from(el, {
-      y: 34,
+      y: 26,
       opacity: 0,
-      filter: 'blur(10px)',
-      duration: 1.2,
-      delay: delay + (hero ? 0 : 0.15),
+      duration: 1.0,
+      delay: Number(el.dataset.reveal || 0) + 0.05,
       ease: 'power3.out',
       paused: true,
-      clearProps: 'filter',
     });
-    if (hero) {
-      const go = () => setTimeout(() => tween.play(), 1100);
-      const watch = new MutationObserver(() => {
-        if (document.documentElement.classList.contains('ready')) {
-          watch.disconnect();
-          go();
-        }
-      });
-      if (document.documentElement.classList.contains('ready')) go();
-      else
-        watch.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-      return;
-    }
     ScrollTrigger.create({
       trigger: triggerFor(el),
-      start: 'top 50%',
+      start: 'top 62%',
+      once: true,
       onEnter: () => tween.play(),
-      onLeaveBack: () => tween.reverse(),
     });
   });
 }

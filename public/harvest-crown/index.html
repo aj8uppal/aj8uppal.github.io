@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Harvest Crown</title>
+    <meta name="description" content="Raise a realm on a living island world, run it by the seasons, and win one of three crowns. A strategy game in the browser." />
+    <meta name="theme-color" content="#121b1e" />
+    <link rel="icon" href="/harvest-crown/assets/icon-64.png" sizes="64x64" />
+    <link rel="apple-touch-icon" href="/harvest-crown/assets/icon-180.png" />
+    <link rel="manifest" href="/harvest-crown/manifest.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Harvest Crown" />
+    <meta property="og:description" content="Raise a realm on a living island world, run it by the seasons, and win one of three crowns. A strategy game in the browser." />
+    <meta property="og:image" content="https://harvest-crown.pages.dev/assets/social.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <style>html,body{background:#121b1e;height:100%;margin:0;overflow:hidden}#scene{touch-action:none;outline:none;width:100%;height:100%;display:block;position:fixed;inset:0}#ui{pointer-events:none;position:fixed;inset:0}#splash{z-index:10;background:radial-gradient(circle at 50% 42%,#1d2a2d 0%,#121b1e 70%);place-items:center;transition:opacity .6s;display:grid;position:fixed;inset:0}#splash.gone{opacity:0;pointer-events:none}#splash .mark{aspect-ratio:640/400;opacity:.92;background:#f5f0e1;width:min(420px,60vw);-webkit-mask:url(/harvest-crown/assets/ui/brand/wordmark.svg) 50%/contain no-repeat;mask:url(/harvest-crown/assets/ui/brand/wordmark.svg) 50%/contain no-repeat}#splash .line{background:linear-gradient(90deg,#0000,#d8b25a,#0000) 0 0/200% 100%;width:180px;height:2px;margin-top:28px;animation:1.6s ease-in-out infinite hc-sweep}#splash .label{letter-spacing:.08em;color:#f5f0e1b3;text-align:center;max-width:min(520px,80vw);margin-top:16px;font:500 15px/1.4 Georgia,serif}#splash .box{flex-direction:column;align-items:center;display:flex}#splash .line.is-measured{background:linear-gradient(90deg, #d8b25a calc(var(--p,0) * 100%), #d8b25a2e 0);width:220px;transition:background .2s;animation:none}@keyframes hc-sweep{0%{background-position:100% 0}to{background-position:-100% 0}}@media (prefers-reduced-motion:reduce){#splash .line{animation:none}}.small-screen{z-index:30;color:#f5f0e1db;text-align:center;background:#121b1e;place-content:center;justify-items:center;gap:20px;padding:32px;font:500 17px/1.5 Georgia,serif;display:none;position:fixed;inset:0}.small-screen button{font:inherit;color:#f5f0e1;background:0 0;border:1px solid #d8b25ab3;border-radius:8px;padding:10px 18px;font-size:15px}@media (orientation:portrait) and (max-width:600px) and (pointer:coarse){#turn{display:grid}}@media (orientation:landscape) and (max-height:500px) and (pointer:coarse){#small{display:grid}}.small-screen .mark{aspect-ratio:640/400;opacity:.92;background:#f5f0e1;width:min(260px,50vw);-webkit-mask:url(/harvest-crown/assets/ui/brand/wordmark.svg) 50%/contain no-repeat;mask:url(/harvest-crown/assets/ui/brand/wordmark.svg) 50%/contain no-repeat}.play-anyway .small-screen{display:none!important}</style>
+    <script type="module" crossorigin src="/harvest-crown/bundle/index-0GH9bVJX.js"></script>
+    <link rel="modulepreload" crossorigin href="/harvest-crown/bundle/babylon-BwITB9hk.js">
+  </head>
+  <body>
+    <canvas id="scene"></canvas>
+    <div id="ui"></div>
+    <div id="turn" class="small-screen" role="alert"><div class="mark" aria-hidden="true"></div><div>Turn your device sideways to play Harvest Crown.</div></div>
+    <div id="small" class="small-screen" role="alert">
+      <div class="mark" aria-hidden="true"></div>
+      <div>Harvest Crown is made for a larger screen. It plays best on a tablet, laptop or desktop.</div>
+      <button type="button" onclick="document.documentElement.classList.add('play-anyway')">Play anyway</button>
+    </div>
+    <div id="splash" aria-live="polite"><div class="box"><div class="mark" role="img" aria-label="Harvest Crown"></div><div class="line"></div><div class="label">Raising the land…</div></div></div>
+  </body>
+</html>

@@ -1,0 +1,1 @@
+export{Wt as OptimizeIndices}from"./babylon-BwITB9hk.js";

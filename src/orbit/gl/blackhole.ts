@@ -10,12 +10,15 @@
  * ring at 1.5 r_s, and the lensed far side of the disk arching over the top.
  *
  * Rays that never come close are not marched at all: they take the weak-field
- * deflection 2 r_s / b analytically, which matches the integrator at the hand-
- * off radius, so the boundary does not show.
+ * deflection 2 r_s / b analytically. Rays that are marched only bend inside
+ * the march sphere, so each also takes, analytically, the share of 2 r_s / b
+ * that a straight path would pick up outside it (half on the way in, half on
+ * the way out). Without that share the sky jumped by ~2.7 degrees at the
+ * hand-off radius. The disk starts at the innermost stable orbit, 3 r_s.
  */
 import * as THREE from 'three';
 
-export const DISK_IN = 2.6;
+export const DISK_IN = 3.0;
 export const DISK_OUT = 12.0;
 
 const vertex = /* glsl */ `
@@ -154,8 +157,9 @@ vec4 disk(vec3 p, vec3 dir) {
   float shift = dop * grav;
   float temp = (0.35 + 0.9 * x) * shift;
   vec3 col = blackbody(temp) * flux * pow(shift, 3.2) * 8.0 * (0.3 + dens * 0.9);
-  float alpha = clamp((0.25 + dens) * edge * 1.1, 0.0, 0.97);
-  return vec4(col * uDisk, alpha * edge);
+  // Opaque where it is dense, so the shadow does not show through the near side.
+  float alpha = clamp((0.6 + dens) * 1.1, 0.0, 1.0) * edge;
+  return vec4(col * uDisk, alpha);
 }
 
 void main() {
@@ -191,9 +195,17 @@ void main() {
     return;
   }
 
+  // The bending a straight path at impact b gets outside the march sphere:
+  // 2/b in total, less the chord inside, T(2R^2 + b^2) / (b R^3).
+  float bs = max(b, 1e-3);
+  float T = sqrt(max(R_MARCH * R_MARCH - h2, 0.0));
+  float halfOut = 0.5 * max(2.0 / bs - T * (2.0 * R_MARCH * R_MARCH + h2) / (bs * R_MARCH * R_MARCH * R_MARCH), 0.0);
   vec3 p = ro;
-  if (dot(ro, ro) > R_MARCH * R_MARCH) p = ro + rd * (tca - sqrt(R_MARCH * R_MARCH - b * b));
   vec3 vel = rd;
+  if (dot(ro, ro) > R_MARCH * R_MARCH) {
+    p = ro + rd * (tca - sqrt(R_MARCH * R_MARCH - b * b));
+    vel = normalize(rd + normalize(-(ro + rd * tca)) * halfOut);
+  }
   float glow = 0.0;
   bool escaped = false;
   for (int i = 0; i < 400; i++) {
@@ -218,6 +230,11 @@ void main() {
     }
   }
   vec3 outDir = normalize(vel);
+  if (escaped) {
+    // The other half, on the way back out to the sky.
+    vec3 perp = p - outDir * dot(p, outDir);
+    if (dot(perp, perp) > 1e-6) outDir = normalize(outDir - normalize(perp) * halfOut);
+  }
   // Size stars by the lens map's own footprint, so a magnified star brightens
   // instead of smearing into a dash.
   float fp = sqrt(max(length(dFdx(outDir)) * length(dFdy(outDir)), 1e-12));
@@ -226,7 +243,8 @@ void main() {
     float r = length(p);
     if (r >= 1.0) col += trans * sky(outDir, fp);
   }
-  col += vec3(1.0, 0.62, 0.3) * glow * 0.05 * uDisk;
+  // The photon-sphere glow belongs to light that got away; the shadow stays black.
+  if (escaped) col += vec3(1.0, 0.62, 0.3) * glow * 0.05 * uDisk;
   gl_FragColor = vec4(col, 1.0);
 }`;
 

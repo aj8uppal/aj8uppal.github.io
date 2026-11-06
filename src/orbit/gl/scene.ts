@@ -19,15 +19,9 @@ import { createBlackHole, DISK_OUT, type BlackHole } from './blackhole';
 
 const DISK_LENS = DISK_OUT + 4;
 import { createPlanet, type Body, type Light } from './planet';
-import {
-  createBall,
-  createBelt,
-  createDebris,
-  createGrid,
-  createSwarm,
-  createVoxel,
-} from './specials';
-import { texture } from './textures';
+import { createCube, createHexGlobe, createPaper } from './bodies';
+import { createBelt, createVoxel } from './specials';
+import { flushTextures, texture } from './textures';
 import { worlds } from '../worlds';
 
 export const EARTH = new THREE.Vector3(-760, 70, 1180);
@@ -57,7 +51,16 @@ export function pickTier(): Tier {
       msaa: 0,
       quality: 0.4,
     };
-  return { name: 'high', dpr: Math.min(dpr, 1.75), bhScale: 0.62, steps: 240, msaa: 4, quality: 1 };
+  // The hole is the headline: full resolution on a 1x screen, where a
+  // reduced pass showed as a beaded photon ring.
+  return {
+    name: 'high',
+    dpr: Math.min(dpr, 1.75),
+    bhScale: dpr > 1.3 ? 0.72 : 1,
+    steps: 240,
+    msaa: 4,
+    quality: 1,
+  };
 }
 
 export function downgrade(t: Tier): Tier | null {
@@ -359,36 +362,31 @@ export function createSystem(canvas: HTMLCanvasElement, initial: Tier): System {
   worlds.forEach((w, index) => {
     const s = w.planet;
     let body: Body;
-    if (s.kind === 'grid') body = createGrid(w.key, s.radius, diskLight, tier.quality);
-    else if (s.kind === 'voxel') body = createVoxel(w.key, s.radius, diskLight);
-    else if (s.kind === 'swarm') body = createSwarm(w.key, s.radius, tier.quality);
-    else if (s.kind === 'ball') body = createBall(w.key, s.radius, diskLight);
+    if (s.kind === 'voxel') body = createVoxel(w.key, s.radius, diskLight);
+    else if (s.kind === 'hexglobe') body = createHexGlobe(w.key, s.radius, diskLight);
+    else if (s.kind === 'cube') body = createCube(w.key, s.radius, diskLight);
+    else if (s.kind === 'paper') body = createPaper(w.key, s.radius, diskLight);
     else
       body = createPlanet({
         key: w.key,
         radius: s.radius,
         map: s.map as never,
+        nearest: s.nearest,
         light: diskLight,
         atmosphere: s.atmosphere,
         glow: s.glow,
-        glowMode: s.map === 'ember' ? 1 : s.map === 'rift' ? 2 : s.map === 'ice' ? 3 : 0,
-        glowGain: s.map === 'ice' ? 0.9 : s.map === 'rift' ? 1.1 : 2.2,
-        waterMode: s.kind === 'ocean' ? 2 : 0,
+        glowMode: s.glowMode ?? 0,
+        glowGain: s.glowMode === 3 ? 0.9 : 2.2,
+        waterMode: s.kind === 'ocean' || s.style === 5 || s.style === 7 ? 2 : 0,
         clouds: s.clouds ? 'clouds' : undefined,
+        cloudGain: s.style === 6 ? 0.45 : undefined,
         rings: s.rings ? { inner: 1.45, outer: 2.55, tint: '#bfefff', tilt: 0.42 } : undefined,
+        style: s.style,
+        styleColor: s.styleColor,
         tilt: s.tilt,
         spin: s.spin,
         atmosphereIntensity: s.kind === 'ocean' ? 1.25 : 1,
       });
-    if (s.kind === 'rift') {
-      const debris = createDebris(s.radius, diskLight, tier.quality);
-      body.group.add(debris);
-      const inner = body.update;
-      body.update = (t, dt, c) => {
-        inner(t, dt, c);
-        (debris.userData.update as (t: number) => void)(t);
-      };
-    }
     scene.add(body.group);
     const p: Placed = {
       key: w.key,
@@ -563,6 +561,7 @@ export function createSystem(canvas: HTMLCanvasElement, initial: Tier): System {
       }
       earth.update(time, dt, camera);
       moon.update(time, dt, camera);
+      flushTextures(renderer, fx.speed < 12);
       belt.rotation.y = time * 0.004;
       (belt.userData.grow as { value: number }).value = fx.belt;
       belt.visible = fx.belt > 0.01;

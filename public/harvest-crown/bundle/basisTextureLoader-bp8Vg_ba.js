@@ -1,0 +1,1 @@
+export{on as _BasisTextureLoader}from"./babylon-BwITB9hk.js";

@@ -70,9 +70,13 @@ const jobs = [
   ['sky', 'sky-panorama.png', 'sky', 2048, 1024, 86],
   ['saltline', 'planet-saltline.png', 'wrap', 2048, 1024, 84],
   ['clouds', 'planet-clouds.png', 'mask', 2048, 1024, 80],
-  ['ember', 'planet-ember.png', 'wrap', 2048, 1024, 84],
   ['ice', 'planet-ice.png', 'wrap', 2048, 1024, 84],
-  ['rift', 'planet-rift.png', 'wrap', 2048, 1024, 84],
+  ['emberdeep', 'planet-emberdeep.png', 'wrap', 2048, 1024, 84],
+  ['seventide', 'planet-seventide.png', 'wrap', 2048, 1024, 84],
+  ['harvest', 'planet-harvest.png', 'wrap', 2048, 1024, 84],
+  ['lumen', 'planet-lumen.png', 'wrap', 2048, 1024, 84],
+  ['lanternwake', 'planet-lanternwake.png', 'wrap', 2048, 1024, 84],
+  ['lantern-roads', 'planet-lantern-roads.png', 'pixel', 1024, 512, 90],
   ['moon', 'moon-rock.png', 'wrap', 2048, 1024, 82],
   ['nebula-violet', 'nebula-violet.png', 'sprite', 1024, 683, 82],
   ['nebula-amber', 'nebula-amber.png', 'sprite', 1024, 683, 82],
@@ -104,6 +108,15 @@ for (const [name, src, kind, w, h, q] of jobs) {
       h,
       0.04,
     );
+  } else if (kind === 'pixel') {
+    // Pixel art keeps hard edges: nearest-neighbour down to the art's own
+    // grid, and the scene samples it with a nearest magnification filter.
+    const { data, info } = await (
+      await seamless(img, w, h, 0.03)
+    )
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    img = sharp(data, { raw: { width: info.width, height: info.height, channels: info.channels } });
   } else img = img.resize(w, h, { fit: 'fill' });
   const file = name + '.webp';
   const buf = await img.webp({ quality: q, effort: 6 }).toBuffer();
@@ -122,5 +135,16 @@ for (const [name, src, kind, w, h, q] of jobs) {
         },
   });
   console.log(file.padEnd(22), (buf.length / 1024).toFixed(0).padStart(6), 'KB');
+  // A 512px stand-in for every surface map. The scene starts every body on it
+  // (the overview sees them from far off) and fetches the full map only as the
+  // camera closes in, so a visitor who never scrolls downloads a tenth as much.
+  if (kind === 'wrap' || kind === 'mask' || kind === 'pixel' || name === 'earth-day') {
+    const lo = await sharp(buf)
+      .resize(512, 256, { fit: 'fill', kernel: kind === 'pixel' ? 'nearest' : 'lanczos3' })
+      .webp({ quality: 80, effort: 6 })
+      .toBuffer();
+    await writeFile(path.join(OUT, name + '-512.webp'), lo);
+    console.log((name + '-512.webp').padEnd(22), (lo.length / 1024).toFixed(0).padStart(6), 'KB');
+  }
 }
 await writeFile(path.join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');

@@ -81,20 +81,31 @@ initCursor(reduce.matches);
 initSound();
 
 const canvas = document.querySelector<HTMLCanvasElement>('#orbit-canvas');
-const hud = {
-  fps: document.querySelector<HTMLElement>('[data-hud="fps"]'),
-  pos: document.querySelector<HTMLElement>('[data-hud="pos"]'),
-  vel: document.querySelector<HTMLElement>('[data-hud="vel"]'),
-  sector: document.querySelector<HTMLElement>('[data-hud="sector"]'),
-};
+const hudSector = document.querySelector<HTMLElement>('[data-hud="sector"]');
 const rail = [...document.querySelectorAll<HTMLAnchorElement>('[data-rail]')];
 const labels = [...document.querySelectorAll<HTMLElement>('[data-label]')];
-const loader = document.querySelector<HTMLElement>('.loader');
+const systemList = document.querySelector<HTMLElement>('.system__list');
+// Measured on resize, never per frame: the list moves only vertically.
+let listRight = 0;
+const measureList = () => {
+  listRight = systemList ? systemList.getBoundingClientRect().right + 16 : 0;
+};
+measureList();
+addEventListener('resize', measureList);
+document.fonts?.ready.then(measureList);
+
+/* Pointing at a world in the index lights its label in the scene. */
+document.querySelectorAll<HTMLElement>('[data-world]').forEach((a) => {
+  const label = labels.find((l) => l.dataset.label === a.dataset.world);
+  if (!label) return;
+  a.addEventListener('pointerenter', () => label.classList.add('is-hot'));
+  a.addEventListener('pointerleave', () => label.classList.remove('is-hot'));
+  a.addEventListener('focus', () => label.classList.add('is-hot'));
+  a.addEventListener('blur', () => label.classList.remove('is-hot'));
+});
 
 function reveal() {
   root.classList.add('ready');
-  loader?.addEventListener('transitionend', () => loader.remove(), { once: true });
-  setTimeout(() => loader?.remove(), 2400);
 }
 
 if (!canvas || !webgl2()) {
@@ -117,21 +128,11 @@ async function boot(canvas: HTMLCanvasElement) {
   if (import.meta.env.DEV) Object.assign(window, { __orbit: { sys, director } });
   const cam = sys.camera;
 
-  // Wait for the sky (the hero needs it) but never more than a moment.
-  const progress = document.querySelector<HTMLElement>('[data-progress]');
+  // The words are already on screen; the scene fades in behind them once the
+  // sky has arrived, or after a moment regardless.
   const { texture } = await import('./gl/textures');
   const sky = texture('sky', { mips: false });
-  let shown = 0;
-  const tick = setInterval(() => {
-    shown = Math.min(shown + 7 + Math.random() * 9, 96);
-    if (progress) progress.textContent = String(Math.round(shown)).padStart(2, '0');
-  }, 60);
-  await Promise.race([
-    Promise.all([sky.ready, document.fonts?.ready]),
-    new Promise((r) => setTimeout(r, 3500)),
-  ]);
-  clearInterval(tick);
-  if (progress) progress.textContent = '100';
+  await Promise.race([sky.ready, new Promise((r) => setTimeout(r, 1200))]);
 
   // Compile everything once while the loader is still up.
   sys.compile();
@@ -159,17 +160,21 @@ async function boot(canvas: HTMLCanvasElement) {
   let time = 0;
   const accent = getComputedStyle(root).getPropertyValue('--accent').trim();
   const accents = new Map(worlds.map((w) => ['world:' + w.key, w.accent]));
+  const of = String(worlds.length).padStart(2, '0');
   const sectorNames = new Map<string, string>([
-    ['hero', '00 · Singularity'],
-    ['system', '01 · The system'],
+    ['hero', 'The singularity'],
+    ['system', 'The system'],
     ...worlds.map(
       (w, i) =>
-        ['world:' + w.key, `${String(i + 2).padStart(2, '0')} · ${w.name}`] as [string, string],
+        ['world:' + w.key, `World ${String(i + 1).padStart(2, '0')} / ${of} · ${w.name}`] as [
+          string,
+          string,
+        ],
     ),
-    ['belt', '10 · The belt'],
-    ['earth', '11 · Earth'],
-    ['origin', '12 · Origin'],
-    ['contact', '13 · Open channel'],
+    ['belt', 'The belt'],
+    ['earth', 'Earth'],
+    ['origin', 'Origin'],
+    ['contact', 'Open channel'],
   ]);
   const tmp = new THREE.Vector3();
 
@@ -188,9 +193,10 @@ async function boot(canvas: HTMLCanvasElement) {
 
     const k = reduce.matches || firstFrame ? 1 : 1 - Math.exp(-dt * 7);
     if (reduce.matches) {
-      // Cut, don't fly: hold the nearest station's resting shot.
+      // Cut, don't fly, and don't swing: hold the nearest station's middle
+      // shot for as long as that station is on screen.
       const s = director.stations[info.index]!;
-      director.at(info.travel > 0 ? s.start : Math.min(scrollY(), s.end), 0, target);
+      director.at((s.start + s.end) / 2, 0, target);
     }
     // The smoothed pose lives apart from the camera. Parallax is applied on top
     // each frame and never fed back into the smoothing: fed back, its resting
@@ -239,7 +245,7 @@ async function boot(canvas: HTMLCanvasElement) {
     frames++;
     if (now - fpsT > 500) {
       const fps = (frames * 1000) / (now - fpsT);
-      if (hud.fps) hud.fps.textContent = fps.toFixed(0);
+      root.dataset.fps = fps.toFixed(0);
       // Adaptive quality: step down once if we are clearly struggling.
       if (now - start > 4000) {
         slow = fps < 42 ? slow + 1 : 0;
@@ -256,12 +262,9 @@ async function boot(canvas: HTMLCanvasElement) {
       frames = 0;
       fpsT = now;
     }
-    if (hud.pos)
-      hud.pos.textContent = `${cam.position.x.toFixed(1)}  ${cam.position.y.toFixed(1)}  ${cam.position.z.toFixed(1)}`;
-    if (hud.vel) hud.vel.textContent = (speed / 300).toFixed(3) + 'c';
     if (info.key !== lastKey) {
       lastKey = info.key;
-      if (hud.sector) hud.sector.textContent = sectorNames.get(info.key) ?? '';
+      if (hudSector) hudSector.textContent = sectorNames.get(info.key) ?? '';
       root.style.setProperty('--accent', accents.get(info.key) ?? accent);
       root.dataset.station = info.key.replace(':', '-');
       if (!firstFrame)
@@ -280,11 +283,12 @@ async function boot(canvas: HTMLCanvasElement) {
           Math.abs(y - (sysStation.start + sysStation.end) / 2) /
             ((sysStation.end - sysStation.start) / 2 + vh * 0.6),
       );
+      // Labels never sit on the index they duplicate.
       for (const l of labels) {
         sys.bodyPosition(l.dataset.label!, tmp).project(cam);
         const x = (tmp.x * 0.5 + 0.5) * innerWidth;
         const yy = (-tmp.y * 0.5 + 0.5) * innerHeight;
-        const on = tmp.z < 1 && vis > 0.02;
+        const on = tmp.z < 1 && vis > 0.02 && x > listRight && x < innerWidth - 140;
         l.style.transform = `translate3d(${x.toFixed(1)}px, ${yy.toFixed(1)}px, 0)`;
         l.style.opacity = on ? String(Math.min(1, vis * 1.6)) : '0';
         l.style.pointerEvents = on && vis > 0.5 ? 'auto' : 'none';

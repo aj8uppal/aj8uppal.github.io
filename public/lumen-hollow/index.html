@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f2a" />
+  <title>Lumen Hollow</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%E2%9C%A8%3C/text%3E%3C/svg%3E" />
+  <script type="module" crossorigin src="./assets/index-D7Y-0P2D.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-iYN6RTga.css">
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div id="ui">
+    <!-- Loading -->
+    <div id="loading" class="screen">
+      <div class="loading-inner">
+        <div class="loading-star"></div>
+        <div class="loading-text">Gathering starlight<span class="dots"></span></div>
+        <div class="loading-bar"><div class="loading-fill" id="loading-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Title -->
+    <div id="title" class="screen hidden">
+      <div class="title-wrap">
+        <div class="title-eyebrow">a cozy little story</div>
+        <h1 class="title-logo" id="title-logo">Lumen Hollow</h1>
+        <div class="title-sub">Wake the sleeping island. Help a fallen star find its way home.</div>
+        <div class="title-buttons">
+          <button class="btn primary" id="btn-begin">Begin</button>
+          <button class="btn" id="btn-continue" style="display:none">Continue</button>
+        </div>
+        <div class="title-options">
+          <label>Quality
+            <select id="opt-quality">
+              <option value="low">Gentle (fast)</option>
+              <option value="medium">Lovely</option>
+              <option value="high" selected>Wondrous</option>
+            </select>
+          </label>
+          <span class="title-hint">🎧 best with headphones</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+      <div class="hud-tl">
+        <div class="glim-counter" id="glim-counter">
+          <div class="glim-icon"></div>
+          <div class="glim-num" id="glim-num">0</div>
+        </div>
+        <div class="hud-chips">
+          <div class="chip" id="chip-friends" title="Snoozlings"><span class="chip-ico">🌿</span><span id="friends-num">0</span>/7</div>
+          <div class="chip" id="chip-shards" title="Star shards"><span class="chip-ico">✦</span><span id="shards-num">0</span>/12</div>
+        </div>
+      </div>
+      <div class="hud-tr">
+        <div class="objective" id="objective">
+          <div class="obj-chapter" id="obj-chapter"></div>
+          <div class="obj-text" id="obj-text"></div>
+        </div>
+        <div class="light-meter" title="Light restored">
+          <svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" class="lm-bg"/><circle cx="22" cy="22" r="18" class="lm-fg" id="lm-fg"/></svg>
+          <div class="lm-num" id="lm-num">0%</div>
+        </div>
+      </div>
+      <div class="prompt hidden" id="prompt"><span class="key" id="prompt-key">E</span><span id="prompt-text">Offer light</span></div>
+      <div class="toast-stack" id="toasts"></div>
+      <div class="controls-hint" id="controls-hint"></div>
+    </div>
+
+    <!-- Subtitles -->
+    <div id="subtitle" class="hidden">
+      <div class="sub-speaker" id="sub-speaker"></div>
+      <div class="sub-text" id="sub-text"></div>
+    </div>
+
+    <!-- Chapter card -->
+    <div id="chapter-card" class="hidden">
+      <div class="cc-num" id="cc-num"></div>
+      <div class="cc-title" id="cc-title"></div>
+      <div class="cc-line"></div>
+    </div>
+
+    <!-- Letterbox for cutscenes -->
+    <div id="letterbox" class="hidden"><div class="lb-top"></div><div class="lb-bot"></div><div class="lb-skip" id="lb-skip"><b>click</b> or <b>Enter</b> to skip a line</div></div>
+
+    <!-- Fade -->
+    <div id="fade"></div>
+
+    <!-- Credits -->
+    <div id="credits" class="hidden">
+      <div class="credits-inner" id="credits-inner"></div>
+    </div>
+
+    <!-- Pause -->
+    <div id="pause" class="screen hidden">
+      <div class="pause-card">
+        <h2>Resting</h2>
+        <label>Music <input type="range" id="vol-music" min="0" max="1" step="0.01" value="0.8" /></label>
+        <label>Sounds <input type="range" id="vol-sfx" min="0" max="1" step="0.01" value="0.9" /></label>
+        <label>Voice <input type="range" id="vol-voice" min="0" max="1" step="0.01" value="1" /></label>
+        <label>Quality
+          <select id="opt-quality-2">
+            <option value="low">Gentle (fast)</option>
+            <option value="medium">Lovely</option>
+            <option value="high">Wondrous</option>
+          </select>
+        </label>
+        <div class="pause-keys">
+          <div><b>WASD</b> move · <b>Shift</b> run · <b>Space</b> jump (hold to glide)</div>
+          <div><b>E</b> interact · <b>Q</b> Pip's song · <b>Mouse drag</b> look · <b>Wheel</b> zoom · <b>P</b> photo mode</div>
+        </div>
+        <button class="btn primary" id="btn-resume">Resume</button>
+      </div>
+    </div>
+
+    <!-- Touch controls -->
+    <div id="touch" class="hidden">
+      <div class="joy" id="joy"><div class="joy-knob" id="joy-knob"></div></div>
+      <div class="touch-btns">
+        <button class="tbtn" id="t-interact">✋</button>
+        <button class="tbtn" id="t-song">♪</button>
+        <button class="tbtn big" id="t-jump">⤒</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

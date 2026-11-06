@@ -11,7 +11,10 @@ export function initBelt(reduce: boolean, scrollY: () => number) {
   const cards = [...ring.querySelectorAll<HTMLElement>('.belt__card')];
   const n = cards.length;
   const step = 360 / n;
-  const flat = matchMedia('(max-width: 719px)');
+  const flat = matchMedia(
+    // Keep in step with the flat-belt query in orbit.css.
+    '(max-width: 719px), (max-height: 520px), (hover: none), (min-width: 760px) and (max-width: 1180px) and (max-aspect-ratio: 5 / 6)',
+  );
 
   let radius = 0;
   const layout = () => {

@@ -52,7 +52,7 @@ function note(ok, name, detail = '') {
   }
 }
 await mkdir(OUT, { recursive: true });
-const browser = await chromium.launch();
+const browser = await chromium.launch({ channel: process.env.CAPTURE_CHANNEL || undefined });
 const settle = (page) =>
   page.evaluate(async () => {
     document.querySelectorAll('img').forEach((img) => {

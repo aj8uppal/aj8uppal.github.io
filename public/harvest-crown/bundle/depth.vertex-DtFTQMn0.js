@@ -1,0 +1,1 @@
+export{it as depthVertexShaderWGSL}from"./babylon-BwITB9hk.js";

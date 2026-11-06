@@ -1,0 +1,1 @@
+export{X as gaussianSplattingVoxelVertexShaderWGSL}from"./babylon-BwITB9hk.js";

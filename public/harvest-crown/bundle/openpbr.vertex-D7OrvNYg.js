@@ -1,0 +1,1 @@
+export{L as openpbrVertexShaderWGSL}from"./babylon-BwITB9hk.js";

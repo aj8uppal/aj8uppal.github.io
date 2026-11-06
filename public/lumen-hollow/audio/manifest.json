@@ -1,0 +1,182 @@
+{
+  "files": {
+    "amb_night": {
+      "duration": 30.0,
+      "kind": "amb"
+    },
+    "amb_wind": {
+      "duration": 20.0,
+      "kind": "amb"
+    },
+    "amb_water": {
+      "duration": 20.0,
+      "kind": "amb"
+    },
+    "mus_explore": {
+      "duration": 146.766,
+      "kind": "music"
+    },
+    "mus_finale": {
+      "duration": 118.3,
+      "kind": "music"
+    },
+    "mus_title": {
+      "duration": 59.745,
+      "kind": "music"
+    },
+    "mus_explore_full": {
+      "duration": 143.845,
+      "kind": "music"
+    },
+    "sfx_bloom": {
+      "duration": 2.293,
+      "kind": "sfx"
+    },
+    "sfx_lantern": {
+      "duration": 2.0,
+      "kind": "sfx"
+    },
+    "sfx_wake": {
+      "duration": 2.0,
+      "kind": "sfx"
+    },
+    "sfx_squeak1": {
+      "duration": 0.8,
+      "kind": "sfx"
+    },
+    "sfx_squeak2": {
+      "duration": 0.8,
+      "kind": "sfx"
+    },
+    "sfx_squeak3": {
+      "duration": 0.791,
+      "kind": "sfx"
+    },
+    "sfx_bell": {
+      "duration": 7.196,
+      "kind": "sfx"
+    },
+    "sfx_whale": {
+      "duration": 10.0,
+      "kind": "sfx"
+    },
+    "sfx_starfall": {
+      "duration": 3.11,
+      "kind": "sfx"
+    },
+    "sfx_shard": {
+      "duration": 1.48,
+      "kind": "sfx"
+    },
+    "sfx_jump": {
+      "duration": 0.479,
+      "kind": "sfx"
+    },
+    "sfx_glide": {
+      "duration": 1.793,
+      "kind": "sfx"
+    },
+    "sfx_lotus": {
+      "duration": 3.193,
+      "kind": "sfx"
+    },
+    "sfx_giggle1": {
+      "duration": 1.2,
+      "kind": "sfx"
+    },
+    "sfx_giggle2": {
+      "duration": 1.2,
+      "kind": "sfx"
+    },
+    "sfx_gasp": {
+      "duration": 0.8,
+      "kind": "sfx"
+    },
+    "sfx_offer": {
+      "duration": 1.48,
+      "kind": "sfx"
+    },
+    "sfx_ability": {
+      "duration": 3.0,
+      "kind": "sfx"
+    },
+    "sfx_lanterns_rise": {
+      "duration": 4.844,
+      "kind": "sfx"
+    },
+    "sfx_splash": {
+      "duration": 0.8,
+      "kind": "sfx"
+    },
+    "sfx_koi": {
+      "duration": 1.48,
+      "kind": "sfx"
+    },
+    "sfx_chapter": {
+      "duration": 2.48,
+      "kind": "sfx"
+    },
+    "sfx_rope": {
+      "duration": 1.996,
+      "kind": "sfx"
+    },
+    "n_intro_1": {
+      "duration": 9.464,
+      "kind": "voice"
+    },
+    "n_intro_2": {
+      "duration": 5.038,
+      "kind": "voice"
+    },
+    "n_intro_3": {
+      "duration": 4.176,
+      "kind": "voice"
+    },
+    "n_ch1": {
+      "duration": 8.375,
+      "kind": "voice"
+    },
+    "n_ch1_end": {
+      "duration": 5.824,
+      "kind": "voice"
+    },
+    "n_ch2": {
+      "duration": 8.11,
+      "kind": "voice"
+    },
+    "n_ch2_end": {
+      "duration": 3.901,
+      "kind": "voice"
+    },
+    "n_ch3": {
+      "duration": 5.007,
+      "kind": "voice"
+    },
+    "n_ch3_end": {
+      "duration": 6.305,
+      "kind": "voice"
+    },
+    "n_ch4": {
+      "duration": 8.163,
+      "kind": "voice"
+    },
+    "n_ch4_end": {
+      "duration": 6.464,
+      "kind": "voice"
+    },
+    "n_fin_1": {
+      "duration": 5.856,
+      "kind": "voice"
+    },
+    "n_fin_2": {
+      "duration": 6.549,
+      "kind": "voice"
+    },
+    "n_end": {
+      "duration": 7.611,
+      "kind": "voice"
+    }
+  },
+  "narrator_voice": "George - Warm, Captivating Storyteller (JBFqnCBsd6RMkjVDRZzb, eleven_multilingual_v2, speed 0.9)",
+  "credits_spent": 12419
+}

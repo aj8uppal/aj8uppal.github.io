@@ -12,3 +12,6 @@ dist/
 # scripts/prepare-orbit-textures.mjs derives the committed textures from these.
 data/orbit-art/
 data/v2-captures/
+
+# Pages-ready game builds too large for this site (see AGENTS.md)
+data/pages-builds/

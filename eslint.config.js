@@ -11,6 +11,9 @@ export default tseslint.config(
       'node_modules/**',
       '.astro/**',
       'public/**',
+      // Ignored copies of other projects: footage sources and a Pages build.
+      'data/v2-captures/**',
+      'data/pages-builds/**',
       'scss/**',
       'ec2-user@ec2-3-19-227-224.us-east-2.compute.amazonaws.com/**',
     ],

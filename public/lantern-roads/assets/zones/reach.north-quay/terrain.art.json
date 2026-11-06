@@ -1,0 +1,2730 @@
+{
+  "assets": {
+    "trace.town-wall.-3.-2": "assets/zones/reach.north-quay/traced/town-wall.-3.-2.png",
+    "trace.town-wall.-2.-2": "assets/zones/reach.north-quay/traced/town-wall.-2.-2.png",
+    "trace.town-wall.-1.-2": "assets/zones/reach.north-quay/traced/town-wall.-1.-2.png",
+    "trace.town-wall.0.-2": "assets/zones/reach.north-quay/traced/town-wall.0.-2.png",
+    "trace.town-wall.1.-2": "assets/zones/reach.north-quay/traced/town-wall.1.-2.png",
+    "trace.town-wall.2.-2": "assets/zones/reach.north-quay/traced/town-wall.2.-2.png",
+    "trace.service-wall.1.-2": "assets/zones/reach.north-quay/traced/service-wall.1.-2.png",
+    "trace.service-wall.1.-1": "assets/zones/reach.north-quay/traced/service-wall.1.-1.png",
+    "trace.service-wall.1.0": "assets/zones/reach.north-quay/traced/service-wall.1.0.png",
+    "trace.service-wall.2.0": "assets/zones/reach.north-quay/traced/service-wall.2.0.png",
+    "trace.service-wall.1.1": "assets/zones/reach.north-quay/traced/service-wall.1.1.png",
+    "trace.service-wall.2.1": "assets/zones/reach.north-quay/traced/service-wall.2.1.png",
+    "trace.service-wall.2.2": "assets/zones/reach.north-quay/traced/service-wall.2.2.png",
+    "trace.service-wall.2.3": "assets/zones/reach.north-quay/traced/service-wall.2.3.png",
+    "trace.service-wall.2.4": "assets/zones/reach.north-quay/traced/service-wall.2.4.png",
+    "trace.service-wall.2.5": "assets/zones/reach.north-quay/traced/service-wall.2.5.png",
+    "trace.quay-street.2.-1": "assets/zones/reach.north-quay/traced/quay-street.2.-1.png",
+    "trace.quay-street.3.-1": "assets/zones/reach.north-quay/traced/quay-street.3.-1.png",
+    "trace.quay-street.2.0": "assets/zones/reach.north-quay/traced/quay-street.2.0.png",
+    "trace.quay-street.3.0": "assets/zones/reach.north-quay/traced/quay-street.3.0.png",
+    "trace.quay-street.4.-1": "assets/zones/reach.north-quay/traced/quay-street.4.-1.png",
+    "trace.quay-street.2.1": "assets/zones/reach.north-quay/traced/quay-street.2.1.png",
+    "trace.quay-street.3.1": "assets/zones/reach.north-quay/traced/quay-street.3.1.png",
+    "trace.quay-street.4.0": "assets/zones/reach.north-quay/traced/quay-street.4.0.png",
+    "trace.quay-street.5.-1": "assets/zones/reach.north-quay/traced/quay-street.5.-1.png",
+    "trace.quay-street.2.2": "assets/zones/reach.north-quay/traced/quay-street.2.2.png",
+    "trace.quay-street.3.2": "assets/zones/reach.north-quay/traced/quay-street.3.2.png",
+    "trace.quay-street.4.1": "assets/zones/reach.north-quay/traced/quay-street.4.1.png",
+    "trace.quay-street.5.0": "assets/zones/reach.north-quay/traced/quay-street.5.0.png",
+    "trace.quay-street.6.-1": "assets/zones/reach.north-quay/traced/quay-street.6.-1.png",
+    "trace.quay-street.4.2": "assets/zones/reach.north-quay/traced/quay-street.4.2.png",
+    "trace.quay-street.5.1": "assets/zones/reach.north-quay/traced/quay-street.5.1.png",
+    "trace.quay-street.6.0": "assets/zones/reach.north-quay/traced/quay-street.6.0.png",
+    "trace.quay-street.7.-1": "assets/zones/reach.north-quay/traced/quay-street.7.-1.png",
+    "trace.quay-street.3.3": "assets/zones/reach.north-quay/traced/quay-street.3.3.png",
+    "trace.quay-street.4.3": "assets/zones/reach.north-quay/traced/quay-street.4.3.png",
+    "trace.quay-street.5.2": "assets/zones/reach.north-quay/traced/quay-street.5.2.png",
+    "trace.quay-street.6.1": "assets/zones/reach.north-quay/traced/quay-street.6.1.png",
+    "trace.quay-street.7.0": "assets/zones/reach.north-quay/traced/quay-street.7.0.png",
+    "trace.quay-street.5.3": "assets/zones/reach.north-quay/traced/quay-street.5.3.png",
+    "trace.quay-street.6.2": "assets/zones/reach.north-quay/traced/quay-street.6.2.png",
+    "trace.quay-street.7.1": "assets/zones/reach.north-quay/traced/quay-street.7.1.png",
+    "trace.quay-street.8.0": "assets/zones/reach.north-quay/traced/quay-street.8.0.png",
+    "trace.quay-street.4.4": "assets/zones/reach.north-quay/traced/quay-street.4.4.png",
+    "trace.quay-steps.-3.-2": "assets/zones/reach.north-quay/traced/quay-steps.-3.-2.png",
+    "trace.quay-steps.-2.-2": "assets/zones/reach.north-quay/traced/quay-steps.-2.-2.png",
+    "trace.quay-steps.-1.-2": "assets/zones/reach.north-quay/traced/quay-steps.-1.-2.png",
+    "trace.quay-steps.0.-2": "assets/zones/reach.north-quay/traced/quay-steps.0.-2.png",
+    "trace.quay-steps.1.-2": "assets/zones/reach.north-quay/traced/quay-steps.1.-2.png",
+    "trace.quay-steps.2.-2": "assets/zones/reach.north-quay/traced/quay-steps.2.-2.png",
+    "trace.quay-steps.3.-2": "assets/zones/reach.north-quay/traced/quay-steps.3.-2.png",
+    "trace.quay-steps.2.-1": "assets/zones/reach.north-quay/traced/quay-steps.2.-1.png",
+    "trace.quay-steps.3.-1": "assets/zones/reach.north-quay/traced/quay-steps.3.-1.png",
+    "trace.quay-steps.4.-2": "assets/zones/reach.north-quay/traced/quay-steps.4.-2.png",
+    "trace.quay-steps.4.-1": "assets/zones/reach.north-quay/traced/quay-steps.4.-1.png",
+    "trace.quay-steps.5.-2": "assets/zones/reach.north-quay/traced/quay-steps.5.-2.png",
+    "trace.quay-steps.5.-1": "assets/zones/reach.north-quay/traced/quay-steps.5.-1.png",
+    "trace.quay-steps.6.-2": "assets/zones/reach.north-quay/traced/quay-steps.6.-2.png",
+    "trace.quay-steps.6.-1": "assets/zones/reach.north-quay/traced/quay-steps.6.-1.png",
+    "trace.quay-steps.7.-1": "assets/zones/reach.north-quay/traced/quay-steps.7.-1.png",
+    "trace.upper-quay.-3.-2": "assets/zones/reach.north-quay/traced/upper-quay.-3.-2.png",
+    "trace.upper-quay.-2.-2": "assets/zones/reach.north-quay/traced/upper-quay.-2.-2.png",
+    "trace.upper-quay.-2.-3": "assets/zones/reach.north-quay/traced/upper-quay.-2.-3.png",
+    "trace.upper-quay.-1.-3": "assets/zones/reach.north-quay/traced/upper-quay.-1.-3.png",
+    "trace.upper-quay.-1.-4": "assets/zones/reach.north-quay/traced/upper-quay.-1.-4.png",
+    "trace.upper-quay.0.-4": "assets/zones/reach.north-quay/traced/upper-quay.0.-4.png",
+    "trace.upper-quay.0.-5": "assets/zones/reach.north-quay/traced/upper-quay.0.-5.png",
+    "trace.upper-quay.1.-5": "assets/zones/reach.north-quay/traced/upper-quay.1.-5.png",
+    "trace.upper-quay.1.-6": "assets/zones/reach.north-quay/traced/upper-quay.1.-6.png",
+    "trace.upper-quay.2.-6": "assets/zones/reach.north-quay/traced/upper-quay.2.-6.png",
+    "trace.upper-quay.-1.-2": "assets/zones/reach.north-quay/traced/upper-quay.-1.-2.png",
+    "trace.upper-quay.0.-3": "assets/zones/reach.north-quay/traced/upper-quay.0.-3.png",
+    "trace.upper-quay.1.-4": "assets/zones/reach.north-quay/traced/upper-quay.1.-4.png",
+    "trace.upper-quay.2.-5": "assets/zones/reach.north-quay/traced/upper-quay.2.-5.png",
+    "trace.upper-quay.0.-2": "assets/zones/reach.north-quay/traced/upper-quay.0.-2.png",
+    "trace.upper-quay.1.-3": "assets/zones/reach.north-quay/traced/upper-quay.1.-3.png",
+    "trace.upper-quay.2.-4": "assets/zones/reach.north-quay/traced/upper-quay.2.-4.png",
+    "trace.upper-quay.3.-5": "assets/zones/reach.north-quay/traced/upper-quay.3.-5.png",
+    "trace.upper-quay.1.-2": "assets/zones/reach.north-quay/traced/upper-quay.1.-2.png",
+    "trace.upper-quay.2.-3": "assets/zones/reach.north-quay/traced/upper-quay.2.-3.png",
+    "trace.upper-quay.3.-4": "assets/zones/reach.north-quay/traced/upper-quay.3.-4.png",
+    "trace.upper-quay.2.-2": "assets/zones/reach.north-quay/traced/upper-quay.2.-2.png",
+    "trace.upper-quay.3.-3": "assets/zones/reach.north-quay/traced/upper-quay.3.-3.png",
+    "trace.upper-quay.4.-4": "assets/zones/reach.north-quay/traced/upper-quay.4.-4.png",
+    "trace.upper-quay.3.-2": "assets/zones/reach.north-quay/traced/upper-quay.3.-2.png",
+    "trace.upper-quay.4.-3": "assets/zones/reach.north-quay/traced/upper-quay.4.-3.png",
+    "trace.upper-quay.4.-2": "assets/zones/reach.north-quay/traced/upper-quay.4.-2.png",
+    "trace.upper-quay.5.-3": "assets/zones/reach.north-quay/traced/upper-quay.5.-3.png",
+    "trace.upper-quay.5.-2": "assets/zones/reach.north-quay/traced/upper-quay.5.-2.png",
+    "trace.upper-quay.6.-2": "assets/zones/reach.north-quay/traced/upper-quay.6.-2.png",
+    "trace.lower-cart-lane.-4.-1": "assets/zones/reach.north-quay/traced/lower-cart-lane.-4.-1.png",
+    "trace.lower-cart-lane.-3.-1": "assets/zones/reach.north-quay/traced/lower-cart-lane.-3.-1.png",
+    "trace.lower-cart-lane.-4.0": "assets/zones/reach.north-quay/traced/lower-cart-lane.-4.0.png",
+    "trace.lower-cart-lane.-3.0": "assets/zones/reach.north-quay/traced/lower-cart-lane.-3.0.png",
+    "trace.lower-cart-lane.-2.-1": "assets/zones/reach.north-quay/traced/lower-cart-lane.-2.-1.png",
+    "trace.lower-cart-lane.-2.0": "assets/zones/reach.north-quay/traced/lower-cart-lane.-2.0.png",
+    "trace.lower-cart-lane.-1.-1": "assets/zones/reach.north-quay/traced/lower-cart-lane.-1.-1.png",
+    "trace.lower-cart-lane.-3.1": "assets/zones/reach.north-quay/traced/lower-cart-lane.-3.1.png",
+    "trace.lower-cart-lane.-2.1": "assets/zones/reach.north-quay/traced/lower-cart-lane.-2.1.png",
+    "trace.lower-cart-lane.-1.0": "assets/zones/reach.north-quay/traced/lower-cart-lane.-1.0.png",
+    "trace.lower-cart-lane.0.-1": "assets/zones/reach.north-quay/traced/lower-cart-lane.0.-1.png",
+    "trace.lower-cart-lane.-1.1": "assets/zones/reach.north-quay/traced/lower-cart-lane.-1.1.png",
+    "trace.lower-cart-lane.0.0": "assets/zones/reach.north-quay/traced/lower-cart-lane.0.0.png",
+    "trace.lower-cart-lane.1.-1": "assets/zones/reach.north-quay/traced/lower-cart-lane.1.-1.png",
+    "trace.lower-cart-lane.-2.2": "assets/zones/reach.north-quay/traced/lower-cart-lane.-2.2.png",
+    "trace.lower-cart-lane.-1.2": "assets/zones/reach.north-quay/traced/lower-cart-lane.-1.2.png",
+    "trace.lower-cart-lane.0.1": "assets/zones/reach.north-quay/traced/lower-cart-lane.0.1.png",
+    "trace.lower-cart-lane.1.0": "assets/zones/reach.north-quay/traced/lower-cart-lane.1.0.png",
+    "trace.lower-cart-lane.0.2": "assets/zones/reach.north-quay/traced/lower-cart-lane.0.2.png",
+    "trace.lower-cart-lane.1.1": "assets/zones/reach.north-quay/traced/lower-cart-lane.1.1.png",
+    "trace.lower-cart-lane.2.0": "assets/zones/reach.north-quay/traced/lower-cart-lane.2.0.png",
+    "trace.lower-cart-lane.-1.3": "assets/zones/reach.north-quay/traced/lower-cart-lane.-1.3.png",
+    "trace.lower-cart-lane.0.3": "assets/zones/reach.north-quay/traced/lower-cart-lane.0.3.png",
+    "trace.lower-cart-lane.1.2": "assets/zones/reach.north-quay/traced/lower-cart-lane.1.2.png",
+    "trace.lower-cart-lane.2.1": "assets/zones/reach.north-quay/traced/lower-cart-lane.2.1.png",
+    "trace.lower-cart-lane.1.3": "assets/zones/reach.north-quay/traced/lower-cart-lane.1.3.png",
+    "trace.lower-cart-lane.2.2": "assets/zones/reach.north-quay/traced/lower-cart-lane.2.2.png",
+    "trace.lower-cart-lane.0.4": "assets/zones/reach.north-quay/traced/lower-cart-lane.0.4.png",
+    "trace.lower-cart-lane.1.4": "assets/zones/reach.north-quay/traced/lower-cart-lane.1.4.png",
+    "trace.lower-cart-lane.2.3": "assets/zones/reach.north-quay/traced/lower-cart-lane.2.3.png",
+    "trace.lower-cart-lane.2.4": "assets/zones/reach.north-quay/traced/lower-cart-lane.2.4.png",
+    "trace.lower-cart-lane.1.5": "assets/zones/reach.north-quay/traced/lower-cart-lane.1.5.png",
+    "trace.lower-cart-lane.2.5": "assets/zones/reach.north-quay/traced/lower-cart-lane.2.5.png",
+    "trace.service-upstream-road": "assets/zones/reach.north-quay/traced/service-upstream-road.png",
+    "trace.upper-upstream-road": "assets/zones/reach.north-quay/traced/upper-upstream-road.png"
+  },
+  "sprites": [
+    {
+      "id": "terrain.town-wall.-3.-2",
+      "asset": "trace.town-wall.-3.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 154,
+        "y": 243
+      },
+      "box": {
+        "u0": -18,
+        "u1": -12,
+        "v0": -12,
+        "v1": -6,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.town-wall.-2.-2",
+      "asset": "trace.town-wall.-2.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 74,
+        "y": 202
+      },
+      "box": {
+        "u0": -12,
+        "u1": -6,
+        "v0": -12,
+        "v1": -6,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.town-wall.-1.-2",
+      "asset": "trace.town-wall.-1.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -24,
+        "y": 158
+      },
+      "box": {
+        "u0": -6,
+        "u1": 0,
+        "v0": -12,
+        "v1": -6,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.town-wall.0.-2",
+      "asset": "trace.town-wall.0.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -123,
+        "y": 112
+      },
+      "box": {
+        "u0": 0,
+        "u1": 6,
+        "v0": -12,
+        "v1": -6,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.town-wall.1.-2",
+      "asset": "trace.town-wall.1.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -219,
+        "y": 63
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": -12,
+        "v1": -6,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.town-wall.2.-2",
+      "asset": "trace.town-wall.2.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -316,
+        "y": 15
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": -12,
+        "v1": -6,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.service-wall.1.-2",
+      "asset": "trace.service-wall.1.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -210,
+        "y": 19
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": -12,
+        "v1": -6,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.service-wall.1.-1",
+      "asset": "trace.service-wall.1.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -129,
+        "y": 11
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": -6,
+        "v1": 0,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.service-wall.1.0",
+      "asset": "trace.service-wall.1.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -96,
+        "y": -66
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": 0,
+        "v1": 6,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.service-wall.2.0",
+      "asset": "trace.service-wall.2.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -96,
+        "y": -82
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 0,
+        "v1": 6,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.service-wall.1.1",
+      "asset": "trace.service-wall.1.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -81,
+        "y": -124
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": 6,
+        "v1": 12,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.service-wall.2.1",
+      "asset": "trace.service-wall.2.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -4,
+        "y": -125
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 6,
+        "v1": 12,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.service-wall.2.2",
+      "asset": "trace.service-wall.2.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 88,
+        "y": -174
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 12,
+        "v1": 18,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.service-wall.2.3",
+      "asset": "trace.service-wall.2.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 166,
+        "y": -224
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 18,
+        "v1": 24,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.service-wall.2.4",
+      "asset": "trace.service-wall.2.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 222,
+        "y": -281
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 24,
+        "v1": 30,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.service-wall.2.5",
+      "asset": "trace.service-wall.2.5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 228,
+        "y": -349
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 30,
+        "v1": 36,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.quay-street.2.-1",
+      "asset": "trace.quay-street.2.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -263,
+        "y": -58
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": -4.3,
+        "v1": 0,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street",
+      "after": [
+        "terrain.town-wall.1.-2",
+        "terrain.town-wall.2.-2"
+      ]
+    },
+    {
+      "id": "terrain.quay-street.3.-1",
+      "asset": "trace.quay-street.3.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -289,
+        "y": -71
+      },
+      "box": {
+        "u0": 18,
+        "u1": 24,
+        "v0": -4.3,
+        "v1": 0,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street",
+      "after": [
+        "terrain.town-wall.2.-2"
+      ]
+    },
+    {
+      "id": "terrain.quay-street.2.0",
+      "asset": "trace.quay-street.2.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -165,
+        "y": -92
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.3.0",
+      "asset": "trace.quay-street.3.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -193,
+        "y": -105
+      },
+      "box": {
+        "u0": 18,
+        "u1": 24,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.4.-1",
+      "asset": "trace.quay-street.4.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -385,
+        "y": -119
+      },
+      "box": {
+        "u0": 24,
+        "u1": 30,
+        "v0": -4.3,
+        "v1": 0,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.2.1",
+      "asset": "trace.quay-street.2.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -79,
+        "y": -139
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 6,
+        "v1": 12,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.3.1",
+      "asset": "trace.quay-street.3.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -97,
+        "y": -153
+      },
+      "box": {
+        "u0": 18,
+        "u1": 24,
+        "v0": 6,
+        "v1": 12,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.4.0",
+      "asset": "trace.quay-street.4.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -289,
+        "y": -153
+      },
+      "box": {
+        "u0": 24,
+        "u1": 30,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.5.-1",
+      "asset": "trace.quay-street.5.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -481,
+        "y": -167
+      },
+      "box": {
+        "u0": 30,
+        "u1": 36,
+        "v0": -4.3,
+        "v1": 0,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.2.2",
+      "asset": "trace.quay-street.2.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -72,
+        "y": -193
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 12,
+        "v1": 18,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.3.2",
+      "asset": "trace.quay-street.3.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -47,
+        "y": -201
+      },
+      "box": {
+        "u0": 18,
+        "u1": 24,
+        "v0": 12,
+        "v1": 18,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.4.1",
+      "asset": "trace.quay-street.4.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -193,
+        "y": -201
+      },
+      "box": {
+        "u0": 24,
+        "u1": 30,
+        "v0": 6,
+        "v1": 12,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.5.0",
+      "asset": "trace.quay-street.5.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -385,
+        "y": -201
+      },
+      "box": {
+        "u0": 30,
+        "u1": 36,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.6.-1",
+      "asset": "trace.quay-street.6.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": -215
+      },
+      "box": {
+        "u0": 36,
+        "u1": 42,
+        "v0": -4.3,
+        "v1": 0,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.4.2",
+      "asset": "trace.quay-street.4.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -97,
+        "y": -249
+      },
+      "box": {
+        "u0": 24,
+        "u1": 30,
+        "v0": 12,
+        "v1": 18,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.5.1",
+      "asset": "trace.quay-street.5.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -289,
+        "y": -249
+      },
+      "box": {
+        "u0": 30,
+        "u1": 36,
+        "v0": 6,
+        "v1": 12,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.6.0",
+      "asset": "trace.quay-street.6.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -481,
+        "y": -249
+      },
+      "box": {
+        "u0": 36,
+        "u1": 42,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.7.-1",
+      "asset": "trace.quay-street.7.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": -263
+      },
+      "box": {
+        "u0": 42,
+        "u1": 48,
+        "v0": -4.3,
+        "v1": 0,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.3.3",
+      "asset": "trace.quay-street.3.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -24,
+        "y": -273
+      },
+      "box": {
+        "u0": 18,
+        "u1": 24,
+        "v0": 18,
+        "v1": 24,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.4.3",
+      "asset": "trace.quay-street.4.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -17,
+        "y": -297
+      },
+      "box": {
+        "u0": 24,
+        "u1": 30,
+        "v0": 18,
+        "v1": 24,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.5.2",
+      "asset": "trace.quay-street.5.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -193,
+        "y": -297
+      },
+      "box": {
+        "u0": 30,
+        "u1": 36,
+        "v0": 12,
+        "v1": 18,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.6.1",
+      "asset": "trace.quay-street.6.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -385,
+        "y": -297
+      },
+      "box": {
+        "u0": 36,
+        "u1": 42,
+        "v0": 6,
+        "v1": 12,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.7.0",
+      "asset": "trace.quay-street.7.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": -297
+      },
+      "box": {
+        "u0": 42,
+        "u1": 48,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.5.3",
+      "asset": "trace.quay-street.5.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -169,
+        "y": -345
+      },
+      "box": {
+        "u0": 30,
+        "u1": 36,
+        "v0": 18,
+        "v1": 24,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.6.2",
+      "asset": "trace.quay-street.6.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -361,
+        "y": -345
+      },
+      "box": {
+        "u0": 36,
+        "u1": 42,
+        "v0": 12,
+        "v1": 18,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.7.1",
+      "asset": "trace.quay-street.7.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -553,
+        "y": -345
+      },
+      "box": {
+        "u0": 42,
+        "u1": 48,
+        "v0": 6,
+        "v1": 12,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.8.0",
+      "asset": "trace.quay-street.8.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -745,
+        "y": -347
+      },
+      "box": {
+        "u0": 48,
+        "u1": 54,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-street.4.4",
+      "asset": "trace.quay-street.4.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -15,
+        "y": -353
+      },
+      "box": {
+        "u0": 24,
+        "u1": 30,
+        "v0": 24,
+        "v1": 30,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "quay-street"
+    },
+    {
+      "id": "terrain.quay-steps.-3.-2",
+      "asset": "trace.quay-steps.-3.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 130,
+        "y": 243
+      },
+      "box": {
+        "u0": -18,
+        "u1": -12,
+        "v0": -8.85,
+        "v1": -6,
+        "z0": 2.2989010989010987,
+        "z1": 2.8
+      },
+      "floorOf": "quay-steps",
+      "after": [
+        "terrain.town-wall.-3.-2"
+      ]
+    },
+    {
+      "id": "terrain.quay-steps.-2.-2",
+      "asset": "trace.quay-steps.-2.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 61,
+        "y": 222
+      },
+      "box": {
+        "u0": -12,
+        "u1": -6,
+        "v0": -8.85,
+        "v1": -6,
+        "z0": 2.2989010989010987,
+        "z1": 2.8
+      },
+      "floorOf": "quay-steps",
+      "after": [
+        "terrain.town-wall.-3.-2",
+        "terrain.town-wall.-2.-2"
+      ]
+    },
+    {
+      "id": "terrain.quay-steps.-1.-2",
+      "asset": "trace.quay-steps.-1.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -41,
+        "y": 174
+      },
+      "box": {
+        "u0": -6,
+        "u1": 0,
+        "v0": -8.85,
+        "v1": -6,
+        "z0": 2.2989010989010987,
+        "z1": 2.8
+      },
+      "floorOf": "quay-steps",
+      "after": [
+        "terrain.town-wall.-2.-2",
+        "terrain.town-wall.-1.-2"
+      ]
+    },
+    {
+      "id": "terrain.quay-steps.0.-2",
+      "asset": "trace.quay-steps.0.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -141,
+        "y": 126
+      },
+      "box": {
+        "u0": 0,
+        "u1": 6,
+        "v0": -8.85,
+        "v1": -6,
+        "z0": 2.2989010989010987,
+        "z1": 2.8
+      },
+      "floorOf": "quay-steps",
+      "after": [
+        "terrain.town-wall.-1.-2",
+        "terrain.town-wall.0.-2"
+      ]
+    },
+    {
+      "id": "terrain.quay-steps.1.-2",
+      "asset": "trace.quay-steps.1.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -237,
+        "y": 78
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": -8.85,
+        "v1": -6,
+        "z0": 2.2989010989010987,
+        "z1": 2.8
+      },
+      "floorOf": "quay-steps",
+      "after": [
+        "terrain.town-wall.0.-2",
+        "terrain.town-wall.1.-2"
+      ]
+    },
+    {
+      "id": "terrain.quay-steps.2.-2",
+      "asset": "trace.quay-steps.2.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -332,
+        "y": 30
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": -8.85,
+        "v1": -6,
+        "z0": 2.2989010989010987,
+        "z1": 2.8
+      },
+      "floorOf": "quay-steps",
+      "after": [
+        "terrain.town-wall.1.-2",
+        "terrain.town-wall.2.-2"
+      ]
+    },
+    {
+      "id": "terrain.quay-steps.3.-2",
+      "asset": "trace.quay-steps.3.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -385,
+        "y": -18
+      },
+      "box": {
+        "u0": 18,
+        "u1": 24,
+        "v0": -8.85,
+        "v1": -6,
+        "z0": 2.2989010989010987,
+        "z1": 2.8
+      },
+      "floorOf": "quay-steps",
+      "after": [
+        "terrain.town-wall.2.-2"
+      ]
+    },
+    {
+      "id": "terrain.quay-steps.2.-1",
+      "asset": "trace.quay-steps.2.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -332,
+        "y": -37
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": -6,
+        "v1": -4.3,
+        "z0": 2.0,
+        "z1": 2.2989010989010987
+      },
+      "floorOf": "quay-steps",
+      "after": [
+        "terrain.town-wall.1.-2",
+        "terrain.town-wall.2.-2"
+      ]
+    },
+    {
+      "id": "terrain.quay-steps.3.-1",
+      "asset": "trace.quay-steps.3.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -357,
+        "y": -51
+      },
+      "box": {
+        "u0": 18,
+        "u1": 24,
+        "v0": -6,
+        "v1": -4.3,
+        "z0": 2.0,
+        "z1": 2.2989010989010987
+      },
+      "floorOf": "quay-steps",
+      "after": [
+        "terrain.town-wall.2.-2"
+      ]
+    },
+    {
+      "id": "terrain.quay-steps.4.-2",
+      "asset": "trace.quay-steps.4.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -481,
+        "y": -66
+      },
+      "box": {
+        "u0": 24,
+        "u1": 30,
+        "v0": -8.85,
+        "v1": -6,
+        "z0": 2.2989010989010987,
+        "z1": 2.8
+      },
+      "floorOf": "quay-steps"
+    },
+    {
+      "id": "terrain.quay-steps.4.-1",
+      "asset": "trace.quay-steps.4.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -453,
+        "y": -99
+      },
+      "box": {
+        "u0": 24,
+        "u1": 30,
+        "v0": -6,
+        "v1": -4.3,
+        "z0": 2.0,
+        "z1": 2.2989010989010987
+      },
+      "floorOf": "quay-steps"
+    },
+    {
+      "id": "terrain.quay-steps.5.-2",
+      "asset": "trace.quay-steps.5.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": -114
+      },
+      "box": {
+        "u0": 30,
+        "u1": 36,
+        "v0": -8.85,
+        "v1": -6,
+        "z0": 2.2989010989010987,
+        "z1": 2.8
+      },
+      "floorOf": "quay-steps"
+    },
+    {
+      "id": "terrain.quay-steps.5.-1",
+      "asset": "trace.quay-steps.5.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -549,
+        "y": -147
+      },
+      "box": {
+        "u0": 30,
+        "u1": 36,
+        "v0": -6,
+        "v1": -4.3,
+        "z0": 2.0,
+        "z1": 2.2989010989010987
+      },
+      "floorOf": "quay-steps"
+    },
+    {
+      "id": "terrain.quay-steps.6.-2",
+      "asset": "trace.quay-steps.6.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": -162
+      },
+      "box": {
+        "u0": 36,
+        "u1": 42,
+        "v0": -8.85,
+        "v1": -6,
+        "z0": 2.2989010989010987,
+        "z1": 2.8
+      },
+      "floorOf": "quay-steps"
+    },
+    {
+      "id": "terrain.quay-steps.6.-1",
+      "asset": "trace.quay-steps.6.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -645,
+        "y": -195
+      },
+      "box": {
+        "u0": 36,
+        "u1": 42,
+        "v0": -6,
+        "v1": -4.3,
+        "z0": 2.0,
+        "z1": 2.2989010989010987
+      },
+      "floorOf": "quay-steps"
+    },
+    {
+      "id": "terrain.quay-steps.7.-1",
+      "asset": "trace.quay-steps.7.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -741,
+        "y": -246
+      },
+      "box": {
+        "u0": 42,
+        "u1": 48,
+        "v0": -6,
+        "v1": -4.3,
+        "z0": 2.0,
+        "z1": 2.2989010989010987
+      },
+      "floorOf": "quay-steps"
+    },
+    {
+      "id": "terrain.upper-quay.-3.-2",
+      "asset": "trace.upper-quay.-3.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 92,
+        "y": 243
+      },
+      "box": {
+        "u0": -18,
+        "u1": -12,
+        "v0": -12,
+        "v1": -8.85,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay",
+      "after": [
+        "terrain.town-wall.-3.-2"
+      ]
+    },
+    {
+      "id": "terrain.upper-quay.-2.-2",
+      "asset": "trace.upper-quay.-2.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 50,
+        "y": 243
+      },
+      "box": {
+        "u0": -12,
+        "u1": -6,
+        "v0": -12,
+        "v1": -8.85,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay",
+      "after": [
+        "terrain.town-wall.-3.-2",
+        "terrain.town-wall.-2.-2"
+      ]
+    },
+    {
+      "id": "terrain.upper-quay.-2.-3",
+      "asset": "trace.upper-quay.-2.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -9,
+        "y": 243
+      },
+      "box": {
+        "u0": -12,
+        "u1": -6,
+        "v0": -18,
+        "v1": -12,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.-1.-3",
+      "asset": "trace.upper-quay.-1.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -97,
+        "y": 243
+      },
+      "box": {
+        "u0": -6,
+        "u1": 0,
+        "v0": -18,
+        "v1": -12,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.-1.-4",
+      "asset": "trace.upper-quay.-1.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -201,
+        "y": 243
+      },
+      "box": {
+        "u0": -6,
+        "u1": 0,
+        "v0": -24,
+        "v1": -18,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.0.-4",
+      "asset": "trace.upper-quay.0.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -289,
+        "y": 243
+      },
+      "box": {
+        "u0": 0,
+        "u1": 6,
+        "v0": -24,
+        "v1": -18,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.0.-5",
+      "asset": "trace.upper-quay.0.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -393,
+        "y": 243
+      },
+      "box": {
+        "u0": 0,
+        "u1": 6,
+        "v0": -30,
+        "v1": -24,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.1.-5",
+      "asset": "trace.upper-quay.1.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -481,
+        "y": 243
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": -30,
+        "v1": -24,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.1.-6",
+      "asset": "trace.upper-quay.1.-6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -585,
+        "y": 243
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": -36,
+        "v1": -30,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.2.-6",
+      "asset": "trace.upper-quay.2.-6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": 243
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": -36,
+        "v1": -30,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.-1.-2",
+      "asset": "trace.upper-quay.-1.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -46,
+        "y": 199
+      },
+      "box": {
+        "u0": -6,
+        "u1": 0,
+        "v0": -12,
+        "v1": -8.85,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay",
+      "after": [
+        "terrain.town-wall.-2.-2",
+        "terrain.town-wall.-1.-2"
+      ]
+    },
+    {
+      "id": "terrain.upper-quay.0.-3",
+      "asset": "trace.upper-quay.0.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -193,
+        "y": 199
+      },
+      "box": {
+        "u0": 0,
+        "u1": 6,
+        "v0": -18,
+        "v1": -12,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.1.-4",
+      "asset": "trace.upper-quay.1.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -385,
+        "y": 199
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": -24,
+        "v1": -18,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.2.-5",
+      "asset": "trace.upper-quay.2.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": 199
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": -30,
+        "v1": -24,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.0.-2",
+      "asset": "trace.upper-quay.0.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -142,
+        "y": 151
+      },
+      "box": {
+        "u0": 0,
+        "u1": 6,
+        "v0": -12,
+        "v1": -8.85,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay",
+      "after": [
+        "terrain.town-wall.-1.-2",
+        "terrain.town-wall.0.-2"
+      ]
+    },
+    {
+      "id": "terrain.upper-quay.1.-3",
+      "asset": "trace.upper-quay.1.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -289,
+        "y": 151
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": -18,
+        "v1": -12,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.2.-4",
+      "asset": "trace.upper-quay.2.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -481,
+        "y": 151
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": -24,
+        "v1": -18,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.3.-5",
+      "asset": "trace.upper-quay.3.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": 149
+      },
+      "box": {
+        "u0": 18,
+        "u1": 24,
+        "v0": -30,
+        "v1": -24,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.1.-2",
+      "asset": "trace.upper-quay.1.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -238,
+        "y": 103
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": -12,
+        "v1": -8.85,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay",
+      "after": [
+        "terrain.town-wall.0.-2",
+        "terrain.town-wall.1.-2"
+      ]
+    },
+    {
+      "id": "terrain.upper-quay.2.-3",
+      "asset": "trace.upper-quay.2.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -385,
+        "y": 103
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": -18,
+        "v1": -12,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.3.-4",
+      "asset": "trace.upper-quay.3.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": 103
+      },
+      "box": {
+        "u0": 18,
+        "u1": 24,
+        "v0": -24,
+        "v1": -18,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.2.-2",
+      "asset": "trace.upper-quay.2.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -334,
+        "y": 55
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": -12,
+        "v1": -8.85,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay",
+      "after": [
+        "terrain.town-wall.1.-2",
+        "terrain.town-wall.2.-2"
+      ]
+    },
+    {
+      "id": "terrain.upper-quay.3.-3",
+      "asset": "trace.upper-quay.3.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -481,
+        "y": 55
+      },
+      "box": {
+        "u0": 18,
+        "u1": 24,
+        "v0": -18,
+        "v1": -12,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.4.-4",
+      "asset": "trace.upper-quay.4.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": 53
+      },
+      "box": {
+        "u0": 24,
+        "u1": 30,
+        "v0": -24,
+        "v1": -18,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.3.-2",
+      "asset": "trace.upper-quay.3.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -430,
+        "y": 7
+      },
+      "box": {
+        "u0": 18,
+        "u1": 24,
+        "v0": -12,
+        "v1": -8.85,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay",
+      "after": [
+        "terrain.town-wall.2.-2"
+      ]
+    },
+    {
+      "id": "terrain.upper-quay.4.-3",
+      "asset": "trace.upper-quay.4.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": 7
+      },
+      "box": {
+        "u0": 24,
+        "u1": 30,
+        "v0": -18,
+        "v1": -12,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.4.-2",
+      "asset": "trace.upper-quay.4.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -526,
+        "y": -41
+      },
+      "box": {
+        "u0": 24,
+        "u1": 30,
+        "v0": -12,
+        "v1": -8.85,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.5.-3",
+      "asset": "trace.upper-quay.5.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": -43
+      },
+      "box": {
+        "u0": 30,
+        "u1": 36,
+        "v0": -18,
+        "v1": -12,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.5.-2",
+      "asset": "trace.upper-quay.5.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -622,
+        "y": -89
+      },
+      "box": {
+        "u0": 30,
+        "u1": 36,
+        "v0": -12,
+        "v1": -8.85,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.upper-quay.6.-2",
+      "asset": "trace.upper-quay.6.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -718,
+        "y": -139
+      },
+      "box": {
+        "u0": 36,
+        "u1": 42,
+        "v0": -12,
+        "v1": -8.85,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay"
+    },
+    {
+      "id": "terrain.lower-cart-lane.-4.-1",
+      "asset": "trace.lower-cart-lane.-4.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": 243
+      },
+      "box": {
+        "u0": -24,
+        "u1": -18,
+        "v0": -6,
+        "v1": 0,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.-3.-1",
+      "asset": "trace.lower-cart-lane.-3.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 287,
+        "y": 224
+      },
+      "box": {
+        "u0": -18,
+        "u1": -12,
+        "v0": -6,
+        "v1": 0,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.-4.0",
+      "asset": "trace.lower-cart-lane.-4.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": 197
+      },
+      "box": {
+        "u0": -24,
+        "u1": -18,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.-3.0",
+      "asset": "trace.lower-cart-lane.-3.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": 183
+      },
+      "box": {
+        "u0": -18,
+        "u1": -12,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.-2.-1",
+      "asset": "trace.lower-cart-lane.-2.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 191,
+        "y": 174
+      },
+      "box": {
+        "u0": -12,
+        "u1": -6,
+        "v0": -6,
+        "v1": 0,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.-2.0",
+      "asset": "trace.lower-cart-lane.-2.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 287,
+        "y": 135
+      },
+      "box": {
+        "u0": -12,
+        "u1": -6,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.-1.-1",
+      "asset": "trace.lower-cart-lane.-1.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 95,
+        "y": 124
+      },
+      "box": {
+        "u0": -6,
+        "u1": 0,
+        "v0": -6,
+        "v1": 0,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.-3.1",
+      "asset": "trace.lower-cart-lane.-3.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": 101
+      },
+      "box": {
+        "u0": -18,
+        "u1": -12,
+        "v0": 6,
+        "v1": 12,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.-2.1",
+      "asset": "trace.lower-cart-lane.-2.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": 87
+      },
+      "box": {
+        "u0": -12,
+        "u1": -6,
+        "v0": 6,
+        "v1": 12,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.-1.0",
+      "asset": "trace.lower-cart-lane.-1.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 191,
+        "y": 87
+      },
+      "box": {
+        "u0": -6,
+        "u1": 0,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.0.-1",
+      "asset": "trace.lower-cart-lane.0.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1,
+        "y": 76
+      },
+      "box": {
+        "u0": 0,
+        "u1": 6,
+        "v0": -6,
+        "v1": 0,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.-1.1",
+      "asset": "trace.lower-cart-lane.-1.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 287,
+        "y": 39
+      },
+      "box": {
+        "u0": -6,
+        "u1": 0,
+        "v0": 6,
+        "v1": 12,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.0.0",
+      "asset": "trace.lower-cart-lane.0.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 95,
+        "y": 39
+      },
+      "box": {
+        "u0": 0,
+        "u1": 6,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.1.-1",
+      "asset": "trace.lower-cart-lane.1.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -97,
+        "y": 34
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": -6,
+        "v1": 0,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane",
+      "after": [
+        "terrain.service-wall.1.-2",
+        "terrain.service-wall.1.-1"
+      ]
+    },
+    {
+      "id": "terrain.lower-cart-lane.-2.2",
+      "asset": "trace.lower-cart-lane.-2.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": 5
+      },
+      "box": {
+        "u0": -12,
+        "u1": -6,
+        "v0": 12,
+        "v1": 18,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.-1.2",
+      "asset": "trace.lower-cart-lane.-1.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": -9
+      },
+      "box": {
+        "u0": -6,
+        "u1": 0,
+        "v0": 12,
+        "v1": 18,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.0.1",
+      "asset": "trace.lower-cart-lane.0.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 191,
+        "y": -9
+      },
+      "box": {
+        "u0": 0,
+        "u1": 6,
+        "v0": 6,
+        "v1": 12,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.1.0",
+      "asset": "trace.lower-cart-lane.1.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1,
+        "y": -9
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane",
+      "after": [
+        "terrain.service-wall.1.-1",
+        "terrain.service-wall.1.0"
+      ]
+    },
+    {
+      "id": "terrain.lower-cart-lane.0.2",
+      "asset": "trace.lower-cart-lane.0.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 287,
+        "y": -57
+      },
+      "box": {
+        "u0": 0,
+        "u1": 6,
+        "v0": 12,
+        "v1": 18,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.1.1",
+      "asset": "trace.lower-cart-lane.1.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 95,
+        "y": -57
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": 6,
+        "v1": 12,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane",
+      "after": [
+        "terrain.service-wall.1.0",
+        "terrain.service-wall.1.1"
+      ]
+    },
+    {
+      "id": "terrain.lower-cart-lane.2.0",
+      "asset": "trace.lower-cart-lane.2.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -97,
+        "y": -67
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 0,
+        "v1": 6,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane",
+      "after": [
+        "terrain.service-wall.1.-1",
+        "terrain.service-wall.1.0",
+        "terrain.service-wall.2.0"
+      ]
+    },
+    {
+      "id": "terrain.lower-cart-lane.-1.3",
+      "asset": "trace.lower-cart-lane.-1.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": -91
+      },
+      "box": {
+        "u0": -6,
+        "u1": 0,
+        "v0": 18,
+        "v1": 24,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.0.3",
+      "asset": "trace.lower-cart-lane.0.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": -105
+      },
+      "box": {
+        "u0": 0,
+        "u1": 6,
+        "v0": 18,
+        "v1": 24,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.1.2",
+      "asset": "trace.lower-cart-lane.1.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 191,
+        "y": -105
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": 12,
+        "v1": 18,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane",
+      "after": [
+        "terrain.service-wall.1.1"
+      ]
+    },
+    {
+      "id": "terrain.lower-cart-lane.2.1",
+      "asset": "trace.lower-cart-lane.2.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1,
+        "y": -105
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 6,
+        "v1": 12,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane",
+      "after": [
+        "terrain.service-wall.1.0",
+        "terrain.service-wall.1.1",
+        "terrain.service-wall.2.0",
+        "terrain.service-wall.2.1"
+      ]
+    },
+    {
+      "id": "terrain.lower-cart-lane.1.3",
+      "asset": "trace.lower-cart-lane.1.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 287,
+        "y": -153
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": 18,
+        "v1": 24,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.2.2",
+      "asset": "trace.lower-cart-lane.2.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 95,
+        "y": -153
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 12,
+        "v1": 18,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane",
+      "after": [
+        "terrain.service-wall.1.1",
+        "terrain.service-wall.2.1",
+        "terrain.service-wall.2.2"
+      ]
+    },
+    {
+      "id": "terrain.lower-cart-lane.0.4",
+      "asset": "trace.lower-cart-lane.0.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": -187
+      },
+      "box": {
+        "u0": 0,
+        "u1": 6,
+        "v0": 24,
+        "v1": 30,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.1.4",
+      "asset": "trace.lower-cart-lane.1.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": -201
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": 24,
+        "v1": 30,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.2.3",
+      "asset": "trace.lower-cart-lane.2.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 191,
+        "y": -201
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 18,
+        "v1": 24,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane",
+      "after": [
+        "terrain.service-wall.2.2",
+        "terrain.service-wall.2.3"
+      ]
+    },
+    {
+      "id": "terrain.lower-cart-lane.2.4",
+      "asset": "trace.lower-cart-lane.2.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 287,
+        "y": -249
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 24,
+        "v1": 30,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane",
+      "after": [
+        "terrain.service-wall.2.3",
+        "terrain.service-wall.2.4"
+      ]
+    },
+    {
+      "id": "terrain.lower-cart-lane.1.5",
+      "asset": "trace.lower-cart-lane.1.5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": -283
+      },
+      "box": {
+        "u0": 6,
+        "u1": 12,
+        "v0": 30,
+        "v1": 36,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane"
+    },
+    {
+      "id": "terrain.lower-cart-lane.2.5",
+      "asset": "trace.lower-cart-lane.2.5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 316,
+        "y": -297
+      },
+      "box": {
+        "u0": 12,
+        "u1": 18,
+        "v0": 30,
+        "v1": 36,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane",
+      "after": [
+        "terrain.service-wall.2.4",
+        "terrain.service-wall.2.5"
+      ]
+    },
+    {
+      "id": "terrain.service-upstream-road",
+      "asset": "trace.service-upstream-road",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 194,
+        "y": 172
+      },
+      "box": {
+        "u0": -13,
+        "v0": -3.7,
+        "u1": 4,
+        "v1": -0.7,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "lower-cart-lane",
+      "after": [
+        "terrain.lower-cart-lane."
+      ]
+    },
+    {
+      "id": "terrain.upper-upstream-road",
+      "asset": "trace.upper-upstream-road",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 42,
+        "y": 243
+      },
+      "box": {
+        "u0": -13,
+        "v0": -14.2,
+        "u1": -1.5,
+        "v1": -10.2,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-quay",
+      "after": [
+        "terrain.upper-quay."
+      ]
+    }
+  ]
+}

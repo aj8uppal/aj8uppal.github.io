@@ -1,0 +1,1 @@
+function e(e,t){return Math.trunc(e/t)}function t(e){return Math.sign(e)*Math.round(Math.abs(e))}function n(e,t){return(e%t+t)%t}function r(e,t){let n=e%t;return n<0?n+t:n}function i(e,t,n){return e<t?t:e>n?n:e}function a(e,t,n){return e+(t-e)*n}function o(e,t,n){let r=i((n-e)/(t-e),0,1);return r*r*(3-2*r)}export{n as a,a as i,r as n,t as o,e as r,o as s,i as t};

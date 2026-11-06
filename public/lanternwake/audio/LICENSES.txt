@@ -1,0 +1,31 @@
+Lanternwake natural water ambience
+=================================
+
+Runtime file: sea-loop.mp3
+Source: Sailing boat, bow wave (close perspective)
+Creator: Pfannkuchn
+Primary source: https://freesound.org/people/Pfannkuchn/sounds/360631/
+Public source preview: https://cdn.freesound.org/previews/360/360631_627541-hq.mp3
+License: Creative Commons CC0 1.0 Universal (public domain dedication)
+License deed: https://creativecommons.org/publicdomain/zero/1.0/
+License legal text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+Source license verified on 2026-10-04 on the creator's Freesound page.
+
+Original field recording: close stereo bow wave from an approximately eight-meter
+sailing boat in calm water; recorded using two Neumann KM183 microphones and a
+Tascam HD-P2. No original Saltline audio was used.
+
+Changes for Lanternwake: excerpt from 00:10 to 01:00; gentle 65 Hz high-pass and
+6.5 kHz low-pass filtering; +9.4 dB level adjustment; three-second equal-power
+seam crossfade and rotation into a 47-second loop; encoded as stereo 44.1 kHz
+128 kb/s MP3. Original source and reproducible processing script are retained
+under art/incoming/audio. The runtime file is 753,325 bytes.
+
+Attribution is provided voluntarily; CC0 does not require it.
+
+2026-10-04 coastal soundscape pass
+--------------------------------
+The field recording above remains the only third-party audio asset. Wind,
+sailcloth flutter, wood/rigging friction, wave contact, harbor bells, cannon
+reports and musical motifs are original runtime Web Audio synthesis implemented
+in src/audio.ts. No external sound service or additional audio download is used.

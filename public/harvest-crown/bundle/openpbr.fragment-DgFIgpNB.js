@@ -1,0 +1,1 @@
+export{R as openpbrPixelShaderWGSL}from"./babylon-BwITB9hk.js";

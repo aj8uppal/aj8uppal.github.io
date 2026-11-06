@@ -1,0 +1,338 @@
+{
+  "envoy-builder": {
+    "file": "assets/ui/glass/envoy-builder.jpg",
+    "source": "art/ui/glass/raw/envoy-builder-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.55,
+      "y": 0.03,
+      "w": 0.3,
+      "h": 0.6
+    }
+  },
+  "ending-iron": {
+    "file": "assets/ui/glass/ending-iron.jpg",
+    "source": "art/ui/glass/raw/ending-iron-1.png",
+    "size": [
+      2560,
+      1440
+    ],
+    "safe": {
+      "x": 0.02,
+      "y": 0.05,
+      "w": 0.25,
+      "h": 0.75
+    }
+  },
+  "happening-blight": {
+    "file": "assets/ui/glass/happening-blight.jpg",
+    "source": "art/ui/glass/raw/happening-blight-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "happening-family": {
+    "file": "assets/ui/glass/happening-family.jpg",
+    "source": "art/ui/glass/raw/happening-family-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "happening-fair": {
+    "file": "assets/ui/glass/happening-fair.jpg",
+    "source": "art/ui/glass/raw/happening-fair-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "happening-rumour": {
+    "file": "assets/ui/glass/happening-rumour.jpg",
+    "source": "art/ui/glass/raw/happening-rumour-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "happening-sails": {
+    "file": "assets/ui/glass/happening-sails.jpg",
+    "source": "art/ui/glass/raw/happening-sails-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "happening-wreck": {
+    "file": "assets/ui/glass/happening-wreck.jpg",
+    "source": "art/ui/glass/raw/happening-wreck-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "happening-storm": {
+    "file": "assets/ui/glass/happening-storm.jpg",
+    "source": "art/ui/glass/raw/happening-storm-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "happening-bargain": {
+    "file": "assets/ui/glass/happening-bargain.jpg",
+    "source": "art/ui/glass/raw/happening-bargain-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "envoy-warden": {
+    "file": "assets/ui/glass/envoy-warden.jpg",
+    "source": "art/ui/glass/raw/envoy-warden-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "envoy-trader": {
+    "file": "assets/ui/glass/envoy-trader.jpg",
+    "source": "art/ui/glass/raw/envoy-trader-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "envoy-reaver": {
+    "file": "assets/ui/glass/envoy-reaver.jpg",
+    "source": "art/ui/glass/raw/envoy-reaver-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "council-winter": {
+    "file": "assets/ui/glass/council-winter.jpg",
+    "source": "art/ui/glass/raw/council-winter-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "council-autumn": {
+    "file": "assets/ui/glass/council-autumn.jpg",
+    "source": "art/ui/glass/raw/council-autumn-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "council-spring": {
+    "file": "assets/ui/glass/council-spring.jpg",
+    "source": "art/ui/glass/raw/council-spring-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "raid-sighting": {
+    "file": "assets/ui/glass/raid-sighting.jpg",
+    "source": "art/ui/glass/raw/raid-sighting-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "battle": {
+    "file": "assets/ui/glass/battle.jpg",
+    "source": "art/ui/glass/raw/battle-1.png",
+    "size": [
+      2880,
+      960
+    ],
+    "safe": {
+      "x": 0.33,
+      "y": 0.25,
+      "w": 0.65,
+      "h": 0.5
+    }
+  },
+  "petition-home": {
+    "file": "assets/ui/glass/petition-home.jpg",
+    "source": "art/ui/glass/raw/petition-home-1.png",
+    "size": [
+      2304,
+      960
+    ],
+    "safe": {
+      "x": 0.1,
+      "y": 0.1,
+      "w": 0.8,
+      "h": 0.8
+    }
+  },
+  "petition-frontier": {
+    "file": "assets/ui/glass/petition-frontier.jpg",
+    "source": "art/ui/glass/raw/petition-frontier-1.png",
+    "size": [
+      2304,
+      960
+    ],
+    "safe": {
+      "x": 0.1,
+      "y": 0.1,
+      "w": 0.8,
+      "h": 0.8
+    }
+  },
+  "petition-neighbour": {
+    "file": "assets/ui/glass/petition-neighbour.jpg",
+    "source": "art/ui/glass/raw/petition-neighbour-1.png",
+    "size": [
+      2304,
+      960
+    ],
+    "safe": {
+      "x": 0.1,
+      "y": 0.1,
+      "w": 0.8,
+      "h": 0.8
+    }
+  },
+  "ending-steward": {
+    "file": "assets/ui/glass/ending-steward.jpg",
+    "source": "art/ui/glass/raw/ending-steward-1.png",
+    "size": [
+      2560,
+      1440
+    ],
+    "safe": {
+      "x": 0.1,
+      "y": 0.08,
+      "w": 0.8,
+      "h": 0.84
+    }
+  },
+  "ending-merchant": {
+    "file": "assets/ui/glass/ending-merchant.jpg",
+    "source": "art/ui/glass/raw/ending-merchant-1.png",
+    "size": [
+      2560,
+      1440
+    ],
+    "safe": {
+      "x": 0.1,
+      "y": 0.08,
+      "w": 0.8,
+      "h": 0.84
+    }
+  },
+  "ending-defeat": {
+    "file": "assets/ui/glass/ending-defeat.jpg",
+    "source": "art/ui/glass/raw/ending-defeat-1.png",
+    "size": [
+      2560,
+      1440
+    ],
+    "safe": {
+      "x": 0.1,
+      "y": 0.08,
+      "w": 0.8,
+      "h": 0.84
+    }
+  }
+}

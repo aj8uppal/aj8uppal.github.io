@@ -1,0 +1,1 @@
+export{Kt as _KTXTextureLoader}from"./babylon-BwITB9hk.js";

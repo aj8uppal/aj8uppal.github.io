@@ -1,0 +1,26 @@
+Lanternwake ship timber surfaces
+================================
+
+ship-timber-color.jpg, ship-timber-normal.jpg, ship-timber-rough.jpg
+Source asset: Fine Grained Wood
+Author: Rob Tuytel / Poly Haven
+Primary source: https://polyhaven.com/a/fine_grained_wood
+License: CC0 1.0 Universal (public domain dedication)
+Primary license statement: https://polyhaven.com/license
+License deed: https://creativecommons.org/publicdomain/zero/1.0/
+
+Bundled maps are the original 1K JPEG diffuse, OpenGL tangent-space normal,
+and roughness maps from Poly Haven, totaling 745,086 bytes:
+https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/fine_grained_wood/fine_grained_wood_col_1k.jpg
+https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/fine_grained_wood/fine_grained_wood_nor_gl_1k.jpg
+https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/fine_grained_wood/fine_grained_wood_rough_1k.jpg
+
+Integration: local bundled files, shared by the ship fleet. The scanned grain
+follows each strake, spar and rail, using geometry UVs at a restrained 0.8m
+tile size. Shader caulk lines preserve the hull strakes and staggered 28cm deck
+planks. Board-to-board color variation, gentle normal strength and minimum
+roughness preserve a weathered working surface without glossy varnish.
+The deck has a lighter, slightly desaturated finish. Original canvas stitching,
+ship geometry, rigging, animations and upgrades are unchanged.
+
+Source and license checked 2026-10-04. Attribution is voluntary under CC0.

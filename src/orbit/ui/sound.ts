@@ -187,11 +187,9 @@ function arrive() {
 export function initSound() {
   const btn = document.querySelector<HTMLButtonElement>('[data-sound]');
   if (!btn) return;
-  const label = btn.querySelector('[data-sound-label]');
   const set = (value: boolean) => {
     on = value;
     btn.setAttribute('aria-pressed', String(on));
-    if (label) label.textContent = on ? 'Sound on' : 'Sound off';
     clearTimeout(chordTimer);
     clearTimeout(bellTimer);
     if (on) {

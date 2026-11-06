@@ -1,0 +1,574 @@
+---
+/**
+ * /v2/: a flight through twelve playable worlds. The WebGL scene behind the
+ * page is decoration with a job; every word, link and capture below is
+ * ordinary HTML that reads without it. See src/orbit/main.ts.
+ */
+import { Picture, getImage } from 'astro:assets';
+import Orbit from '../../layouts/Orbit.astro';
+import { worlds, belt } from '../../orbit/worlds';
+import { collection } from '../../data/portfolio';
+import { contact, about } from '../../data/content';
+import { career, education } from '../../data/career';
+import { asset, hasAsset } from '../../lib/images';
+
+const posterOf = (name: string) => (hasAsset(name) ? name : 'orbit-backdrop');
+const posters = await Promise.all(
+  worlds.map((w) => getImage({ src: asset(posterOf(w.poster)), width: 1280, format: 'webp' })),
+);
+const postersSm = await Promise.all(
+  worlds.map((w) => getImage({ src: asset(posterOf(w.poster)), width: 640, format: 'webp' })),
+);
+const thumbs = await Promise.all(
+  worlds.map((w) => getImage({ src: asset(posterOf(w.poster)), width: 160, format: 'webp' })),
+);
+// The scene's own render, for browsers that cannot run it.
+const backdrop = await getImage({ src: asset('orbit-backdrop'), width: 1600, format: 'webp' });
+const beltItems = belt
+  .map((b) => ({ ...b, app: collection.find((a) => a.key === b.key) }))
+  .filter((b) => b.app && hasAsset(b.image))
+  .map((b) => ({ ...b, app: b.app! }));
+const pad = (n: number) => String(n).padStart(2, '0');
+const caseHref = (key: string) => `/v2/work/${key}/`;
+const external = (href: string) => href.startsWith('http');
+const phone = (w: (typeof worlds)[number]) => w.platforms.includes('Phone');
+const stations = [
+  { id: 'top', shot: 'hero', label: 'Top' },
+  { id: 'worlds', shot: 'system', label: 'The system' },
+  ...worlds.map((w) => ({ id: w.key, shot: 'world:' + w.key, label: w.name })),
+  { id: 'belt', shot: 'belt', label: 'More builds' },
+  { id: 'earth', shot: 'earth', label: 'Day job' },
+  { id: 'origin', shot: 'origin', label: 'Origin' },
+  { id: 'contact', shot: 'contact', label: 'Contact' },
+];
+const onPhone = worlds.filter(phone).length;
+// Phones get the 640px encodes of the same clips (public/media/previews/640/).
+const smallClip = (src: string) => src.replace('/media/previews/', '/media/previews/640/');
+const first = worlds[0]!;
+// Long names fit on two lines: size them by half the name, not just its
+// longest word, or a three-word title pushes Play off a laptop screen.
+const lenOf = (name: string) =>
+  Math.max(...name.split(' ').map((x) => x.length), Math.ceil(name.length / 2));
+---
+
+<Orbit
+  bodyClass="home"
+  title="AJ Uppal — twelve worlds you can play"
+  description="AJ Uppal is a software engineer at Notable Health who builds games that run in a browser tab: twelve of them, from an age-of-sail voyage to a hex-tile globe, all playable here."
+>
+  <script is:inline slot="head">
+    document.documentElement.classList.add('js');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches)
+      document.documentElement.classList.add('reduce');
+    // If the scene's module never arrives, settle on the static page.
+    window.__orbitFailsafe = setTimeout(function () {
+      const d = document.documentElement;
+      if (!d.classList.contains('ready')) d.classList.add('ready', 'no-gl');
+    }, 6000);
+  </script>
+  <canvas id="orbit-canvas" aria-hidden="true"></canvas>
+  <div class="backdrop" aria-hidden="true" style={`background-image:url(${backdrop.src})`}></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="nav">
+    <a class="nav__brand" href="#top" aria-label="AJ Uppal, back to the top">
+      <span class="nav__glyph" aria-hidden="true"></span>
+      <span>AJ Uppal</span>
+    </a>
+    <nav class="nav__links" aria-label="Main">
+      <a href="#worlds">Worlds</a>
+      <a href="#belt">More</a>
+      <a href="#earth">Day job</a>
+      <a href="#origin">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="nav__contact" href="#contact">Contact</a>
+    <button class="nav__sound" type="button" data-sound aria-pressed="false">
+      <span class="nav__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span data-sound-label>Sound</span>
+    </button>
+  </header>
+
+  <div class="hud" aria-hidden="true">
+    <span class="hud__k">Now</span>
+    <span data-hud="sector">The singularity</span>
+  </div>
+
+  <div class="labels" aria-hidden="true">
+    {
+      worlds.map((w, i) => (
+        <a
+          class="label"
+          data-label={w.key}
+          href={`#${w.key}`}
+          tabindex="-1"
+          style={`--c:${w.accent}`}
+        >
+          <span class="label__dot" />
+          <span class="label__n">{pad(i + 1)}</span>
+          <span class="label__name">{w.name}</span>
+        </a>
+      ))
+    }
+  </div>
+
+  <main id="main" tabindex="-1">
+    <section id="top" class="hero" data-shot="hero" aria-labelledby="hero-title">
+      <div class="hero__stage">
+        <p class="hero__kicker" data-enter style="--d:0.1s">
+          <span>Software engineer</span><span class="dot" aria-hidden="true"></span><span
+            >Bay Area</span
+          >
+        </p>
+        <h1 id="hero-title" class="hero__title">
+          <span>AJ</span>
+          <span>Uppal</span>
+        </h1>
+        <div class="hero__foot">
+          <p class="hero__lead" data-enter style="--d:0.3s">
+            I build <a href="#earth">voice AI for healthcare at Notable</a>. After hours I build <em
+              >games that run in a browser tab</em
+            >: twelve of them are below, and {onPhone} also play on a phone.
+          </p>
+          <div class="hero__act" data-enter style="--d:0.45s">
+            <div class="hero__ctas">
+              <a class="btn btn--primary" href="#worlds" data-cursor="Fly">
+                Fly to the worlds <span aria-hidden="true">↓</span>
+              </a>
+              <a
+                class="btn btn--ghost"
+                href={first.play.href}
+                target={external(first.play.href) ? '_blank' : undefined}
+                rel={external(first.play.href) ? 'noopener' : undefined}
+                data-cursor="Play"
+              >
+                Or just play {first.name}
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+            <p class="hero__reach">
+              <a href={contact.resume}>Résumé <span class="hero__reach-k">PDF</span></a>
+              <a href={contact.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+              <a href={contact.github} target="_blank" rel="noopener">GitHub</a>
+              <a href={`mailto:${contact.email}`}>Email</a>
+            </p>
+          </div>
+        </div>
+        <p class="hero__tele" aria-hidden="true">
+          <span>Schwarzschild metric</span><span>Disk 3–12 r<sub>s</sub></span><span
+            >Rendered live on your GPU</span
+          >
+        </p>
+      </div>
+    </section>
+
+    <section
+      id="worlds"
+      class="system"
+      data-shot="system"
+      aria-labelledby="system-title"
+      tabindex="-1"
+    >
+      <div class="system__stage">
+        <p class="eyebrow" data-reveal>The system</p>
+        <h2 id="system-title" class="system__title" data-split>Twelve worlds, all playable.</h2>
+        <p class="system__lead" data-reveal="0.1">
+          Sailing, strategy, a roguelike, a pixel-art RPG, puzzles. Every one runs in a browser tab
+          and {onPhone} of them play on a phone. Scroll to fly out to each, or pick one.
+        </p>
+        <ol class="system__list" data-reveal="0.15">
+          {
+            worlds.map((w, i) => (
+              <li style={`--c:${w.accent}`}>
+                <a href={`#${w.key}`} data-world={w.key}>
+                  <img
+                    class="system__thumb"
+                    src={thumbs[i]!.src}
+                    alt=""
+                    width="80"
+                    height="45"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span class="system__name">{w.name}</span>
+                  <span class="system__kind">
+                    {w.kind}
+                    {phone(w) && (
+                      <span class="system__phone">
+                        <span class="sr-only">, plays on a </span>phone
+                      </span>
+                    )}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    {
+      worlds.map((w, i) => (
+        <section
+          id={w.key}
+          class="world"
+          data-shot={`world:${w.key}`}
+          data-side={i % 2 === 0 ? 'left' : 'right'}
+          data-desktop={phone(w) ? undefined : ''}
+          style={`--c:${w.accent}`}
+          aria-labelledby={`${w.key}-title`}
+          tabindex="-1"
+        >
+          <div class="world__stage">
+            <div class="world__copy">
+              <p class="world__index" data-reveal>
+                <span class="world__num">
+                  {pad(i + 1)}
+                  <span class="world__of">/ {pad(worlds.length)}</span>
+                </span>
+                <span class="world__kind">{w.kind}</span>
+              </p>
+              <h2
+                id={`${w.key}-title`}
+                class="world__name"
+                data-split
+                style={`--len:${lenOf(w.name)}`}
+              >
+                {w.name}
+              </h2>
+              <p class="world__headline" data-reveal="0.05">
+                {w.headline}
+              </p>
+              <p class="world__body" data-reveal="0.1">
+                {w.body}
+              </p>
+              <dl class="world__facts" data-reveal="0.15">
+                {w.facts.map((f) => (
+                  <div>
+                    <dt>{f.value}</dt>
+                    <dd>{f.label}</dd>
+                  </div>
+                ))}
+              </dl>
+              <ul class="world__platforms" data-reveal="0.18" aria-label="Plays on">
+                {w.platforms.map((p) => (
+                  <li data-p={p.toLowerCase().replace(/[^a-z]+/g, '-')}>{p}</li>
+                ))}
+              </ul>
+              {!phone(w) && (
+                <p class="world__desk" data-reveal="0.18">
+                  Made for a keyboard and mouse. Open it on a computer to play.
+                </p>
+              )}
+              <div class="world__actions" data-reveal="0.2">
+                <a
+                  class="btn btn--primary"
+                  href={w.play.href}
+                  target={external(w.play.href) ? '_blank' : undefined}
+                  rel={external(w.play.href) ? 'noopener' : undefined}
+                  data-cursor="Play"
+                >
+                  {w.play.label}
+                  <span class="sr-only">
+                    : play {w.name}
+                    {external(w.play.href) && ' (opens in a new tab)'}
+                  </span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+                <a class="btn btn--ghost" href={caseHref(w.key)}>
+                  How it’s built <span class="sr-only">: {w.name}</span>
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+            <figure class="media world__media" data-tilt="4" data-reveal="0.1">
+              <a
+                class="media__frame"
+                href={w.play.href}
+                target={external(w.play.href) ? '_blank' : undefined}
+                rel={external(w.play.href) ? 'noopener' : undefined}
+                data-cursor="Play"
+                tabindex="-1"
+                aria-label={`${w.play.label}: ${w.name}`}
+              >
+                <img
+                  class="media__poster"
+                  src={posters[i]!.src}
+                  srcset={`${postersSm[i]!.src} 640w, ${posters[i]!.src} 1280w`}
+                  sizes="(max-width: 759px) 92vw, 45vw"
+                  alt=""
+                  width="1280"
+                  height="720"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <video
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  data-src={w.video}
+                  data-src-sm={smallClip(w.video)}
+                  width="1280"
+                  height="720"
+                  aria-hidden="true"
+                />
+                <span class="media__glare" aria-hidden="true" />
+                <span class="media__play" aria-hidden="true">
+                  <span>{w.play.label}</span>
+                </span>
+              </a>
+              <figcaption>
+                <span class="media__live" aria-hidden="true" />
+                Captured in the running game
+                <span class="media__stack">{w.stack}</span>
+                <span class="sr-only">: {w.posterAlt}</span>
+                <button
+                  class="media__toggle"
+                  type="button"
+                  data-clip-toggle
+                  aria-label={`Pause the ${w.name} clip`}
+                  hidden
+                >
+                  Pause
+                </button>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+      ))
+    }
+
+    <section id="belt" class="belt" data-shot="belt" aria-labelledby="belt-title" tabindex="-1">
+      <div class="belt__stage">
+        <header class="belt__head">
+          <p class="eyebrow" data-reveal>The belt</p>
+          <h2 id="belt-title" data-split>And a belt of everything else.</h2>
+          <p data-reveal="0.1">
+            Fighters, instruments, co-op shooters, tools and experiments. <span
+              class="belt__hint belt__hint--ring">Scroll or drag to turn the ring.</span
+            ><span class="belt__hint belt__hint--flat">Swipe sideways for more.</span>
+          </p>
+        </header>
+        <div class="belt__viewport">
+          <ul class="belt__ring">
+            {
+              beltItems.map(({ app, image }) => (
+                <li class="belt__card" style={`--c:${app.accent}`}>
+                  <a
+                    href={app.href}
+                    target={external(app.href) ? '_blank' : undefined}
+                    rel={external(app.href) ? 'noopener' : undefined}
+                    data-cursor="Open"
+                  >
+                    <span class="belt__img">
+                      <Picture
+                        src={asset(image)}
+                        alt={app.alt}
+                        widths={[400, 640]}
+                        sizes="(max-width: 720px) 80vw, 340px"
+                        formats={['avif', 'webp']}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                    <span class="belt__meta">
+                      <span class="belt__kind">{app.kind}</span>
+                      <span class="belt__name">{app.name}</span>
+                      <span class="belt__what">{app.what}</span>
+                      <span class="belt__cta">
+                        {app.cta} <span aria-hidden="true">{external(app.href) ? '↗' : '→'}</span>
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <a class="btn btn--ghost belt__all" href="/built/">
+          The whole build log <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="earth" class="earth" data-shot="earth" aria-labelledby="earth-title" tabindex="-1">
+      <div class="earth__stage">
+        <div class="earth__copy">
+          <p class="eyebrow" data-reveal>Back on Earth · Notable Health · since 2022</p>
+          <h2 id="earth-title" data-split>By day, voice AI for healthcare.</h2>
+          <p class="earth__lead" data-reveal="0.1">
+            Notable is a healthcare AI company. On the voice and conversations platform my team
+            owns, I build caller verification, call routing, transfers and monitoring, and I wrote
+            the specification health systems follow to connect their phone systems to ours.
+          </p>
+          <dl class="stats" data-reveal="0.15">
+            <div>
+              <dt><span data-count>~250,000</span></dt>
+              <dd>patient calls a month on our team’s platform</dd>
+            </div>
+            <div>
+              <dt><span data-count>99%</span></dt>
+              <dd>uptime on those calls</dd>
+            </div>
+            <div>
+              <dt><span data-count>5+</span></dt>
+              <dd>health systems on the caller verification I own</dd>
+            </div>
+            <div>
+              <dt><span data-count>$240k</span></dt>
+              <dd>ARR on inbound SIP today</dd>
+            </div>
+          </dl>
+          <p class="earth__more" data-reveal="0.2">
+            Configurable transfers and multilingual conversations cut new-customer launches from
+            weeks to days.
+          </p>
+          <div class="world__actions" data-reveal="0.25">
+            <a class="btn btn--ghost" href="/portfolio/work/notable/">
+              The work in detail <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <p class="world__stack" data-reveal="0.3">
+            Python · TypeScript · Node.js · React · PostgreSQL · BigQuery · SIP, TLS, SRTP · GCP ·
+            Kubernetes · Terraform
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="origin"
+      class="origin"
+      data-shot="origin"
+      aria-labelledby="origin-title"
+      tabindex="-1"
+    >
+      <div class="origin__stage">
+        <div class="origin__copy">
+          <p class="eyebrow" data-reveal>Origin</p>
+          <h2 id="origin-title" data-split>Wanted to be an astronaut since I was four.</h2>
+          <p class="origin__still" data-reveal="0.1"><em>Still would.</em></p>
+          <p class="origin__lead" data-reveal="0.15">
+            {about.prose[0]}
+            {' '}
+            {about.sim[0]}<a href="#saltline">{about.sim[1]}</a>{about.sim[2]}
+          </p>
+          <ol class="timeline" data-reveal="0.2">
+            <li>
+              <span class="timeline__when">2022–now</span>
+              <span class="timeline__what">Software Engineer, <b>Notable Health</b></span>
+            </li>
+            {
+              career.map((c) => (
+                <li>
+                  <span class="timeline__when">{c.years}</span>
+                  <span class="timeline__what">
+                    {c.title}, <b>{c.company}</b>
+                  </span>
+                </li>
+              ))
+            }
+            <li>
+              <span class="timeline__when">2022</span>
+              <span class="timeline__what">
+                B.S. {education.subjects}, <b>UMass Amherst</b>
+                <span class="timeline__note">{education.note}</span>
+              </span>
+            </li>
+          </ol>
+          <ul class="notes" data-reveal="0.25">
+            {
+              about.notes
+                .filter((n) => n.k !== 'Long held')
+                .map((n) => (
+                  <li>
+                    <span class="notes__k">{n.k}</span>
+                    <span class="notes__v">{n.v}</span>
+                    {n.reply && (
+                      <a
+                        class="notes__reply"
+                        href={`mailto:${contact.email}?subject=${encodeURIComponent(n.reply.subject)}`}
+                      >
+                        {n.reply.label} <span aria-hidden="true">↗</span>
+                      </a>
+                    )}
+                  </li>
+                ))
+            }
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="contact"
+      class="contact"
+      data-shot="contact"
+      aria-labelledby="contact-title"
+      tabindex="-1"
+    >
+      <div class="contact__stage">
+        <p class="eyebrow" data-reveal>Open a channel</p>
+        <h2 id="contact-title" class="contact__title" data-split>Say hello.</h2>
+        <a
+          class="contact__email"
+          href={`mailto:${contact.email}`}
+          data-reveal="0.1"
+          data-cursor="Write"
+        >
+          {contact.email}
+        </a>
+        <ul class="contact__links" data-reveal="0.2">
+          <li>
+            <a href={contact.github} target="_blank" rel="noopener"
+              >GitHub <span aria-hidden="true">↗</span></a
+            >
+          </li>
+          <li>
+            <a href={contact.linkedin} target="_blank" rel="noopener"
+              >LinkedIn <span aria-hidden="true">↗</span></a
+            >
+          </li>
+          <li>
+            <a href={contact.resume} target="_blank" rel="noopener"
+              >Résumé, {contact.resumeYear} (PDF) <span aria-hidden="true">↗</span></a
+            >
+          </li>
+          <li><a href="/built/">Every build <span aria-hidden="true">→</span></a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <nav class="rail" aria-label="Chapters">
+    <ol>
+      {
+        stations.map((s, i) => (
+          <li>
+            <a href={`#${s.id}`} data-rail={s.shot}>
+              <span class="rail__n">{s.shot.startsWith('world:') ? pad(i - 1) : ''}</span>
+              <span class="rail__label">{s.label}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+
+  <footer class="foot">
+    <p>
+      Rendered live in your browser: a Schwarzschild black hole raymarched on the GPU, twelve
+      hand-made worlds and NASA’s Earth. The planet surfaces are illustrations; every clip and
+      screenshot is captured from the running game.
+    </p>
+    <p class="foot__meta">
+      <span>© {new Date().getFullYear()} AJ Uppal</span>
+      <a href="/">The classic site</a>
+    </p>
+  </footer>
+</Orbit>
+
+<script>
+  import '../../orbit/main';
+</script>

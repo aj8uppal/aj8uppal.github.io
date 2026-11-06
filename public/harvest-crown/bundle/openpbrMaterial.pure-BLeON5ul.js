@@ -1,0 +1,1 @@
+export{un as OpenPBRMaterial,dn as OpenPBRMaterialDefines,fn as RegisterOpenpbrMaterial}from"./babylon-BwITB9hk.js";

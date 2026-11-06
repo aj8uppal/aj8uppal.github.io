@@ -1,0 +1,1 @@
+export{Q as gaussianSplattingVertexShaderWGSL}from"./babylon-BwITB9hk.js";

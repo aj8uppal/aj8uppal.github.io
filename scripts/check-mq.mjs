@@ -55,7 +55,14 @@ for (const root of roots) {
          column and let the source copy carry the line number. */
       let m;
       const all = new RegExp(RANGE.source, 'gi');
-      while ((m = all.exec(line))) bad.push(`${file}:${i + 1}  ${m[0]}...)`);
+      while ((m = all.exec(line))) {
+        /* A container query is fine: every engine that has @container (Safari
+           16.0 and later) parses range syntax inside it, and one without it
+           ignores the block either way. */
+        const at = line.lastIndexOf('@', m.index);
+        if (at >= 0 && line.startsWith('@container', at)) continue;
+        bad.push(`${file}:${i + 1}  ${m[0]}...)`);
+      }
     });
   }
 }

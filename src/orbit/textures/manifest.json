@@ -27,15 +27,6 @@
     }
   },
   {
-    "file": "ember.webp",
-    "from": "planet-ember.png",
-    "bytes": 504994,
-    "provenance": {
-      "generator": "Codex built-in image_gen",
-      "prompt": "A flat equirectangular texture map (2:1 aspect ratio) of a stylised voxel fantasy world, for wrapping onto a 3D sphere. The surface is built from visible square blocky voxel tiles like a low-poly blocky game world seen from orbit, divided into seven distinct regions: lush green meadows split by blue rivers, a dusty orange plain with blocky trees, pale bleached flats with white ruins, a dark near-black marsh, a red-lit ash waste with glowing orange ember cracks and lava rivers, grey stone mountain terraces, and a black-violet plateau. Glowing ember-orange lines of lava thread between some regions. Viewed straight down, evenly lit, no sphere, no space, no text, no borders. The left and right edges must tile seamlessly."
-    }
-  },
-  {
     "file": "ice.webp",
     "from": "planet-ice.png",
     "bytes": 499904,
@@ -45,12 +36,57 @@
     }
   },
   {
-    "file": "rift.webp",
-    "from": "planet-rift.png",
-    "bytes": 593592,
+    "file": "emberdeep.webp",
+    "from": "planet-emberdeep.png",
+    "bytes": 565264,
     "provenance": {
       "generator": "Codex built-in image_gen",
-      "prompt": "A flat equirectangular texture map (2:1 aspect ratio) of a shattered alien world, for wrapping onto a 3D sphere. Dark obsidian and deep indigo-violet rock plates broken by a network of jagged canyons that glow hot magenta and electric lavender from within, crystalline amethyst formations, a few dark plateaus. Viewed straight down, evenly lit, no sphere, no space background, no text, no borders. The left and right edges must tile seamlessly."
+      "prompt": "A flat equirectangular texture map (2:1 aspect ratio, as wide as possible) of a volcanic underworld planet for wrapping onto a 3D sphere in a game engine. Cracked plates of black obsidian and dark grey basalt separated by a network of glowing molten lava rivers in bright orange and yellow, ember-red fissures, smouldering ash plains in charcoal and rust, a few dark crater basins with lava lakes. Dark fantasy mood, richly detailed, realistic. No clouds, no shading, no lighting, no sphere, no space background, no text, no grid, no borders. Viewed straight down, evenly lit like an albedo map. The left and right edges must continue seamlessly into each other."
+    }
+  },
+  {
+    "file": "seventide.webp",
+    "from": "planet-seventide.png",
+    "bytes": 312758,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A flat equirectangular texture map (2:1 aspect ratio, as wide as possible) of a temperate ocean planet for wrapping onto a 3D sphere in a game engine. Deep teal and sapphire ocean covers most of it. Across the equator sits a chain of islands built from crisp hexagonal terrain tiles, each hex a single terrain: golden wheat fields, dark green pine forest, pale green sheep pasture, terracotta clay hills, grey stone mountains, and a few sandy beach hexes at the coasts, with thin pale hex borders. Turquoise shallows ring each island. No clouds, no shading, no lighting, no sphere, no space background, no text, no grid outside the islands, no borders. Viewed straight down, evenly lit like a satellite albedo map, stylised but richly detailed. The left and right edges must continue seamlessly into each other."
+    }
+  },
+  {
+    "file": "harvest.webp",
+    "from": "planet-harvest.png",
+    "bytes": 448726,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A flat equirectangular texture map (2:1 aspect ratio, as wide as possible) of a pastoral farming planet for wrapping onto a 3D sphere in a game engine. Rolling patchwork farmland of irregular fields in many greens and warm golds, hedgerows, orchards, winding rivers, small blue lakes, dark green woods, a few low hills with stone outcrops, little villages as tiny cream dots, and blue seas between the continents. No clouds, no shading, no lighting, no sphere, no space background, no text, no grid, no borders. Viewed straight down, evenly lit like a satellite albedo map, painterly and cozy, richly detailed. The left and right edges must continue seamlessly into each other."
+    }
+  },
+  {
+    "file": "lumen.webp",
+    "from": "planet-lumen.png",
+    "bytes": 691124,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A flat equirectangular texture map (2:1 aspect ratio, as wide as possible) of a cozy magical meadow planet for wrapping onto a 3D sphere in a game engine. Lush soft green meadows full of tiny flower clusters in pink, gold and lilac, round mossy groves of trees, glowing turquoise ponds, winding pale stone paths, clusters of giant mushrooms, and a few silver-blue lakes. Gentle storybook palette, painterly, richly detailed. No clouds, no shading, no lighting, no sphere, no space background, no text, no grid, no borders. Viewed straight down, evenly lit like an albedo map. The left and right edges must continue seamlessly into each other."
+    }
+  },
+  {
+    "file": "lanternwake.webp",
+    "from": "planet-lanternwake.png",
+    "bytes": 282552,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A flat equirectangular texture map (2:1 aspect ratio, as wide as possible) of a rugged ocean planet for wrapping onto a 3D sphere in a game engine. Mostly deep navy and dark teal ocean with subtle swell and current patterns, broken by long jagged coastlines of dark green and slate-grey rocky land with fjords, sea cliffs, headlands, small bays and scattered rocky islets, pale surf lines along every shore. Moody, realistic, richly detailed. No clouds, no shading, no lighting, no sphere, no space background, no text, no grid, no borders. Viewed straight down, evenly lit like a satellite albedo map. The left and right edges must continue seamlessly into each other."
+    }
+  },
+  {
+    "file": "lantern-roads.webp",
+    "from": "planet-lantern-roads.png",
+    "bytes": 208674,
+    "provenance": {
+      "generator": "Codex built-in image_gen",
+      "prompt": "A flat equirectangular world map (2:1 aspect ratio) in 16-bit pixel-art style, for wrapping onto a 3D sphere in a retro game. Chunky visible pixels with a limited cozy palette: deep blue sea with lighter pixel shallows, green grassland continents, dark green pixel forests, brown dirt roads winding between tiny pixel towns, grey mountains, a few canals. Top-down, evenly lit, no shading, no sphere, no space background, no text, no UI, no grid, no borders. Each pixel crisp and square. The left and right edges must continue seamlessly into each other."
     }
   },
   {

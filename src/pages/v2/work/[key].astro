@@ -1,0 +1,335 @@
+---
+/**
+ * A /v2/ world page: the running game first (its capture loops at the top and
+ * the Play button is never more than a thumb away), then how to play, then
+ * what is inside the build. Copy comes from src/orbit/worlds.ts and
+ * src/orbit/cases.ts; presentation lives in src/orbit/case.css.
+ */
+import { Picture, getImage } from 'astro:assets';
+import Orbit from '../../../layouts/Orbit.astro';
+import ProjectTrailer from '../../../components/ProjectTrailer.astro';
+import trailers from '../../../data/portfolio-trailers.json';
+import { worlds, type World } from '../../../orbit/worlds';
+import { cases } from '../../../orbit/cases';
+import { asset, hasAsset } from '../../../lib/images';
+import { contact } from '../../../data/content';
+import '../../../orbit/case.css';
+
+export function getStaticPaths() {
+  return worlds.map((world, i) => ({ params: { key: world.key }, props: { world, i } }));
+}
+interface Props {
+  world: World;
+  i: number;
+}
+const { world: w, i } = Astro.props;
+const c = cases[w.key];
+const poster = hasAsset(w.poster) ? w.poster : 'orbit-backdrop';
+const posterImg = await getImage({ src: asset(poster), width: 1600, format: 'webp' });
+const trailer = c?.trailer && trailers.some((t) => t.key === c.trailer) ? c.trailer : null;
+const stills = (c?.stills ?? []).filter((s) => hasAsset(s.image));
+const prev = worlds[(i + worlds.length - 1) % worlds.length]!;
+const next = worlds[(i + 1) % worlds.length]!;
+const external = (href: string) => href.startsWith('http');
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<Orbit
+  title={`${w.name} · AJ Uppal`}
+  description={`${w.headline} ${w.body}`}
+  image={poster}
+  imageAlt={w.posterAlt}
+  bodyClass="case"
+>
+  <script is:inline slot="head">
+    document.documentElement.classList.add('js');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches)
+      document.documentElement.classList.add('reduce');
+  </script>
+
+  <div class="case-sky" aria-hidden="true" style={`--c:${w.accent}`}>
+    <i class="case-sky__far"></i>
+    <i class="case-sky__near"></i>
+    <i class="case-sky__glow"></i>
+  </div>
+
+  <header class="nav case-nav" style={`--accent:${w.accent};--c:${w.accent}`}>
+    <a class="nav__brand" href="/v2/">
+      <span class="nav__glyph" aria-hidden="true"></span>
+      <span>AJ Uppal</span>
+    </a>
+    <nav class="nav__links" aria-label="Main">
+      <a href="/v2/#worlds">Worlds</a>
+      <a href="/v2/#belt">More</a>
+      <a href="/v2/#earth">Day job</a>
+      <a href="/v2/#contact">Contact</a>
+    </nav>
+    <a
+      class="btn btn--primary case-nav__play"
+      href={w.play.href}
+      target={external(w.play.href) ? '_blank' : undefined}
+      rel={external(w.play.href) ? 'noopener' : undefined}
+    >
+      Play <span aria-hidden="true">↗</span>
+    </a>
+  </header>
+
+  <main
+    id="main"
+    class="case-main"
+    data-project={w.key}
+    style={`--accent:${w.accent};--c:${w.accent}`}
+  >
+    <section class="case-hero case-hero--echo" aria-labelledby="case-title">
+      <div class="case-hero__media" data-parallax>
+        <Picture
+          src={asset(poster)}
+          alt=""
+          widths={[960, 1440, 1920]}
+          sizes="100vw"
+          formats={['avif']}
+          fallbackFormat="webp"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+      <div class="case-hero__scrim" aria-hidden="true"></div>
+      <div class="case-hero__inner">
+        <a class="case-back" href={`/v2/#${w.key}`}>
+          <span aria-hidden="true">←</span>
+          Back to the system
+        </a>
+        <p class="eyebrow" data-rise>World {pad(i + 1)} / {pad(worlds.length)} · {w.kind}</p>
+        <h1
+          id="case-title"
+          class="case-title"
+          data-rise
+          style={`--len:${Math.max(...w.name.split(' ').map((x) => x.length))}`}
+        >
+          {w.name}<span>.</span>
+        </h1>
+        <p class="case-summary" data-rise>{w.headline}</p>
+        <div class="case-actions" data-rise>
+          <a
+            class="btn btn--primary"
+            href={w.play.href}
+            target={external(w.play.href) ? '_blank' : undefined}
+            rel={external(w.play.href) ? 'noopener' : undefined}
+          >
+            {w.play.label}
+            <span aria-hidden="true">↗</span>
+          </a>
+          <ul class="case-platforms" aria-label="Plays on">
+            {w.platforms.map((p) => <li>{p}</li>)}
+          </ul>
+        </div>
+        {
+          !w.platforms.includes('Phone') && (
+            <p class="case-desk" data-rise>
+              Made for a keyboard and mouse. Open this page on a computer to play.
+            </p>
+          )
+        }
+      </div>
+    </section>
+
+    <div class="case-wrap">
+      <div class="case-media" data-rise>
+        <figure class="case-clip">
+          <video
+            muted
+            loop
+            playsinline
+            controls
+            data-autoplay
+            preload="none"
+            poster={posterImg.src}
+            src={w.video}
+            width="1280"
+            height="720"
+            aria-label={`Captured in the running game: ${w.posterAlt}`}></video>
+          <figcaption>
+            <span class="media__live" aria-hidden="true"></span>
+            Captured in the running game. {w.posterAlt}
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="pc-ownership case-own" data-rise>
+        <div>
+          <h2 class="eyebrow">What it is</h2>
+          <p>{c?.intro ?? w.body}</p>
+        </div>
+        <div>
+          <h2 class="eyebrow">How to play</h2>
+          <p>{c?.howToPlay ?? w.body}</p>
+          {
+            c?.controls && (
+              <dl class="case-controls">
+                {c.controls.desktop && (
+                  <div>
+                    <dt>Keyboard &amp; mouse</dt>
+                    <dd>{c.controls.desktop}</dd>
+                  </div>
+                )}
+                {c.controls.touch && (
+                  <div>
+                    <dt>Touch</dt>
+                    <dd>{c.controls.touch}</dd>
+                  </div>
+                )}
+              </dl>
+            )
+          }
+        </div>
+      </div>
+
+      <dl class="case-facts" data-rise>
+        {
+          (c?.numbers ?? w.facts).map((f) => (
+            <div>
+              <dt>{f.value}</dt>
+              <dd>{f.label}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      {
+        c && c.engineering.length > 0 && (
+          <section class="pc-engineering case-build" aria-labelledby="build-title">
+            <header data-rise>
+              <p class="eyebrow">Inside the build</p>
+              <h2 id="build-title">{c.question ?? 'How it works.'}</h2>
+            </header>
+            <div class="pc-decisions case-cols">
+              {c.engineering.map((e, n) => (
+                <div data-rise>
+                  <span class="case-n" aria-hidden="true">
+                    {pad(n + 1)}
+                  </span>
+                  <h3>{e.title}</h3>
+                  <p>{e.body}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      <div class="pc-ownership case-own case-stackrow" data-rise>
+        <div>
+          <h2 class="eyebrow">Built with</h2>
+          <p class="case-stack">
+            {w.stack.split(' · ').map((s) => <span>{s}</span>)}
+          </p>
+          {c?.tests && <p class="case-tested">{c.tests}</p>}
+        </div>
+        {
+          c?.repo && (
+            <div>
+              <h2 class="eyebrow">Source</h2>
+              <p>
+                <a href={c.repo} target="_blank" rel="noopener">
+                  {c.repo.replace('https://', '')} <span aria-hidden="true">↗</span>
+                </a>
+              </p>
+            </div>
+          )
+        }
+      </div>
+
+      {
+        trailer && (
+          <div class="case-media" data-rise>
+            <ProjectTrailer projectKey={trailer} />
+          </div>
+        )
+      }
+
+      {
+        stills.length > 0 && (
+          <section class="case-stills" aria-label="Screenshots">
+            {stills.map((s) => (
+              <figure data-rise>
+                <a
+                  href={asset(s.image).src}
+                  data-photo
+                  data-caption={s.caption}
+                  aria-label={`Enlarge: ${s.caption}`}
+                >
+                  <Picture
+                    src={asset(s.image)}
+                    alt={s.alt}
+                    widths={[640, 1200, 1800]}
+                    sizes="(min-width: 900px) 45vw, 92vw"
+                    formats={['avif']}
+                    fallbackFormat="webp"
+                    loading="lazy"
+                  />
+                </a>
+                <figcaption>{s.caption}</figcaption>
+              </figure>
+            ))}
+          </section>
+        )
+      }
+
+      <nav class="case-pager" aria-label="More worlds">
+        <a href={`/v2/work/${prev.key}/`} style={`--c:${prev.accent}`} data-rise>
+          <small>← Previous world</small>
+          <strong>{prev.name}</strong>
+          <span>{prev.kind}</span>
+        </a>
+        <a href={`/v2/work/${next.key}/`} style={`--c:${next.accent}`} data-rise>
+          <small>Next world →</small>
+          <strong>{next.name}</strong>
+          <span>{next.kind}</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+  <footer class="pc-footer case-foot" style={`--accent:${w.accent};--c:${w.accent}`}>
+    <a class="nav__brand" href="/v2/">
+      <span class="nav__glyph" aria-hidden="true"></span>
+      <span>AJ Uppal</span>
+    </a>
+    <p>Have a project in mind?</p>
+    <div class="case-foot__act">
+      <a class="btn btn--primary" href={`mailto:${contact.email}`}
+        >Let’s talk <span aria-hidden="true">↗</span></a
+      >
+      <button
+        type="button"
+        class="btn btn--ghost portfolio-copy"
+        data-copy-email={contact.email}
+        hidden>Copy email</button
+      >
+      <span class="sr" data-copy-status role="status"></span>
+    </div>
+  </footer>
+
+  <dialog class="pc-lightbox" aria-label="Enlarged screenshot">
+    <div class="pc-photo-toolbar">
+      <div data-photo-controls>
+        <button type="button" data-photo-previous aria-label="Previous screenshot">←</button>
+        <span data-photo-count role="status"></span>
+        <button type="button" data-photo-next aria-label="Next screenshot">→</button>
+      </div>
+      <button type="button" data-photo-close aria-label="Close screenshot"
+        >Close <span aria-hidden="true">×</span></button
+      >
+    </div>
+    <figure data-photo-stage><img alt="" /><figcaption></figcaption></figure>
+    <p class="pc-photo-feedback" data-photo-feedback role="status" aria-live="polite"></p>
+    <a class="pc-photo-original" data-photo-original target="_blank" rel="noopener" hidden
+      >Open original image ↗</a
+    >
+  </dialog>
+</Orbit>
+
+<script>
+  import '../../../portfolio/contact';
+  import '../../../portfolio/lightbox';
+  import '../../../orbit/ui/case';
+</script>

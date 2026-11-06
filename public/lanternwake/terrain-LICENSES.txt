@@ -1,0 +1,20 @@
+Additional Lanternwake terrain and quay surfaces
+
+terrain-coastal-{color,normal,rough}.jpg — Rocks Ground 06
+Authors: Rob Tuytel / Poly Haven.
+https://polyhaven.com/a/rocks_ground_06
+CC0 1.0 Universal: https://polyhaven.com/license
+Original 1K JPEG diffuse, OpenGL normal and roughness maps, bundled locally.
+
+quay-stone-{color,normal,rough}.jpg — Cobblestone Floor 08
+Authors: Rob Tuytel / Poly Haven.
+https://polyhaven.com/a/cobblestone_floor_08
+CC0 1.0 Universal: https://polyhaven.com/license
+Original 1K JPEG diffuse, OpenGL normal and roughness maps, bundled locally.
+
+quay-timber-{color,normal,rough}.jpg — Wood Planks Grey
+Authors: Rob Tuytel / Poly Haven.
+https://polyhaven.com/a/wood_planks_grey
+CC0 1.0 Universal: https://polyhaven.com/license
+Original 1K JPEG diffuse, OpenGL normal and roughness maps, bundled locally.
+

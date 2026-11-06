@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>The Lantern Roads</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Crect x='7' y='0' width='2' height='2' fill='%233a2a1e'/%3E%3Crect x='4' y='2' width='8' height='2' fill='%233a2a1e'/%3E%3Crect x='4' y='4' width='8' height='8' fill='%233a2a1e'/%3E%3Crect x='5' y='5' width='6' height='6' fill='%23f2b04a'/%3E%3Crect x='7' y='6' width='2' height='4' fill='%23fff1c2'/%3E%3Crect x='5' y='12' width='6' height='2' fill='%233a2a1e'/%3E%3C/svg%3E" />
+    <style>:root{--ink:#0d1117;--panel:#141b26eb;--edge:#c9a45c;--text:#eadfc4;--dim:#9aa5b4;--warn:#e08a5a;--u:2px;--ui:15px}html,body{background:var(--ink);height:100%;color:var(--text);margin:0;font-family:ui-monospace,SF Mono,Menlo,Consolas,monospace;overflow:hidden}body{position:fixed;inset:0}#stage{width:100vw;height:100vh;position:absolute;top:0;left:0;overflow:hidden}#stage canvas{image-rendering:pixelated;image-rendering:crisp-edges;outline:none;display:block;position:absolute;top:0;left:0}#plates{z-index:1;pointer-events:none;position:absolute;inset:0;overflow:hidden}.plate{white-space:nowrap;font-size:calc(var(--ui) * .8);color:var(--text);text-shadow:1px 1px #000,-1px 1px #000,1px -1px #000,-1px -1px #000;position:absolute;transform:translate(-50%,-100%)}.plate.npc{color:#f2c879}.plate.door{color:var(--text);text-shadow:none;background:var(--panel);border:2px solid var(--edge);letter-spacing:.04em;padding:.3em .8em}#hud{pointer-events:none;font-size:var(--ui);position:absolute;inset:0}#prompt{background:var(--panel);border:2px solid var(--edge);letter-spacing:.04em;padding:.3em .8em;display:none;position:absolute;bottom:22%;left:50%;transform:translate(-50%)}#dialogue{background:var(--panel);border:2px solid var(--edge);min-height:3.6em;padding:.7em 1em;display:none;position:absolute;bottom:4%;left:6%;right:6%}#dialogue .who{color:#f2c879;letter-spacing:.05em;margin-bottom:.35em}#dialogue .more{color:var(--dim);font-size:.8em;position:absolute;bottom:.4em;right:.8em}#chatlog{width:42%;font-size:calc(var(--ui) * .85);flex-direction:column;gap:2px;display:flex;position:absolute;bottom:24%;left:1.5%}#chatlog .line{text-shadow:1px 1px #000;background:#0d11178c;padding:1px 6px;transition:opacity .8s}#chatlog .line .from{color:#f2c879}#chatlog .line.old{opacity:0}#chatin{pointer-events:auto;width:42%;display:none;position:absolute;bottom:18%;left:1.5%}#chatin input{box-sizing:border-box;width:100%;font:inherit;font-size:calc(var(--ui) * .9);color:var(--text);background:var(--panel);border:2px solid var(--edge);outline:none;padding:.35em .6em}#toasts{top:calc(2% + var(--ui) * 2.2);flex-direction:column;align-items:center;gap:4px;display:flex;position:absolute;left:34%;right:1.5%}.toast{box-sizing:border-box;overflow-wrap:break-word;background:var(--panel);border:1px solid var(--edge);max-width:100%;padding:.3em .9em;transition:opacity .6s}.toast.err{border-color:var(--warn);color:#f4c7a8}.toast.gone{opacity:0}#status{color:var(--warn);background:var(--panel);border:1px solid var(--warn);font-size:calc(var(--ui) * .85);padding:.2em .6em;display:none;position:absolute;top:2%;right:1.5%}#objective{background:var(--panel);border:1px solid var(--edge);pointer-events:none;max-width:30%;font-size:calc(var(--ui) * .85);padding:.35em .7em;line-height:1.35;display:none;position:absolute;top:2%;left:1.5%}#tl{pointer-events:none;flex-direction:column;align-items:flex-start;gap:4px;max-width:30%;display:flex;position:absolute;top:2%;left:1.5%}#tl>*{box-sizing:border-box;max-width:100%}#tl #objective{max-width:100%;position:static}#party{background:var(--panel);border:1px solid var(--edge);font-size:calc(var(--ui) * .8);flex-direction:column;gap:2px;min-width:9em;padding:.25em .5em;display:none}#party .row{justify-content:space-between;align-items:center;gap:.5em;display:flex}#party .nm{color:var(--text)}#party .nm .tag{color:#f2c879;margin-left:.3em;font-size:.85em}#party .hp{gap:1px;display:flex}#party .hp .heart{color:#e0645a;text-shadow:1px 1px #000}#party .hp .heart.empty{color:var(--dim)}#party .hp .heart.half{color:#e8a35a}#chatlog .line.party .from{color:#8fd1ff}#knockdown{color:var(--text);letter-spacing:.08em;text-align:center;pointer-events:none;background:#0d11179e;flex-direction:column;justify-content:center;align-items:center;gap:.4em;display:none;position:absolute;inset:0}#knockdown .big{font-size:calc(var(--ui) * 1.7);color:#f2c879}#knockdown .sub{color:var(--dim);font-size:.9em}@keyframes lr-shake{0%,to{transform:translate(0)}20%{transform:translate(-5px)}40%{transform:translate(5px)}60%{transform:translate(-3px)}80%{transform:translate(3px)}}.toast.shake{animation:.4s ease-out lr-shake}body.reduce-motion .toast.shake{animation:none}#hurtflash{pointer-events:none;opacity:0;background:radial-gradient(#0000 58%,#e0645a80 100%);position:absolute;inset:0;box-shadow:inset 0 0 0 4px #e0645a}#hurtflash.on{animation:.35s ease-out hurt}@keyframes hurt{0%{opacity:1}to{opacity:0}}body.reduce-motion #hurtflash.on{opacity:0;animation:none}#pack{background:var(--panel);border:2px solid var(--edge);pointer-events:auto;width:min(30em,90%);max-height:72%;font-size:calc(var(--ui) * .9);padding:.7em .9em;display:none;position:absolute;top:50%;left:50%;overflow-y:auto;transform:translate(-50%,-50%)}#pack .ph{color:#f2c879;letter-spacing:.05em;justify-content:space-between;gap:1em;margin-bottom:.5em;display:flex}#pack .hint{color:var(--dim);font-size:.8em}#packlist{flex-direction:column;gap:4px;margin:0;padding:0;list-style:none;display:flex}#packlist .row{border:1px solid #0000;gap:.6em;padding:.4em .5em;display:flex}#packlist .row.sel{border-color:var(--edge);background:#c9a45c1f}#packlist .ico{border:1px solid var(--edge);color:#f2c879;background:#0d1117;flex:0 0 2em;justify-content:center;align-items:center;height:2em;display:flex}#packlist .name{color:#f2c879}#packlist .count{color:var(--dim);margin-left:.4em}#packlist .bound{color:var(--dim);border:1px solid var(--dim);margin-left:.5em;padding:0 .3em;font-size:.75em}#packlist .desc{color:var(--dim);margin-top:.15em;font-size:.85em}#packempty{color:var(--dim);display:none}#debug{white-space:pre;font-size:calc(var(--ui) * .7);color:#bff5c8;background:#0009;padding:.3em .6em;line-height:1.3;display:none;position:absolute;top:22%;left:1.5%}#fatal{text-align:center;color:var(--text);z-index:30;background:#080a0ef0;justify-content:center;align-items:center;padding:24px;font-size:18px;display:none;position:fixed;inset:0}#start{z-index:20;background:radial-gradient(at 50% 40%,#1d2a3a 0%,#0d1117 70%);flex-direction:column;justify-content:center;align-items:center;gap:14px;display:flex;position:fixed;inset:0}#start h1{letter-spacing:.25em;color:#f2c879;text-transform:uppercase;margin:0;font-size:28px;font-weight:400}#start p{color:var(--dim);margin:0;font-size:13px}#start form{gap:8px;display:flex}#start input{font:inherit;width:12em;color:var(--text);background:var(--panel);border:2px solid var(--edge);outline:none;padding:.5em .8em;font-size:16px}#start button{font:inherit;color:#1a1208;background:var(--edge);border:2px solid var(--edge);cursor:pointer;padding:.5em 1.2em;font-size:16px}#start button:disabled{opacity:.5;cursor:default}#start .err{color:var(--warn);min-height:1.2em;font-size:13px}#start .panel{flex-direction:column;align-items:center;gap:10px;width:min(22em,90vw);display:flex}#start .panel[hidden]{display:none}#start .tabs{gap:6px;display:flex}#start .tabs button,#start .link{color:var(--text);background:var(--panel);border:2px solid var(--edge);padding:.35em .8em;font-size:14px}#start .tabs button[aria-pressed=true]{background:var(--edge);color:#1a1208}#start form.stack{flex-direction:column;align-items:stretch;gap:8px;width:100%}#start form.stack[hidden]{display:none}#start form.stack input{box-sizing:border-box;width:100%}#start .link{color:var(--dim);background:0 0;border-color:#0000;text-decoration:underline}#start #slots{flex-direction:column;gap:8px;width:100%;display:flex}#start .slot{text-align:left;justify-content:space-between;align-items:center;width:100%;display:flex}#start .slot.empty{background:var(--panel);color:var(--dim);border-style:dashed}#start .slot small{opacity:.8;font-size:12px}#start .keys{text-align:center;max-width:34em;line-height:1.6}#start .note{text-align:center;max-width:min(26em,100%);line-height:1.5}#start{box-sizing:border-box;text-align:center;padding:16px}#start .keys{max-width:min(34em,100%)}#fullscreen{z-index:25;background:var(--panel);border:2px solid var(--edge);width:32px;height:32px;color:var(--text);cursor:pointer;opacity:.7;justify-content:center;align-items:center;padding:0;display:flex;position:fixed;bottom:8px;right:8px}#fullscreen:hover,#fullscreen:focus-visible{opacity:1;color:#f2c879;outline:none}#fullscreen svg{fill:none;stroke:currentColor;stroke-width:2px;stroke-linecap:square;shape-rendering:crispedges;width:18px;height:18px}#fullscreen .i-exit,#fullscreen[data-fs="1"] .i-enter{display:none}#fullscreen[data-fs="1"] .i-exit{display:block}#gear{z-index:25;background:var(--panel);border:2px solid var(--edge);width:32px;height:32px;color:var(--text);cursor:pointer;opacity:.7;justify-content:center;align-items:center;padding:0;display:flex;position:fixed;bottom:8px;right:46px}#gear:hover,#gear:focus-visible{opacity:1;color:#f2c879;outline:none}#gear svg{fill:none;stroke:currentColor;stroke-width:2px;stroke-linecap:square;shape-rendering:crispedges;width:18px;height:18px}#combathint{background:var(--panel);border:1px solid var(--edge);font-size:calc(var(--ui) * .9);white-space:pre;pointer-events:none;padding:.35em .8em;transition:opacity .6s;position:absolute;bottom:12%;left:50%;transform:translate(-50%)}#combathint[hidden]{display:none}#combathint.fade{opacity:0}#settings{z-index:40;background:#080a0eb8;justify-content:center;align-items:center;display:flex;position:fixed;inset:0}#settings[hidden]{display:none}#settings .sp-card{background:var(--panel);border:2px solid var(--edge);width:min(36em,94vw);max-height:90vh;color:var(--text);font-size:var(--ui);flex-direction:column;display:flex}#settings .sp-head{border-bottom:1px solid var(--edge);justify-content:space-between;align-items:center;gap:1em;padding:.6em .9em;display:flex}#settings h2{color:#f2c879;letter-spacing:.15em;text-transform:uppercase;margin:0;font-size:1.1em;font-weight:400}#settings #settings-body{padding:.2em .9em;overflow-y:auto}#settings .sp-sec{border-bottom:1px dashed #c9a45c4d;padding:.6em 0}#settings .sp-sec:last-child{border-bottom:0}#settings .sp-h{color:#f2c879;letter-spacing:.08em;text-transform:uppercase;margin:0 0 .4em;font-size:.95em;font-weight:400}#settings .sp-row{justify-content:space-between;align-items:center;gap:.6em;padding:.25em 0;display:flex}#settings .sp-name{flex:auto}#settings .sp-note{color:var(--dim);margin:.3em 0;font-size:.85em;line-height:1.4}#settings .sp-val{text-align:right;min-width:4em;color:var(--dim)}#settings input[type=range]{width:11em;accent-color:var(--edge)}#settings input[type=checkbox]{width:1.1em;height:1.1em;accent-color:var(--edge)}#settings button{font:inherit;color:var(--text);background:var(--panel);border:2px solid var(--edge);cursor:pointer;padding:.3em .7em}#settings button:focus-visible{outline-offset:2px;outline:2px solid #f2c879}#settings .sp-key{text-align:center;min-width:9em}#settings .sp-key.waiting{background:var(--edge);color:#1a1208}#settings .sp-seg{flex-wrap:wrap;justify-content:flex-end;gap:4px;display:flex}#settings .sp-seg button[aria-pressed=true]{background:var(--edge);color:#1a1208}#settings .sp-foot{border-top:1px solid var(--edge);justify-content:space-between;align-items:center;gap:.8em;padding:.6em .9em;display:flex}#settings #settings-msg{color:var(--dim);min-height:1.2em;font-size:.85em}#settings #settings-msg.err{color:var(--warn)}#keeper-guide-tools{z-index:25;pointer-events:none;flex-wrap:wrap;justify-content:flex-end;align-items:flex-end;gap:6px;display:flex;position:fixed;bottom:8px;left:8px;right:84px}#keeper-guide-button{box-sizing:border-box;pointer-events:auto;max-width:100%;min-height:32px;font:inherit;font-size:calc(var(--ui) * .8);color:var(--text);background:var(--panel);border:2px solid var(--edge);cursor:pointer;flex:none;padding:.3em .6em}#keeper-guide-button:focus-visible,#keeper-guide button:focus-visible{outline-offset:2px;outline:2px solid #f2c879}#controls-strip{box-sizing:border-box;border:1px solid var(--edge);background:var(--panel);max-width:100%;font-size:calc(var(--ui) * .8);flex:0 auto;padding:.25em .5em;line-height:1.4}#controls-strip[hidden],#keeper-guide[hidden]{display:none}#keeper-guide{z-index:40;background:#080a0eb8;justify-content:center;align-items:center;display:flex;position:fixed;inset:0}#keeper-guide .sp-card{width:min(40em,94vw);max-height:90vh;max-height:90dvh;color:var(--text);background:var(--panel);border:2px solid var(--edge);font-size:var(--ui);flex-direction:column;display:flex}#keeper-guide .sp-head{border-bottom:1px solid var(--edge);justify-content:space-between;align-items:center;gap:.6em;padding:.6em .9em;display:flex}#keeper-guide h2{color:#f2c879;letter-spacing:.1em;margin:0;font-size:1.1em;font-weight:400}#keeper-guide-body{overscroll-behavior:contain;overflow-wrap:anywhere;min-height:0;padding:0 .9em .7em;line-height:1.5;overflow-y:auto}#keeper-guide h3{color:#f2c879;margin:.8em 0 .3em;font-size:1em;font-weight:400}#keeper-guide p{margin:.4em 0}#keeper-guide details{border-top:1px solid #c9a45c4d;margin:.7em 0;padding-top:.6em}#keeper-guide summary{cursor:pointer;color:#f2c879}#keeper-guide dl{margin:.4em 0}#keeper-guide dt{color:#f2c879;margin-top:.4em}#keeper-guide dd{margin-left:1em}#keeper-guide .sp-note{color:var(--dim);font-size:.85em}#keeper-guide button{font:inherit;color:var(--text);background:var(--panel);border:2px solid var(--edge);cursor:pointer;padding:.3em .7em}</style>
+    <script type="module" crossorigin src="/lantern-roads/assets/index-oW302Lh-.js"></script>
+    <link rel="stylesheet" crossorigin href="/lantern-roads/assets/index-LAtRspeo.css">
+  </head>
+  <body>
+    <div id="stage">
+      <div id="plates"></div>
+    </div>
+    <div id="hud">
+      <div id="toasts"></div>
+      <div id="status">reconnecting…</div>
+      <div id="debug"></div>
+      <div id="chatlog"></div>
+      <div id="chatin"><input id="chatinput" maxlength="200" autocomplete="off" placeholder="say something — Enter to send, Esc to cancel" /></div>
+      <div id="prompt"></div>
+      <div id="tl"><div id="objective"></div><div id="party" role="group" aria-label="Party"></div></div>
+      <div id="hurtflash"></div>
+      <div id="knockdown"><div class="big">Knocked down</div><div class="sub">You will wake at your last hearth. Nothing is lost.</div></div>
+      <div id="pack" role="dialog" aria-label="Pack">
+        <div class="ph"><span>Pack</span><span class="hint">I or Tab close · W/S choose</span></div>
+        <ul id="packlist"></ul>
+        <div id="packempty">Nothing in your pack yet.</div>
+      </div>
+      <div id="combathint" role="status" aria-live="polite" hidden></div>
+      <div id="dialogue"><div class="who"></div><div class="text"></div><div class="more">E ▸</div></div>
+    </div>
+    <div id="start">
+      <h1>The Lantern Roads</h1>
+      <p>a quiet road, a lit lantern, and whoever you meet along it</p>
+      <section id="auth" class="panel" hidden>
+        <div class="tabs">
+          <button type="button" id="tab-login" aria-pressed="true">Sign in</button>
+          <button type="button" id="tab-register" aria-pressed="false">Create account</button>
+        </div>
+        <form id="authform" class="stack">
+          <input id="email" type="email" maxlength="254" autocomplete="username" spellcheck="false" placeholder="email" required />
+          <input id="password" type="password" maxlength="200" autocomplete="current-password" placeholder="password (10+ characters)" required />
+          <button id="authbtn" type="submit">Sign in</button>
+        </form>
+      </section>
+      <section id="chars" class="panel" hidden>
+        <div id="slots"></div>
+        <form id="createform" class="stack" hidden autocomplete="off">
+          <input id="cname" maxlength="16" spellcheck="false" placeholder="character name (2-16 letters)" />
+          <button type="submit">Create keeper</button>
+        </form>
+        <button id="signout" type="button" class="link">Sign out</button>
+      </section>
+      <section id="guest" class="panel" hidden>
+        <form id="guestform" class="stack" autocomplete="off">
+          <input id="gname" maxlength="16" spellcheck="false" aria-label="Your keeper's name" placeholder="your keeper's name" />
+          <button id="guestbtn" type="submit">Play as guest</button>
+        </form>
+        <p id="guestnote" class="note"></p>
+        <button id="guestnew" type="button" class="link" hidden>Start over with a new keeper</button>
+      </section>
+      <section id="touchnote" class="panel" hidden>
+        <p class="note">The Lantern Roads is played with a keyboard or a gamepad, so it is best on a computer. There are no touch controls yet.</p>
+        <button id="touchgo" type="button">I have a keyboard or gamepad</button>
+      </section>
+      <div class="err" id="starterr"></div>
+      <p class="keys">WASD / arrows move · Shift run · E talk / use · J or click strike · K dodge · L or right-click Ember Bolt · M map · H guide</p>
+    </div>
+    <button id="fullscreen" type="button" data-fs="0" title="Full screen (F)" aria-label="Full screen (F)">
+      <svg class="i-enter" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4" /></svg>
+      <svg class="i-exit" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 2v4H2M14 6h-4V2M10 14v-4h4M2 10h4v4" /></svg>
+    </button>
+    <button id="gear" type="button" title="Settings (Esc)" aria-label="Settings (Esc)" aria-controls="settings">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="5" height="5" /><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3M3.3 3.3l2.1 2.1M10.6 10.6l2.1 2.1M3.3 12.7l2.1-2.1M10.6 5.4l2.1-2.1" /></svg>
+    </button>
+    <div id="keeper-guide-tools">
+      <div id="controls-strip" aria-label="Current play controls" hidden></div>
+      <button id="keeper-guide-button" type="button" aria-controls="keeper-guide" aria-expanded="false">Keeper guide (H)</button>
+    </div>
+    <div id="keeper-guide" role="dialog" aria-modal="true" aria-labelledby="keeper-guide-title" hidden>
+      <div class="sp-card">
+        <div class="sp-head"><h2 id="keeper-guide-title">Keeper guide</h2><button id="keeper-guide-close" type="button">Close (Esc)</button></div>
+        <div id="keeper-guide-body" tabindex="0" aria-label="Keeper guide information">
+          <h3>Controls</h3>
+          <dl id="keeper-guide-controls"></dl>
+          <h3>Your objective</h3>
+          <p id="keeper-guide-objective"></p>
+          <p class="sp-note">The panel at the top left always shows it. This is a reference: the world keeps running.</p>
+          <details><summary>Finding your way</summary>
+            <p>A glowing lantern floats over what you are looking for. When it is off screen, an arrow at the edge of the view points toward it and a gold "→" label names the exit to take.</p>
+            <p>Press the map key (M) to see the scenes and roads, where you are, where the objective is, and which roads are still closed to you.</p>
+            <p>Walk close and use the interaction shown to talk, pick something up, light a road lantern or travel.</p>
+          </details>
+          <details><summary>The road lanterns</summary>
+            <p>The Hollow is a black tide that hollows the living. Hearthfire burns it. Lighting a road lantern pushes the dark back for good: it is safe ground, it restores your health and Lumen, and it is where you wake if you fall. Nothing is lost when you do.</p>
+          </details>
+          <p class="sp-note">Pad: A south, B east, X west, Y north. Left stick / D-pad scroll this guide; B or Back closes it. The world keeps running while you read.</p>
+          <button id="keeper-guide-settings" type="button">Settings &amp; remap controls</button>
+        </div>
+      </div>
+    </div>
+    <div id="settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
+      <div class="sp-card">
+        <div class="sp-head"><h2 id="settings-title">Settings</h2><button type="button" id="settings-close">Close (Esc)</button></div>
+        <div id="settings-body"></div>
+        <div class="sp-foot"><span id="settings-msg" role="status" aria-live="polite"></span><button type="button" id="settings-reset">Reset to defaults</button></div>
+      </div>
+    </div>
+    <div id="fatal"></div>
+  </body>
+</html>

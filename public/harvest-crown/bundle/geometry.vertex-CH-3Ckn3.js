@@ -1,0 +1,1 @@
+export{J as geometryVertexShaderWGSL}from"./babylon-BwITB9hk.js";

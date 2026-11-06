@@ -1,0 +1,4890 @@
+{
+  "assets": {
+    "trace.yard-approach.g6.-2.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.-2.-1.png",
+    "trace.yard-approach.g6.-1.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.-1.-1.png",
+    "trace.yard-approach.g6.-1.-2": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.-1.-2.png",
+    "trace.yard-approach.g6.0.-2": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.0.-2.png",
+    "trace.yard-approach.g6.0.-3": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.0.-3.png",
+    "trace.yard-approach.g6.1.-3": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.1.-3.png",
+    "trace.yard-approach.g6.1.-4": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.1.-4.png",
+    "trace.yard-approach.g6.2.-4": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.2.-4.png",
+    "trace.yard-approach.g6.2.-5": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.2.-5.png",
+    "trace.yard-approach.g6.3.-5": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.3.-5.png",
+    "trace.yard-approach.g6.3.-6": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.3.-6.png",
+    "trace.yard-approach.g6.4.-6": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.4.-6.png",
+    "trace.yard-approach.g6.4.-7": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.4.-7.png",
+    "trace.yard-approach.g6.5.-7": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.5.-7.png",
+    "trace.yard-approach.g6.0.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.0.-1.png",
+    "trace.yard-approach.g6.1.-2": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.1.-2.png",
+    "trace.yard-approach.g6.2.-3": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.2.-3.png",
+    "trace.yard-approach.g6.3.-4": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.3.-4.png",
+    "trace.yard-approach.g6.4.-5": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.4.-5.png",
+    "trace.yard-approach.g6.5.-6": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.5.-6.png",
+    "trace.yard-approach.g6.1.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.1.-1.png",
+    "trace.yard-approach.g6.2.-2": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.2.-2.png",
+    "trace.yard-approach.g6.3.-3": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.3.-3.png",
+    "trace.yard-approach.g6.4.-4": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.4.-4.png",
+    "trace.yard-approach.g6.5.-5": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.5.-5.png",
+    "trace.yard-approach.g6.6.-6": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.6.-6.png",
+    "trace.yard-approach.g6.2.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.2.-1.png",
+    "trace.yard-approach.g6.3.-2": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.3.-2.png",
+    "trace.yard-approach.g6.4.-3": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.4.-3.png",
+    "trace.yard-approach.g6.5.-4": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.5.-4.png",
+    "trace.yard-approach.g6.6.-5": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.6.-5.png",
+    "trace.yard-approach.g6.3.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.3.-1.png",
+    "trace.yard-approach.g6.4.-2": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.4.-2.png",
+    "trace.yard-approach.g6.5.-3": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.5.-3.png",
+    "trace.yard-approach.g6.6.-4": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.6.-4.png",
+    "trace.yard-approach.g6.7.-5": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.7.-5.png",
+    "trace.yard-approach.g6.4.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.4.-1.png",
+    "trace.yard-approach.g6.5.-2": "assets/zones/reach.millrace-approach/hollis-parking/yard-0.png",
+    "trace.yard-approach.g6.6.-3": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.6.-3.png",
+    "trace.yard-approach.g6.7.-4": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.7.-4.png",
+    "trace.yard-approach.g6.5.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.5.-1.png",
+    "trace.yard-approach.g6.6.-2": "assets/zones/reach.millrace-approach/hollis-parking/yard-1.png",
+    "trace.yard-approach.g6.7.-3": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.7.-3.png",
+    "trace.yard-approach.g6.8.-4": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.8.-4.png",
+    "trace.yard-approach.g6.6.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.6.-1.png",
+    "trace.yard-approach.g6.7.-2": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.7.-2.png",
+    "trace.yard-approach.g6.8.-3": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.8.-3.png",
+    "trace.yard-approach.g6.7.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.7.-1.png",
+    "trace.yard-approach.g6.8.-2": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.8.-2.png",
+    "trace.yard-approach.g6.9.-3": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.9.-3.png",
+    "trace.yard-approach.g6.8.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.8.-1.png",
+    "trace.yard-approach.g6.9.-2": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.9.-2.png",
+    "trace.yard-approach.g6.9.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.9.-1.png",
+    "trace.yard-approach.g6.10.-2": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.10.-2.png",
+    "trace.yard-approach.g6.10.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.10.-1.png",
+    "trace.yard-approach.g6.11.-1": "assets/zones/reach.millrace-approach/traced/yard-approach.g6.11.-1.png",
+    "trace.orchard-slope.g6.-2.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.-2.-1.png",
+    "trace.orchard-slope.g6.-1.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.-1.-1.png",
+    "trace.orchard-slope.g6.-2.0": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.-2.0.png",
+    "trace.orchard-slope.g6.-1.0": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.-1.0.png",
+    "trace.orchard-slope.g6.0.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.0.-1.png",
+    "trace.orchard-slope.g6.1.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.1.-1.png",
+    "trace.orchard-slope.g6.2.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.2.-1.png",
+    "trace.orchard-slope.g6.1.0": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.1.0.png",
+    "trace.orchard-slope.g6.2.0": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.2.0.png",
+    "trace.orchard-slope.g6.3.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.3.-1.png",
+    "trace.orchard-slope.g6.4.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.4.-1.png",
+    "trace.orchard-slope.g1.30.-5": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.30.-5.png",
+    "trace.orchard-slope.g1.30.-4": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.30.-4.png",
+    "trace.orchard-slope.g1.31.-5": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.31.-5.png",
+    "trace.orchard-slope.g1.30.-3": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.30.-3.png",
+    "trace.orchard-slope.g1.31.-4": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.31.-4.png",
+    "trace.orchard-slope.g1.32.-5": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.32.-5.png",
+    "trace.orchard-slope.g1.30.-2": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.30.-2.png",
+    "trace.orchard-slope.g1.31.-3": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.31.-3.png",
+    "trace.orchard-slope.g1.32.-4": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.32.-4.png",
+    "trace.orchard-slope.g1.30.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.30.-1.png",
+    "trace.orchard-slope.g1.33.-5": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.33.-5.png",
+    "trace.orchard-slope.g1.31.-2": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.31.-2.png",
+    "trace.orchard-slope.g1.32.-3": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.32.-3.png",
+    "trace.orchard-slope.g1.33.-4": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.33.-4.png",
+    "trace.orchard-slope.g6.5.0": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.5.0.png",
+    "trace.orchard-slope.g1.31.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.31.-1.png",
+    "trace.orchard-slope.g1.34.-5": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.34.-5.png",
+    "trace.orchard-slope.g1.32.-2": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.32.-2.png",
+    "trace.orchard-slope.g1.33.-3": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.33.-3.png",
+    "trace.orchard-slope.g1.34.-4": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.34.-4.png",
+    "trace.orchard-slope.g1.32.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.32.-1.png",
+    "trace.orchard-slope.g1.35.-5": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.35.-5.png",
+    "trace.orchard-slope.g1.33.-2": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.33.-2.png",
+    "trace.orchard-slope.g1.34.-3": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.34.-3.png",
+    "trace.orchard-slope.g1.35.-4": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.35.-4.png",
+    "trace.orchard-slope.g1.33.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.33.-1.png",
+    "trace.orchard-slope.g6.6.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.6.-1.png",
+    "trace.orchard-slope.g1.34.-2": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.34.-2.png",
+    "trace.orchard-slope.g1.35.-3": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.35.-3.png",
+    "trace.orchard-slope.g1.34.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.34.-1.png",
+    "trace.orchard-slope.g1.35.-2": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.35.-2.png",
+    "trace.orchard-slope.g1.35.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g1.35.-1.png",
+    "trace.orchard-slope.g6.6.0": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.6.0.png",
+    "trace.orchard-slope.g6.7.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.7.-1.png",
+    "trace.orchard-slope.g6.7.0": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.7.0.png",
+    "trace.orchard-slope.g6.8.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.8.-1.png",
+    "trace.orchard-slope.g6.8.0": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.8.0.png",
+    "trace.orchard-slope.g6.9.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.9.-1.png",
+    "trace.orchard-slope.g6.9.0": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.9.0.png",
+    "trace.orchard-slope.g6.10.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.10.-1.png",
+    "trace.orchard-slope.g6.10.0": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.10.0.png",
+    "trace.orchard-slope.g6.11.-1": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.11.-1.png",
+    "trace.orchard-slope.g6.11.0": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.11.0.png",
+    "trace.orchard-slope.g6.12.0": "assets/zones/reach.millrace-approach/traced/orchard-slope.g6.12.0.png",
+    "trace.upper-bank.g6.6.0": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.6.0.png",
+    "trace.upper-bank.g6.7.0": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.7.0.png",
+    "trace.upper-bank.g6.7.1": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.7.1.png",
+    "trace.upper-bank.g6.8.0": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.8.0.png",
+    "trace.upper-bank.g6.8.1": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.8.1.png",
+    "trace.upper-bank.g6.9.0": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.9.0.png",
+    "trace.upper-bank.g6.9.1": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.9.1.png",
+    "trace.upper-bank.g6.10.0": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.10.0.png",
+    "trace.upper-bank.g6.10.1": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.10.1.png",
+    "trace.upper-bank.g6.11.0": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.11.0.png",
+    "trace.upper-bank.g6.11.1": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.11.1.png",
+    "trace.upper-bank.g6.12.0": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.12.0.png",
+    "trace.upper-bank.g6.12.1": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.12.1.png",
+    "trace.upper-bank.g6.13.1": "assets/zones/reach.millrace-approach/traced/upper-bank.g6.13.1.png",
+    "trace.upper-wall.g6.-2.0": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.-2.0.png",
+    "trace.upper-wall.g6.-1.0": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.-1.0.png",
+    "trace.upper-wall.g6.-1.-1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.-1.-1.png",
+    "trace.upper-wall.g6.0.-1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.0.-1.png",
+    "trace.upper-wall.g6.1.-1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.1.-1.png",
+    "trace.upper-wall.g6.1.0": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.1.0.png",
+    "trace.upper-wall.g6.2.0": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.2.0.png",
+    "trace.upper-wall.g6.2.-1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.2.-1.png",
+    "trace.upper-wall.g6.3.-1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.3.-1.png",
+    "trace.upper-wall.g6.4.-1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.4.-1.png",
+    "trace.upper-wall.g6.5.-1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.5.-1.png",
+    "trace.upper-wall.g6.5.0": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.5.0.png",
+    "trace.upper-wall.g6.6.0": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.6.0.png",
+    "trace.upper-wall.g6.7.1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.7.1.png",
+    "trace.upper-wall.g6.8.1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.8.1.png",
+    "trace.upper-wall.g6.9.1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.9.1.png",
+    "trace.upper-wall.g6.10.1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.10.1.png",
+    "trace.upper-wall.g6.11.1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.11.1.png",
+    "trace.upper-wall.g6.12.1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.12.1.png",
+    "trace.upper-wall.g6.13.1": "assets/zones/reach.millrace-approach/traced/upper-wall.g6.13.1.png",
+    "trace.far-wall.g6.-1.0": "assets/zones/reach.millrace-approach/traced/far-wall.g6.-1.0.png",
+    "trace.far-wall.g6.0.0": "assets/zones/reach.millrace-approach/traced/far-wall.g6.0.0.png",
+    "trace.far-wall.g6.1.0": "assets/zones/reach.millrace-approach/traced/far-wall.g6.1.0.png",
+    "trace.far-wall.g6.2.0": "assets/zones/reach.millrace-approach/traced/far-wall.g6.2.0.png",
+    "trace.far-wall.g6.3.1": "assets/zones/reach.millrace-approach/traced/far-wall.g6.3.1.png",
+    "trace.far-wall.g6.4.1": "assets/zones/reach.millrace-approach/traced/far-wall.g6.4.1.png",
+    "trace.far-wall.g6.5.1": "assets/zones/reach.millrace-approach/traced/far-wall.g6.5.1.png",
+    "trace.far-wall.g6.11.2": "assets/zones/reach.millrace-approach/traced/far-wall.g6.11.2.png",
+    "trace.far-wall.g6.12.2": "assets/zones/reach.millrace-approach/traced/far-wall.g6.12.2.png",
+    "trace.far-bank.g6.-1.0": "assets/zones/reach.millrace-approach/traced/far-bank.g6.-1.0.png",
+    "trace.far-bank.g6.-1.1": "assets/zones/reach.millrace-approach/traced/far-bank.g6.-1.1.png",
+    "trace.far-bank.g6.0.0": "assets/zones/reach.millrace-approach/traced/far-bank.g6.0.0.png",
+    "trace.far-bank.g6.0.1": "assets/zones/reach.millrace-approach/traced/far-bank.g6.0.1.png",
+    "trace.far-bank.g6.1.0": "assets/zones/reach.millrace-approach/traced/far-bank.g6.1.0.png",
+    "trace.far-bank.g6.1.1": "assets/zones/reach.millrace-approach/traced/far-bank.g6.1.1.png",
+    "trace.far-bank.g6.0.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.0.2.png",
+    "trace.far-bank.g6.2.0": "assets/zones/reach.millrace-approach/traced/far-bank.g6.2.0.png",
+    "trace.far-bank.g6.1.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.1.2.png",
+    "trace.far-bank.g6.2.1": "assets/zones/reach.millrace-approach/traced/far-bank.g6.2.1.png",
+    "trace.far-bank.g6.2.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.2.2.png",
+    "trace.far-bank.g6.3.1": "assets/zones/reach.millrace-approach/traced/far-bank.g6.3.1.png",
+    "trace.far-bank.g6.1.3": "assets/zones/reach.millrace-approach/traced/far-bank.g6.1.3.png",
+    "trace.far-bank.g6.2.3": "assets/zones/reach.millrace-approach/traced/far-bank.g6.2.3.png",
+    "trace.far-bank.g6.3.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.3.2.png",
+    "trace.far-bank.g6.4.1": "assets/zones/reach.millrace-approach/traced/far-bank.g6.4.1.png",
+    "trace.far-bank.g6.3.3": "assets/zones/reach.millrace-approach/traced/far-bank.g6.3.3.png",
+    "trace.far-bank.g6.4.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.4.2.png",
+    "trace.far-bank.g6.5.1": "assets/zones/reach.millrace-approach/traced/far-bank.g6.5.1.png",
+    "trace.far-bank.g6.2.4": "assets/zones/reach.millrace-approach/traced/far-bank.g6.2.4.png",
+    "trace.far-bank.g6.3.4": "assets/zones/reach.millrace-approach/traced/far-bank.g6.3.4.png",
+    "trace.far-bank.g6.4.3": "assets/zones/reach.millrace-approach/traced/far-bank.g6.4.3.png",
+    "trace.far-bank.g6.5.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.5.2.png",
+    "trace.far-bank.g6.6.1": "assets/zones/reach.millrace-approach/traced/far-bank.g6.6.1.png",
+    "trace.far-bank.g6.4.4": "assets/zones/reach.millrace-approach/traced/far-bank.g6.4.4.png",
+    "trace.far-bank.g6.5.3": "assets/zones/reach.millrace-approach/traced/far-bank.g6.5.3.png",
+    "trace.far-bank.g6.6.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.6.2.png",
+    "trace.far-bank.g6.3.5": "assets/zones/reach.millrace-approach/traced/far-bank.g6.3.5.png",
+    "trace.far-bank.g6.4.5": "assets/zones/reach.millrace-approach/traced/far-bank.g6.4.5.png",
+    "trace.far-bank.g6.5.4": "assets/zones/reach.millrace-approach/traced/far-bank.g6.5.4.png",
+    "trace.far-bank.g6.6.3": "assets/zones/reach.millrace-approach/traced/far-bank.g6.6.3.png",
+    "trace.far-bank.g6.7.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.7.2.png",
+    "trace.far-bank.g6.5.5": "assets/zones/reach.millrace-approach/traced/far-bank.g6.5.5.png",
+    "trace.far-bank.g6.6.4": "assets/zones/reach.millrace-approach/traced/far-bank.g6.6.4.png",
+    "trace.far-bank.g6.7.3": "assets/zones/reach.millrace-approach/traced/far-bank.g6.7.3.png",
+    "trace.far-bank.g6.8.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.8.2.png",
+    "trace.far-bank.g6.4.6": "assets/zones/reach.millrace-approach/traced/far-bank.g6.4.6.png",
+    "trace.far-bank.g6.5.6": "assets/zones/reach.millrace-approach/traced/far-bank.g6.5.6.png",
+    "trace.far-bank.g6.6.5": "assets/zones/reach.millrace-approach/traced/far-bank.g6.6.5.png",
+    "trace.far-bank.g6.7.4": "assets/zones/reach.millrace-approach/traced/far-bank.g6.7.4.png",
+    "trace.far-bank.g6.8.3": "assets/zones/reach.millrace-approach/traced/far-bank.g6.8.3.png",
+    "trace.far-bank.g6.9.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.9.2.png",
+    "trace.far-bank.g6.6.6": "assets/zones/reach.millrace-approach/traced/far-bank.g6.6.6.png",
+    "trace.far-bank.g6.7.5": "assets/zones/reach.millrace-approach/traced/far-bank.g6.7.5.png",
+    "trace.far-bank.g6.8.4": "assets/zones/reach.millrace-approach/traced/far-bank.g6.8.4.png",
+    "trace.far-bank.g6.9.3": "assets/zones/reach.millrace-approach/traced/far-bank.g6.9.3.png",
+    "trace.far-bank.g6.10.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.10.2.png",
+    "trace.far-bank.g6.5.7": "assets/zones/reach.millrace-approach/traced/far-bank.g6.5.7.png",
+    "trace.far-bank.g6.6.7": "assets/zones/reach.millrace-approach/traced/far-bank.g6.6.7.png",
+    "trace.far-bank.g6.7.6": "assets/zones/reach.millrace-approach/traced/far-bank.g6.7.6.png",
+    "trace.far-bank.g6.8.5": "assets/zones/reach.millrace-approach/traced/far-bank.g6.8.5.png",
+    "trace.far-bank.g6.9.4": "assets/zones/reach.millrace-approach/traced/far-bank.g6.9.4.png",
+    "trace.far-bank.g6.10.3": "assets/zones/reach.millrace-approach/traced/far-bank.g6.10.3.png",
+    "trace.far-bank.g6.11.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.11.2.png",
+    "trace.far-bank.g6.7.7": "assets/zones/reach.millrace-approach/traced/far-bank.g6.7.7.png",
+    "trace.far-bank.g6.8.6": "assets/zones/reach.millrace-approach/traced/far-bank.g6.8.6.png",
+    "trace.far-bank.g6.9.5": "assets/zones/reach.millrace-approach/traced/far-bank.g6.9.5.png",
+    "trace.far-bank.g6.10.4": "assets/zones/reach.millrace-approach/traced/far-bank.g6.10.4.png",
+    "trace.far-bank.g6.11.3": "assets/zones/reach.millrace-approach/traced/far-bank.g6.11.3.png",
+    "trace.far-bank.g6.12.2": "assets/zones/reach.millrace-approach/traced/far-bank.g6.12.2.png",
+    "trace.far-bank.g6.6.8": "assets/zones/reach.millrace-approach/traced/far-bank.g6.6.8.png",
+    "covered.context.trace.orchard-slope.g6.3.-1": "assets/zones/reach.millrace-approach/tailrace-covered/orchard-slope.g6.3.-1.cut.png",
+    "covered.context.trace.upper-wall.g6.2.-1": "assets/zones/reach.millrace-approach/tailrace-covered/upper-wall.g6.2.-1.cut.png",
+    "covered.context.trace.upper-wall.g6.3.-1": "assets/zones/reach.millrace-approach/tailrace-covered/upper-wall.g6.3.-1.cut.png",
+    "covered.culvert.head.0": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.head.0.png",
+    "covered.culvert.head.1": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.head.1.png",
+    "covered.culvert.head.2": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.head.2.png",
+    "covered.culvert.head.3": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.head.3.png",
+    "covered.culvert.head.4": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.head.4.png",
+    "covered.culvert.head.5": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.head.5.png",
+    "covered.culvert.head.6": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.head.6.png",
+    "covered.culvert.head.7": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.head.7.png",
+    "covered.culvert.arch.voussoir.0": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.arch.voussoir.0.png",
+    "covered.culvert.arch.voussoir.1": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.arch.voussoir.1.png",
+    "covered.culvert.arch.voussoir.2": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.arch.voussoir.2.png",
+    "covered.culvert.arch.voussoir.3": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.arch.voussoir.3.png",
+    "covered.culvert.arch.voussoir.4": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.arch.voussoir.4.png",
+    "covered.culvert.arch.voussoir.5": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.arch.voussoir.5.png",
+    "covered.culvert.arch.voussoir.6": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.arch.voussoir.6.png",
+    "covered.culvert.arch.voussoir.7": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.arch.voussoir.7.png",
+    "covered.culvert.arch.voussoir.8": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.arch.voussoir.8.png",
+    "covered.culvert.arch.jamb.0": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.arch.jamb.0.png",
+    "covered.culvert.arch.jamb.1": "assets/zones/reach.millrace-approach/tailrace-covered/culvert.arch.jamb.1.png",
+    "join.culvert.join.0": "assets/zones/reach.millrace-approach/tailrace-join/culvert.join.0.png",
+    "join.culvert.join.1": "assets/zones/reach.millrace-approach/tailrace-join/culvert.join.1.png",
+    "hollis.bay-top.0": "assets/zones/reach.millrace-approach/hollis-parking/bay-0.png",
+    "hollis.bay-top.1": "assets/zones/reach.millrace-approach/hollis-parking/bay-1.png"
+  },
+  "sprites": [
+    {
+      "id": "terrain.yard-approach.g6.-2.-1",
+      "asset": "trace.yard-approach.g6.-2.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 25,
+        "y": 132
+      },
+      "box": {
+        "u0": -6.547385257216822,
+        "u1": -5.991135257216822,
+        "v0": -5.547385257216822,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.-1.-1",
+      "asset": "trace.yard-approach.g6.-1.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 15,
+        "y": 132
+      },
+      "box": {
+        "u0": -5.984885257216822,
+        "u1": 0.008864742783177882,
+        "v0": -5.984885257216822,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.-1.-2",
+      "asset": "trace.yard-approach.g6.-1.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -7,
+        "y": 132
+      },
+      "box": {
+        "u0": -5.547385257216822,
+        "u1": 0.008864742783177882,
+        "v0": -11.54738525721682,
+        "v1": -5.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.0.-2",
+      "asset": "trace.yard-approach.g6.0.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -97,
+        "y": 132
+      },
+      "box": {
+        "u0": 0.01511474278317788,
+        "u1": 6.008864742783178,
+        "v0": -11.98488525721682,
+        "v1": -5.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.0.-3",
+      "asset": "trace.yard-approach.g6.0.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -199,
+        "y": 132
+      },
+      "box": {
+        "u0": 0.45261474278317787,
+        "u1": 6.008864742783178,
+        "v0": -17.54738525721682,
+        "v1": -11.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.1.-3",
+      "asset": "trace.yard-approach.g6.1.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -289,
+        "y": 132
+      },
+      "box": {
+        "u0": 6.015114742783178,
+        "u1": 12.008864742783178,
+        "v0": -17.98488525721682,
+        "v1": -11.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.1.-4",
+      "asset": "trace.yard-approach.g6.1.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -391,
+        "y": 132
+      },
+      "box": {
+        "u0": 6.452614742783178,
+        "u1": 12.008864742783178,
+        "v0": -23.54738525721682,
+        "v1": -17.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.2.-4",
+      "asset": "trace.yard-approach.g6.2.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -481,
+        "y": 132
+      },
+      "box": {
+        "u0": 12.01511474278318,
+        "u1": 18.008864742783178,
+        "v0": -23.98488525721682,
+        "v1": -17.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.2.-5",
+      "asset": "trace.yard-approach.g6.2.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -583,
+        "y": 132
+      },
+      "box": {
+        "u0": 12.45261474278318,
+        "u1": 18.008864742783178,
+        "v0": -29.54738525721682,
+        "v1": -23.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.3.-5",
+      "asset": "trace.yard-approach.g6.3.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": 132
+      },
+      "box": {
+        "u0": 18.01511474278318,
+        "u1": 24.008864742783178,
+        "v0": -29.98488525721682,
+        "v1": -23.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.3.-6",
+      "asset": "trace.yard-approach.g6.3.-6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -775,
+        "y": 132
+      },
+      "box": {
+        "u0": 18.45261474278318,
+        "u1": 24.008864742783178,
+        "v0": -35.547385257216824,
+        "v1": -29.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.4.-6",
+      "asset": "trace.yard-approach.g6.4.-6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -865,
+        "y": 132
+      },
+      "box": {
+        "u0": 24.01511474278318,
+        "u1": 30.008864742783178,
+        "v0": -35.984885257216824,
+        "v1": -29.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.4.-7",
+      "asset": "trace.yard-approach.g6.4.-7",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -967,
+        "y": 132
+      },
+      "box": {
+        "u0": 24.45261474278318,
+        "u1": 30.008864742783178,
+        "v0": -41.547385257216824,
+        "v1": -35.99113525721682,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.5.-7",
+      "asset": "trace.yard-approach.g6.5.-7",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1057,
+        "y": 132
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 35.72761474278318,
+        "v0": -41.641135257216824,
+        "v1": -35.99113525721682,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.0.-1",
+      "asset": "trace.yard-approach.g6.0.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -81,
+        "y": 87
+      },
+      "box": {
+        "u0": 0.01511474278317788,
+        "u1": 6.008864742783178,
+        "v0": -5.984885257216822,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.1.-2",
+      "asset": "trace.yard-approach.g6.1.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -193,
+        "y": 87
+      },
+      "box": {
+        "u0": 6.015114742783178,
+        "u1": 12.008864742783178,
+        "v0": -11.98488525721682,
+        "v1": -5.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.2.-3",
+      "asset": "trace.yard-approach.g6.2.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -385,
+        "y": 87
+      },
+      "box": {
+        "u0": 12.01511474278318,
+        "u1": 18.008864742783178,
+        "v0": -17.98488525721682,
+        "v1": -11.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.3.-4",
+      "asset": "trace.yard-approach.g6.3.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": 87
+      },
+      "box": {
+        "u0": 18.01511474278318,
+        "u1": 24.008864742783178,
+        "v0": -23.98488525721682,
+        "v1": -17.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.4.-5",
+      "asset": "trace.yard-approach.g6.4.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -769,
+        "y": 87
+      },
+      "box": {
+        "u0": 24.01511474278318,
+        "u1": 30.008864742783178,
+        "v0": -29.98488525721682,
+        "v1": -23.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.5.-6",
+      "asset": "trace.yard-approach.g6.5.-6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -961,
+        "y": 87
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 36.00886474278318,
+        "v0": -35.984885257216824,
+        "v1": -29.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.1.-1",
+      "asset": "trace.yard-approach.g6.1.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -177,
+        "y": 39
+      },
+      "box": {
+        "u0": 6.015114742783178,
+        "u1": 12.008864742783178,
+        "v0": -5.984885257216822,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.2.-2",
+      "asset": "trace.yard-approach.g6.2.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -289,
+        "y": 39
+      },
+      "box": {
+        "u0": 12.01511474278318,
+        "u1": 18.008864742783178,
+        "v0": -11.98488525721682,
+        "v1": -5.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.3.-3",
+      "asset": "trace.yard-approach.g6.3.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -481,
+        "y": 39
+      },
+      "box": {
+        "u0": 18.01511474278318,
+        "u1": 24.008864742783178,
+        "v0": -17.98488525721682,
+        "v1": -11.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.4.-4",
+      "asset": "trace.yard-approach.g6.4.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": 39
+      },
+      "box": {
+        "u0": 24.01511474278318,
+        "u1": 30.008864742783178,
+        "v0": -23.98488525721682,
+        "v1": -17.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.5.-5",
+      "asset": "trace.yard-approach.g6.5.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -865,
+        "y": 39
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 36.00886474278318,
+        "v0": -29.98488525721682,
+        "v1": -23.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.6.-6",
+      "asset": "trace.yard-approach.g6.6.-6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1057,
+        "y": 37
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 41.72761474278318,
+        "v0": -35.703635257216824,
+        "v1": -29.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.2.-1",
+      "asset": "trace.yard-approach.g6.2.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -273,
+        "y": -9
+      },
+      "box": {
+        "u0": 12.01511474278318,
+        "u1": 18.008864742783178,
+        "v0": -5.984885257216822,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.3.-2",
+      "asset": "trace.yard-approach.g6.3.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -385,
+        "y": -9
+      },
+      "box": {
+        "u0": 18.01511474278318,
+        "u1": 24.008864742783178,
+        "v0": -11.98488525721682,
+        "v1": -5.991135257216821,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.4.-3",
+      "asset": "trace.yard-approach.g6.4.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": -9
+      },
+      "box": {
+        "u0": 24.01511474278318,
+        "u1": 30.008864742783178,
+        "v0": -17.98488525721682,
+        "v1": -11.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.5.-4",
+      "asset": "trace.yard-approach.g6.5.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -769,
+        "y": -9
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 36.00886474278318,
+        "v0": -23.98488525721682,
+        "v1": -17.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.6.-5",
+      "asset": "trace.yard-approach.g6.6.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -961,
+        "y": -9
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 42.00886474278318,
+        "v0": -29.98488525721682,
+        "v1": -23.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.3.-1",
+      "asset": "trace.yard-approach.g6.3.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -369,
+        "y": -57
+      },
+      "box": {
+        "u0": 18.01511474278318,
+        "u1": 24.008864742783178,
+        "v0": -5.984885257216822,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.4.-2",
+      "asset": "trace.yard-approach.g6.4.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -481,
+        "y": -57
+      },
+      "box": {
+        "u0": 24.01511474278318,
+        "u1": 30.008864742783178,
+        "v0": -11.98488525721682,
+        "v1": -5.991135257216821,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "yard-approach"
+    },
+    {
+      "id": "terrain.yard-approach.g6.5.-3",
+      "asset": "trace.yard-approach.g6.5.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": -57
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 36.00886474278318,
+        "v0": -17.98488525721682,
+        "v1": -11.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.6.-4",
+      "asset": "trace.yard-approach.g6.6.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -865,
+        "y": -57
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 42.00886474278318,
+        "v0": -23.98488525721682,
+        "v1": -17.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.7.-5",
+      "asset": "trace.yard-approach.g6.7.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1057,
+        "y": -59
+      },
+      "box": {
+        "u0": 42.015114742783176,
+        "u1": 47.72761474278318,
+        "v0": -29.70363525721682,
+        "v1": -23.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.4.-1",
+      "asset": "trace.yard-approach.g6.4.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -465,
+        "y": -105
+      },
+      "box": {
+        "u0": 24.01511474278318,
+        "u1": 30.008864742783178,
+        "v0": -5.984885257216821,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "yard-approach"
+    },
+    {
+      "id": "terrain.yard-approach.g6.5.-2",
+      "asset": "trace.yard-approach.g6.5.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": -105
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 36.00886474278318,
+        "v0": -11.98488525721682,
+        "v1": -5.991135257216821,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "yard-approach"
+    },
+    {
+      "id": "terrain.yard-approach.g6.6.-3",
+      "asset": "trace.yard-approach.g6.6.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -769,
+        "y": -105
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 42.00886474278318,
+        "v0": -17.98488525721682,
+        "v1": -11.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.7.-4",
+      "asset": "trace.yard-approach.g6.7.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -961,
+        "y": -105
+      },
+      "box": {
+        "u0": 42.015114742783176,
+        "u1": 48.00886474278318,
+        "v0": -23.98488525721682,
+        "v1": -17.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.5.-1",
+      "asset": "trace.yard-approach.g6.5.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -561,
+        "y": -153
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 36.00886474278318,
+        "v0": -5.984885257216821,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "yard-approach"
+    },
+    {
+      "id": "terrain.yard-approach.g6.6.-2",
+      "asset": "trace.yard-approach.g6.6.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": -153
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 42.00886474278318,
+        "v0": -11.98488525721682,
+        "v1": -5.991135257216821,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "yard-approach"
+    },
+    {
+      "id": "terrain.yard-approach.g6.7.-3",
+      "asset": "trace.yard-approach.g6.7.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -865,
+        "y": -153
+      },
+      "box": {
+        "u0": 42.015114742783176,
+        "u1": 48.00886474278318,
+        "v0": -17.98488525721682,
+        "v1": -11.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.8.-4",
+      "asset": "trace.yard-approach.g6.8.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1057,
+        "y": -155
+      },
+      "box": {
+        "u0": 48.015114742783176,
+        "u1": 53.72761474278318,
+        "v0": -23.70363525721682,
+        "v1": -17.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.6.-1",
+      "asset": "trace.yard-approach.g6.6.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -657,
+        "y": -201
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 42.00886474278318,
+        "v0": -5.984885257216821,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "yard-approach"
+    },
+    {
+      "id": "terrain.yard-approach.g6.7.-2",
+      "asset": "trace.yard-approach.g6.7.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -769,
+        "y": -201
+      },
+      "box": {
+        "u0": 42.015114742783176,
+        "u1": 48.00886474278318,
+        "v0": -11.98488525721682,
+        "v1": -5.991135257216821,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "yard-approach"
+    },
+    {
+      "id": "terrain.yard-approach.g6.8.-3",
+      "asset": "trace.yard-approach.g6.8.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -961,
+        "y": -201
+      },
+      "box": {
+        "u0": 48.015114742783176,
+        "u1": 54.00886474278318,
+        "v0": -17.98488525721682,
+        "v1": -11.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.7.-1",
+      "asset": "trace.yard-approach.g6.7.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -753,
+        "y": -249
+      },
+      "box": {
+        "u0": 42.015114742783176,
+        "u1": 48.00886474278318,
+        "v0": -5.984885257216821,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "yard-approach"
+    },
+    {
+      "id": "terrain.yard-approach.g6.8.-2",
+      "asset": "trace.yard-approach.g6.8.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -865,
+        "y": -249
+      },
+      "box": {
+        "u0": 48.015114742783176,
+        "u1": 54.00886474278318,
+        "v0": -11.98488525721682,
+        "v1": -5.991135257216821,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "yard-approach"
+    },
+    {
+      "id": "terrain.yard-approach.g6.9.-3",
+      "asset": "trace.yard-approach.g6.9.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1057,
+        "y": -251
+      },
+      "box": {
+        "u0": 54.015114742783176,
+        "u1": 59.72761474278318,
+        "v0": -17.70363525721682,
+        "v1": -11.991135257216822,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.8.-1",
+      "asset": "trace.yard-approach.g6.8.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -849,
+        "y": -297
+      },
+      "box": {
+        "u0": 48.015114742783176,
+        "u1": 54.00886474278318,
+        "v0": -5.984885257216821,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "yard-approach"
+    },
+    {
+      "id": "terrain.yard-approach.g6.9.-2",
+      "asset": "trace.yard-approach.g6.9.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -961,
+        "y": -297
+      },
+      "box": {
+        "u0": 54.015114742783176,
+        "u1": 60.00886474278318,
+        "v0": -11.98488525721682,
+        "v1": -5.991135257216821,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.9.-1",
+      "asset": "trace.yard-approach.g6.9.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -945,
+        "y": -345
+      },
+      "box": {
+        "u0": 54.015114742783176,
+        "u1": 60.00886474278318,
+        "v0": -5.984885257216821,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.10.-2",
+      "asset": "trace.yard-approach.g6.10.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1057,
+        "y": -347
+      },
+      "box": {
+        "u0": 60.015114742783176,
+        "u1": 65.72761474278319,
+        "v0": -11.70363525721682,
+        "v1": -5.991135257216821,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.10.-1",
+      "asset": "trace.yard-approach.g6.10.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1041,
+        "y": -393
+      },
+      "box": {
+        "u0": 60.015114742783176,
+        "u1": 66.00886474278319,
+        "v0": -5.984885257216821,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.yard-approach.g6.11.-1",
+      "asset": "trace.yard-approach.g6.11.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1137,
+        "y": -443
+      },
+      "box": {
+        "u0": 66.01511474278318,
+        "u1": 66.72761474278319,
+        "v0": -5.703635257216821,
+        "v1": -5,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.-2.-1",
+      "asset": "trace.orchard-slope.g6.-2.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": 132
+      },
+      "box": {
+        "u0": -9.347527322183693,
+        "u1": -5.9881091942297555,
+        "v0": -4.980390922576061,
+        "v1": -0.013698001317929264,
+        "z0": 2.002241037419879,
+        "z1": 2.5698630855636653
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.-1.-1",
+      "asset": "trace.orchard-slope.g6.-1.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 96,
+        "y": 127
+      },
+      "box": {
+        "u0": -6.01033157119958,
+        "u1": 0.011890805770244307,
+        "v0": -4.980390922576061,
+        "v1": -0.013698001317929264,
+        "z0": 2.002241037419879,
+        "z1": 2.5698630855636653
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.-2.0",
+      "asset": "trace.orchard-slope.g6.-2.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": 116
+      },
+      "box": {
+        "u0": -8.184776046593544,
+        "u1": -6.008612023955737,
+        "v0": -0.002362023955737414,
+        "v1": 0.16798188549303134,
+        "z0": 2.57115862583363,
+        "z1": 2.5906265011992033
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.-1.0",
+      "asset": "trace.orchard-slope.g6.-1.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 98,
+        "y": 98
+      },
+      "box": {
+        "u0": -5.987104091869161,
+        "u1": -0.6336120239557375,
+        "v0": -0.002362023955737414,
+        "v1": 0.13164590813083904,
+        "z0": 2.57115862583363,
+        "z1": 2.586473818072096
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.0.-1",
+      "asset": "trace.orchard-slope.g6.0.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 0,
+        "y": 79
+      },
+      "box": {
+        "u0": -0.01033157119957977,
+        "u1": 6.0118908057702445,
+        "v0": -4.980390922576061,
+        "v1": -0.013698001317929264,
+        "z0": 2.002241037419879,
+        "z1": 2.5698630855636653
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.1.-1",
+      "asset": "trace.orchard-slope.g6.1.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -99,
+        "y": 31
+      },
+      "box": {
+        "u0": 5.98966842880042,
+        "u1": 12.011890805770243,
+        "v0": -4.980390922576061,
+        "v1": -0.013698001317929708,
+        "z0": 2.002241037419879,
+        "z1": 2.5698630855636653
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.2.-1",
+      "asset": "trace.orchard-slope.g6.2.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -192,
+        "y": -17
+      },
+      "box": {
+        "u0": 11.989668428800421,
+        "u1": 18.011890805770243,
+        "v0": -4.980390922576061,
+        "v1": -0.013698001317929708,
+        "z0": 2.002241037419879,
+        "z1": 2.5698630855636653
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.1.0",
+      "asset": "trace.orchard-slope.g6.1.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -181,
+        "y": -40
+      },
+      "box": {
+        "u0": 11.341387976044263,
+        "u1": 11.991387976044262,
+        "v0": -0.477,
+        "v1": 0.023,
+        "z0": 2.57115862583363,
+        "z1": 2.574015768690773
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.2.0",
+      "asset": "trace.orchard-slope.g6.2.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -193,
+        "y": -46
+      },
+      "box": {
+        "u0": 11.804,
+        "u1": 12.404,
+        "v0": -0.29,
+        "v1": 0.31,
+        "z0": 2.57115862583363,
+        "z1": 2.574015768690773
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.3.-1",
+      "asset": "covered.context.trace.orchard-slope.g6.3.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -293,
+        "y": -65
+      },
+      "box": {
+        "u0": 17.98966842880042,
+        "u1": 24.011890805770243,
+        "v0": -4.980390922576061,
+        "v1": -0.268049842853274,
+        "z0": 2.002241037419879,
+        "z1": 2.540794303673912
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.4.-1",
+      "asset": "trace.orchard-slope.g6.4.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -393,
+        "y": -113
+      },
+      "box": {
+        "u0": 23.98966842880042,
+        "u1": 30.011890805770243,
+        "v0": -4.980390922576061,
+        "v1": -0.23171386549108347,
+        "z0": 2.002241037419879,
+        "z1": 2.544946986801019
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.30.-5",
+      "asset": "trace.orchard-slope.g1.30.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -544,
+        "y": -161
+      },
+      "box": {
+        "u0": 29.992710918959286,
+        "u1": 31.011890805770243,
+        "v0": -4.980390922576061,
+        "v1": -4.010655511159064,
+        "z0": 2.002241037419879,
+        "z1": 2.1130679415818214
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.30.-4",
+      "asset": "trace.orchard-slope.g1.30.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -528,
+        "y": -167
+      },
+      "box": {
+        "u0": 29.989774375651894,
+        "u1": 31.008954262462854,
+        "v0": -3.999319533796874,
+        "v1": -2.9932481450176853,
+        "z0": 2.114363481851786,
+        "z1": 2.229343069140836
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.31.-5",
+      "asset": "trace.orchard-slope.g1.31.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -560,
+        "y": -169
+      },
+      "box": {
+        "u0": 30.992710918959286,
+        "u1": 32.01189080577024,
+        "v0": -4.980390922576061,
+        "v1": -4.010655511159064,
+        "z0": 2.002241037419879,
+        "z1": 2.1130679415818214
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.30.-3",
+      "asset": "trace.orchard-slope.g1.30.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -513,
+        "y": -173
+      },
+      "box": {
+        "u0": 29.98972140222616,
+        "u1": 31.011837832344508,
+        "v0": -2.9819121676554934,
+        "v1": -2.0121767562384987,
+        "z0": 2.230638609410801,
+        "z1": 2.341465513572743
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.31.-4",
+      "asset": "trace.orchard-slope.g1.31.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -544,
+        "y": -175
+      },
+      "box": {
+        "u0": 30.989774375651894,
+        "u1": 32.00895426246286,
+        "v0": -3.999319533796874,
+        "v1": -2.9932481450176853,
+        "z0": 2.114363481851786,
+        "z1": 2.229343069140836
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.32.-5",
+      "asset": "trace.orchard-slope.g1.32.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -576,
+        "y": -177
+      },
+      "box": {
+        "u0": 31.992710918959286,
+        "u1": 33.01189080577025,
+        "v0": -4.980390922576061,
+        "v1": -4.010655511159064,
+        "z0": 2.002241037419879,
+        "z1": 2.1130679415818214
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.30.-2",
+      "asset": "trace.orchard-slope.g1.30.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -497,
+        "y": -178
+      },
+      "box": {
+        "u0": 29.99260497210781,
+        "u1": 31.01178485891877,
+        "v0": -2.000840778876305,
+        "v1": -0.9947693900971182,
+        "z0": 2.342761053842708,
+        "z1": 2.457740641131758
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.31.-3",
+      "asset": "trace.orchard-slope.g1.31.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -529,
+        "y": -181
+      },
+      "box": {
+        "u0": 30.98972140222616,
+        "u1": 32.01183783234451,
+        "v0": -2.9819121676554934,
+        "v1": -2.0121767562384987,
+        "z0": 2.230638609410801,
+        "z1": 2.341465513572743
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.32.-4",
+      "asset": "trace.orchard-slope.g1.32.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -560,
+        "y": -183
+      },
+      "box": {
+        "u0": 31.989774375651894,
+        "u1": 33.00895426246286,
+        "v0": -3.999319533796874,
+        "v1": -2.9932481450176853,
+        "z0": 2.114363481851786,
+        "z1": 2.229343069140836
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.30.-1",
+      "asset": "trace.orchard-slope.g1.30.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -483,
+        "y": -184
+      },
+      "box": {
+        "u0": 29.98966842880042,
+        "u1": 31.008848315611377,
+        "v0": -0.9834334127349258,
+        "v1": -0.013698001317929708,
+        "z0": 2.4590361814017228,
+        "z1": 2.5698630855636653
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.33.-5",
+      "asset": "trace.orchard-slope.g1.33.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -592,
+        "y": -185
+      },
+      "box": {
+        "u0": 32.99271091895928,
+        "u1": 34.01189080577025,
+        "v0": -4.980390922576061,
+        "v1": -4.010655511159064,
+        "z0": 2.002241037419879,
+        "z1": 2.1130679415818214
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.31.-2",
+      "asset": "trace.orchard-slope.g1.31.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -513,
+        "y": -186
+      },
+      "box": {
+        "u0": 30.99260497210781,
+        "u1": 32.01178485891877,
+        "v0": -2.000840778876305,
+        "v1": -0.9947693900971182,
+        "z0": 2.342761053842708,
+        "z1": 2.457740641131758
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.32.-3",
+      "asset": "trace.orchard-slope.g1.32.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -545,
+        "y": -189
+      },
+      "box": {
+        "u0": 31.989721402226156,
+        "u1": 33.01183783234451,
+        "v0": -2.9819121676554934,
+        "v1": -2.0121767562384987,
+        "z0": 2.230638609410801,
+        "z1": 2.341465513572743
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.33.-4",
+      "asset": "trace.orchard-slope.g1.33.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -576,
+        "y": -191
+      },
+      "box": {
+        "u0": 32.98977437565189,
+        "u1": 34.00895426246286,
+        "v0": -3.999319533796874,
+        "v1": -2.9932481450176853,
+        "z0": 2.114363481851786,
+        "z1": 2.229343069140836
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g6.5.0",
+      "asset": "trace.orchard-slope.g6.5.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -485,
+        "y": -192
+      },
+      "box": {
+        "u0": 30.341387976044263,
+        "u1": 36.011731885493035,
+        "v0": -0.002362023955737414,
+        "v1": 1.439741093169755,
+        "z0": 2.57115862583363,
+        "z1": 2.735970410647972
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.31.-1",
+      "asset": "trace.orchard-slope.g1.31.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -496,
+        "y": -192
+      },
+      "box": {
+        "u0": 30.98966842880042,
+        "u1": 32.00884831561138,
+        "v0": -0.9834334127349258,
+        "v1": -0.013698001317929708,
+        "z0": 2.4590361814017228,
+        "z1": 2.5698630855636653
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.34.-5",
+      "asset": "trace.orchard-slope.g1.34.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -608,
+        "y": -193
+      },
+      "box": {
+        "u0": 33.99271091895928,
+        "u1": 35.01189080577025,
+        "v0": -4.980390922576061,
+        "v1": -4.010655511159064,
+        "z0": 2.002241037419879,
+        "z1": 2.1130679415818214
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.32.-2",
+      "asset": "trace.orchard-slope.g1.32.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -529,
+        "y": -194
+      },
+      "box": {
+        "u0": 31.99260497210781,
+        "u1": 33.01178485891877,
+        "v0": -2.000840778876305,
+        "v1": -0.9947693900971182,
+        "z0": 2.342761053842708,
+        "z1": 2.457740641131758
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.33.-3",
+      "asset": "trace.orchard-slope.g1.33.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -561,
+        "y": -197
+      },
+      "box": {
+        "u0": 32.98972140222615,
+        "u1": 34.01183783234451,
+        "v0": -2.9819121676554934,
+        "v1": -2.0121767562384987,
+        "z0": 2.230638609410801,
+        "z1": 2.341465513572743
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.34.-4",
+      "asset": "trace.orchard-slope.g1.34.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -592,
+        "y": -199
+      },
+      "box": {
+        "u0": 33.98977437565189,
+        "u1": 35.00895426246286,
+        "v0": -3.999319533796874,
+        "v1": -2.9932481450176853,
+        "z0": 2.114363481851786,
+        "z1": 2.229343069140836
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.32.-1",
+      "asset": "trace.orchard-slope.g1.32.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -512,
+        "y": -200
+      },
+      "box": {
+        "u0": 31.989668428800417,
+        "u1": 33.00884831561139,
+        "v0": -0.9834334127349258,
+        "v1": -0.013698001317929708,
+        "z0": 2.4590361814017228,
+        "z1": 2.5698630855636653
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.35.-5",
+      "asset": "trace.orchard-slope.g1.35.-5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -624,
+        "y": -201
+      },
+      "box": {
+        "u0": 34.99271091895928,
+        "u1": 36.01189080577025,
+        "v0": -4.980390922576061,
+        "v1": -4.010655511159064,
+        "z0": 2.002241037419879,
+        "z1": 2.1130679415818214
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.33.-2",
+      "asset": "trace.orchard-slope.g1.33.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -545,
+        "y": -202
+      },
+      "box": {
+        "u0": 32.992604972107806,
+        "u1": 34.01178485891877,
+        "v0": -2.000840778876305,
+        "v1": -0.9947693900971182,
+        "z0": 2.342761053842708,
+        "z1": 2.457740641131758
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.34.-3",
+      "asset": "trace.orchard-slope.g1.34.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": -205
+      },
+      "box": {
+        "u0": 33.98972140222615,
+        "u1": 35.01183783234451,
+        "v0": -2.9819121676554934,
+        "v1": -2.0121767562384987,
+        "z0": 2.230638609410801,
+        "z1": 2.341465513572743
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.35.-4",
+      "asset": "trace.orchard-slope.g1.35.-4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -608,
+        "y": -207
+      },
+      "box": {
+        "u0": 34.98977437565189,
+        "u1": 36.00895426246286,
+        "v0": -3.999319533796874,
+        "v1": -2.9932481450176835,
+        "z0": 2.114363481851786,
+        "z1": 2.2293430691408362
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.33.-1",
+      "asset": "trace.orchard-slope.g1.33.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -528,
+        "y": -208
+      },
+      "box": {
+        "u0": 32.989668428800414,
+        "u1": 34.00884831561139,
+        "v0": -0.9834334127349258,
+        "v1": -0.013698001317929708,
+        "z0": 2.4590361814017228,
+        "z1": 2.5698630855636653
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g6.6.-1",
+      "asset": "trace.orchard-slope.g6.6.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -576,
+        "y": -209
+      },
+      "box": {
+        "u0": 35.989668428800414,
+        "u1": 42.01189080577025,
+        "v0": -4.980390922576061,
+        "v1": -0.013698001317929708,
+        "z0": 2.002241037419879,
+        "z1": 2.5698630855636653
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.34.-2",
+      "asset": "trace.orchard-slope.g1.34.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -561,
+        "y": -210
+      },
+      "box": {
+        "u0": 33.992604972107806,
+        "u1": 35.01178485891877,
+        "v0": -2.0008407788763067,
+        "v1": -0.9947693900971182,
+        "z0": 2.342761053842708,
+        "z1": 2.457740641131758
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.35.-3",
+      "asset": "trace.orchard-slope.g1.35.-3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -593,
+        "y": -213
+      },
+      "box": {
+        "u0": 34.98972140222615,
+        "u1": 36.01183783234451,
+        "v0": -2.9819121676554916,
+        "v1": -2.0121767562384987,
+        "z0": 2.230638609410801,
+        "z1": 2.341465513572743
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.34.-1",
+      "asset": "trace.orchard-slope.g1.34.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -544,
+        "y": -216
+      },
+      "box": {
+        "u0": 33.989668428800414,
+        "u1": 35.00884831561139,
+        "v0": -0.9834334127349258,
+        "v1": -0.013698001317929708,
+        "z0": 2.4590361814017228,
+        "z1": 2.5698630855636653
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.35.-2",
+      "asset": "trace.orchard-slope.g1.35.-2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": -218
+      },
+      "box": {
+        "u0": 34.992604972107806,
+        "u1": 36.01178485891877,
+        "v0": -2.0008407788763067,
+        "v1": -0.9947693900971182,
+        "z0": 2.342761053842708,
+        "z1": 2.457740641131758
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g1.35.-1",
+      "asset": "trace.orchard-slope.g1.35.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -560,
+        "y": -224
+      },
+      "box": {
+        "u0": 34.989668428800414,
+        "u1": 36.00884831561139,
+        "v0": -0.9834334127349258,
+        "v1": -0.013698001317929708,
+        "z0": 2.4590361814017228,
+        "z1": 2.5698630855636653
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g6.6.0",
+      "asset": "trace.orchard-slope.g6.6.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -553,
+        "y": -238
+      },
+      "box": {
+        "u0": 35.989615455374675,
+        "u1": 42.011731885493035,
+        "v0": -0.002362023955737414,
+        "v1": 1.9847807536026394,
+        "z0": 2.57115862583363,
+        "z1": 2.7982606575545876
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g6.7.-1",
+      "asset": "trace.orchard-slope.g6.7.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -672,
+        "y": -257
+      },
+      "box": {
+        "u0": 41.989668428800414,
+        "u1": 48.01189080577025,
+        "v0": -4.980390922576061,
+        "v1": -0.013698001317929708,
+        "z0": 2.002241037419879,
+        "z1": 2.5698630855636653
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g6.7.0",
+      "asset": "trace.orchard-slope.g6.7.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -641,
+        "y": -286
+      },
+      "box": {
+        "u0": 41.989615455374675,
+        "u1": 48.011731885493035,
+        "v0": -0.002362023955737414,
+        "v1": 1.9847807536026394,
+        "z0": 2.57115862583363,
+        "z1": 2.7982606575545876
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g6.8.-1",
+      "asset": "trace.orchard-slope.g6.8.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -768,
+        "y": -305
+      },
+      "box": {
+        "u0": 47.989668428800414,
+        "u1": 54.01189080577025,
+        "v0": -4.980390922576061,
+        "v1": -0.013698001317929708,
+        "z0": 2.002241037419879,
+        "z1": 2.5698630855636653
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g6.8.0",
+      "asset": "trace.orchard-slope.g6.8.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -737,
+        "y": -334
+      },
+      "box": {
+        "u0": 47.989615455374675,
+        "u1": 54.011731885493035,
+        "v0": -0.002362023955737414,
+        "v1": 1.9847807536026394,
+        "z0": 2.57115862583363,
+        "z1": 2.7982606575545876
+      },
+      "floorOf": "orchard-slope"
+    },
+    {
+      "id": "terrain.orchard-slope.g6.9.-1",
+      "asset": "trace.orchard-slope.g6.9.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -864,
+        "y": -353
+      },
+      "box": {
+        "u0": 53.989668428800414,
+        "u1": 60.01189080577025,
+        "v0": -4.980390922576061,
+        "v1": -0.013698001317929708,
+        "z0": 2.002241037419879,
+        "z1": 2.5698630855636653
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.9.0",
+      "asset": "trace.orchard-slope.g6.9.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -833,
+        "y": -382
+      },
+      "box": {
+        "u0": 53.989615455374675,
+        "u1": 60.011731885493035,
+        "v0": -0.002362023955737414,
+        "v1": 1.9847807536026394,
+        "z0": 2.57115862583363,
+        "z1": 2.7982606575545876
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.10.-1",
+      "asset": "trace.orchard-slope.g6.10.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -960,
+        "y": -401
+      },
+      "box": {
+        "u0": 59.989668428800414,
+        "u1": 66.01189080577025,
+        "v0": -4.980390922576061,
+        "v1": -0.013698001317929708,
+        "z0": 2.002241037419879,
+        "z1": 2.5698630855636653
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.10.0",
+      "asset": "trace.orchard-slope.g6.10.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -929,
+        "y": -430
+      },
+      "box": {
+        "u0": 59.989615455374675,
+        "u1": 66.01173188549303,
+        "v0": -0.002362023955737414,
+        "v1": 1.9847807536026394,
+        "z0": 2.57115862583363,
+        "z1": 2.7982606575545876
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.11.-1",
+      "asset": "trace.orchard-slope.g6.11.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1056,
+        "y": -449
+      },
+      "box": {
+        "u0": 65.98966842880041,
+        "u1": 71.66871602131988,
+        "v0": -4.980390922576061,
+        "v1": -0.013698001317929708,
+        "z0": 2.002241037419879,
+        "z1": 2.5698630855636653
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.11.0",
+      "asset": "trace.orchard-slope.g6.11.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1025,
+        "y": -478
+      },
+      "box": {
+        "u0": 65.98961545537468,
+        "u1": 72.0116789120673,
+        "v0": -0.002362023955737414,
+        "v1": 1.9847807536026394,
+        "z0": 2.57115862583363,
+        "z1": 2.7982606575545876
+      }
+    },
+    {
+      "id": "terrain.orchard-slope.g6.12.0",
+      "asset": "trace.orchard-slope.g6.12.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1121,
+        "y": -527
+      },
+      "box": {
+        "u0": 71.98961545537468,
+        "u1": 73.70353075360264,
+        "v0": 0.28832579494180094,
+        "v1": 1.9847807536026394,
+        "z0": 2.6043800908504915,
+        "z1": 2.7982606575545876
+      }
+    },
+    {
+      "id": "terrain.upper-bank.g6.6.0",
+      "asset": "trace.upper-bank.g6.6.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -574,
+        "y": -267
+      },
+      "box": {
+        "u0": 38.276160639896446,
+        "u1": 41.98866063989645,
+        "v0": 2,
+        "v1": 5.957410639896449,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-bank"
+    },
+    {
+      "id": "terrain.upper-bank.g6.7.0",
+      "asset": "trace.upper-bank.g6.7.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": -297
+      },
+      "box": {
+        "u0": 41.994910639896446,
+        "u1": 47.98866063989645,
+        "v0": 2,
+        "v1": 5.988660639896449,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-bank"
+    },
+    {
+      "id": "terrain.upper-bank.g6.7.1",
+      "asset": "trace.upper-bank.g6.7.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -576,
+        "y": -329
+      },
+      "box": {
+        "u0": 42.026160639896446,
+        "u1": 47.98866063989645,
+        "v0": 5.994910639896449,
+        "v1": 8.488660639896448,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-bank"
+    },
+    {
+      "id": "terrain.upper-bank.g6.8.0",
+      "asset": "trace.upper-bank.g6.8.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": -345
+      },
+      "box": {
+        "u0": 47.994910639896446,
+        "u1": 53.98866063989645,
+        "v0": 2,
+        "v1": 5.988660639896449,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-bank"
+    },
+    {
+      "id": "terrain.upper-bank.g6.8.1",
+      "asset": "trace.upper-bank.g6.8.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -632,
+        "y": -377
+      },
+      "box": {
+        "u0": 47.994910639896446,
+        "u1": 53.98866063989645,
+        "v0": 5.994910639896449,
+        "v1": 8.926160639896448,
+        "z0": 2.8,
+        "z1": 2.8
+      },
+      "floorOf": "upper-bank"
+    },
+    {
+      "id": "terrain.upper-bank.g6.9.0",
+      "asset": "trace.upper-bank.g6.9.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -769,
+        "y": -393
+      },
+      "box": {
+        "u0": 53.994910639896446,
+        "u1": 59.98866063989645,
+        "v0": 2,
+        "v1": 5.988660639896449,
+        "z0": 2.8,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-bank.g6.9.1",
+      "asset": "trace.upper-bank.g6.9.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -722,
+        "y": -425
+      },
+      "box": {
+        "u0": 53.994910639896446,
+        "u1": 59.98866063989645,
+        "v0": 5.994910639896449,
+        "v1": 8.894910639896448,
+        "z0": 2.8,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-bank.g6.10.0",
+      "asset": "trace.upper-bank.g6.10.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -865,
+        "y": -441
+      },
+      "box": {
+        "u0": 59.994910639896446,
+        "u1": 65.98866063989645,
+        "v0": 2,
+        "v1": 5.988660639896449,
+        "z0": 2.8,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-bank.g6.10.1",
+      "asset": "trace.upper-bank.g6.10.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -821,
+        "y": -473
+      },
+      "box": {
+        "u0": 59.994910639896446,
+        "u1": 65.98866063989645,
+        "v0": 5.994910639896449,
+        "v1": 8.988660639896448,
+        "z0": 2.8,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-bank.g6.11.0",
+      "asset": "trace.upper-bank.g6.11.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -961,
+        "y": -489
+      },
+      "box": {
+        "u0": 65.99491063989645,
+        "u1": 71.98866063989645,
+        "v0": 2,
+        "v1": 5.988660639896449,
+        "z0": 2.8,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-bank.g6.11.1",
+      "asset": "trace.upper-bank.g6.11.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -913,
+        "y": -521
+      },
+      "box": {
+        "u0": 65.99491063989645,
+        "u1": 71.98866063989645,
+        "v0": 5.994910639896449,
+        "v1": 9.332410639896448,
+        "z0": 2.8,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-bank.g6.12.0",
+      "asset": "trace.upper-bank.g6.12.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1057,
+        "y": -537
+      },
+      "box": {
+        "u0": 71.99491063989645,
+        "u1": 77.70741063989645,
+        "v0": 2,
+        "v1": 5.988660639896449,
+        "z0": 2.8,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-bank.g6.12.1",
+      "asset": "trace.upper-bank.g6.12.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1003,
+        "y": -569
+      },
+      "box": {
+        "u0": 71.99491063989645,
+        "u1": 77.98866063989645,
+        "v0": 5.994910639896449,
+        "v1": 9.613660639896448,
+        "z0": 2.8,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-bank.g6.13.1",
+      "asset": "trace.upper-bank.g6.13.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1094,
+        "y": -619
+      },
+      "box": {
+        "u0": 77.99491063989645,
+        "u1": 81.01991063989645,
+        "v0": 6.276160639896449,
+        "v1": 9.676160639896448,
+        "z0": 2.8,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.-2.0",
+      "asset": "trace.upper-wall.g6.-2.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": 114
+      },
+      "box": {
+        "u0": -8.058241348955793,
+        "u1": -6.0130620755305815,
+        "v0": -0.314,
+        "v1": 0.186,
+        "z0": 0,
+        "z1": 2.592629560119338
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.-1.0",
+      "asset": "trace.upper-wall.g6.-1.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 98,
+        "y": 97
+      },
+      "box": {
+        "u0": -5.976844521790425,
+        "u1": -0.2048326585226638,
+        "v0": -0.011082658522663814,
+        "v1": 0.14190547820957572,
+        "z0": 0,
+        "z1": 2.587646340366809
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.-1.-1",
+      "asset": "trace.upper-wall.g6.-1.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 3,
+        "y": 52
+      },
+      "box": {
+        "u0": -0.1687860976171514,
+        "u1": -0.021692975806127012,
+        "v0": -0.488,
+        "v1": 0.012,
+        "z0": 0,
+        "z1": 2.572853017415183
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.0.-1",
+      "asset": "trace.upper-wall.g6.0.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 0,
+        "y": 50
+      },
+      "box": {
+        "u0": 0.014353585099385845,
+        "u1": 5.996299689799248,
+        "v0": -0.1849503102007522,
+        "v1": 0.008103585099385847,
+        "z0": 0,
+        "z1": 2.57235469543993
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.1.-1",
+      "asset": "trace.upper-wall.g6.1.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -99,
+        "y": 3
+      },
+      "box": {
+        "u0": 6.031982890931138,
+        "u1": 11.105941382552631,
+        "v0": -0.20130150001374042,
+        "v1": 0.01219138255263168,
+        "z0": 0,
+        "z1": 2.5728218722917293
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.1.0",
+      "asset": "trace.upper-wall.g6.1.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -178,
+        "y": -39
+      },
+      "box": {
+        "u0": 11.146166580854798,
+        "u1": 12.000017770667784,
+        "v0": -0.461,
+        "v1": 0.039,
+        "z0": 0,
+        "z1": 2.5759363846370604
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.2.0",
+      "asset": "trace.upper-wall.g6.2.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -192,
+        "y": -46
+      },
+      "box": {
+        "u0": 12.034792572365621,
+        "u1": 12.358666580854797,
+        "v0": -0.471,
+        "v1": 0.029,
+        "z0": 0,
+        "z1": 2.574690579698928
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.2.-1",
+      "asset": "covered.context.trace.upper-wall.g6.2.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -198,
+        "y": -49
+      },
+      "box": {
+        "u0": 12.393441382552632,
+        "u1": 17.977497940451343,
+        "v0": -0.2662520595486562,
+        "v1": 0.01219138255263168,
+        "z0": 0,
+        "z1": 2.5728218722917293
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.3.-1",
+      "asset": "covered.context.trace.upper-wall.g6.3.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -292,
+        "y": -92
+      },
+      "box": {
+        "u0": 18.01227274214918,
+        "u1": 24.000572774136497,
+        "v0": -0.49317722586350216,
+        "v1": -0.24397725785082186,
+        "z0": 0,
+        "z1": 2.5435454562456203
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.4.-1",
+      "asset": "trace.upper-wall.g6.4.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -392,
+        "y": -139
+      },
+      "box": {
+        "u0": 24.036395729027472,
+        "u1": 29.95481611564408,
+        "v0": -0.7088949171094743,
+        "v1": -0.20143388435592086,
+        "z0": 0,
+        "z1": 2.548407556073609
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.5.-1",
+      "asset": "trace.upper-wall.g6.5.-1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -483,
+        "y": -190
+      },
+      "box": {
+        "u0": 30.08921205527659,
+        "u1": 30.2736079949091,
+        "v0": -0.12953794472341046,
+        "v1": -0.007642005090900027,
+        "z0": 0,
+        "z1": 2.570555199418183
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.5.0",
+      "asset": "trace.upper-wall.g6.5.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -485,
+        "y": -193
+      },
+      "box": {
+        "u0": 30.408003934541615,
+        "u1": 36.003289739713935,
+        "v0": 0.06425393454161572,
+        "v1": 1.4720397397139287,
+        "z0": 0,
+        "z1": 2.739661684538735
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.6.0",
+      "asset": "trace.upper-wall.g6.6.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -553,
+        "y": -247
+      },
+      "box": {
+        "u0": 36.050210178289305,
+        "u1": 41.65272313989645,
+        "v0": 1.4564601782893114,
+        "v1": 5.683973139896449,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.7.1",
+      "asset": "trace.upper-wall.g6.7.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -576,
+        "y": -333
+      },
+      "box": {
+        "u0": 42.268348139896446,
+        "u1": 47.98866063989645,
+        "v0": 6.237098139896449,
+        "v1": 8.519910639896448,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.8.1",
+      "asset": "trace.upper-wall.g6.8.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -632,
+        "y": -398
+      },
+      "box": {
+        "u0": 48.03657730656311,
+        "u1": 53.96131688989645,
+        "v0": 8.505327306563114,
+        "v1": 8.941004389896445,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.9.1",
+      "asset": "trace.upper-wall.g6.9.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -721,
+        "y": -448
+      },
+      "box": {
+        "u0": 53.99412938989644,
+        "u1": 60.01209813989645,
+        "v0": 8.667410639896449,
+        "v1": 8.925379389896445,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.10.1",
+      "asset": "trace.upper-wall.g6.10.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -821,
+        "y": -495
+      },
+      "box": {
+        "u0": 60.05272313989644,
+        "u1": 65.98397313989645,
+        "v0": 8.708973139896447,
+        "v1": 9.015223139896445,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.11.1",
+      "asset": "trace.upper-wall.g6.11.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -912,
+        "y": -545
+      },
+      "box": {
+        "u0": 66.02459813989644,
+        "u1": 71.99842626489645,
+        "v0": 8.993348139896451,
+        "v1": 9.342176264896448,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.12.1",
+      "asset": "trace.upper-wall.g6.12.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1003,
+        "y": -596
+      },
+      "box": {
+        "u0": 72.03983251489645,
+        "u1": 77.99022313989646,
+        "v0": 9.32108251489645,
+        "v1": 9.646473139896447,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.upper-wall.g6.13.1",
+      "asset": "trace.upper-wall.g6.13.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1094,
+        "y": -647
+      },
+      "box": {
+        "u0": 78.03084813989645,
+        "u1": 80.98709813989645,
+        "v0": 9.305848139896451,
+        "v1": 9.69022313989645,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.far-wall.g6.-1.0",
+      "asset": "trace.far-wall.g6.-1.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": 70
+      },
+      "box": {
+        "u0": -3.663,
+        "u1": -3.063,
+        "v0": 4.587,
+        "v1": 5.187,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-wall.g6.0.0",
+      "asset": "trace.far-wall.g6.0.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 61,
+        "y": 31
+      },
+      "box": {
+        "u0": 1.212,
+        "u1": 1.812,
+        "v0": 4.462,
+        "v1": 5.062,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-wall.g6.1.0",
+      "asset": "trace.far-wall.g6.1.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -15,
+        "y": -11
+      },
+      "box": {
+        "u0": 6.649,
+        "u1": 7.249,
+        "v0": 4.899,
+        "v1": 5.499,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-wall.g6.2.0",
+      "asset": "trace.far-wall.g6.2.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -90,
+        "y": -54
+      },
+      "box": {
+        "u0": 12.212,
+        "u1": 12.812,
+        "v0": 5.462,
+        "v1": 6.062,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-wall.g6.3.1",
+      "asset": "trace.far-wall.g6.3.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -176,
+        "y": -101
+      },
+      "box": {
+        "u0": 18.12448974278318,
+        "u1": 22.461989742783178,
+        "v0": 6.374489742783179,
+        "v1": 6.961989742783179,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-wall.g6.4.1",
+      "asset": "trace.far-wall.g6.4.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -306,
+        "y": -172
+      },
+      "box": {
+        "u0": 26.587,
+        "u1": 27.187,
+        "v0": 7.337,
+        "v1": 7.937,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-wall.g6.5.1",
+      "asset": "trace.far-wall.g6.5.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -368,
+        "y": -207
+      },
+      "box": {
+        "u0": 31.24948974278318,
+        "u1": 34.71198974278318,
+        "v0": 8.24948974278318,
+        "v1": 8.711989742783178,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-wall.g6.11.2",
+      "asset": "trace.far-wall.g6.11.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -886,
+        "y": -581
+      },
+      "box": {
+        "u0": 69.774,
+        "u1": 70.374,
+        "v0": 14.899,
+        "v1": 15.499,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-wall.g6.12.2",
+      "asset": "trace.far-wall.g6.12.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -959,
+        "y": -621
+      },
+      "box": {
+        "u0": 72.899,
+        "u1": 73.499,
+        "v0": 14.899,
+        "v1": 15.499,
+        "z0": 0,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.-1.0",
+      "asset": "trace.far-bank.g6.-1.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": 27
+      },
+      "box": {
+        "u0": -3.3286352572168223,
+        "u1": 0.008864742783177882,
+        "v0": 4.796364742783178,
+        "v1": 6.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.-1.1",
+      "asset": "trace.far-bank.g6.-1.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": 9
+      },
+      "box": {
+        "u0": -2.2036352572168223,
+        "u1": 0.008864742783177882,
+        "v0": 6.015114742783178,
+        "v1": 8.227614742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.0.0",
+      "asset": "trace.far-bank.g6.0.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 95,
+        "y": 1
+      },
+      "box": {
+        "u0": 0.01511474278317788,
+        "u1": 6.008864742783178,
+        "v0": 4.765114742783178,
+        "v1": 6.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.0.1",
+      "asset": "trace.far-bank.g6.0.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -9
+      },
+      "box": {
+        "u0": 0.01511474278317788,
+        "u1": 6.008864742783179,
+        "v0": 6.015114742783178,
+        "v1": 12.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.1.0",
+      "asset": "trace.far-bank.g6.1.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1,
+        "y": -50
+      },
+      "box": {
+        "u0": 6.015114742783178,
+        "u1": 12.008864742783178,
+        "v0": 5.140114742783178,
+        "v1": 6.008864742783179,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.1.1",
+      "asset": "trace.far-bank.g6.1.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 95,
+        "y": -57
+      },
+      "box": {
+        "u0": 6.015114742783178,
+        "u1": 12.008864742783178,
+        "v0": 6.015114742783178,
+        "v1": 12.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.0.2",
+      "asset": "trace.far-bank.g6.0.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -87
+      },
+      "box": {
+        "u0": 3.7963647427831777,
+        "u1": 6.008864742783179,
+        "v0": 12.01511474278318,
+        "v1": 14.227614742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.2.0",
+      "asset": "trace.far-bank.g6.2.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -97,
+        "y": -103
+      },
+      "box": {
+        "u0": 12.01511474278318,
+        "u1": 14.602614742783178,
+        "v0": 5.733864742783179,
+        "v1": 6.008864742783179,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.1.2",
+      "asset": "trace.far-bank.g6.1.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -105
+      },
+      "box": {
+        "u0": 6.015114742783179,
+        "u1": 12.008864742783178,
+        "v0": 12.01511474278318,
+        "v1": 18.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.2.1",
+      "asset": "trace.far-bank.g6.2.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1,
+        "y": -105
+      },
+      "box": {
+        "u0": 12.01511474278318,
+        "u1": 18.008864742783178,
+        "v0": 6.015114742783179,
+        "v1": 12.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.2.2",
+      "asset": "trace.far-bank.g6.2.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 95,
+        "y": -153
+      },
+      "box": {
+        "u0": 12.01511474278318,
+        "u1": 18.008864742783178,
+        "v0": 12.01511474278318,
+        "v1": 18.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.3.1",
+      "asset": "trace.far-bank.g6.3.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -97,
+        "y": -156
+      },
+      "box": {
+        "u0": 18.01511474278318,
+        "u1": 24.008864742783178,
+        "v0": 6.390114742783179,
+        "v1": 12.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.1.3",
+      "asset": "trace.far-bank.g6.1.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -183
+      },
+      "box": {
+        "u0": 9.79636474278318,
+        "u1": 12.008864742783178,
+        "v0": 18.01511474278318,
+        "v1": 20.227614742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.2.3",
+      "asset": "trace.far-bank.g6.2.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -201
+      },
+      "box": {
+        "u0": 12.01511474278318,
+        "u1": 18.008864742783178,
+        "v0": 18.01511474278318,
+        "v1": 24.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.3.2",
+      "asset": "trace.far-bank.g6.3.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1,
+        "y": -201
+      },
+      "box": {
+        "u0": 18.01511474278318,
+        "u1": 24.008864742783178,
+        "v0": 12.01511474278318,
+        "v1": 18.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.4.1",
+      "asset": "trace.far-bank.g6.4.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -193,
+        "y": -211
+      },
+      "box": {
+        "u0": 24.01511474278318,
+        "u1": 30.008864742783178,
+        "v0": 7.202614742783179,
+        "v1": 12.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.3.3",
+      "asset": "trace.far-bank.g6.3.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 95,
+        "y": -249
+      },
+      "box": {
+        "u0": 18.01511474278318,
+        "u1": 24.008864742783178,
+        "v0": 18.01511474278318,
+        "v1": 24.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.4.2",
+      "asset": "trace.far-bank.g6.4.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -97,
+        "y": -249
+      },
+      "box": {
+        "u0": 24.01511474278318,
+        "u1": 30.008864742783178,
+        "v0": 12.01511474278318,
+        "v1": 18.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.5.1",
+      "asset": "trace.far-bank.g6.5.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -289,
+        "y": -266
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 36.00886474278318,
+        "v0": 8.10886474278318,
+        "v1": 12.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.2.4",
+      "asset": "trace.far-bank.g6.2.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -279
+      },
+      "box": {
+        "u0": 15.79636474278318,
+        "u1": 18.008864742783178,
+        "v0": 24.01511474278318,
+        "v1": 26.227614742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.3.4",
+      "asset": "trace.far-bank.g6.3.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -297
+      },
+      "box": {
+        "u0": 18.01511474278318,
+        "u1": 24.008864742783178,
+        "v0": 24.01511474278318,
+        "v1": 30.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.4.3",
+      "asset": "trace.far-bank.g6.4.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1,
+        "y": -297
+      },
+      "box": {
+        "u0": 24.01511474278318,
+        "u1": 30.008864742783178,
+        "v0": 18.01511474278318,
+        "v1": 24.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.5.2",
+      "asset": "trace.far-bank.g6.5.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -193,
+        "y": -297
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 36.00886474278318,
+        "v0": 12.01511474278318,
+        "v1": 18.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.6.1",
+      "asset": "trace.far-bank.g6.6.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -385,
+        "y": -326
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 39.85261474278318,
+        "v0": 9.67136474278318,
+        "v1": 12.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.4.4",
+      "asset": "trace.far-bank.g6.4.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 95,
+        "y": -345
+      },
+      "box": {
+        "u0": 24.01511474278318,
+        "u1": 30.008864742783178,
+        "v0": 24.01511474278318,
+        "v1": 30.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.5.3",
+      "asset": "trace.far-bank.g6.5.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -97,
+        "y": -345
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 36.00886474278318,
+        "v0": 18.01511474278318,
+        "v1": 24.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.6.2",
+      "asset": "trace.far-bank.g6.6.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -289,
+        "y": -345
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 42.00886474278318,
+        "v0": 12.01511474278318,
+        "v1": 18.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.3.5",
+      "asset": "trace.far-bank.g6.3.5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -375
+      },
+      "box": {
+        "u0": 21.79636474278318,
+        "u1": 24.008864742783178,
+        "v0": 30.01511474278318,
+        "v1": 32.22761474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.4.5",
+      "asset": "trace.far-bank.g6.4.5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -393
+      },
+      "box": {
+        "u0": 24.01511474278318,
+        "u1": 30.008864742783178,
+        "v0": 30.01511474278318,
+        "v1": 36.00886474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.5.4",
+      "asset": "trace.far-bank.g6.5.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1,
+        "y": -393
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 36.00886474278318,
+        "v0": 24.01511474278318,
+        "v1": 30.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.6.3",
+      "asset": "trace.far-bank.g6.6.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -193,
+        "y": -393
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 42.00886474278318,
+        "v0": 18.01511474278318,
+        "v1": 24.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.7.2",
+      "asset": "trace.far-bank.g6.7.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -385,
+        "y": -401
+      },
+      "box": {
+        "u0": 42.015114742783176,
+        "u1": 48.00886474278318,
+        "v0": 13.04636474278318,
+        "v1": 18.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.5.5",
+      "asset": "trace.far-bank.g6.5.5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 95,
+        "y": -441
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 36.00886474278318,
+        "v0": 30.01511474278318,
+        "v1": 36.00886474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.6.4",
+      "asset": "trace.far-bank.g6.6.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -97,
+        "y": -441
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 42.00886474278318,
+        "v0": 24.01511474278318,
+        "v1": 30.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.7.3",
+      "asset": "trace.far-bank.g6.7.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -289,
+        "y": -441
+      },
+      "box": {
+        "u0": 42.015114742783176,
+        "u1": 48.00886474278318,
+        "v0": 18.01511474278318,
+        "v1": 24.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.8.2",
+      "asset": "trace.far-bank.g6.8.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -481,
+        "y": -461
+      },
+      "box": {
+        "u0": 48.015114742783176,
+        "u1": 54.00886474278318,
+        "v0": 14.48386474278318,
+        "v1": 18.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.4.6",
+      "asset": "trace.far-bank.g6.4.6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -471
+      },
+      "box": {
+        "u0": 27.79636474278318,
+        "u1": 30.008864742783178,
+        "v0": 36.015114742783176,
+        "v1": 38.22761474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.5.6",
+      "asset": "trace.far-bank.g6.5.6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -489
+      },
+      "box": {
+        "u0": 30.01511474278318,
+        "u1": 36.00886474278318,
+        "v0": 36.015114742783176,
+        "v1": 42.00886474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.6.5",
+      "asset": "trace.far-bank.g6.6.5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1,
+        "y": -489
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 42.00886474278318,
+        "v0": 30.01511474278318,
+        "v1": 36.00886474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.7.4",
+      "asset": "trace.far-bank.g6.7.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -193,
+        "y": -489
+      },
+      "box": {
+        "u0": 42.015114742783176,
+        "u1": 48.00886474278318,
+        "v0": 24.01511474278318,
+        "v1": 30.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.8.3",
+      "asset": "trace.far-bank.g6.8.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -385,
+        "y": -489
+      },
+      "box": {
+        "u0": 48.015114742783176,
+        "u1": 54.00886474278318,
+        "v0": 18.01511474278318,
+        "v1": 24.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.9.2",
+      "asset": "trace.far-bank.g6.9.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": -512
+      },
+      "box": {
+        "u0": 54.015114742783176,
+        "u1": 60.00886474278318,
+        "v0": 14.85886474278318,
+        "v1": 18.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.6.6",
+      "asset": "trace.far-bank.g6.6.6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 95,
+        "y": -537
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 42.00886474278318,
+        "v0": 36.015114742783176,
+        "v1": 42.00886474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.7.5",
+      "asset": "trace.far-bank.g6.7.5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -97,
+        "y": -537
+      },
+      "box": {
+        "u0": 42.015114742783176,
+        "u1": 48.00886474278318,
+        "v0": 30.01511474278318,
+        "v1": 36.00886474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.8.4",
+      "asset": "trace.far-bank.g6.8.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -289,
+        "y": -537
+      },
+      "box": {
+        "u0": 48.015114742783176,
+        "u1": 54.00886474278318,
+        "v0": 24.01511474278318,
+        "v1": 30.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.9.3",
+      "asset": "trace.far-bank.g6.9.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -481,
+        "y": -537
+      },
+      "box": {
+        "u0": 54.015114742783176,
+        "u1": 60.00886474278318,
+        "v0": 18.01511474278318,
+        "v1": 24.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.10.2",
+      "asset": "trace.far-bank.g6.10.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": -561
+      },
+      "box": {
+        "u0": 60.015114742783176,
+        "u1": 66.00886474278319,
+        "v0": 14.95261474278318,
+        "v1": 18.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.5.7",
+      "asset": "trace.far-bank.g6.5.7",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -567
+      },
+      "box": {
+        "u0": 33.796364742783176,
+        "u1": 36.00886474278318,
+        "v0": 42.015114742783176,
+        "v1": 44.22761474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.6.7",
+      "asset": "trace.far-bank.g6.6.7",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -585
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 42.00886474278318,
+        "v0": 42.015114742783176,
+        "v1": 48.00886474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.7.6",
+      "asset": "trace.far-bank.g6.7.6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -1,
+        "y": -585
+      },
+      "box": {
+        "u0": 42.015114742783176,
+        "u1": 48.00886474278318,
+        "v0": 36.015114742783176,
+        "v1": 42.00886474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.8.5",
+      "asset": "trace.far-bank.g6.8.5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -193,
+        "y": -585
+      },
+      "box": {
+        "u0": 48.015114742783176,
+        "u1": 54.00886474278318,
+        "v0": 30.01511474278318,
+        "v1": 36.00886474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.9.4",
+      "asset": "trace.far-bank.g6.9.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -385,
+        "y": -585
+      },
+      "box": {
+        "u0": 54.015114742783176,
+        "u1": 60.00886474278318,
+        "v0": 24.01511474278318,
+        "v1": 30.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.10.3",
+      "asset": "trace.far-bank.g6.10.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": -585
+      },
+      "box": {
+        "u0": 60.015114742783176,
+        "u1": 66.00886474278319,
+        "v0": 18.01511474278318,
+        "v1": 24.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.11.2",
+      "asset": "trace.far-bank.g6.11.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -769,
+        "y": -610
+      },
+      "box": {
+        "u0": 66.01511474278318,
+        "u1": 72.00886474278319,
+        "v0": 15.10886474278318,
+        "v1": 18.008864742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.7.7",
+      "asset": "trace.far-bank.g6.7.7",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 69,
+        "y": -633
+      },
+      "box": {
+        "u0": 42.015114742783176,
+        "u1": 46.32136474278318,
+        "v0": 42.015114742783176,
+        "v1": 46.32136474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.8.6",
+      "asset": "trace.far-bank.g6.8.6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -123,
+        "y": -633
+      },
+      "box": {
+        "u0": 48.015114742783176,
+        "u1": 52.32136474278318,
+        "v0": 36.015114742783176,
+        "v1": 40.32136474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.9.5",
+      "asset": "trace.far-bank.g6.9.5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -315,
+        "y": -633
+      },
+      "box": {
+        "u0": 54.015114742783176,
+        "u1": 58.32136474278318,
+        "v0": 30.01511474278318,
+        "v1": 34.32136474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.10.4",
+      "asset": "trace.far-bank.g6.10.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -507,
+        "y": -633
+      },
+      "box": {
+        "u0": 60.015114742783176,
+        "u1": 64.32136474278319,
+        "v0": 24.01511474278318,
+        "v1": 28.321364742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.11.3",
+      "asset": "trace.far-bank.g6.11.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -699,
+        "y": -633
+      },
+      "box": {
+        "u0": 66.01511474278318,
+        "u1": 70.32136474278319,
+        "v0": 18.01511474278318,
+        "v1": 22.321364742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.12.2",
+      "asset": "trace.far-bank.g6.12.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -891,
+        "y": -659
+      },
+      "box": {
+        "u0": 72.01511474278318,
+        "u1": 73.13386474278319,
+        "v0": 15.20261474278318,
+        "v1": 16.321364742783178,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.far-bank.g6.6.8",
+      "asset": "trace.far-bank.g6.6.8",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": 132,
+        "y": -663
+      },
+      "box": {
+        "u0": 39.796364742783176,
+        "u1": 40.32136474278318,
+        "v0": 48.015114742783176,
+        "v1": 48.29011474278318,
+        "z0": 2,
+        "z1": 2
+      }
+    },
+    {
+      "id": "terrain.culvert.head.0",
+      "asset": "covered.culvert.head.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -200,
+        "y": -87
+      },
+      "box": {
+        "u0": 11.96875,
+        "u1": 16.292776787586405,
+        "v0": -1.6875,
+        "v1": 2.651966760850247,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.culvert.head.1",
+      "asset": "covered.culvert.head.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -230,
+        "y": -88
+      },
+      "box": {
+        "u0": 12.6875,
+        "u1": 17.26954930824937,
+        "v0": -2.40625,
+        "v1": 1.9177767875864045,
+        "z0": 0,
+        "z1": 2.7906030614384463
+      }
+    },
+    {
+      "id": "terrain.culvert.head.2",
+      "asset": "covered.culvert.head.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -259,
+        "y": -91
+      },
+      "box": {
+        "u0": 13.78125,
+        "u1": 23.198735937053783,
+        "v0": -3.6875,
+        "v1": 1.0820493082493696,
+        "z0": 0,
+        "z1": 2.6950913495142137
+      }
+    },
+    {
+      "id": "terrain.culvert.head.3",
+      "asset": "covered.culvert.head.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -376,
+        "y": -131
+      },
+      "box": {
+        "u0": 19.8125,
+        "u1": 24.13160203306034,
+        "v0": -3.6875,
+        "v1": 0.1736498741873751,
+        "z0": 0,
+        "z1": 2.5912742713357
+      }
+    },
+    {
+      "id": "terrain.culvert.head.4",
+      "asset": "covered.culvert.head.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -367,
+        "y": -137
+      },
+      "box": {
+        "u0": 20.03125,
+        "u1": 24.13160203306034,
+        "v0": -3.1875,
+        "v1": 0.7523700404493975,
+        "z0": 0,
+        "z1": 2.6574137189085025
+      }
+    },
+    {
+      "id": "terrain.culvert.head.5",
+      "asset": "covered.culvert.head.5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -316,
+        "y": -130
+      },
+      "box": {
+        "u0": 18.0625,
+        "u1": 23.688231342915447,
+        "v0": -2.90625,
+        "v1": 2.0962491197552797,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.culvert.head.6",
+      "asset": "covered.culvert.head.6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -200,
+        "y": -96
+      },
+      "box": {
+        "u0": 12.46875,
+        "u1": 21.795939883412967,
+        "v0": -1.8125,
+        "v1": 3.53523678372311,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.culvert.head.7",
+      "asset": "covered.culvert.head.7",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -199,
+        "y": -87
+      },
+      "box": {
+        "u0": 11.96875,
+        "u1": 16.08553563989645,
+        "v0": -0.96875,
+        "v1": 3.53523678372311,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.culvert.arch.voussoir.0",
+      "asset": "covered.culvert.arch.voussoir.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -234,
+        "y": -148
+      },
+      "box": {
+        "u0": 18.5875,
+        "u1": 19.07638888888889,
+        "v0": 3.4875,
+        "v1": 3.9375,
+        "z0": 0.65,
+        "z1": 1.5542472332656505
+      }
+    },
+    {
+      "id": "terrain.culvert.arch.voussoir.1",
+      "asset": "covered.culvert.arch.voussoir.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -238,
+        "y": -145
+      },
+      "box": {
+        "u0": 18.804166666666667,
+        "u1": 19.21527777777778,
+        "v0": 3.4875,
+        "v1": 3.9375,
+        "z0": 1.1214045207910317,
+        "z1": 1.7977753031397177
+      }
+    },
+    {
+      "id": "terrain.culvert.arch.voussoir.2",
+      "asset": "covered.culvert.arch.voussoir.2",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -241,
+        "y": -144
+      },
+      "box": {
+        "u0": 19.020833333333332,
+        "u1": 19.354166666666668,
+        "v0": 3.4875,
+        "v1": 3.9375,
+        "z0": 1.2736095644623235,
+        "z1": 1.931370849898476
+      }
+    },
+    {
+      "id": "terrain.culvert.arch.voussoir.3",
+      "asset": "covered.culvert.arch.voussoir.3",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -245,
+        "y": -144
+      },
+      "box": {
+        "u0": 19.2375,
+        "u1": 19.493055555555557,
+        "v0": 3.4875,
+        "v1": 3.9375,
+        "z0": 1.3571067811865474,
+        "z1": 1.9925695879998877
+      }
+    },
+    {
+      "id": "terrain.culvert.arch.voussoir.4",
+      "asset": "covered.culvert.arch.voussoir.4",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -248,
+        "y": -145
+      },
+      "box": {
+        "u0": 19.454166666666666,
+        "u1": 19.670833333333334,
+        "v0": 3.4875,
+        "v1": 3.9375,
+        "z0": 1.39535599249993,
+        "z1": 1.9925695879998877
+      }
+    },
+    {
+      "id": "terrain.culvert.arch.voussoir.5",
+      "asset": "covered.culvert.arch.voussoir.5",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -251,
+        "y": -146
+      },
+      "box": {
+        "u0": 19.631944444444443,
+        "u1": 19.8875,
+        "v0": 3.4875,
+        "v1": 3.9375,
+        "z0": 1.3571067811865474,
+        "z1": 1.9925695879998877
+      }
+    },
+    {
+      "id": "terrain.culvert.arch.voussoir.6",
+      "asset": "covered.culvert.arch.voussoir.6",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -253,
+        "y": -149
+      },
+      "box": {
+        "u0": 19.770833333333332,
+        "u1": 20.104166666666668,
+        "v0": 3.4875,
+        "v1": 3.9375,
+        "z0": 1.2736095644623235,
+        "z1": 1.931370849898476
+      }
+    },
+    {
+      "id": "terrain.culvert.arch.voussoir.7",
+      "asset": "covered.culvert.arch.voussoir.7",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -256,
+        "y": -154
+      },
+      "box": {
+        "u0": 19.90972222222222,
+        "u1": 20.320833333333333,
+        "v0": 3.4875,
+        "v1": 3.9375,
+        "z0": 1.1214045207910317,
+        "z1": 1.7977753031397177
+      }
+    },
+    {
+      "id": "terrain.culvert.arch.voussoir.8",
+      "asset": "covered.culvert.arch.voussoir.8",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -258,
+        "y": -160
+      },
+      "box": {
+        "u0": 20.04861111111111,
+        "u1": 20.5375,
+        "v0": 3.4875,
+        "v1": 3.9375,
+        "z0": 0.65,
+        "z1": 1.554247233265651
+      }
+    },
+    {
+      "id": "terrain.culvert.arch.jamb.0",
+      "asset": "covered.culvert.arch.jamb.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -234,
+        "y": -161
+      },
+      "box": {
+        "u0": 18.5875,
+        "u1": 18.9375,
+        "v0": 3.4875,
+        "v1": 3.9375,
+        "z0": 0,
+        "z1": 0.8
+      }
+    },
+    {
+      "id": "terrain.culvert.arch.jamb.1",
+      "asset": "covered.culvert.arch.jamb.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -260,
+        "y": -174
+      },
+      "box": {
+        "u0": 20.1875,
+        "u1": 20.5375,
+        "v0": 3.4875,
+        "v1": 3.9375,
+        "z0": 0,
+        "z1": 0.8
+      }
+    },
+    {
+      "id": "terrain.culvert.join.0",
+      "asset": "join.culvert.join.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -248,
+        "y": -116
+      },
+      "box": {
+        "u0": 18.5875,
+        "u1": 20.5375,
+        "v0": 2.75,
+        "v1": 3.1,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.culvert.join.1",
+      "asset": "join.culvert.join.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -242,
+        "y": -119
+      },
+      "box": {
+        "u0": 18.5875,
+        "u1": 20.5375,
+        "v0": 3.1,
+        "v1": 3.4875,
+        "z0": 0,
+        "z1": 2.8
+      }
+    },
+    {
+      "id": "terrain.hollis-parking.occupied.0",
+      "asset": "hollis.bay-top.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": -105
+      },
+      "box": {
+        "u0": 34.5,
+        "u1": 36.00886474278318,
+        "v0": -10.5,
+        "v1": -6.5,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "hollis.parking.occupied",
+      "phase": {
+        "flag": "route.r1.open",
+        "equals": false
+      },
+      "phaseIn": "instant"
+    },
+    {
+      "id": "terrain.hollis-parking.empty.0",
+      "asset": "hollis.bay-top.0",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -577,
+        "y": -105
+      },
+      "box": {
+        "u0": 34.5,
+        "u1": 36.00886474278318,
+        "v0": -10.5,
+        "v1": -6.5,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "hollis.parking.empty",
+      "phase": {
+        "flag": "route.r1.open",
+        "equals": true
+      },
+      "after": [
+        "terrain.hollis-parking.occupied.0"
+      ],
+      "phaseIn": "instant"
+    },
+    {
+      "id": "terrain.hollis-parking.occupied.1",
+      "asset": "hollis.bay-top.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": -153
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 38.5,
+        "v0": -10.5,
+        "v1": -6.5,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "hollis.parking.occupied",
+      "phase": {
+        "flag": "route.r1.open",
+        "equals": false
+      },
+      "phaseIn": "instant"
+    },
+    {
+      "id": "terrain.hollis-parking.empty.1",
+      "asset": "hollis.bay-top.1",
+      "u": 0,
+      "v": 0,
+      "z": 0,
+      "pivot": {
+        "x": -673,
+        "y": -153
+      },
+      "box": {
+        "u0": 36.015114742783176,
+        "u1": 38.5,
+        "v0": -10.5,
+        "v1": -6.5,
+        "z0": 2,
+        "z1": 2
+      },
+      "floorOf": "hollis.parking.empty",
+      "phase": {
+        "flag": "route.r1.open",
+        "equals": true
+      },
+      "after": [
+        "terrain.hollis-parking.occupied.1"
+      ],
+      "phaseIn": "instant"
+    }
+  ]
+}

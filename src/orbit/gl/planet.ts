@@ -7,7 +7,7 @@
  * uniforms carry both, switched by uLightMode.
  */
 import * as THREE from 'three';
-import { texture, type TextureKey } from './textures';
+import { promote, texture, type TextureKey } from './textures';
 
 export interface Light {
   mode: 0 | 1;
@@ -67,11 +67,16 @@ uniform vec3 uGlow;
 uniform float uGlowMode;
 uniform float uGlowGain;
 uniform float uCloudShift;
+// Per-body offset, mirror and repeat of the shared cloud map, so two ocean
+// worlds never wear the same weather.
+uniform vec3 uCloudSeed;
 uniform float uTime;
 uniform float uExposure;
 uniform float uCloudGain;
 uniform float uDetail;
 uniform float uLoaded;
+uniform float uStyle;
+uniform vec3 uStyleColor;
 float dh(vec3 p) { p = fract(p * 0.3183 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
 float dn(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f);
   return mix(mix(mix(dh(i), dh(i + vec3(1,0,0)), f.x), mix(dh(i + vec3(0,1,0)), dh(i + vec3(1,1,0)), f.x), f.y),
@@ -100,18 +105,21 @@ void main() {
   float wrap = clamp((ndl + 0.12) / 1.12, 0.0, 1.0);
   float day = smoothstep(-0.1, 0.25, ndl);
   vec3 col = c * uLightColor * wrap;
-  col += c * 0.008;
+  // A whisper of fill so a night side still has a silhouette, and a glowing
+  // world's lava never floats free of its planet.
+  col += c * (uGlowMode > 0.5 && uGlowMode < 1.5 ? 0.05 : 0.012);
 
   float water = 0.0;
   if (uWaterMode > 1.5) water = smoothstep(0.08, 0.22, s.b - max(s.r, s.g * 0.85));
   else if (uWaterMode > 0.5) water = texture2D(uWater, vUv).r;
   vec3 H = normalize(L + V);
   float nh = max(dot(N, H), 0.0);
-  col += uLightColor * (pow(nh, 110.0) * 1.3 + pow(nh, 14.0) * 0.05) * water * day;
+  // A tight glint: a wide lobe read as a blown-out blob once bloom took it.
+  col += uLightColor * (pow(nh, 280.0) * 1.1 + pow(nh, 48.0) * 0.025) * water * day;
 
   float cloud = 0.0;
   if (uHasClouds > 0.5) {
-    vec2 cuv = vUv + vec2(uCloudShift, 0.0);
+    vec2 cuv = vec2(vUv.x * uCloudSeed.z + uCloudSeed.x + uCloudShift, uCloudSeed.y > 0.5 ? 1.0 - vUv.y : vUv.y);
     cloud = texture2D(uClouds, cuv).r;
     float shadow = texture2D(uClouds, cuv + vec2(0.0025, 0.0012)).r;
     col *= 1.0 - shadow * 0.5 * day;
@@ -129,6 +137,55 @@ void main() {
   if (uHasNight > 0.5) {
     vec3 lights = texture2D(uNight, vUv).rgb;
     col += lights * vec3(1.0, 0.72, 0.42) * night * 2.2 * (1.0 - cloud * 0.85);
+  }
+
+  vec3 sea = toSrgb(c);
+  float wet = smoothstep(0.06, 0.2, sea.b - max(sea.r, sea.g * 0.9));
+  if (uStyle > 3.5 && uStyle < 4.5) {
+    // Restoration: colour lives only inside two slowly breathing caps; outside
+    // them the world is grey moonlight, and the growing edge burns gold.
+    float lum = dot(col, vec3(0.299, 0.587, 0.114));
+    vec3 grey = lum * vec3(0.5, 0.58, 0.78) * 0.8;
+    float best = -1.0;
+    float ring = 0.0;
+    for (int k = 0; k < 2; k++) {
+      float fk = float(k);
+      vec3 cc = normalize(vec3(cos(1.3 + fk * 3.4), 0.35 - fk * 0.7, sin(1.3 + fk * 3.4)));
+      float r = 0.55 + 0.42 * sin(uTime * 0.11 + fk * 2.1);
+      float ang = acos(clamp(dot(vObj, cc), -1.0, 1.0));
+      float edge = ang - r;
+      best = max(best, -edge);
+      ring += exp(-pow(edge / 0.028, 2.0));
+    }
+    float lit = smoothstep(-0.02, 0.05, best);
+    col = mix(grey, col * 1.08, lit);
+    col += uStyleColor * min(ring, 1.0) * (0.7 + night * 1.4);
+  } else if (uStyle > 4.5 && uStyle < 5.5) {
+    // Seasons: a year every minute. Autumn warms the land; winter snows in
+    // from the poles, never across the sea at the equator.
+    float year = uTime * 0.105;
+    float autumn = smoothstep(0.1, 0.9, sin(year)) ;
+    float winter = smoothstep(0.2, 0.95, sin(year - 1.6));
+    vec3 warm = col * vec3(1.25, 0.86, 0.5);
+    col = mix(col, warm, autumn * 0.75 * (1.0 - wet));
+    float lat = abs(vObj.y) + (dn(vObj * 9.0) - 0.5) * 0.18;
+    float snow = smoothstep(0.92 - winter * 0.3, 0.98 - winter * 0.3, lat);
+    col = mix(col, uLightColor * wrap * vec3(0.92, 0.96, 1.0), snow * mix(0.95, 0.55, wet));
+  } else if (uStyle > 5.5) {
+    // Lanterns: warm points scattered on the sea (6) or on land (7), bright on
+    // the night side and faint by day.
+    float K = uStyle > 6.5 ? 46.0 : 64.0;
+    vec3 q = vObj * K;
+    vec3 i = floor(q);
+    vec3 f = fract(q);
+    vec3 h = vec3(dh(i), dh(i + 17.1), dh(i + 41.7));
+    float on = step(dh(i + 7.3), uStyle > 6.5 ? 0.16 : 0.22);
+    float mask = uStyle > 6.5 ? 1.0 - wet : wet;
+    float d = length(f - (0.2 + h * 0.6));
+    float px = max(fwidth(q.x) + fwidth(q.y), 0.0001);
+    float core = smoothstep(0.09 + px, 0.0, d);
+    float flick = 0.75 + 0.25 * sin(uTime * (2.0 + h.x * 3.0) + h.y * 30.0);
+    col += uStyleColor * core * on * mask * flick * (0.02 + night * 2.6);
   }
 
   float fres = pow(1.0 - max(dot(N, V), 0.0), 2.5);
@@ -208,7 +265,12 @@ float n11(float x) { float i = floor(x); float f = fract(x); f = f * f * (3.0 - 
 void main() {
   float r = length(vLocal.xy);
   float t = (r - uInner) / (uOuter - uInner);
-  float bands = n11(t * 38.0) * 0.6 + n11(t * 113.0) * 0.4;
+  // Each band set fades to its mean as it nears a pixel wide, so the fine
+  // rings never shimmer at a distance.
+  float fw = fwidth(t);
+  float b1 = mix(n11(t * 38.0), 0.5, smoothstep(0.25, 0.8, fw * 38.0));
+  float b2 = mix(n11(t * 113.0), 0.5, smoothstep(0.25, 0.8, fw * 113.0));
+  float bands = b1 * 0.6 + b2 * 0.4;
   float gap = smoothstep(0.02, 0.06, abs(t - 0.62));
   float a = bands * gap * smoothstep(0.0, 0.06, t) * (1.0 - smoothstep(0.9, 1.0, t));
   vec3 L = uLightMode > 0.5 ? normalize(uLightDir) : normalize(uLightPos - vWorld);
@@ -241,10 +303,23 @@ export interface PlanetOptions {
   tilt?: number;
   spin?: number;
   segments?: number;
+  /** 4 restoration caps, 5 seasons, 6 lanterns on water, 7 lanterns on land. */
+  style?: 0 | 4 | 5 | 6 | 7;
+  styleColor?: string;
+  /** Sample the map with hard texels (pixel-art worlds). */
+  nearest?: boolean;
 }
 
 const blank = new THREE.DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1);
 blank.needsUpdate = true;
+
+function cloudSeed(key: string) {
+  if (key === 'earth') return new THREE.Vector3(0, 0, 1);
+  let h = 2166136261;
+  for (const ch of key) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  const u = (h >>> 0) / 4294967296;
+  return new THREE.Vector3(u, u > 0.5 ? 1 : 0, 1 + (((h >>> 8) & 1) as number));
+}
 
 export function createPlanet(o: PlanetOptions): Body & { surface: THREE.Mesh } {
   const group = new THREE.Group();
@@ -253,7 +328,7 @@ export function createPlanet(o: PlanetOptions): Body & { surface: THREE.Mesh } {
   group.add(axis);
   const seg = o.segments ?? 128;
   const uniforms = {
-    uMap: { value: texture(o.map) },
+    uMap: { value: texture(o.map, o.nearest ? { nearest: true } : {}) },
     uNight: { value: o.night ? texture(o.night) : blank },
     uClouds: { value: o.clouds ? texture(o.clouds, { color: false }) : blank },
     uWater: { value: o.water ? texture(o.water, { color: false }) : blank },
@@ -265,11 +340,14 @@ export function createPlanet(o: PlanetOptions): Body & { surface: THREE.Mesh } {
     uGlowMode: { value: o.glowMode ?? 0 },
     uGlowGain: { value: o.glowGain ?? 2.5 },
     uCloudShift: { value: 0 },
+    uCloudSeed: { value: cloudSeed(o.key) },
     uTime: { value: 0 },
     uExposure: { value: 1 },
     uCloudGain: { value: o.cloudGain ?? 0.75 },
     uDetail: { value: o.detail ?? 0 },
     uLoaded: { value: 0 },
+    uStyle: { value: o.style ?? 0 },
+    uStyleColor: { value: new THREE.Color(o.styleColor ?? '#ffb45a') },
     ...lightUniforms(o.light),
   };
   const surface = new THREE.Mesh(
@@ -341,18 +419,24 @@ export function createPlanet(o: PlanetOptions): Body & { surface: THREE.Mesh } {
     loaded = true;
   });
   const center = new THREE.Vector3();
+  let near = false;
   return {
     key: o.key,
     radius: o.radius,
     group,
     surface,
-    update(time, dt) {
+    update(time, dt, camera) {
       surface.rotation.y += (o.spin ?? 0.05) * dt;
       uniforms.uTime.value = time;
       if (loaded && uniforms.uLoaded.value < 1)
         uniforms.uLoaded.value = Math.min(1, uniforms.uLoaded.value + Math.max(dt, 0.016) * 1.5);
       uniforms.uCloudShift.value = (time * 0.0016) % 1;
       group.getWorldPosition(center);
+      // Full-size maps only once the camera is close enough to see texels.
+      if (!near && camera.position.distanceTo(center) < o.radius * 8) {
+        near = true;
+        promote([o.map, o.night, o.clouds, o.water]);
+      }
       shellU.uCenter.value.copy(center);
       if (ringU) ringU.uCenter!.value.copy(center);
     },

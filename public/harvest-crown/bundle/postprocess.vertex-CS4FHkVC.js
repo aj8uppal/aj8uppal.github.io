@@ -1,0 +1,1 @@
+export{P as postprocessVertexShaderWGSL}from"./babylon-BwITB9hk.js";

@@ -14,7 +14,7 @@
   --bg: #020207;
   --ink: #f2f3f8;
   --ink-2: #c5cada;
-  --ink-3: #9399b0;
+  --ink-3: #a8aec4;
   --line: rgb(255 255 255 / 0.11);
   --line-2: rgb(255 255 255 / 0.2);
   --panel: rgb(10 11 20 / 0.7);
@@ -278,7 +278,7 @@ em {
   position: absolute;
   inset: 0 0 -40px;
   z-index: -1;
-  background: linear-gradient(rgb(2 2 7 / 0.7), transparent);
+  background: linear-gradient(rgb(2 2 7 / 0.85), transparent);
   pointer-events: none;
 }
 .nav__brand {
@@ -289,6 +289,7 @@ em {
   font: 600 13px/1 var(--f-display);
   letter-spacing: 0.2em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 .nav__glyph {
   width: 22px;
@@ -317,6 +318,9 @@ em {
   display: flex;
   gap: clamp(14px, 2.2vw, 34px);
   margin-left: auto;
+}
+.nav__contact {
+  display: none;
 }
 .nav__links a,
 .nav__sound {
@@ -435,22 +439,52 @@ em {
     width 0.5s var(--ease-out),
     background 0.4s;
 }
+/* Until the rail is in use only its ticks take the pointer: the hidden
+   labels' boxes would otherwise sit over the right-hand clips and steal
+   their clicks. */
+.rail a {
+  pointer-events: none;
+  height: 24px;
+}
+.rail a::after {
+  pointer-events: auto;
+  border-block: 11px solid transparent;
+  border-left: 14px solid transparent;
+  background-clip: padding-box;
+}
+.rail:hover a,
+.rail:focus-within a {
+  pointer-events: auto;
+}
 .rail__n,
 .rail__label {
+  visibility: hidden;
   opacity: 0;
   transform: translateX(6px);
   transition:
     opacity 0.3s,
-    transform 0.4s var(--ease-out);
+    transform 0.4s var(--ease-out),
+    visibility 0s 0.3s;
+  text-shadow: 0 0 10px rgb(2 2 7 / 0.95);
 }
 .rail:hover .rail__label,
-.rail a:focus-visible .rail__label {
+.rail:focus-within .rail__label {
+  visibility: visible;
   opacity: 1;
   transform: none;
+  transition-delay: 0s;
 }
-.rail:hover .rail__n {
+.rail:hover .rail__n,
+.rail:focus-within .rail__n {
+  visibility: visible;
   opacity: 0.6;
   transform: none;
+  transition-delay: 0s;
+}
+@media (hover: none) {
+  .rail {
+    display: none;
+  }
 }
 .rail a:hover,
 .rail a[aria-current] {
@@ -458,18 +492,20 @@ em {
 }
 .rail a[aria-current]::after {
   width: 26px;
-  background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
+  /* background-color only: the shorthand would reset the clip and paint the
+     tick's transparent hit area. */
+  background-color: var(--accent);
+  filter: drop-shadow(0 0 4px var(--accent));
 }
 
 .hud {
   position: fixed;
-  inset: auto 0 0;
+  inset: auto auto 0 0;
   z-index: 30;
   padding: 0 var(--gutter) 18px;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  gap: 4px;
+  align-items: baseline;
   pointer-events: none;
   font: 500 10.5px/1.5 var(--f-mono);
   letter-spacing: 0.12em;
@@ -484,23 +520,12 @@ em {
 .no-gl .hud {
   display: none;
 }
-.hud__left,
-.hud__right {
-  display: flex;
-  gap: 22px;
-  align-items: baseline;
-}
-.hud__left [data-hud='sector'] {
+.hud [data-hud='sector'] {
   color: var(--ink);
 }
 .hud__k {
   color: var(--accent);
   margin-right: 6px;
-}
-.hud__right span span:not(.hud__k) {
-  display: inline-block;
-  min-width: 6ch;
-  font-variant-numeric: tabular-nums;
 }
 
 .labels {
@@ -545,9 +570,19 @@ em {
   border-radius: 4px;
   background: rgb(2 2 7 / 0.6);
 }
-.label:hover .label__name {
+.label:hover .label__name,
+.label.is-hot .label__name {
   background: var(--c);
   color: #050508;
+}
+.label.is-hot .label__dot {
+  transform: translateY(5px) scale(1.5);
+  background: color-mix(in srgb, var(--c) 30%, transparent);
+}
+.label__dot {
+  transition:
+    transform 0.4s var(--ease-out),
+    background 0.4s;
 }
 
 .cursor {
@@ -730,6 +765,70 @@ main > section {
   color: var(--ink);
   font-size: 1.2em;
 }
+.hero__act {
+  display: grid;
+  justify-items: end;
+  gap: 16px;
+}
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.hero__reach {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  font: 500 12px/1 var(--f-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.hero__reach a {
+  color: var(--ink-2);
+  text-decoration: none;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line-2);
+  transition:
+    color 0.3s,
+    border-color 0.3s;
+}
+.hero__reach a:hover,
+.hero__reach a:focus-visible {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+.hero__reach-k {
+  color: var(--ink-3);
+}
+/* The hero enters in CSS, from the first paint: the scene's module arrives
+   later on a slow phone, and copy it hid again after it had been read looked
+   like the page breaking. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero__title > span {
+    animation: hero-rise 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .hero__title > span + span {
+    animation-delay: 0.1s;
+  }
+  .hero [data-enter] {
+    animation: hero-enter 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--d, 0s);
+  }
+}
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.3em) rotate(3deg);
+  }
+}
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
 .hero__cta {
   display: inline-flex;
   align-items: center;
@@ -813,7 +912,7 @@ main > section {
 /* System */
 
 .system {
-  height: 230vh;
+  height: 170vh;
 }
 .system__stage {
   display: flex;
@@ -853,14 +952,38 @@ main > section {
 .system__list a {
   display: grid;
   grid-template-columns: auto 1fr;
+  align-items: center;
   column-gap: 12px;
-  padding: 12px 0;
+  padding: 8px 0;
   border-bottom: 1px solid var(--line);
   text-decoration: none;
-  transition: padding 0.4s var(--ease-out);
+  transition: transform 0.4s var(--ease-out);
 }
-.system__list a:hover {
-  padding-left: 8px;
+.system__list a:hover,
+.system__list a:focus-visible {
+  transform: translateX(6px);
+}
+.system__thumb {
+  grid-row: span 2;
+  width: 64px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 6px;
+  outline: 1px solid color-mix(in srgb, var(--c) 55%, transparent);
+  outline-offset: -1px;
+  box-shadow: 0 0 18px -6px var(--c);
+  background: #0b0c14;
+}
+.system__phone {
+  margin-left: 8px;
+  padding: 1px 5px;
+  border: 1px solid color-mix(in srgb, var(--c) 50%, transparent);
+  border-radius: 4px;
+  font: 500 11px/1.4 var(--f-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  vertical-align: 1px;
 }
 .system__n {
   grid-row: span 2;
@@ -868,24 +991,30 @@ main > section {
   color: var(--c);
 }
 .system__name {
+  align-self: end;
   font: 600 15px/1.3 var(--f-display);
   letter-spacing: -0.01em;
 }
 .system__kind {
-  font-size: 13px;
+  align-self: start;
+  font-size: 12.5px;
+  line-height: 1.4;
   color: var(--ink-3);
 }
 
 /* Worlds */
 
+/* Each world costs its own height in scroll: 100vh of flight in from the
+   last one, the rest held. 140vh keeps a beat to read without twelve screens
+   of drift. */
 .world {
-  height: 240vh;
+  height: 140vh;
 }
 .world__stage {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: 24px;
-  align-items: center;
+  align-items: safe center;
   padding: var(--nav-h) var(--gutter) 40px;
 }
 .world__copy {
@@ -917,6 +1046,10 @@ main > section {
 .world__num {
   color: var(--c);
 }
+.world__of {
+  color: var(--ink-3);
+  margin-left: 4px;
+}
 .world__kind {
   margin-left: 8px;
   padding: 6px 10px;
@@ -928,7 +1061,7 @@ main > section {
 .world__name {
   --len: 8;
   margin: 0;
-  font: 680 clamp(44px, min(7.6vw, calc(70vw / var(--len))), 136px) / 0.92 var(--f-display);
+  font: 680 clamp(44px, min(7.6vw, calc(60vw / var(--len)), 15svh), 136px) / 0.92 var(--f-display);
   letter-spacing: -0.05em;
   text-wrap: balance;
 }
@@ -971,7 +1104,7 @@ main > section {
 }
 .world__facts dd {
   margin: 8px 0 0;
-  font: 500 10.5px/1.45 var(--f-mono);
+  font: 500 12px/1.45 var(--f-mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -986,6 +1119,30 @@ main > section {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+/* A desktop-only game says so before the tap on a touch screen, and its Play
+   button steps back, so a phone visitor is not sent into a download it cannot
+   use. */
+.world__desk {
+  display: none;
+}
+@media (pointer: coarse) {
+  .world__desk {
+    display: block;
+    margin: 16px 0 0;
+    padding-left: 12px;
+    border-left: 2px solid var(--c);
+    font: 500 14px/1.45 var(--f-text);
+    color: var(--ink-2);
+  }
+  .world[data-desktop] .world__actions {
+    margin-top: 16px;
+  }
+  .world[data-desktop] .world__actions .btn--primary {
+    background: rgb(8 9 16 / 0.4);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+  }
 }
 .world__stack {
   margin: 20px 0 0;
@@ -1002,13 +1159,12 @@ main > section {
   transform: perspective(1400px) rotateX(var(--rx, 0deg))
     rotateY(calc(var(--ry, 0deg) + var(--tilt-base)));
   transform-style: preserve-3d;
-  transition: transform 0.2s linear;
 }
 .world__media {
   position: absolute;
-  right: calc(var(--gutter) + 2vw);
-  bottom: 11vh;
-  width: min(29vw, 480px);
+  right: calc(var(--gutter) + 1vw);
+  bottom: max(9vh, 56px);
+  width: min(45vw, 780px, calc((100svh - var(--nav-h) - 18vh) * 16 / 9));
   z-index: 3;
 }
 .world[data-side='right'] .world__media {
@@ -1029,6 +1185,14 @@ main > section {
     0 50px 100px -30px rgb(0 0 0 / 0.9),
     0 0 80px -24px var(--c);
   transform: translateZ(0);
+}
+.media__frame .media__poster {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+.media__frame video {
+  position: relative;
 }
 .media__frame video,
 .media__frame img,
@@ -1057,15 +1221,109 @@ main > section {
 .media.is-hover .media__glare {
   opacity: 1;
 }
+.media__play {
+  position: absolute;
+  inset: auto 16px 16px auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 10px 12px;
+  border-radius: 999px;
+  background: rgb(5 6 12 / 0.72);
+  backdrop-filter: blur(8px);
+  font: 600 14px/1 var(--f-text);
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.35s,
+    transform 0.5s var(--ease-out);
+}
+.media__play::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 10px solid var(--c);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  margin-left: 4px;
+}
+.media__frame:hover .media__play,
+.media__frame:focus-visible .media__play {
+  opacity: 1;
+  transform: none;
+}
+.media__stack {
+  margin-left: auto;
+  text-transform: none;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  opacity: 0.8;
+}
+.world__platforms {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.world__platforms li {
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  font: 500 12px/1.2 var(--f-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.world__platforms li[data-p='phone'],
+.world__platforms li[data-p^='ios'] {
+  border-color: color-mix(in srgb, var(--c) 60%, transparent);
+  color: var(--ink);
+}
 .media figcaption {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 12px;
-  font: 500 10.5px/1.3 var(--f-mono);
+  font: 500 12px/1.3 var(--f-mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-3);
+}
+.media__toggle {
+  margin-left: auto;
+  padding: 6px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: rgb(8 9 16 / 0.5);
+  color: var(--ink-2);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.media__toggle:hover,
+.media__toggle:focus-visible {
+  color: var(--ink);
+  border-color: var(--c);
+}
+/* Mono labels sit over a live scene: a soft dark halo keeps them legible
+   over the bright parts of a planet or nebula. */
+.world__facts dd,
+.world__platforms li,
+.media figcaption,
+.world__index,
+.system__kind,
+.hud,
+.eyebrow,
+.timeline__when,
+.timeline__note,
+.nav__links a {
+  text-shadow:
+    0 0 10px rgb(2 2 7 / 0.9),
+    0 0 2px rgb(2 2 7 / 0.9);
 }
 .media__live {
   width: 6px;
@@ -1087,7 +1345,7 @@ main > section {
 /* Belt */
 
 .belt {
-  height: 340vh;
+  height: 260vh;
 }
 .belt__stage {
   display: grid;
@@ -1114,6 +1372,12 @@ main > section {
 }
 .belt__hint {
   color: var(--ink-3);
+}
+.belt__hint--flat {
+  display: none;
+}
+.reduce .belt__hint {
+  display: none !important;
 }
 .belt__viewport {
   width: 100%;
@@ -1234,7 +1498,7 @@ main > section {
 /* Earth */
 
 .earth {
-  height: 220vh;
+  height: 170vh;
 }
 .earth__stage {
   display: grid;
@@ -1306,7 +1570,7 @@ main > section {
 /* Origin */
 
 .origin {
-  height: 220vh;
+  height: 170vh;
 }
 .origin__stage {
   display: grid;
@@ -1370,7 +1634,7 @@ main > section {
   box-shadow: 0 0 10px var(--accent);
 }
 .timeline__when {
-  font: 500 10.5px/1.6 var(--f-mono);
+  font: 500 12px/1.6 var(--f-mono);
   letter-spacing: 0.06em;
   color: var(--ink-3);
 }
@@ -1425,7 +1689,7 @@ main > section {
 /* Contact */
 
 .contact {
-  height: 180vh;
+  height: 150vh;
 }
 .contact__stage {
   display: flex;
@@ -1535,9 +1799,16 @@ main > section {
   .world[data-side='right'] .world__copy {
     grid-column: 6 / span 7;
   }
+  .world__copy,
+  .world[data-side='right'] .world__copy {
+    grid-column: span 6;
+  }
+  .world[data-side='right'] .world__copy {
+    grid-column: 7 / span 6;
+  }
   .world__media {
-    width: min(34vw, 400px);
-    bottom: 5vh;
+    width: min(42vw, 480px);
+    bottom: 6vh;
   }
   .earth__copy {
     grid-column: span 8;
@@ -1552,11 +1823,42 @@ main > section {
 
 /* Short desktop windows: give the copy room. */
 @media (min-width: 760px) and (max-height: 820px) {
+  .hud {
+    display: none;
+  }
+  .system__title {
+    font-size: clamp(40px, 4.6vw, 72px);
+  }
+  .system__lead {
+    margin: 14px 0 18px;
+    font-size: 15px;
+  }
+  .system__list a {
+    padding: 5px 0;
+  }
+  .system__thumb {
+    width: 52px;
+    height: 29px;
+  }
+  .world__index {
+    margin-bottom: 12px;
+  }
+  .world__name {
+    font-size: clamp(40px, min(6.4vw, calc(52vw / var(--len)), 13svh), 108px);
+  }
+  .world__headline {
+    margin-top: 10px;
+    font-size: clamp(22px, 2vw, 30px);
+  }
   .world__body {
     font-size: 15px;
+    margin-top: 12px;
   }
   .world__facts {
     margin-top: 18px;
+  }
+  .world__platforms {
+    margin-top: 14px;
   }
   .world__actions {
     margin-top: 18px;
@@ -1564,22 +1866,23 @@ main > section {
   .world__stack {
     display: none;
   }
-  .origin__copy .notes {
-    display: none;
+  /* Origin has more to say than a short screen holds: let it flow rather
+     than hide its notes. */
+  .origin {
+    height: auto;
+  }
+  .origin > .origin__stage {
+    position: relative;
+    height: auto;
+    min-height: 100svh;
+    padding-top: calc(var(--nav-h) + 32px);
+    padding-bottom: 12vh;
   }
   .origin__copy {
     grid-template-columns: 1fr;
   }
   .origin__lead {
     font-size: 15px;
-  }
-  .timeline {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 24px;
-    border-left: 0;
-  }
-  .timeline__note {
-    display: none;
   }
 }
 
@@ -1598,11 +1901,51 @@ main > section {
   .hero__tele {
     display: none;
   }
+  /* The sound toggle is its icon alone here; the label stays for readers. */
   .nav__sound {
     padding: 8px 12px;
   }
+  .nav__sound [data-sound-label] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .nav__contact {
+    display: block;
+    margin-left: auto;
+    margin-right: 14px;
+    padding: 8px 0;
+    font: 500 12px/1 var(--f-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+  }
   .hud {
     padding-bottom: 12px;
+  }
+  .hero__act {
+    justify-items: start;
+  }
+  .hero__ctas {
+    justify-content: flex-start;
+  }
+  .hero__kicker {
+    width: fit-content;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgb(2 2 7 / 0.6);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+  .belt__hint--ring {
+    display: none;
+  }
+  .belt__hint--flat {
+    display: inline;
   }
   .hero__foot {
     flex-direction: column;
@@ -1636,7 +1979,7 @@ main > section {
   }
   .system__stage {
     max-width: none;
-    padding: 46svh var(--gutter) 12svh;
+    padding: 40svh var(--gutter) 8svh;
     justify-content: flex-start;
   }
   .system__list {
@@ -1646,7 +1989,7 @@ main > section {
   .earth__stage,
   .origin__stage {
     display: block;
-    padding: 48svh var(--gutter) 14svh;
+    padding: 40svh var(--gutter) 6svh;
   }
   .world__copy::before,
   .earth__copy::before,
@@ -1677,7 +2020,7 @@ main > section {
   .belt__stage {
     display: block;
     justify-items: normal;
-    padding: 46svh 0 10svh;
+    padding: 38svh 0 8svh;
   }
   .belt__head {
     padding: 0 var(--gutter);
@@ -1700,7 +2043,7 @@ main > section {
     gap: 0;
   }
   .contact__stage {
-    padding: 40svh var(--gutter) 12svh;
+    padding: 34svh var(--gutter) 10svh;
   }
   .contact__stage::before {
     inset: 30% 0 0;
@@ -1731,12 +2074,25 @@ main > section {
   .nav__links {
     gap: 16px;
   }
+  .labels,
+  .belt__hint--ring {
+    display: none;
+  }
+  .belt__hint--flat {
+    display: inline;
+  }
   .system,
   .world,
+  .belt,
   .earth,
   .origin,
   .contact {
     height: auto;
+  }
+  .belt > .belt__stage {
+    position: relative;
+    height: auto;
+    padding-top: calc(var(--nav-h) + 24px);
   }
   .system > .system__stage,
   .world > .world__stage,
@@ -1795,8 +2151,29 @@ main > section {
   }
 }
 
-/* The belt lies flat on phones and under reduced motion. */
-@media (max-width: 719px) {
+/* The belt lies flat on phones (either way up), on touch screens, and under
+   reduced motion. */
+@media (max-width: 719px),
+  (max-height: 520px),
+  (hover: none),
+  (min-width: 760px) and (max-width: 1180px) and (max-aspect-ratio: 5 / 6) {
+  .belt {
+    height: auto;
+  }
+  .belt > .belt__stage {
+    position: relative;
+    height: auto;
+    min-height: 0;
+  }
+  .belt__hint--ring {
+    display: none;
+  }
+  .belt__hint--flat {
+    display: inline;
+  }
+  .belt__all {
+    margin: 24px var(--gutter) 0;
+  }
   /* Chrome honours justify-items in block layout too, so the desktop
      centring would shrink-wrap the strip to its full content width. */
   .belt__viewport {
@@ -1876,8 +2253,32 @@ main > section {
 /* Without script nothing renders live and nothing plays: say nothing about it. */
 html:not(.js) .nav__sound,
 html:not(.js) .hero__tele,
+html:not(.js) .belt__hint,
+html:not(.js) .media__frame video,
 .no-gl .hero__tele {
   display: none;
+}
+/* Without script the ring is never laid out: show the belt as a grid. */
+html:not(.js) .belt {
+  height: auto;
+}
+html:not(.js) .belt__stage {
+  position: relative;
+  height: auto;
+}
+html:not(.js) .belt__ring {
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  transform: none;
+}
+html:not(.js) .belt__card {
+  position: relative;
+  transform: none;
+  opacity: 1;
 }
 
 /* Where copy flows under the nav rather than pinning below it, back the nav. */
@@ -1885,5 +2286,75 @@ html:not(.js) .hero__tele,
   .nav::before {
     inset: 0 0 -28px;
     background: linear-gradient(rgb(2 2 7 / 0.94) 62%, rgb(2 2 7 / 0));
+  }
+}
+
+/* Portrait tablets: the camera frames worlds at the top (see director.ts), so
+   the copy flows beneath them as on a phone, at a tablet's type sizes. */
+@media (min-width: 760px) and (max-width: 1180px) and (max-aspect-ratio: 5 / 6) {
+  .rail,
+  .hud,
+  .hero__tele,
+  .labels {
+    display: none;
+  }
+  [data-shot] > [class$='__stage'] {
+    position: relative;
+    height: auto;
+    min-height: 100svh;
+  }
+  .hero > .hero__stage {
+    position: sticky;
+    height: 100svh;
+  }
+  .system,
+  .world,
+  .belt,
+  .earth,
+  .origin,
+  .contact {
+    height: auto;
+  }
+  .system__stage {
+    max-width: none;
+    padding: 44svh var(--gutter) 10svh;
+    justify-content: flex-start;
+  }
+  .world__stage,
+  .earth__stage,
+  .origin__stage {
+    display: block;
+    padding: 46svh var(--gutter) 12svh;
+  }
+  .world__copy,
+  .world[data-side='right'] .world__copy {
+    max-width: 640px;
+  }
+  .world__copy::before,
+  .earth__copy::before,
+  .origin__copy::before {
+    inset: -40px auto -40px calc(var(--gutter) * -1);
+    width: 100vw;
+    background: linear-gradient(
+      rgb(2 2 7 / 0),
+      rgb(2 2 7 / 0.82) 18%,
+      rgb(2 2 7 / 0.82) 82%,
+      rgb(2 2 7 / 0)
+    );
+  }
+  .world__media,
+  .world[data-side='right'] .world__media {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    margin-top: 34px;
+    --tilt-base: 0deg;
+  }
+  .belt__stage {
+    display: block;
+    padding: 40svh 0 10svh;
+  }
+  .contact__stage {
+    padding: 40svh var(--gutter) 12svh;
   }
 }

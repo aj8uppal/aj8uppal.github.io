@@ -1,0 +1,111 @@
+{
+  "assets": {
+    "terrain.quay-north": "assets/zones/test-canal/terrain/quay-north.{lighting}.png",
+    "terrain.quay-south": "assets/zones/test-canal/terrain/quay-south.{lighting}.png",
+    "terrain.towpath": "assets/zones/test-canal/terrain/towpath.{lighting}.png",
+    "terrain.footbridge-deck": "assets/zones/test-canal/terrain/footbridge-deck.{lighting}.png",
+    "terrain.stairs": "assets/zones/test-canal/terrain/stairs.{lighting}.png"
+  },
+  "sprites": [
+    {
+      "id": "terrain.quay-north",
+      "asset": "terrain.quay-north",
+      "u": 0,
+      "v": 0,
+      "z": 2,
+      "pivot": {
+        "x": 96,
+        "y": 0
+      },
+      "box": {
+        "u0": 0,
+        "u1": 30,
+        "v0": 0,
+        "v1": 6,
+        "z0": -0.6,
+        "z1": 2
+      },
+      "floorOf": "quay-north"
+    },
+    {
+      "id": "terrain.quay-south",
+      "asset": "terrain.quay-south",
+      "u": 0,
+      "v": 22,
+      "z": 2,
+      "pivot": {
+        "x": 128,
+        "y": 0
+      },
+      "box": {
+        "u0": 0,
+        "u1": 30,
+        "v0": 22,
+        "v1": 30,
+        "z0": -0.6,
+        "z1": 2
+      },
+      "floorOf": "quay-south"
+    },
+    {
+      "id": "terrain.towpath",
+      "asset": "terrain.towpath",
+      "u": 0,
+      "v": 10,
+      "z": 0.4,
+      "pivot": {
+        "x": 64,
+        "y": 0
+      },
+      "box": {
+        "u0": 0,
+        "u1": 30,
+        "v0": 10,
+        "v1": 14,
+        "z0": -0.6,
+        "z1": 0.4
+      },
+      "floorOf": "towpath"
+    },
+    {
+      "id": "terrain.footbridge-deck",
+      "asset": "terrain.footbridge-deck",
+      "u": 14,
+      "v": 5,
+      "z": 2.6,
+      "pivot": {
+        "x": 288,
+        "y": 0
+      },
+      "box": {
+        "u0": 14,
+        "u1": 16.5,
+        "v0": 5,
+        "v1": 23,
+        "z0": 2.3,
+        "z1": 2.6
+      },
+      "floorOf": "footbridge"
+    },
+    {
+      "id": "terrain.stairs",
+      "asset": "terrain.stairs",
+      "u": 4,
+      "v": 6,
+      "z": 1.9,
+      "pivot": {
+        "x": 64,
+        "y": 0
+      },
+      "box": {
+        "u0": 4,
+        "u1": 6,
+        "v0": 6,
+        "v1": 10,
+        "z0": -0.6,
+        "z1": 1.9
+      },
+      "floorOf": "stairs"
+    }
+  ]
+}

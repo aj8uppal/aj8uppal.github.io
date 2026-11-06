@@ -14,6 +14,10 @@ export function asset(name: string): ImageMetadata {
   return mod.default;
 }
 
+export function hasAsset(name: string): boolean {
+  return `/src/assets/${name}.webp` in files;
+}
+
 export interface Sources {
   avif: string;
   webp: string;

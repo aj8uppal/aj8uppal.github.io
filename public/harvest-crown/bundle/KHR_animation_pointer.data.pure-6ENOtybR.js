@@ -1,0 +1,1 @@
+export{b as _RegisterKHRAnimationPointerData}from"./babylon-BwITB9hk.js";

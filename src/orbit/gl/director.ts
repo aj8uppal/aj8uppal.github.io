@@ -135,15 +135,16 @@ export function createDirector(sys: System, root: HTMLElement, pointer: THREE.Ve
       // Portrait screens are width-bound: keep the world within ~70% of the width.
       const aspect = window.innerWidth / window.innerHeight;
       const size = narrow ? Math.min(s.size * 0.62, 0.7 * aspect) : s.size;
-      const extent = w.planet.rings ? 1.35 : w.planet.kind === 'voxel' ? 1.25 : 1;
+      const extent = w.planet.extent ?? 1;
       const d = distanceFor(w.planet.radius * extent, size, out.fov);
       C.copy(P)
         .addScaledVector(o, Math.cos(el) * Math.cos(az) * d)
         .addScaledVector(tg, Math.cos(el) * Math.sin(az) * d)
         .addScaledVector(UP, Math.sin(el) * d);
       look(out, C, P, (i % 2 ? 1 : -1) * 0.05);
+      // The capture sits low on the far side; the world rises behind it.
       const side = i % 2 === 0 ? 1 : -1;
-      out.shift.set(narrow ? 0 : side * 0.4, narrow ? 0.44 : 0.04);
+      out.shift.set(narrow ? 0 : side * 0.5, narrow ? 0.44 : 0.24);
       out.orbits = 0.15;
       return;
     }
@@ -239,7 +240,9 @@ export function createDirector(sys: System, root: HTMLElement, pointer: THREE.Ve
     const u = (y - s.end) / Math.max(1, next.start - s.end);
     shot(s.shot, 1, time, a);
     shot(next.shot, 0, time, b);
-    const e = smoother(u);
+    // Position leads slightly, so the next world is in frame by the time its
+    // copy has settled rather than half a second after.
+    const e = smoother(Math.min(1, u * 1.2));
     const dist = a.pos.distanceTo(b.pos);
     out.pos.lerpVectors(a.pos, b.pos, e);
     // Arc up and away from the hole so a hop between worlds never threads it.
