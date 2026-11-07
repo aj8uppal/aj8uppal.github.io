@@ -175,9 +175,11 @@ em {
   background-position: 50% 40%;
   background-color: var(--bg);
 }
-.ready:not(.no-gl) .backdrop {
-  opacity: 0;
-  transition: opacity 2s;
+/* The still is only for pages with no scene. With script, the page opens on
+   black and the scene fades in; showing the still first meant a large black
+   hole that crossfaded to the smaller ignition framing. */
+.js:not(.no-gl) .backdrop {
+  display: none;
 }
 .grain {
   display: none;

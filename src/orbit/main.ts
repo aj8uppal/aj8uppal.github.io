@@ -186,10 +186,11 @@ async function boot(canvas: HTMLCanvasElement) {
 
     const info = director.at(scrollY(), time, target);
 
-    // Ignition: the disk lights from nothing and the camera settles in.
+    // Ignition: the disk lights from nothing while the canvas fades in from
+    // black. The camera holds its framing; flying in from twice the distance
+    // read as the black hole starting small.
     if (ignite < 1) ignite = Math.min(1, (now - start) / 2600);
     const ig = 1 - Math.pow(1 - ignite, 3);
-    if (info.index === 0 && ignite < 1) target.pos.multiplyScalar(1 + (1 - ig) * 0.9);
 
     const k = reduce.matches || firstFrame ? 1 : 1 - Math.exp(-dt * 7);
     if (reduce.matches) {
