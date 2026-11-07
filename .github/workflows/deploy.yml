@@ -91,6 +91,10 @@ jobs:
     steps:
       - id: deploy
         uses: actions/deploy-pages@v4
+        with:
+          # ~670 MB of files can take Pages more than the default 10 minutes
+          # to sync; two deploys on 2026-11-07 timed out at syncing_files.
+          timeout: 1800000
 
   verify:
     needs: deploy
