@@ -141,15 +141,20 @@ export function createVoxel(key: string, radius: number, light: Light): Body {
       });
     }
   }
-  const box = new THREE.BoxGeometry(size * 0.98, size * 0.98, size * 0.98);
+  // Blocks are full size with the seams drawn on: a real 2% gap between
+  // blocks went sub-pixel at viewing distance and flickered as the world spun.
+  const box = new THREE.BoxGeometry(size, size, size);
   const mat = new THREE.ShaderMaterial({
-    uniforms: { ...lightUniforms(light) },
+    uniforms: { ...lightUniforms(light), uInvSize: { value: 1 / size } },
     vertexShader: /* glsl */ `
+      uniform float uInvSize;
       varying vec3 vColor;
       varying vec3 vN;
       varying vec3 vWorld;
+      varying vec3 vLocal;
       void main() {
         vColor = instanceColor;
+        vLocal = position * uInvSize;
         vec4 w = modelMatrix * instanceMatrix * vec4(position, 1.0);
         vWorld = w.xyz;
         vN = normalize(mat3(modelMatrix) * normal);
@@ -160,12 +165,24 @@ export function createVoxel(key: string, radius: number, light: Light): Body {
       varying vec3 vColor;
       varying vec3 vN;
       varying vec3 vWorld;
+      varying vec3 vLocal;
       uniform vec3 uLightPos;
       uniform vec3 uLightColor;
       void main() {
         vec3 L = normalize(uLightPos - vWorld);
         float d = max(dot(normalize(vN), L), 0.0);
-        gl_FragColor = vec4(vColor * uLightColor * (0.05 + d * 1.05), 1.0);
+        vec3 col = vColor * uLightColor * (0.05 + d * 1.05);
+        // Distance to the nearest edge of this face, in blocks. The seam is
+        // anti-aliased, and once it is thinner than a pixel it fades to the
+        // share of the pixel it covers instead of popping.
+        vec3 q = abs(vLocal);
+        float hi = max(q.x, max(q.y, q.z));
+        float lo = min(q.x, min(q.y, q.z));
+        float e = 0.5 - (q.x + q.y + q.z - hi - lo);
+        float w = max(fwidth(e), 1e-5);
+        const float line = 0.012;
+        float seam = (1.0 - smoothstep(line - w, line + w, e)) * min(1.0, line / w);
+        gl_FragColor = vec4(col * (1.0 - seam * 0.6), 1.0);
       }`,
   });
   const mesh = new THREE.InstancedMesh(box, mat, cells.length);

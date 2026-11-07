@@ -147,4 +147,63 @@ for (const [name, src, kind, w, h, q] of jobs) {
     console.log((name + '-512.webp').padEnd(22), (lo.length / 1024).toFixed(0).padStart(6), 'KB');
   }
 }
+
+// Glow masks, baked from the finished maps with the thresholds the surface
+// shader used to apply per pixel. Thresholding a filtered map at runtime made
+// thin lava cracks pop in and out as a world turned; a mask filters smoothly.
+const smooth = (a, b, x) => {
+  const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+};
+// The shader saw the map decoded to linear, then raised to 1/2.2.
+const toShader = (v) => {
+  const c = v / 255;
+  const lin = c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  return Math.pow(lin, 1 / 2.2);
+};
+const glows = [
+  // map, mask name, glow test on the shader's colour
+  [
+    'emberdeep',
+    'emberdeep-glow',
+    (r, g, b) => smooth(0.8, 0.95, r) * smooth(0.32, 0.08, b) * smooth(0.25, 0.6, r - g),
+  ],
+  ['ice', 'ice-glow', (r, g, b) => smooth(0.18, 0.42, Math.min(g, b) - r)],
+];
+for (const [map, name, test] of glows) {
+  const { data, info } = await sharp(path.join(OUT, map + '.webp'))
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const mask = Buffer.alloc(info.width * info.height);
+  for (let i = 0; i < mask.length; i++) {
+    const o = i * info.channels;
+    mask[i] = Math.round(
+      255 * test(toShader(data[o]), toShader(data[o + 1]), toShader(data[o + 2])),
+    );
+  }
+  const img = sharp(mask, { raw: { width: info.width, height: info.height, channels: 1 } });
+  const buf = await img.clone().webp({ quality: 90, effort: 6 }).toBuffer();
+  await writeFile(path.join(OUT, name + '.webp'), buf);
+  const lo = await img
+    .clone()
+    .resize(512, 256, { fit: 'fill', kernel: 'lanczos3' })
+    .webp({ quality: 85, effort: 6 })
+    .toBuffer();
+  await writeFile(path.join(OUT, name + '-512.webp'), lo);
+  manifest.push({
+    file: name + '.webp',
+    from: map + '.webp',
+    bytes: buf.length,
+    provenance: { derived: 'glow mask of ' + map + '.webp' },
+  });
+  console.log(
+    (name + '.webp').padEnd(22),
+    (buf.length / 1024).toFixed(0).padStart(6),
+    'KB',
+    '(512:',
+    (lo.length / 1024).toFixed(0),
+    'KB)',
+  );
+}
 await writeFile(path.join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');

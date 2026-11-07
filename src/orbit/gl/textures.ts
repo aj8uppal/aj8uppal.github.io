@@ -29,6 +29,10 @@ import lanternwake512 from '../textures/lanternwake-512.webp?url';
 import lanternRoads512 from '../textures/lantern-roads-512.webp?url';
 import moon512 from '../textures/moon-512.webp?url';
 import earthDay512 from '../textures/earth-day-512.webp?url';
+import emberdeepGlow from '../textures/emberdeep-glow.webp?url';
+import emberdeepGlow512 from '../textures/emberdeep-glow-512.webp?url';
+import iceGlow from '../textures/ice-glow.webp?url';
+import iceGlow512 from '../textures/ice-glow-512.webp?url';
 
 export const urls = {
   sky,
@@ -49,6 +53,8 @@ export const urls = {
   earthDayLo,
   earthNight,
   earthWater,
+  emberdeepGlow,
+  iceGlow,
 } as const;
 export type TextureKey = keyof typeof urls;
 
@@ -66,6 +72,8 @@ const small: Partial<Record<TextureKey, string>> = {
   moon: moon512,
   earthDay: earthDay512,
   earthDayLo: earthDay512,
+  emberdeepGlow: emberdeepGlow512,
+  iceGlow: iceGlow512,
 };
 
 const loader = new THREE.TextureLoader();

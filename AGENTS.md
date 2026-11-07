@@ -211,6 +211,20 @@ maps start on their `-512.webp` stand-ins and the full map is fetched as the
 camera closes in, then swapped in one per frame while the camera is settled
 (`gl/textures.ts`), so no texture upload lands mid-flight.
 
+Anything thinner than a pixel flickers as a world turns, and screenshots hide
+it. Pixel-art maps (`nearest`) are sampled with linear filtering and a
+texel-edge blend in the surface shader, never `NearestFilter`. Lava and ice
+glow come from masks baked by `prepare-orbit-textures.mjs`, not from
+thresholding the map at runtime. Blockhold's blocks are full size with drawn
+seams, not gaps. To check a change, hold a station at a fixed 60 fps step and
+count pixels whose brightness flips direction frame to frame; edges sweeping
+past count as motion, flips count as flicker. Outside the black hole's march
+sphere, the lensing bend is the share a straight path picks up from the camera
+outward (`fromCam` in `blackhole.ts`); a 2/b-ahead, 0-behind shortcut drew a
+seam across the sky in side-on views. Between stations a magnet in `main.ts`
+finishes a flight the visitor left halfway, by scrolling, so the camera stays
+tied to scroll position.
+
 ## `public/seventide/` is a build, and it has no server
 
 Seventide (the globe version) lives in `~/seventide-3d`; `public/seventide/` is its static build, made with

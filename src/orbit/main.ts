@@ -19,7 +19,7 @@ import { initReveals } from './ui/reveal';
 import { initMedia } from './ui/media';
 import { initBelt } from './ui/belt';
 import { initCursor } from './ui/cursor';
-import { initSound } from './ui/sound';
+import { initSound, soundFrame } from './ui/sound';
 import { initCounters } from './ui/counters';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -58,6 +58,92 @@ if (!reduce.matches) {
 }
 const scrollY = () => (lenis ? lenis.scroll : window.scrollY);
 
+/*
+ * Magnet: a flight never parks halfway. Once the scroll comes to rest between
+ * two stations, it finishes the trip to the nearer one, leaning the way the
+ * visitor was going. The camera still reads the scroll position, so scrubbing
+ * back and forth stays 1:1 with the flight; any wheel, touch or key cancels
+ * the pull at once. It only answers the visitor's own scrolling: link
+ * journeys (marked `nav` below) and a held scrollbar are left alone. Reduced
+ * motion has no Lenis, so no magnet.
+ */
+function initMagnet(director: Director) {
+  const l = lenis;
+  if (!l) return;
+  let timer = 0;
+  let dir = 1;
+  let pulling = false;
+  let lastInput = 0;
+  let held = false;
+  const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const release = () => {
+    if (!pulling) return;
+    pulling = false;
+    l.scrollTo(l.scroll, { immediate: true, force: true });
+  };
+  const input = () => {
+    lastInput = performance.now();
+    release();
+  };
+  for (const type of ['wheel', 'touchstart', 'touchmove', 'keydown'])
+    addEventListener(type, input, { capture: true, passive: true });
+  // A press is not a scroll, but a scrollbar drag is one the magnet must not fight.
+  addEventListener('pointerdown', () => ((held = true), release()), {
+    capture: true,
+    passive: true,
+  });
+  addEventListener('pointerup', () => (held = false), { capture: true, passive: true });
+  addEventListener('pointercancel', () => (held = false), { capture: true, passive: true });
+
+  const settle = () => {
+    if (pulling || held || l.isTouching || document.hidden) return;
+    if ((l.userData as { nav?: boolean }).nav) return;
+    // Nothing the visitor did moved the page lately: some other scroll did.
+    if (performance.now() - lastInput > 4000 && l.isScrolling !== 'native') return;
+    // Native momentum still running: wait for it to all but stop.
+    if (l.isScrolling === 'native' && Math.abs(l.velocity) > 1.5) {
+      timer = window.setTimeout(settle, 80);
+      return;
+    }
+    // Decide from where a wheel glide is heading, not where it is now.
+    const y = l.isScrolling === 'smooth' ? l.targetScroll : l.scroll;
+    const vh = innerHeight;
+    const st = director.stations;
+    for (let i = 0; i < st.length - 1; i++) {
+      const a = st[i]!;
+      const b = st[i + 1]!;
+      const gap = b.start - a.end;
+      if (y <= a.end || y >= b.start) continue;
+      // A gap much taller than a screen has something to read in it.
+      if (gap > vh * 1.25) return;
+      const u = (y - a.end) / gap;
+      if (u < 0.01 || u > 0.99) return;
+      const forward = dir > 0 ? u > 0.3 : u > 0.7;
+      const to = forward ? b.start + 2 : a.end - 2;
+      pulling = true;
+      l.scrollTo(to, {
+        duration: Math.min(1.3, 0.45 + (Math.abs(to - y) / vh) * 0.9),
+        easing: ease,
+        force: true,
+        onComplete: () => {
+          pulling = false;
+        },
+      });
+      return;
+    }
+  };
+  l.on('scroll', (s: Lenis) => {
+    if (s.direction) dir = s.direction;
+    clearTimeout(timer);
+    if (pulling || (s.userData as { nav?: boolean }).nav) return;
+    // A wheel glide creeps its last pixels for a second or more: pull once
+    // input has stopped and the glide is nearly home, rather than after it.
+    const left = Math.abs(s.targetScroll - s.animatedScroll);
+    if (s.isScrolling === 'smooth' && left < 24 && performance.now() - lastInput > 120) settle();
+    else timer = window.setTimeout(settle, 140);
+  });
+}
+
 /* In-page links travel through the scroll engine so the camera flies there. */
 document.addEventListener('click', (e) => {
   const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
@@ -66,7 +152,13 @@ document.addEventListener('click', (e) => {
   const el = id ? document.getElementById(id) : document.body;
   if (!el) return;
   e.preventDefault();
-  if (lenis) lenis.scrollTo(el, { duration: 2.2, easing: (t) => 1 - Math.pow(1 - t, 4) });
+  if (lenis)
+    lenis.scrollTo(el, {
+      duration: 2.2,
+      easing: (t) => 1 - Math.pow(1 - t, 4),
+      // The magnet leaves a link journey alone.
+      userData: { nav: true },
+    });
   else el.scrollIntoView();
   history.replaceState(null, '', '#' + id);
   if (el.hasAttribute('tabindex') || el.matches('h1,h2,h3,section'))
@@ -145,6 +237,7 @@ async function boot(canvas: HTMLCanvasElement) {
   addEventListener('resize', remeasure);
   document.fonts?.ready.then(() => director.measure());
   new ResizeObserver(() => director.measure()).observe(document.body);
+  initMagnet(director);
 
   let ignite = reduce.matches ? 1 : 0;
   const start = performance.now();
@@ -232,6 +325,7 @@ async function boot(canvas: HTMLCanvasElement) {
     const speed = vel.length();
     sys.fx.velocity.copy(reduce.matches ? vel.set(0, 0, 0) : vel);
     sys.fx.speed = reduce.matches ? 0 : speed;
+    soundFrame(sys.fx.speed, info.travel, info.key);
     sys.fx.disk = target.disk * (0.08 + 0.92 * ig);
     sys.fx.orbits += (target.orbits - sys.fx.orbits) * (reduce.matches ? 1 : 1 - Math.exp(-dt * 3));
     sys.fx.sun = target.sun;

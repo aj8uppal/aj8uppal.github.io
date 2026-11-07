@@ -160,5 +160,21 @@
       "source": "NASA Visible Earth (public domain), via the three-globe example assets",
       "url": "https://cdn.jsdelivr.net/gh/vasturiano/three-globe@master/example/img/earth-water.png"
     }
+  },
+  {
+    "file": "emberdeep-glow.webp",
+    "from": "emberdeep.webp",
+    "bytes": 183254,
+    "provenance": {
+      "derived": "glow mask of emberdeep.webp"
+    }
+  },
+  {
+    "file": "ice-glow.webp",
+    "from": "ice.webp",
+    "bytes": 282118,
+    "provenance": {
+      "derived": "glow mask of ice.webp"
+    }
   }
 ]

@@ -77,6 +77,10 @@ uniform float uDetail;
 uniform float uLoaded;
 uniform float uStyle;
 uniform vec3 uStyleColor;
+uniform float uPixelArt;
+uniform vec2 uMapSize;
+uniform sampler2D uGlowMask;
+uniform float uHasGlowMask;
 float dh(vec3 p) { p = fract(p * 0.3183 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
 float dn(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f);
   return mix(mix(mix(dh(i), dh(i + vec3(1,0,0)), f.x), mix(dh(i + vec3(0,1,0)), dh(i + vec3(1,1,0)), f.x), f.y),
@@ -84,13 +88,24 @@ float dn(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f);
 
 vec3 toSrgb(vec3 c) { return pow(max(c, 0.0), vec3(1.0 / 2.2)); }
 
+// Pixel art keeps hard texels, but each texel edge resolves across one screen
+// pixel instead of snapping: nearest sampling made the edges crawl as the
+// world turned. Mip selection follows the true UV so distance still filters.
+vec3 mapAt(vec2 uv) {
+  if (uPixelArt < 0.5) return texture2D(uMap, uv).rgb;
+  vec2 px = uv * uMapSize;
+  vec2 seam = floor(px + 0.5);
+  px = seam + clamp((px - seam) / max(fwidth(px), vec2(1e-4)), -0.5, 0.5);
+  return textureGrad(uMap, px / uMapSize, dFdx(uv), dFdy(uv)).rgb;
+}
+
 void main() {
   vec3 N = normalize(vN);
   vec3 L = uLightMode > 0.5 ? normalize(uLightDir) : normalize(uLightPos - vWorld);
   vec3 V = normalize(cameraPosition - vWorld);
   float ndl = dot(N, L);
   // Until the map arrives, a dim body in the world's own colour, not a black hole.
-  vec3 c = mix(uAtmo * 0.12 + 0.02, texture2D(uMap, vUv).rgb, uLoaded);
+  vec3 c = mix(uAtmo * 0.12 + 0.02, mapAt(vUv), uLoaded);
   vec3 s = toSrgb(c);
 
   // Near the poles an equirect map pinches; ease toward a blurred tone there.
@@ -127,7 +142,11 @@ void main() {
   }
 
   float glow = 0.0;
-  if (uGlowMode > 2.5) glow = smoothstep(0.18, 0.42, min(s.g, s.b) - s.r);
+  // Lava and ice glow come from a mask baked at full resolution, which mip
+  // filtering keeps steady; thresholding the filtered map made thin cracks
+  // pop in and out as the world turned.
+  if (uHasGlowMask > 0.5) glow = texture2D(uGlowMask, vUv).r * uLoaded;
+  else if (uGlowMode > 2.5) glow = smoothstep(0.18, 0.42, min(s.g, s.b) - s.r);
   else if (uGlowMode > 1.5) glow = smoothstep(0.72, 0.95, s.r) * smoothstep(0.3, 0.6, min(s.r, s.b) - s.g);
   else if (uGlowMode > 0.5) glow = smoothstep(0.8, 0.95, s.r) * smoothstep(0.32, 0.08, s.b) * smoothstep(0.25, 0.6, s.r - s.g);
   float night = 1.0 - smoothstep(-0.3, 0.12, ndl);
@@ -306,8 +325,10 @@ export interface PlanetOptions {
   /** 4 restoration caps, 5 seasons, 6 lanterns on water, 7 lanterns on land. */
   style?: 0 | 4 | 5 | 6 | 7;
   styleColor?: string;
-  /** Sample the map with hard texels (pixel-art worlds). */
+  /** Pixel-art map: hard texels with anti-aliased edges. */
   nearest?: boolean;
+  /** Glow mask baked from the map (see scripts/prepare-orbit-textures.mjs). */
+  glowMask?: TextureKey;
 }
 
 const blank = new THREE.DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1);
@@ -328,7 +349,11 @@ export function createPlanet(o: PlanetOptions): Body & { surface: THREE.Mesh } {
   group.add(axis);
   const seg = o.segments ?? 128;
   const uniforms = {
-    uMap: { value: texture(o.map, o.nearest ? { nearest: true } : {}) },
+    uMap: { value: texture(o.map) },
+    uPixelArt: { value: o.nearest ? 1 : 0 },
+    uMapSize: { value: new THREE.Vector2(512, 256) },
+    uGlowMask: { value: o.glowMask ? texture(o.glowMask, { color: false }) : blank },
+    uHasGlowMask: { value: o.glowMask ? 1 : 0 },
     uNight: { value: o.night ? texture(o.night) : blank },
     uClouds: { value: o.clouds ? texture(o.clouds, { color: false }) : blank },
     uWater: { value: o.water ? texture(o.water, { color: false }) : blank },
@@ -431,11 +456,17 @@ export function createPlanet(o: PlanetOptions): Body & { surface: THREE.Mesh } {
       if (loaded && uniforms.uLoaded.value < 1)
         uniforms.uLoaded.value = Math.min(1, uniforms.uLoaded.value + Math.max(dt, 0.016) * 1.5);
       uniforms.uCloudShift.value = (time * 0.0016) % 1;
+      // The stand-in and the full map differ in size; texel edges need the live one.
+      const img = (uniforms.uMap.value as THREE.Texture).image as {
+        width?: number;
+        height?: number;
+      } | null;
+      if (img?.width && img.height) uniforms.uMapSize.value.set(img.width, img.height);
       group.getWorldPosition(center);
       // Full-size maps only once the camera is close enough to see texels.
       if (!near && camera.position.distanceTo(center) < o.radius * 8) {
         near = true;
-        promote([o.map, o.night, o.clouds, o.water]);
+        promote([o.map, o.night, o.clouds, o.water, o.glowMask]);
       }
       shellU.uCenter.value.copy(center);
       if (ringU) ringU.uCenter!.value.copy(center);

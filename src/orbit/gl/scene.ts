@@ -407,6 +407,7 @@ export function createSystem(canvas: HTMLCanvasElement, initial: Tier): System {
         atmosphere: s.atmosphere,
         glow: s.glow,
         glowMode: s.glowMode ?? 0,
+        glowMask: s.map === 'emberdeep' ? 'emberdeepGlow' : s.map === 'ice' ? 'iceGlow' : undefined,
         glowGain: s.glowMode === 3 ? 0.9 : 2.2,
         waterMode: s.kind === 'ocean' || s.style === 5 || s.style === 7 ? 2 : 0,
         clouds: s.clouds ? 'clouds' : undefined,

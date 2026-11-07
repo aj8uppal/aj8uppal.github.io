@@ -227,11 +227,19 @@ vec4 trace(vec3 ro, vec3 rd, int steps, out vec3 bend, out bool lost) {
   float tca = -dot(ro, rd);
   bool enters = b < R_MARCH && (dot(ro, ro) < R_MARCH * R_MARCH || tca > 0.0);
 
+  // A straight path at impact b, under the march's own force law, has bent by
+  // D(s) = s (2r^2 + b^2) / (2 b r^3) at distance s past closest approach.
+  // The camera sits at s = -tca, so the light reaching it from there on has
+  // bent by D(inf) - D(-tca): 2/b looking at the hole, 1/b side on, and 0
+  // looking away. Assuming 2/b ahead and 0 behind drew a seam across the sky
+  // wherever the view sat side on to the hole.
+  float r0 = length(ro);
+  float fromCam = 1.0 + tca * (2.0 * r0 * r0 + h2) / (2.0 * r0 * r0 * r0);
+
   if (!enters) {
-    // Weak field: bend toward the hole by 2/b and look up the sky.
-    vec3 toward = normalize(-(ro + rd * tca));
-    float defl = tca > 0.0 ? 2.0 / max(b, 1.0) : 0.0;
-    vec3 d = normalize(rd + toward * defl);
+    // Weak field: bend toward the hole and look up the sky.
+    vec3 toward = -(ro + rd * tca) / max(b, 1e-6);
+    vec3 d = normalize(rd + toward * fromCam / max(b, 1.0));
     // The disk seen from far away is small but bright: intersect it straight.
     if (ro.y * rd.y < 0.0) {
       float t = -ro.y / rd.y;
@@ -245,7 +253,8 @@ vec4 trace(vec3 ro, vec3 rd, int steps, out vec3 bend, out bool lost) {
   }
 
   // The bending a straight path at impact b gets outside the march sphere:
-  // 2/b in total, less the chord inside, T(2R^2 + b^2) / (b R^3).
+  // 2/b in total, less the chord inside, T(2R^2 + b^2) / (b R^3). Half of it
+  // is on the way out; on the way in, only the stretch from the camera counts.
   float bs = max(b, 1e-3);
   float T = sqrt(max(R_MARCH * R_MARCH - h2, 0.0));
   float halfOut = 0.5 * max(2.0 / bs - T * (2.0 * R_MARCH * R_MARCH + h2) / (bs * R_MARCH * R_MARCH * R_MARCH), 0.0);
@@ -253,7 +262,8 @@ vec4 trace(vec3 ro, vec3 rd, int steps, out vec3 bend, out bool lost) {
   vec3 vel = rd;
   if (dot(ro, ro) > R_MARCH * R_MARCH) {
     p = ro + rd * (tca - sqrt(R_MARCH * R_MARCH - b * b));
-    vel = normalize(rd + normalize(-(ro + rd * tca)) * halfOut);
+    float inbound = max(halfOut - (2.0 - fromCam) / bs, 0.0);
+    vel = normalize(rd + normalize(-(ro + rd * tca)) * inbound);
   }
   float glow = 0.0;
   bool escaped = false;
