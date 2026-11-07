@@ -109,10 +109,10 @@ export const worlds: World[] = [
     kind: 'Action roguelike',
     accent: '#ff5b3a',
     headline: 'Descend. Burn. Rise again.',
-    body: 'Hack and dash down seven depths as one of the Ashbound to slay Vorthak, the Cinder King, then swear harsher vows and push into the endless Abyss below his throne. Three armaments, 38 boons and a new Daily Rite every day.',
+    body: 'Hack and dash down seven depths as one of the Ashbound to slay Vorthak, the Cinder King, then swear harsher vows and push into the endless Abyss below his throne. Three armaments, five Ember Arts, 43 boons, 24 relics and a new Daily Rite every day.',
     facts: [
-      { value: '7', label: 'depths, 4 biomes, then the Abyss' },
-      { value: '38', label: 'boons, 7 of them fusions' },
+      { value: '7', label: 'depths, 5 biomes, then the Abyss' },
+      { value: '43', label: 'boons, 8 of them fusions' },
       { value: '3', label: 'armaments, each with its own aspects' },
     ],
     platforms: ['Desktop', 'Gamepad', 'Daily'],

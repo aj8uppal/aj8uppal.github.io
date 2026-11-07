@@ -218,17 +218,17 @@ export const cases: Record<string, Case> = {
   },
   emberdeep: {
     intro:
-      'A dark-fantasy 3D action roguelike. As one of the Ashbound you fight through sealed dungeon chambers, chaining combos, dashing through glowing attack warnings and setting off a Cinder Nova when the room fills up. Seven depths down waits Vorthak, the Cinder King; beyond him, the endless Abyss.',
+      'A dark-fantasy 3D action roguelike. As one of the Ashbound you fight through sealed dungeon chambers, chaining combos into a Kindle rank, dashing through glowing attack warnings at the last instant to slow time, and calling down Ember Arts and Cinder Novas when the room fills up. Seven depths down waits Vorthak, the Cinder King; beyond him, the endless Abyss.',
     howToPlay:
-      'Clear sealed chambers, choosing your route by the reward each doorway shows, take boons, and find the way down. After your first win, Pyre Vows raise the Heat for bigger rewards, and every day brings a Daily Rite with the same seed for everyone.',
+      'Clear sealed chambers, choosing your route by the reward each doorway shows, take boons and relics, crack open hidden vaults, and find the way down. After your first win, Pyre Vows raise the Heat for bigger rewards, and every day brings a Daily Rite with the same seed for everyone.',
     controls: {
       desktop:
-        'WASD or arrows move and the mouse aims. Left click strikes (hold to chain the combo), Space, Shift or right click dashes, Q fires the Cinder Nova, E interacts, F drinks a potion, R rerolls a boon offer. A game pad works too.',
+        'WASD or arrows move and the mouse aims. Left click strikes (hold to chain the combo), Space, Shift or right click dashes, Q fires the Cinder Nova, R casts your Ember Art (or rerolls a boon offer), E interacts, F drinks a potion, Tab opens the map. A game pad works too.',
     },
     numbers: [
-      { value: '38', label: 'boons: 25 general, 6 aspects, 7 fusions' },
+      { value: '43', label: 'boons: 29 general, 6 aspects, 8 fusions' },
       { value: '11', label: 'Pyre Vows, up to Heat 20' },
-      { value: '40', label: 'deeds and 14 chronicle pages' },
+      { value: '57', label: 'deeds and 17 chronicle pages' },
       { value: '12', label: 'permanent Sanctum rites' },
     ],
     question: 'Thirty torches, ten lights.',
@@ -239,7 +239,7 @@ export const cases: Record<string, Case> = {
       },
       {
         title: 'A pool of ten lights',
-        body: 'Torches, braziers, crystals and lava give 30 to 77 light sources per floor, but only ten point lights are ever drawn (six on Low). Each frame the pool moves to the nearest sources and fades by distance, so the swaps never show and the shaders never recompile.',
+        body: 'Torches, braziers, crystals and lava give 30 to 90 light sources per floor, but only ten point lights are ever drawn (six on Low). Each frame the pool moves to the nearest sources and fades by distance, so the swaps never show and the shaders never recompile.',
       },
       {
         title: 'Root motion, tamed',
