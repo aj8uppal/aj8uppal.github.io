@@ -105,7 +105,7 @@ export const worlds: World[] = [
   },
   {
     key: 'emberdeep',
-    name: 'Emberdeep',
+    name: 'Merovia',
     kind: 'Action roguelike',
     accent: '#ff5b3a',
     headline: 'Descend. Burn. Rise again.',
@@ -117,7 +117,7 @@ export const worlds: World[] = [
     ],
     platforms: ['Desktop', 'Phone', 'Gamepad', 'Daily'],
     stack: 'three.js · Vite · JavaScript · Web Audio',
-    play: { href: '/emberdeep/', label: 'Descend' },
+    play: { href: '/merovia/', label: 'Descend' },
     poster: 'preview-emberdeep',
     posterAlt:
       'Top-down: the Ember Knight, sword glowing, squaring up to a skeleton warrior while three more close in across lava-veined flagstones.',

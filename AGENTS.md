@@ -234,20 +234,23 @@ Ranked are shown greyed out, and nothing calls a server. Its service worker is r
 scope `/seventide/` and caches only that folder, under cache names starting `seventide-globe-`; keep it that way, a
 worker scoped to `/` would capture the whole site.
 
-## `public/emberdeep/` is a build, and it has no server
+## `public/merovia/` is a build, and it has no server
 
-Emberdeep (the 3D action roguelike) lives in `~/roguelike-game`; `public/emberdeep/` is its static build, made with
-`SITE_DIR=<this checkout> npm run pages:sync` there (`build:pages` sets the Vite base to `/emberdeep/`), so change the
-source and re-sync rather than patching the bundle. All progress is local: one `localStorage` key,
-`emberdeep.meta.v1`, plus `emberdeep.volumes` and `emberdeep.quality`. It registers no service worker and calls no
-server; the Daily Rite and bounty seeds come from the UTC date. Its `manifest.webmanifest` only makes
-Add to Home Screen launch full screen.
+Merovia (the 3D action roguelike, first published as Emberdeep) lives in `~/roguelike-game`. `public/merovia/` is its
+static build, made with `SITE_DIR=<this checkout> npm run pages:sync` there; `build:pages` sets the Vite base to
+`/merovia/`. Change the source and re-sync rather than patching the bundle. The same script rewrites
+`public/emberdeep/` as a single redirect page (`index.html`, to `/merovia/` with the query and hash kept), so old links
+and Home Screen installs still land in the game. All progress is local and keeps the old key names, so saves survive
+the rename: `emberdeep.meta.v1`, plus `emberdeep.volumes` and `emberdeep.quality`. It registers no service worker and
+calls no server; the Daily Rite and bounty seeds come from the UTC date. Its `manifest.webmanifest` only makes Add to
+Home Screen launch full screen. On /v2/ the world still has the key `emberdeep`, which names its textures, stills and
+sound cue; only its visible name and Play link say Merovia.
 
 ## The /v2/ game builds are copies of other projects
 
 `public/lanternwake/`, `public/lantern-roads/`, `public/harvest-crown/` and
 `public/lumen-hollow/` are static builds of other projects with a sub-path
-base, touch fixes or a desktop-only notice (Emberdeep has its own section
+base, touch fixes or a desktop-only notice (Merovia has its own section
 above). Rebuild at the source and re-copy; never patch the bundle. Lanternwake
 (`~/lanternwake`, `npm run build:pages`, solo only: shared voyages need the Fly
 server's origin list), Lantern Roads (`~/8bit-mmo`, `npm run build:pages`, its
@@ -255,7 +258,7 @@ server runs in a Web Worker) and Harvest Crown (`~/harvest-crown-web`,
 `HC_BASE=/harvest-crown/ npx vite build`) come from unpushed local branches
 named `pages/aj8uppal`. `~/cozygame` (Lumen Hollow) is not a Git repository;
 its three changes are `data/v2-captures/lumen-hollow/source-changes.patch`.
-Emberdeep has had its own touch controls since v1.3 (ported from the earlier
+Merovia has had its own touch controls since v1.3 (ported from the earlier
 `data/v2-captures/emberdeep/emberdeep-pages.patch`), so the published build plays
 with keyboard and mouse, gamepad or touch.
 
