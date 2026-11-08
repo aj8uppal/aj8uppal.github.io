@@ -240,7 +240,8 @@ Emberdeep (the 3D action roguelike) lives in `~/roguelike-game`; `public/emberde
 `SITE_DIR=<this checkout> npm run pages:sync` there (`build:pages` sets the Vite base to `/emberdeep/`), so change the
 source and re-sync rather than patching the bundle. All progress is local: one `localStorage` key,
 `emberdeep.meta.v1`, plus `emberdeep.volumes` and `emberdeep.quality`. It registers no service worker and calls no
-server; the Daily Rite seed comes from the UTC date.
+server; the Daily Rite and bounty seeds come from the UTC date. Its `manifest.webmanifest` only makes
+Add to Home Screen launch full screen.
 
 ## The /v2/ game builds are copies of other projects
 
@@ -254,9 +255,9 @@ server runs in a Web Worker) and Harvest Crown (`~/harvest-crown-web`,
 `HC_BASE=/harvest-crown/ npx vite build`) come from unpushed local branches
 named `pages/aj8uppal`. `~/cozygame` (Lumen Hollow) is not a Git repository;
 its three changes are `data/v2-captures/lumen-hollow/source-changes.patch`.
-Touch controls written for an earlier Emberdeep snapshot are in
-`data/v2-captures/emberdeep/emberdeep-pages.patch`, not in the published build,
-which is keyboard, mouse and gamepad only.
+Emberdeep has had its own touch controls since v1.3 (ported from the earlier
+`data/v2-captures/emberdeep/emberdeep-pages.patch`), so the published build plays
+with keyboard and mouse, gamepad or touch.
 
 ## The deployed site has a 1 GB ceiling
 
